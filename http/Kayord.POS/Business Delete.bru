@@ -1,0 +1,17 @@
+meta {
+  name: Business Delete
+  type: http
+  seq: 5
+}
+
+delete {
+  url: http://localhost:5117/business
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "Id": 1
+  }
+}

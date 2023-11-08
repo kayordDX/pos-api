@@ -1,0 +1,17 @@
+meta {
+  name: Business Create
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:5117/business
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "Name": "Ander Naam"
+  }
+}
