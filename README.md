@@ -9,3 +9,9 @@ dotnet ef database update --project src/Kayord.POS --startup-project src/Kayord.
 
 dotnet run --project src/Kayord.POS
 ```
+
+## Postgres
+
+```bash
+docker compose up -d
+```
