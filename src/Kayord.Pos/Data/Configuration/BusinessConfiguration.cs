@@ -1,4 +1,4 @@
-using Kayord.POS.Entities;
+using Kayord.Pos.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

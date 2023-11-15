@@ -1,4 +1,4 @@
-namespace Kayord.POS.Features.Test;
+namespace Kayord.Pos.Features.Test;
 
 public class Endpoint : Endpoint<Request, Response>
 {

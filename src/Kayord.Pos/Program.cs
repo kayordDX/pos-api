@@ -1,5 +1,5 @@
 global using FastEndpoints;
-using Kayord.POS.Data;
+using Kayord.Pos.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

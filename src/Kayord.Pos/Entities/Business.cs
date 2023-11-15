@@ -1,6 +1,6 @@
 using Kayord.Pos.Entities;
 
-namespace Kayord.POS.Entities;
+namespace Kayord.Pos.Entities;
 
 public class Business
 {

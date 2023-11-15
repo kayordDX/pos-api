@@ -1,8 +1,8 @@
-using Kayord.POS.Data;
+using Kayord.Pos.Data;
 
 namespace Kayord.Pos.Features.Business.Create;
 
-public class Endpoint : Endpoint<Request, POS.Entities.Business>
+public class Endpoint : Endpoint<Request, Pos.Entities.Business>
 {
     private readonly AppDbContext _dbContext;
 
@@ -19,7 +19,7 @@ public class Endpoint : Endpoint<Request, POS.Entities.Business>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        POS.Entities.Business entity = new POS.Entities.Business()
+        Pos.Entities.Business entity = new Pos.Entities.Business()
         {
             Name = req.Name
         };

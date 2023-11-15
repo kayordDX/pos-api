@@ -1,4 +1,4 @@
-using Kayord.POS.Entities;
+using Kayord.Pos.Entities;
 
 namespace Kayord.Pos.Entities;
 

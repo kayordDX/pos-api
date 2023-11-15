@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{FADDA9C3-588D-4CED-97DC-B32136BDB1B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kayord.POS", "src\Kayord.POS\Kayord.POS.csproj", "{000111D1-9B12-446C-B3C0-84B217CF7BA9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kayord.Pos", "src\Kayord.Pos\Kayord.Pos.csproj", "{000111D1-9B12-446C-B3C0-84B217CF7BA9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

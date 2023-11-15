@@ -1,6 +1,6 @@
-using Kayord.POS.Data;
+using Kayord.Pos.Data;
 
-namespace Kayord.Pos.Features.Business.Edit;
+namespace Kayord.Pos.Features.Business.Delete;
 
 public class Endpoint : Endpoint<Request>
 {
@@ -13,7 +13,7 @@ public class Endpoint : Endpoint<Request>
 
     public override void Configure()
     {
-        Put("/business");
+        Delete("/business");
         AllowAnonymous();
     }
 
@@ -26,7 +26,7 @@ public class Endpoint : Endpoint<Request>
             return;
         }
 
-        entity.Name = req.Name;
+        _dbContext.Business.Remove(entity);
         await _dbContext.SaveChangesAsync();
 
         await SendNoContentAsync();
