@@ -20,9 +20,13 @@ public class Endpoint : Endpoint<Request, Response>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var roles = new List<string> { "test", "What" };
-        var permissions = new List<string> { "perm", "more" };
-        var claims = new List<Claim> { new Claim("Mense", "Staff") };
+        var roles = new List<string> { };
+        var permissions = new List<string> { };
+        var claims = new List<Claim> {
+            new Claim("name", "Steff Bosch"),
+            new Claim("email", "boshkoppie@gmail.com"),
+            new Claim("type", "Waiter")
+        };
         var expiresAt = DateTime.Now.AddMinutes(1);
         await SendAsync(new Response
         {
