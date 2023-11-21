@@ -8,13 +8,9 @@ builder.Services.AddFastEndpoints();
 string tokenSigningKey = builder.Configuration.GetValue<string>("SigningKey") ?? string.Empty;
 builder.Services.ConfigureAuth(tokenSigningKey);
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-{
-    options.UseNpgsql(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName));
-     options.EnableSensitiveDataLogging();
-});
+builder.Services.ConfigureEF(builder.Configuration);
+
+builder.Services.AddHostedService<MigratorHostedService>();
 
 var app = builder.Build();
 app.UseFastEndpoints();

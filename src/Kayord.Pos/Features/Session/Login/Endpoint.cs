@@ -1,32 +1,40 @@
 
 using System.Security.Claims;
+using Kayord.Pos.Data;
 
-namespace Kayord.Pos.Features.Token;
+namespace Kayord.Pos.Features.Session.Login;
 
 public class Endpoint : Endpoint<Request, Response>
 {
     private readonly IConfiguration _config;
+    private readonly AppDbContext _dbContext;
 
-    public Endpoint(IConfiguration config)
+    public Endpoint(IConfiguration config, AppDbContext dbContext)
     {
         _config = config;
+        _dbContext = dbContext;
     }
 
     public override void Configure()
     {
-        Post("/token");
+        Post("/session/login");
         AllowAnonymous();
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
+        var entity = await _dbContext.Staff.FindAsync(req.StaffId);
+        if (entity == null)
+        {
+            await SendNotFoundAsync();
+            return;
+        }
         var roles = new List<string> { };
         var permissions = new List<string> { };
         var claims = new List<Claim> {
-            new Claim("id", "23"),
-            new Claim("name", "Steff Bosch"),
-            new Claim("email", "boshkoppie@gmail.com"),
-            new Claim("type", "Waiter")
+            new Claim("id", entity.Id.ToString()),
+            new Claim("name", entity.Name),
+            new Claim("type", entity.StaffType.ToString())
         };
         var expiresAt = DateTime.Now.AddMinutes(1);
         await SendAsync(new Response
