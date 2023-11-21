@@ -1,11 +1,18 @@
 meta {
   name: Clock In
   type: http
-  seq: 8
+  seq: 11
 }
 
 post {
-  url: Clock/CheckIn
-  body: none
+  url: http://localhost:5117/ClockIn
+  body: json
   auth: none
+}
+
+body:json {
+  {
+    "SalesPeriodId":1,
+    "StaffId":1
+  }
 }

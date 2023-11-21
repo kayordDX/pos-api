@@ -1,11 +1,19 @@
 meta {
   name: Sales Period Create
   type: http
-  seq: 11
+  seq: 9
 }
 
 post {
   url: http://localhost:5117/SalesPeriod/
-  body: none
+  body: json
   auth: none
+}
+
+body:json {
+  {
+    "BusinessId":1,
+    "Name":"Stefan's First Sales Period",
+    "OutletId":1
+  }
 }

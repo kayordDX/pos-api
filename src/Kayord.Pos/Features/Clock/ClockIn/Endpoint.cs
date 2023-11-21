@@ -20,8 +20,8 @@ public class Endpoint : Endpoint<Request, Pos.Entities.Clock>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var exists = _dbContext.Clock.FirstOrDefault(x=>x.StaffId == req.StaffId && x.SalesPeriodId == req.SalesPeriodId );
-        if(exists != null && exists.EndDate == null)
+        var exists = _dbContext.Clock.FirstOrDefault(x=>x.StaffId == req.StaffId && x.SalesPeriodId == req.SalesPeriodId && x.EndDate == null);
+        if(exists != null )
         {
             await SendForbiddenAsync();
             return;

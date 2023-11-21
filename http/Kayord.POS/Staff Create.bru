@@ -1,11 +1,18 @@
 meta {
   name: Staff Create
   type: http
-  seq: 12
+  seq: 10
 }
 
 post {
-  url: 
-  body: none
+  url: http://localhost:5117/Staff/
+  body: json
   auth: none
+}
+
+body:json {
+  {
+    "Name":"Stef Baasch",
+    "StaffType":1
+  }
 }

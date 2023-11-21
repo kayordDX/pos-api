@@ -1,11 +1,18 @@
 meta {
   name: Clock Out
   type: http
-  seq: 9
+  seq: 12
 }
 
 post {
-  url: Clock/ClockIn
-  body: none
+  url: http://localhost:5117/ClockOut
+  body: json
   auth: none
+}
+
+body:json {
+  {
+    "SalesPeriodId":1,
+    "StaffId":1
+  }
 }

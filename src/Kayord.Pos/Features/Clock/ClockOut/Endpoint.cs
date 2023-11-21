@@ -20,19 +20,14 @@ public class Endpoint : Endpoint<Request, Pos.Entities.Clock>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var exists = _dbContext.Clock.FirstOrDefault(x=>x.StaffId == req.StaffId && x.SalesPeriodId == req.SalesPeriodId && x.EndDate != null);
-        if(exists != null)
+        var entity = _dbContext.Clock.FirstOrDefault(x=>x.StaffId == req.StaffId && x.SalesPeriodId == req.SalesPeriodId && x.EndDate == null);
+        if(entity == null)
         {
             await SendForbiddenAsync();
             return;
         }
         else{
-        var entity = _dbContext.Clock.FirstOrDefault(x=>x.StaffId == req.StaffId && x.SalesPeriodId == req.SalesPeriodId && x.EndDate == null);
-        if(entity == null)
-        {
-             await SendNotFoundAsync(); 
-             return;
-        }
+    
         entity.EndDate = DateTime.Now;
         await _dbContext.SaveChangesAsync();
 
