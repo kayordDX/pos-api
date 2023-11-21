@@ -13,7 +13,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
         b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName));
-    // options.EnableSensitiveDataLogging();
+     options.EnableSensitiveDataLogging();
 });
 
 var app = builder.Build();
