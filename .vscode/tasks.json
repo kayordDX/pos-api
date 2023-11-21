@@ -100,6 +100,84 @@
             "netCore": {
                 "appProject": "${workspaceFolder}/src/Kayord.POS/Kayord.Pos.csproj"
             }
+        },
+        {
+            "label": "EF Migration Add",
+            "type": "shell",
+            "command": "dotnet",
+            "args": [
+                "ef",
+                "migrations",
+                "add",
+                "${input:migrationId}",
+                "--project",
+                "src/Kayord.Pos",
+                "--startup-project",
+                "src/Kayord.Pos",
+                "-o",
+                "Data/Migrations"
+            ],
+            "problemMatcher": "$msCompile",
+            "options": {}
+        },
+        {
+            "label": "EF Migration Remove",
+            "type": "shell",
+            "command": "dotnet",
+            "args": [
+                "ef",
+                "migrations",
+                "remove",
+                "--project",
+                "src/Kayord.Pos",
+                "--startup-project",
+                "src/Kayord.Pos",
+                "--context",
+                "AppDbContext"
+            ],
+            "problemMatcher": "$msCompile",
+            "options": {
+                "env": {
+                    "ASPNETCORE_ENVIRONMENT": "Development"
+                }
+            }
+        },
+        {
+            "label": "EF Revert",
+            "type": "shell",
+            "command": "dotnet",
+            "args": [
+                "ef",
+                "database",
+                "update",
+                "${input:lastgoodmigration}",
+                "--project",
+                "src/Kayord.Pos",
+                "--startup-project",
+                "src/Kayord.Pos",
+                "--context",
+                "AppDbContext"
+            ],
+            "problemMatcher": "$msCompile",
+            "options": {
+                "env": {
+                    "ASPNETCORE_ENVIRONMENT": "Development"
+                }
+            }
+        },
+    ],
+    "inputs": [
+        {
+            "id": "migrationId",
+            "type": "promptString",
+            "default": "migrationName",
+            "description": "dotnet ef with required options"
+        },
+        {
+            "id": "lastgoodmigration",
+            "type": "promptString",
+            "default": "migrationName",
+            "description": "last good migration to revert to"
         }
     ]
 }
