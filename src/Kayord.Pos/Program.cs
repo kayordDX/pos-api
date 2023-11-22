@@ -1,17 +1,23 @@
 global using FastEndpoints;
 using Kayord.Pos.Common.Extensions;
-using Kayord.Pos.Data;
-using Microsoft.EntityFrameworkCore;
+using KayordKit.Extensions.Api;
+using KayordKit.Extensions.Health;
+using KayordKit.Extensions.Host;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddFastEndpoints();
+builder.Host.AddLoggingConfiguration(builder.Configuration);
+builder.Services.ConfigureApi();
+builder.Services.ConfigureHealth(builder.Configuration);
+
 string tokenSigningKey = builder.Configuration.GetValue<string>("SigningKey") ?? string.Empty;
 builder.Services.ConfigureAuth(tokenSigningKey);
-
 builder.Services.ConfigureEF(builder.Configuration);
 
 builder.Services.AddHostedService<MigratorHostedService>();
 
 var app = builder.Build();
-app.UseFastEndpoints();
+
+app.UseApi();
+app.UseHealth();
+
 app.Run();
