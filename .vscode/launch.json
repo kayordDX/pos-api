@@ -6,7 +6,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/src/Kayord.Pos/bin/Debug/net7.0/Kayord.Pos.dll",
+            "program": "${workspaceFolder}/src/Kayord.Pos/bin/Debug/net8.0/Kayord.Pos.dll",
             "args": [],
             "cwd": "${workspaceFolder}/src/Kayord.Pos",
             "stopAtEntry": false,
