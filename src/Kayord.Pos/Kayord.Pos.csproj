@@ -8,11 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FastEndpoints" Version="5.20.0-rc1" />
-    <PackageReference Include="FastEndpoints.Swagger" Version="5.20.0-rc1" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.0" />
-    <PackageReference Include="FluentValidation" Version="11.8.0" />
+    <PackageReference Include="FastEndpoints" Version="5.20.0-rc2" />
+    <PackageReference Include="FastEndpoints.Swagger" Version="5.20.0-rc2" />
+    <PackageReference Include="FluentValidation" Version="11.8.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -20,7 +18,7 @@
     </PackageReference>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
-    <PackageReference Include="KayordKit" Version="0.1.0" />
+    <PackageReference Include="KayordKit" Version="0.1.2" />
   </ItemGroup>
 
 </Project>
