@@ -24,6 +24,7 @@ public class MigratorHostedService : IHostedService
                 await context.Database.MigrateAsync(cancellationToken);
             }
             // Seed
+            await AppDbSeed.SeedData(context, cancellationToken);
         }
         catch (Exception ex)
         {
