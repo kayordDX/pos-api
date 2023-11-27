@@ -5,9 +5,14 @@ meta {
 }
 
 get {
-  url: http://localhost:5117/clock/list
+  url: http://localhost:5117/clock/list?OutletId=1&StatusId=1
   body: json
   auth: none
+}
+
+query {
+  OutletId: 1
+  StatusId: 1
 }
 
 body:json {
