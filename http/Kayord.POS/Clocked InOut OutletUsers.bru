@@ -1,0 +1,18 @@
+meta {
+  name: Clocked InOut OutletUsers
+  type: http
+  seq: 16
+}
+
+get {
+  url: http://localhost:5117/clock/list
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "OutletId":1,
+    "StatusId":2
+  }
+}
