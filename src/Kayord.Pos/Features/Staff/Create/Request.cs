@@ -8,6 +8,8 @@ public class Request
     public string Name { get; set; } = string.Empty;
     public int BusinessId { get; set; }
     public StaffType StaffType { get; set; }
+    public int OutletId { get; set; }
+
    
 }
 

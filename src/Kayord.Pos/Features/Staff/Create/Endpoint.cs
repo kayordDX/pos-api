@@ -14,7 +14,7 @@ public class Endpoint : Endpoint<Request, Pos.Entities.Staff>
     public override void Configure()
     {
         Post("/staff");
-        AllowAnonymous();
+        AllowAnonymous();  
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
@@ -22,7 +22,8 @@ public class Endpoint : Endpoint<Request, Pos.Entities.Staff>
         Pos.Entities.Staff entity = new Pos.Entities.Staff()
         {
             Name = req.Name,
-            StaffType = req.StaffType
+            StaffType = req.StaffType,
+            OutletId = req.OutletId
         };
         await _dbContext.Staff.AddAsync(entity);
         await _dbContext.SaveChangesAsync();
