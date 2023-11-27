@@ -26,22 +26,19 @@ namespace Kayord.Pos.Features.Clock.List
             if (req.StatusId == 1) // Clocked Out
             {
                 // Get staff with no corresponding clock records for the day (not clocked in or out)
-                var nonClockedInStaff = await _dbContext.Staff
-                    .Where(s => s.OutletId == req.OutletId &&
-                                !_dbContext.Clock.Any(c => c.StaffId == s.Id &&
-                                                           c.StartDate.Date == DateTime.UtcNow.Date))
+                var AllStaff = await _dbContext.Staff
+                    .Where(s => s.OutletId == req.OutletId )
                     .ToListAsync();
 
-                // Get staff who are clocked out
-                var clockedOutStaff = await _dbContext.Clock
-                    .Where(c => c.SalesPeriod.OutletId == req.OutletId && c.EndDate != null)
+                // Get staff who are clocked in
+                var clockedInStaff = await _dbContext.Clock
+                    .Where(c => c.SalesPeriod.OutletId == req.OutletId && c.EndDate == null)
                     .Select(c => c.Staff)
                     .ToListAsync();
-                prestaffList.AddRange(nonClockedInStaff);
-                prestaffList.AddRange(clockedOutStaff);
-                foreach (var item in prestaffList)
+                
+                foreach (var item in AllStaff)
                 {
-                    if(!staffList.Any(x=>x.Id == item.Id))
+                    if(!clockedInStaff.Any(x=>x.Id == item.Id))
                     {   
                         staffList.Add(item);
                     }
