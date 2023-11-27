@@ -2,7 +2,7 @@ namespace Kayord.Pos.Common.Enums;
 
 public enum StaffType
 {
-    Manager,
+    Manager = 1,
     Waiter,
     Chef
 }

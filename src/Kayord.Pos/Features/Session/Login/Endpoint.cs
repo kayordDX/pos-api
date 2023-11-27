@@ -34,7 +34,7 @@ public class Endpoint : Endpoint<Request, Response>
         var claims = new List<Claim> {
             new Claim("id", entity.Id.ToString()),
             new Claim("name", entity.Name),
-            new Claim("type", entity.StaffType.ToString())
+            new Claim("type", ((int)entity.StaffType).ToString())
         };
         var expiresAt = DateTime.Now.AddMinutes(1);
         await SendAsync(new Response
