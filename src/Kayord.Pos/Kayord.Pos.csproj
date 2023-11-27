@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Bogus" Version="34.0.2" />
     <PackageReference Include="FastEndpoints" Version="5.20.0-rc2" />
     <PackageReference Include="FastEndpoints.Swagger" Version="5.20.0-rc2" />
     <PackageReference Include="FluentValidation" Version="11.8.1" />
