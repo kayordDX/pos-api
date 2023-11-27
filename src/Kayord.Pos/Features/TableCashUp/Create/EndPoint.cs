@@ -1,8 +1,8 @@
 using Kayord.Pos.Data;
 
-namespace Kayord.Pos.Features.Section.Create
+namespace Kayord.Pos.Features.TableCashUp.Create
 {
-    public class Endpoint : Endpoint<Request, Pos.Entities.Section>
+    public class Endpoint : Endpoint<Request, Pos.Entities.TableCashUp>
     {
         private readonly AppDbContext _dbContext;
 
@@ -13,21 +13,25 @@ namespace Kayord.Pos.Features.Section.Create
 
         public override void Configure()
         {
-            Post("/section");
+            Post("/tablecashup");
             AllowAnonymous();
         }
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-            Pos.Entities.Section entity = new Pos.Entities.Section()
+            Pos.Entities.TableCashUp entity = new Pos.Entities.TableCashUp()
             {
-                Name = req.Name,
-                OutletId = req.OutletId
+                TableBookingId = req.TableBookingId,
+                SalesAmount = req.SalesAmount,
+                TotalAmount = req.TotalAmount,
+                CashUpDate = req.CashUpDate,
+                OutletId = req.OutletId,
             };
-            await _dbContext.Section.AddAsync(entity);
+
+            await _dbContext.TableCashUp.AddAsync(entity);
             await _dbContext.SaveChangesAsync();
 
-            var result = await _dbContext.Section.FindAsync(entity.Id);
+            var result = await _dbContext.TableCashUp.FindAsync(entity.Id);
             if (result == null)
             {
                 await SendNotFoundAsync();

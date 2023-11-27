@@ -1,8 +1,9 @@
 namespace Kayord.Pos.Entities;
-public class Order
+public class TableOrder
 {
-    public int OrderId { get; set; }
+    public int TableOrderId { get; set; }
     public DateTime OrderDate { get; set; }
     public int CustomerId { get; set; }
     public Customer Customer { get; set; } = default!;
+    public int TableBookingId { get; set; }
 }

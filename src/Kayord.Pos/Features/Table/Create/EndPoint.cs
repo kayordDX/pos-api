@@ -1,8 +1,8 @@
 using Kayord.Pos.Data;
 
-namespace Kayord.Pos.Features.Section.Create
+namespace Kayord.Pos.Features.Table.Create
 {
-    public class Endpoint : Endpoint<Request, Pos.Entities.Section>
+    public class Endpoint : Endpoint<Request, Pos.Entities.Table>
     {
         private readonly AppDbContext _dbContext;
 
@@ -13,21 +13,22 @@ namespace Kayord.Pos.Features.Section.Create
 
         public override void Configure()
         {
-            Post("/section");
+            Post("/table");
             AllowAnonymous();
         }
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-            Pos.Entities.Section entity = new Pos.Entities.Section()
+            Pos.Entities.Table entity = new Pos.Entities.Table()
             {
                 Name = req.Name,
-                OutletId = req.OutletId
+                SectionId = req.SectionId,
+                Capacity = req.Capacity
             };
-            await _dbContext.Section.AddAsync(entity);
+            await _dbContext.Table.AddAsync(entity);
             await _dbContext.SaveChangesAsync();
 
-            var result = await _dbContext.Section.FindAsync(entity.Id);
+            var result = await _dbContext.Table.FindAsync(entity.TableId);
             if (result == null)
             {
                 await SendNotFoundAsync();

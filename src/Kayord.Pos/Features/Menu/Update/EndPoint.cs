@@ -1,8 +1,8 @@
 using Kayord.Pos.Data;
 
-namespace Kayord.Pos.Features.Section.Update
+namespace Kayord.Pos.Features.Menu.Update
 {
-    public class Endpoint : Endpoint<Request, Pos.Entities.Section>
+    public class Endpoint : Endpoint<Request, Pos.Entities.Menu>
     {
         private readonly AppDbContext _dbContext;
 
@@ -13,13 +13,13 @@ namespace Kayord.Pos.Features.Section.Update
 
         public override void Configure()
         {
-            Put("/section/{sectionId:int}");
+            Put("/menu/{menuId:int}");
             AllowAnonymous();
         }
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-            var entity = await _dbContext.Section.FindAsync(req.Id);
+            var entity = await _dbContext.Menu.FindAsync(req.Id);
             if (entity == null)
             {
                 await SendNotFoundAsync();
@@ -27,7 +27,6 @@ namespace Kayord.Pos.Features.Section.Update
             }
 
             entity.Name = req.Name;
-          
 
             await _dbContext.SaveChangesAsync();
             await SendAsync(entity);

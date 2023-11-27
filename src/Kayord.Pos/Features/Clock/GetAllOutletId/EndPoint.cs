@@ -21,10 +21,11 @@ namespace Kayord.Pos.Features.Clock.List
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
             List<Pos.Entities.Staff> staffList = new List<Pos.Entities.Staff>();
+            List<Pos.Entities.Staff> prestaffList = new List<Pos.Entities.Staff>();
 
             if (req.StatusId == 1) // Clocked Out
             {
-                // Get staff with no clock records for the day (not clocked in or out)
+                // Get staff with no corresponding clock records for the day (not clocked in or out)
                 var nonClockedInStaff = await _dbContext.Staff
                     .Where(s => s.OutletId == req.OutletId &&
                                 !_dbContext.Clock.Any(c => c.StaffId == s.Id &&
@@ -36,9 +37,16 @@ namespace Kayord.Pos.Features.Clock.List
                     .Where(c => c.SalesPeriod.OutletId == req.OutletId && c.EndDate != null)
                     .Select(c => c.Staff)
                     .ToListAsync();
-
-                staffList.AddRange(nonClockedInStaff);
-                staffList.AddRange(clockedOutStaff);
+                prestaffList.AddRange(nonClockedInStaff);
+                prestaffList.AddRange(clockedOutStaff);
+                foreach (var item in prestaffList)
+                {
+                    if(!staffList.Any(x=>x.Id == item.Id))
+                    {   
+                        staffList.Add(item);
+                    }
+                }
+               
             }
             else if (req.StatusId == 2) // Clocked In
             {

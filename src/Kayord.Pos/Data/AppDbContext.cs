@@ -18,6 +18,18 @@ public class AppDbContext : DbContext
     public DbSet<Section> Section => Set<Section>();
     public DbSet<Staff> Staff => Set<Staff>();
     public DbSet<Table> Table => Set<Table>();
+    public DbSet<TableBooking> TableBooking => Set<TableBooking>();
+    public DbSet<Menu> Menu => Set<Menu>();
+    public DbSet<MenuItem> MenuItem => Set<MenuItem>();
+    public DbSet<TableCashUp> TableCashUp => Set<TableCashUp>();
+    public DbSet<OrderItem> OrderItem => Set<OrderItem>();
+    public DbSet<TableOrder> TableOrder => Set<TableOrder>();
+
+
+
+
+
+
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
