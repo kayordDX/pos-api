@@ -7,7 +7,6 @@ namespace Kayord.Pos.Features.TableCashUp.Create
         public int TableBookingId { get; set; }
         public decimal SalesAmount { get; set; }
         public decimal TotalAmount { get; set; }
-        public DateTime CashUpDate { get; set; }
         public int OutletId { get; set; }
         
     }

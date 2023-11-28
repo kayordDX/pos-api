@@ -24,7 +24,7 @@ namespace Kayord.Pos.Features.TableCashUp.Create
                 TableBookingId = req.TableBookingId,
                 SalesAmount = req.SalesAmount,
                 TotalAmount = req.TotalAmount,
-                CashUpDate = req.CashUpDate,
+                CashUpDate = DateTime.Now,
                 OutletId = req.OutletId,
             };
 
