@@ -31,12 +31,13 @@ public class Endpoint : Endpoint<Request, Response>
         }
         var roles = new List<string> { };
         var permissions = new List<string> { };
+        int typeId = (int)entity.StaffType;
         var claims = new List<Claim> {
             new Claim("id", entity.Id.ToString()),
             new Claim("name", entity.Name),
-            new Claim("type", ((int)entity.StaffType).ToString())
+            new Claim("type", typeId.ToString())
         };
-        var expiresAt = DateTime.Now.AddMinutes(1);
+        var expiresAt = DateTime.Now.AddHours(3);
         await SendAsync(new Response
         {
             Token = Common.Security.Token.CreateToken(_config.GetValue<string>("SigningKey") ?? string.Empty, expiresAt, permissions, roles, claims)
