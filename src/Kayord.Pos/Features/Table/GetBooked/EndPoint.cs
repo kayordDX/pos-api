@@ -24,33 +24,30 @@ namespace Kayord.Pos.Features.Table.GetMyBooked
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
           
-        
             if(req.myBooking)
             {
-            var bookedTableIds = await _dbContext.TableBooking
-                .Where(booking => booking.Table.Section.OutletId == req.OutletId && booking.StaffId == _cu.Id &&
+                //current bookings
+            var results = await _dbContext.TableBooking
+                .Where(booking => booking.Table.Section.OutletId == req.OutletId && booking.StaffId == 7 &&
                                   _dbContext.TableCashUp.All(cashUp => cashUp.TableBookingId != booking.Id))
-                .Select(booking => booking.TableId)
-                .ToListAsync();
-            var results = await _dbContext.Table
-                .Where(table => table.Section.OutletId == req.OutletId && bookedTableIds.Contains(table.TableId))
+                .Where(x => x.Table.Section.OutletId == req.OutletId)
                 .ProjectToDto()
                 .ToListAsync();
 
             await SendAsync(results);
             }
             else{
-            var bookedTableIds = await _dbContext.TableBooking
+               var results = await _dbContext.TableBooking
                 .Where(booking => booking.Table.Section.OutletId == req.OutletId && booking.StaffId != _cu.Id &&
                                   _dbContext.TableCashUp.All(cashUp => cashUp.TableBookingId != booking.Id))
-                .Select(booking => booking.TableId)
-                .ToListAsync();
-            var results = await _dbContext.Table
-                .Where(table => table.Section.OutletId == req.OutletId && bookedTableIds.Contains(table.TableId))
+                .Where(x => x.Table.Section.OutletId == req.OutletId)
                 .ProjectToDto()
                 .ToListAsync();
-            }
 
+            await SendAsync(results);
+
+            }
+            await SendAsync(new List<Response>());
             
         }
     }
