@@ -21,9 +21,17 @@ namespace Kayord.Pos.Features.Table.GetAvailable
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
+          var bookedTableIds = await _dbContext.TableBooking
+                .Where(booking => booking.Table.Section.OutletId == req.OutletId &&
+                                  _dbContext.TableCashUp.All(cashUp => cashUp.TableBookingId != booking.Id))
+                .Select(booking => booking.TableId)
+                .ToListAsync();
+
             var results = await _dbContext.Table
-                // .Include(x => x.Section)
-                .Where(x => x.Section.OutletId == req.OutletId).ProjectToDto().ToListAsync();
+                .Where(table => table.Section.OutletId == req.OutletId && !bookedTableIds.Contains(table.TableId))
+                .ProjectToDto()
+                .ToListAsync();
+
             await SendAsync(results);
         }
     }
