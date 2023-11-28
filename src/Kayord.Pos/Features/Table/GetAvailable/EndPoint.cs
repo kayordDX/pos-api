@@ -4,29 +4,26 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.Table.GetAvailable
 {
-    public class Endpoint : Endpoint<Request, List<Pos.Entities.Table>>
+    public class Endpoint : Endpoint<Request, List<Response>>
     {
         private readonly AppDbContext _dbContext;
-        private readonly CurrentUserService _user;
 
-        public Endpoint(AppDbContext dbContext, CurrentUserService user)
+        public Endpoint(AppDbContext dbContext)
         {
             _dbContext = dbContext;
-            _user = user;
         }
 
         public override void Configure()
         {
             Get("/table/available");
+            AllowAnonymous();
         }
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-            var e = _user.Expires;
-            var b = _user.Type;
             var results = await _dbContext.Table
                 // .Include(x => x.Section)
-                .Where(x => x.Section.OutletId == req.OutletId).ToListAsync();
+                .Where(x => x.Section.OutletId == req.OutletId).ProjectToDto().ToListAsync();
             await SendAsync(results);
         }
     }

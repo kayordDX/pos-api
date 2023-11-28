@@ -6,5 +6,5 @@ public class Response
     public string Name { get; set; } = string.Empty;
     public int Capacity { get; set; }
     public int SectionId { get; set; }
-    public int OutletId { get; set; }
+    public SectionDto Section { get; set; } = default!;
 }
