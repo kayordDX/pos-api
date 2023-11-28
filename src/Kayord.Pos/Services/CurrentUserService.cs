@@ -15,5 +15,5 @@ public class CurrentUserService
     public string? Expires => _httpContextAccessor.HttpContext?.User?.FindFirstValue("exp");
     public string? Name => _httpContextAccessor.HttpContext?.User?.FindFirstValue("name");
     public int Type => int.Parse(_httpContextAccessor.HttpContext?.User?.FindFirstValue("type") ?? "0");
-    private int Id => int.Parse(_httpContextAccessor.HttpContext?.User?.FindFirstValue("id") ?? "0");
+    public int Id => int.Parse(_httpContextAccessor.HttpContext?.User?.FindFirstValue("id") ?? "0");
 }
