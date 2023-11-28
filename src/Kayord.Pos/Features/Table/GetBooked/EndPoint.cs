@@ -28,7 +28,7 @@ namespace Kayord.Pos.Features.Table.GetMyBooked
             {
                 //current bookings
             var results = await _dbContext.TableBooking
-                .Where(booking => booking.Table.Section.OutletId == req.OutletId && booking.StaffId == 7 &&
+                .Where(booking => booking.Table.Section.OutletId == req.OutletId && booking.StaffId == _cu.Id &&
                                   _dbContext.TableCashUp.All(cashUp => cashUp.TableBookingId != booking.Id))
                 .Where(x => x.Table.Section.OutletId == req.OutletId)
                 .ProjectToDto()
