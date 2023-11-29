@@ -5,7 +5,6 @@ namespace Kayord.Pos.Features.SalesPeriod.Create;
 public class Request
 {
     public string? Name { get; set; }
-    public DateTime StartDate { get; set; }
     public int OutletId { get; set; }
 }
 

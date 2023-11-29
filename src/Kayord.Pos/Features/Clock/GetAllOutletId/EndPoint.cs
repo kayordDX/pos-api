@@ -27,28 +27,28 @@ namespace Kayord.Pos.Features.Clock.List
             {
                 // Get staff with no corresponding clock records for the day (not clocked in or out)
                 var AllStaff = await _dbContext.Staff
-                    .Where(s => s.OutletId == req.OutletId )
+                    .Where(s => s.OutletId == req.OutletId)
                     .ToListAsync();
 
                 // Get staff who are clocked in
                 var clockedInStaff = await _dbContext.Clock
-                    .Where(c => c.SalesPeriod.OutletId == req.OutletId && c.EndDate == null)
+                    .Where(c => c.OutletId == req.OutletId && c.EndDate == null)
                     .Select(c => c.Staff)
                     .ToListAsync();
-                
+
                 foreach (var item in AllStaff)
                 {
-                    if(!clockedInStaff.Any(x=>x.Id == item.Id))
-                    {   
+                    if (!clockedInStaff.Any(x => x.Id == item.Id))
+                    {
                         staffList.Add(item);
                     }
                 }
-               
+
             }
             else if (req.StatusId == 2) // Clocked In
             {
                 staffList = await _dbContext.Clock
-                    .Where(c => c.SalesPeriod.OutletId == req.OutletId && c.EndDate == null)
+                    .Where(c => c.OutletId == req.OutletId && c.EndDate == null)
                     .Select(c => c.Staff)
                     .ToListAsync();
             }

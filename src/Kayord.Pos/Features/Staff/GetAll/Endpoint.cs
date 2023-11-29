@@ -1,4 +1,3 @@
-using System.IO.Compression;
 using Kayord.Pos.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,15 +20,9 @@ public class Endpoint : Endpoint<Request, List<Pos.Entities.Clock>>
 
     public override async Task HandleAsync(Request r, CancellationToken ct)
     {
-        var salesperiod = await _dbContext.SalesPeriod.FirstOrDefaultAsync(x=>x.OutletId == r.OutletId && x.EndDate != null);
-        if(salesperiod == null)
-        {
-            await SendNotFoundAsync();
-            return;
-        }
-            var results = await _dbContext.Clock.Where(x=>x.SalesPeriodId == salesperiod.Id && x.EndDate == null)
+        var results = await _dbContext.Clock.Where(x => x.OutletId == r.OutletId && x.EndDate == null)
             .Include(i => i.Staff)
-            .Include(p=>p.SalesPeriod).ToListAsync();
+            .ToListAsync();
         await SendAsync(results);
     }
 }

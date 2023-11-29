@@ -1,6 +1,8 @@
 using System.Reflection;
 using Bogus;
+using Bogus.Extensions.UnitedStates;
 using Humanizer;
+using Kayord.Pos.Common.Enums;
 using Kayord.Pos.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
@@ -11,20 +13,27 @@ public static class AppDbSeed
 {
     public static async Task SeedData(AppDbContext context, CancellationToken cancellationToken)
     {
-        // TODO: Only run in dev
+        await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "Business" RESTART IDENTITY CASCADE;""");
         if (!context.Business.Any())
         {
-            var table = new Faker<Table>().RuleFor(o => o.Name, f => f.Lorem.Word().Pascalize());
+            var staff = new Faker<Staff>()
+                .RuleFor(o => o.Name, f => f.Name.FullName())
+                .RuleFor(o => o.StaffType, f => f.PickRandom<StaffType>());
+            var table = new Faker<Table>()
+                .RuleFor(o => o.Name, f => f.Name.JobArea())
+                .RuleFor(o => o.Capacity, f => f.Random.Int(1, 14));
             var section = new Faker<Section>()
-                .RuleFor(o => o.Name, f => f.Lorem.Word().Pascalize())
-                .RuleFor(o => o.Tables, _ => table.GenerateBetween(10, 10));
+                .RuleFor(o => o.Name, f => f.Name.FirstName())
+                .RuleFor(o => o.Tables, _ => table.GenerateBetween(5, 7));
             var outlet = new Faker<Outlet>()
-                .RuleFor(o => o.Name, f => f.Lorem.Word().Pascalize())
-                .RuleFor(o => o.Sections, _ => section.GenerateBetween(10, 10));
+                .RuleFor(o => o.Name, f => f.Company.CompanyName())
+                .RuleFor(o => o.Staff, f => staff.GenerateBetween(10, 12))
+                .RuleFor(o => o.Sections, _ => section.GenerateBetween(3, 5));
             var business = new Faker<Business>()
-                .RuleFor(o => o.Name, f => f.Lorem.Word().Pascalize())
-                .RuleFor(o => o.Outlets, _ => outlet.GenerateBetween(10, 20));
-            var results = business.GenerateBetween(2, 5);
+                .RuleFor(o => o.Name, f => f.Company.CompanyName())
+                .RuleFor(o => o.Outlets, _ => outlet.GenerateBetween(2, 5));
+
+            var results = business.GenerateBetween(1, 1);
             await context.Business.AddRangeAsync(results);
             await context.SaveChangesAsync(cancellationToken);
         }

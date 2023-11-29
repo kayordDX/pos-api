@@ -5,12 +5,14 @@ namespace Kayord.Pos.Common.Extensions;
 
 public class MigratorHostedService : IHostedService
 {
+    private readonly IWebHostEnvironment _env;
     private readonly ILogger<MigratorHostedService> _logger;
     private readonly IServiceScopeFactory _serviceScopeFactory;
-    public MigratorHostedService(IServiceScopeFactory serviceScopeFactory, ILogger<MigratorHostedService> logger)
+    public MigratorHostedService(IServiceScopeFactory serviceScopeFactory, ILogger<MigratorHostedService> logger, IWebHostEnvironment env)
     {
         _serviceScopeFactory = serviceScopeFactory;
         _logger = logger;
+        _env = env;
     }
 
     public async Task StartAsync(CancellationToken cancellationToken)
@@ -24,7 +26,10 @@ public class MigratorHostedService : IHostedService
                 await context.Database.MigrateAsync(cancellationToken);
             }
             // Seed
-            await AppDbSeed.SeedData(context, cancellationToken);
+            if (_env.IsDevelopment())
+            {
+                await AppDbSeed.SeedData(context, cancellationToken);
+            }
         }
         catch (Exception ex)
         {

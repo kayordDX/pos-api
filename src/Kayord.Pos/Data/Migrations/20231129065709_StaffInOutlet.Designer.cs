@@ -3,6 +3,7 @@ using System;
 using Kayord.Pos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Kayord.Pos.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231129065709_StaffInOutlet")]
+    partial class StaffInOutlet
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,7 +54,7 @@ namespace Kayord.Pos.Data.Migrations
                     b.Property<DateTime?>("EndDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("OutletId")
+                    b.Property<int>("SalesPeriodId")
                         .HasColumnType("integer");
 
                     b.Property<int>("StaffId")
@@ -62,7 +65,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OutletId");
+                    b.HasIndex("SalesPeriodId");
 
                     b.HasIndex("StaffId");
 
@@ -383,9 +386,9 @@ namespace Kayord.Pos.Data.Migrations
 
             modelBuilder.Entity("Kayord.Pos.Entities.Clock", b =>
                 {
-                    b.HasOne("Kayord.Pos.Entities.Outlet", "Outlet")
+                    b.HasOne("Kayord.Pos.Entities.SalesPeriod", "SalesPeriod")
                         .WithMany()
-                        .HasForeignKey("OutletId")
+                        .HasForeignKey("SalesPeriodId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -395,7 +398,7 @@ namespace Kayord.Pos.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Outlet");
+                    b.Navigation("SalesPeriod");
 
                     b.Navigation("Staff");
                 });

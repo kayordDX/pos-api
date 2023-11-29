@@ -21,32 +21,33 @@ public class Endpoint : Endpoint<Request, Pos.Entities.Clock>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var exists = await _dbContext.Clock.FirstOrDefaultAsync(x=>x.StaffId == req.StaffId && x.SalesPeriodId == req.SalesPeriodId && x.EndDate == null);
-        if(exists != null )
+        var exists = await _dbContext.Clock.FirstOrDefaultAsync(x => x.StaffId == req.StaffId && x.OutletId == req.OutletId && x.EndDate == null);
+        if (exists != null)
         {
             await SendForbiddenAsync();
             return;
         }
-        else{
-        Pos.Entities.Clock entity = new Pos.Entities.Clock()
+        else
         {
-            StaffId = req.StaffId,
-            StartDate = DateTime.Now,
-            EndDate = null,
-            SalesPeriodId = req.SalesPeriodId
-        };
-        await _dbContext.Clock.AddAsync(entity);
-        await _dbContext.SaveChangesAsync();
+            Pos.Entities.Clock entity = new Pos.Entities.Clock()
+            {
+                StaffId = req.StaffId,
+                StartDate = DateTime.Now,
+                EndDate = null,
+                OutletId = req.OutletId
+            };
+            await _dbContext.Clock.AddAsync(entity);
+            await _dbContext.SaveChangesAsync();
 
-        var result = await _dbContext.Clock.FindAsync(entity.Id);
-        if (result == null)
-        {
-            await SendNotFoundAsync();
-            return;
-        }
-         await SendAsync(result);
-        }
-       
+            var result = await _dbContext.Clock.FindAsync(entity.Id);
+            if (result == null)
+            {
+                await SendNotFoundAsync();
+                return;
+            }
+            await SendAsync(result);
         }
 
     }
+
+}
