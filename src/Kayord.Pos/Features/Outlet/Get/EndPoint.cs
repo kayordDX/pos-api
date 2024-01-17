@@ -2,7 +2,7 @@ using Kayord.Pos.Data;
 
 namespace Kayord.Pos.Features.Outlet.Get
 {
-    public class Endpoint : Endpoint<int, Pos.Entities.Outlet>
+    public class Endpoint : Endpoint<Request, Entities.Outlet>
     {
         private readonly AppDbContext _dbContext;
 
@@ -17,9 +17,9 @@ namespace Kayord.Pos.Features.Outlet.Get
             AllowAnonymous();
         }
 
-        public override async Task HandleAsync(int id, CancellationToken ct)
+        public override async Task HandleAsync(Request request, CancellationToken ct)
         {
-            var entity = await _dbContext.Outlet.FindAsync(id);
+            var entity = await _dbContext.Outlet.FindAsync(request.Id);
             if (entity == null)
             {
                 await SendNotFoundAsync();
