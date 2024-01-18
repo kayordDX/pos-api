@@ -13,8 +13,7 @@ builder.Services.ConfigureHealth(builder.Configuration);
 // TODO: Move url to config
 builder.Services.ConfigureCors(["http://localhost:5173"]);
 
-string tokenSigningKey = builder.Configuration.GetValue<string>("SigningKey") ?? string.Empty;
-builder.Services.ConfigureAuth(tokenSigningKey);
+builder.Services.ConfigureAuth(builder.Configuration);
 builder.Services.ConfigureEF(builder.Configuration);
 
 builder.Services.AddHostedService<MigratorHostedService>();
