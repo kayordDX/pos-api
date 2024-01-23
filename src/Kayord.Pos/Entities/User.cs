@@ -9,5 +9,5 @@ public class User
 
     public bool IsActive { get; set; }
 
-    public ICollection<UserRole> UserRole { get; set; }
+    public ICollection<UserRole>? UserRole { get; set; }
 }
