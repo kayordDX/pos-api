@@ -24,6 +24,9 @@ public class AppDbContext : DbContext
     public DbSet<TableCashUp> TableCashUp => Set<TableCashUp>();
     public DbSet<OrderItem> OrderItem => Set<OrderItem>();
     public DbSet<TableOrder> TableOrder => Set<TableOrder>();
+    public DbSet<User> User => Set<User>();
+    public DbSet<UserRole> UserRole => Set<UserRole>();
+    public DbSet<Role> Role => Set<Role>();
 
 
 
