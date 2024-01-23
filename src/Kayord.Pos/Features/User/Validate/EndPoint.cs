@@ -2,7 +2,7 @@ using Kayord.Pos.Data;
 using Kayord.Pos.Services;
 using Microsoft.EntityFrameworkCore;
 
-namespace Kayord.Pos.Features.User.Login
+namespace Kayord.Pos.Features.User.Validate
 
 {
     public class Endpoint : Endpoint<Request, Response>
@@ -19,7 +19,7 @@ namespace Kayord.Pos.Features.User.Login
 
         public override void Configure()
         {
-            Get("/User/login");
+            Get("/User/Validate");
             AllowAnonymous();
         }
 

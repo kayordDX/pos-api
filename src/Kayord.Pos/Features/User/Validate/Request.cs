@@ -1,5 +1,5 @@
 using FluentValidation;
-namespace Kayord.Pos.Features.User.Login
+namespace Kayord.Pos.Features.User.Validate
 {
     public class Request
     {
