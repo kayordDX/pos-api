@@ -21,7 +21,7 @@ namespace Kayord.Pos.Features.Role.Create
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
            
-
+                
                 var newRole = new Entities.Role
                 {
                     Name = req.Name,
