@@ -11,9 +11,7 @@ public class CurrentUserService
         _httpContextAccessor = httpContextAccessor;
     }
 
-    // public IEnumerable<Claim>? Roles => _httpContextAccessor.HttpContext?.User?.FindAll("cognito:groups");
     public string? Expires => _httpContextAccessor.HttpContext?.User?.FindFirstValue("exp");
-    public string? Name => _httpContextAccessor.HttpContext?.User?.FindFirstValue("name");
-    public int Type => int.Parse(_httpContextAccessor.HttpContext?.User?.FindFirstValue("type") ?? "0");
-    public int Id => int.Parse(_httpContextAccessor.HttpContext?.User?.FindFirstValue("id") ?? "0");
+    public string? UserId => _httpContextAccessor.HttpContext?.User?.FindFirstValue("sub");
+    public string? Email => _httpContextAccessor.HttpContext?.User?.FindFirstValue("email");
 }
