@@ -9,53 +9,58 @@ namespace Kayord.Pos.Features.User.Validate
     {
         private readonly AppDbContext _dbContext;
 
-        private readonly CurrentUserService _cu;
 
-        public Endpoint(AppDbContext dbContext, CurrentUserService cu)
+        public Endpoint(AppDbContext dbContext)
         {
             _dbContext = dbContext;
-            _cu = cu;
         }
 
         public override void Configure()
         {
-            Get("/User/Validate");
+            Post("/User/Validate");
             AllowAnonymous();
         }
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-            
             // Check User Exists Poes
-            var user = _dbContext.User.FirstOrDefault(x=>x.UserId == _cu.UserId);
-            if(user == null)
+            var user = await _dbContext.User.FirstOrDefaultAsync(x => x.UserId == req.UserId);
+            if (user == null)
             {
-                user.Email = req.Email;
-                user.UserId = req.UserId;
-                user.Image = req.Image;
-                user.Name = req.Name;
-                _dbContext.User.Add(user);
-                _dbContext.SaveChangesAsync();
-            }     
-            user = _dbContext.User.FirstOrDefault(x=>x.UserId == _cu.UserId);
+                await _dbContext.User.AddAsync(new Entities.User
+                {
+                    Email = req.Email ?? "",
+                    UserId = req.UserId ?? "",
+                    Image = req.Image ?? "",
+                    Name = req.Name ?? "",
+                });
+                await _dbContext.SaveChangesAsync();
+            }
+            user = await _dbContext.User.FirstOrDefaultAsync(x => x.UserId == req.UserId);
             //TODO: - Double Check if details match and update if not
-            var defaultRole = _dbContext.UserRole.FirstOrDefault(x=>x.UserId== _cu.UserId);
-            if(defaultRole == null)
+            var defaultRole = await _dbContext.UserRole.FirstOrDefaultAsync(x => x.UserId == req.UserId);
+            if (defaultRole == null)
             {
-                defaultRole.RoleId = 1;
-                defaultRole.UserId = _cu.UserId;
-                _dbContext.UserRole.Add(defaultRole);
-                _dbContext.SaveChangesAsync();
+                await _dbContext.UserRole.AddAsync(new Entities.UserRole
+                {
+                    RoleId = 1,
+                    UserId = req.UserId ?? ""
+                });
+                await _dbContext.SaveChangesAsync();
             }
 
             var userRoles = await _dbContext.UserRole
                 .Include(ur => ur.Role)
-                .Where(ur => ur.UserId == user.UserId)
+                .Where(ur => ur.UserId == req.UserId)
                 .Select(ur => ur.Role.Name)
                 .ToListAsync();
-            Response r = new Response();
-            r.UserId = user.UserId;
-            r.UserRoles = userRoles;
+
+            Response r = new()
+            {
+                UserId = req.UserId ?? "",
+                UserRoles = userRoles
+            };
+
             await SendAsync(r);
         }
     }

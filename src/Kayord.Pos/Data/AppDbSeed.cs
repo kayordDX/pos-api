@@ -37,5 +37,14 @@ public static class AppDbSeed
             await context.Business.AddRangeAsync(results);
             await context.SaveChangesAsync(cancellationToken);
         }
+
+        if (!context.Role.Any())
+        {
+            await context.Role.AddAsync(new Role { Name = "Guest", Description = "Guest", RoleId = 1 });
+            await context.Role.AddAsync(new Role { Name = "Waiter", Description = "Waiter", RoleId = 2 });
+            await context.Role.AddAsync(new Role { Name = "Chef", Description = "Chef", RoleId = 3 });
+            await context.Role.AddAsync(new Role { Name = "Manager", Description = "Manager", RoleId = 4 });
+            await context.SaveChangesAsync(cancellationToken);
+        }
     }
 }
