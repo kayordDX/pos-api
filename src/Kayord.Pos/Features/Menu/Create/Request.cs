@@ -1,4 +1,5 @@
 using FluentValidation;
+using Kayord.Pos.Common.Enums;
 
 namespace Kayord.Pos.Features.Menu.Create
 {
@@ -6,16 +7,8 @@ namespace Kayord.Pos.Features.Menu.Create
     {
         public int OutletId { get; set; }
         public string Name { get; set; } = string.Empty;
-        
+        public Division Division { get; set; } 
+        public int MenuSectionId { get; set; } 
     }
 
-    public class Validator : Validator<Request>
-    {
-        public Validator()
-        {
-            RuleFor(v => v.OutletId).GreaterThan(0).WithMessage("OutletId must be greater than 0");
-            RuleFor(v => v.Name).NotEmpty().WithMessage("Name is required");
-
-        }
-    }
 }

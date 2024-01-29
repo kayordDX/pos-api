@@ -5,5 +5,7 @@ public class Menu
     public string Name { get; set; } = string.Empty;
     public int OutletId { get; set; }
     public  Outlet Outlet { get; set; } = default!;
-    public  ICollection<MenuItem> MenuItems { get; set; } = default!;
+    public  MenuSection? MenuSection { get; set; }  = default!;
+    public  int MenuSectionId { get; set; }
+
 }

@@ -1,4 +1,7 @@
 using Kayord.Pos.Data;
+using Kayord.Pos.Entities;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace Kayord.Pos.Features.Menu.Create
 {
@@ -19,23 +22,18 @@ namespace Kayord.Pos.Features.Menu.Create
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-            Pos.Entities.Menu entity = new Pos.Entities.Menu()
+
+            var menuSection = await _dbContext.MenuSection.FirstOrDefaultAsync(x => x.MenuSectionId == req.MenuSectionId);
+            var menuEntity = new Pos.Entities.Menu
             {
                 OutletId = req.OutletId,
                 Name = req.Name,
+                MenuSection = menuSection
             };
-
-            await _dbContext.Menu.AddAsync(entity);
+ 
+            await _dbContext.Menu.AddAsync(menuEntity);
             await _dbContext.SaveChangesAsync();
 
-            var result = await _dbContext.Menu.FindAsync(entity.Id);
-            if (result == null)
-            {
-                await SendNotFoundAsync();
-                return;
-            }
-
-            await SendAsync(result);
         }
     }
 }
