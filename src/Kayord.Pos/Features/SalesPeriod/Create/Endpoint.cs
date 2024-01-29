@@ -13,7 +13,7 @@ public class Endpoint : Endpoint<Request, Pos.Entities.SalesPeriod>
 
     public override void Configure()
     {
-        Post("/salesperiod");
+        Post("/salesPeriod");
         AllowAnonymous();
     }
 

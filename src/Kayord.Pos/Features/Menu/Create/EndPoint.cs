@@ -23,14 +23,12 @@ namespace Kayord.Pos.Features.Menu.Create
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
 
-            var menuSection = await _dbContext.MenuSection.FirstOrDefaultAsync(x => x.MenuSectionId == req.MenuSectionId);
             var menuEntity = new Pos.Entities.Menu
             {
                 OutletId = req.OutletId,
-                Name = req.Name,
-                MenuSection = menuSection
+                Name = req.Name
             };
- 
+
             await _dbContext.Menu.AddAsync(menuEntity);
             await _dbContext.SaveChangesAsync();
 

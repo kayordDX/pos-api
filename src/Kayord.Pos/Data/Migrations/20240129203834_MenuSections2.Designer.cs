@@ -9,11 +9,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Kayord.Pos.Data.Migratio
+namespace Kayord.Pos.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240129200415_MenuandMenuSections")]
-    partial class MenuandMenuSections
+    [Migration("20240129203834_MenuSections2")]
+    partial class MenuSections2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -128,9 +128,6 @@ namespace Kayord.Pos.Data.Migratio
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("MenuSectionId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -139,8 +136,6 @@ namespace Kayord.Pos.Data.Migratio
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("MenuSectionId");
 
                     b.HasIndex("OutletId");
 
@@ -158,10 +153,7 @@ namespace Kayord.Pos.Data.Migratio
                     b.Property<int>("Division")
                         .HasColumnType("integer");
 
-                    b.Property<int>("MenuId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("MenuSectionId")
+                    b.Property<int>("MenuSectionId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
@@ -171,8 +163,6 @@ namespace Kayord.Pos.Data.Migratio
                         .HasColumnType("numeric");
 
                     b.HasKey("MenuItemId");
-
-                    b.HasIndex("MenuId");
 
                     b.HasIndex("MenuSectionId");
 
@@ -187,6 +177,9 @@ namespace Kayord.Pos.Data.Migratio
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("MenuSectionId"));
 
+                    b.Property<int>("MenuId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
@@ -194,6 +187,8 @@ namespace Kayord.Pos.Data.Migratio
                         .HasColumnType("integer");
 
                     b.HasKey("MenuSectionId");
+
+                    b.HasIndex("MenuId");
 
                     b.HasIndex("ParentId");
 
@@ -587,24 +582,27 @@ namespace Kayord.Pos.Data.Migratio
 
             modelBuilder.Entity("Kayord.Pos.Entities.Menu", b =>
                 {
-                    b.HasOne("Kayord.Pos.Entities.MenuSection", "MenuSection")
-                        .WithMany()
-                        .HasForeignKey("MenuSectionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Kayord.Pos.Entities.Outlet", "Outlet")
                         .WithMany()
                         .HasForeignKey("OutletId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("MenuSection");
-
                     b.Navigation("Outlet");
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.MenuItem", b =>
+                {
+                    b.HasOne("Kayord.Pos.Entities.MenuSection", "MenuSection")
+                        .WithMany("MenuItems")
+                        .HasForeignKey("MenuSectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MenuSection");
+                });
+
+            modelBuilder.Entity("Kayord.Pos.Entities.MenuSection", b =>
                 {
                     b.HasOne("Kayord.Pos.Entities.Menu", "Menu")
                         .WithMany()
@@ -612,18 +610,11 @@ namespace Kayord.Pos.Data.Migratio
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Kayord.Pos.Entities.MenuSection", null)
-                        .WithMany("MenuItems")
-                        .HasForeignKey("MenuSectionId");
-
-                    b.Navigation("Menu");
-                });
-
-            modelBuilder.Entity("Kayord.Pos.Entities.MenuSection", b =>
-                {
                     b.HasOne("Kayord.Pos.Entities.MenuSection", "Parent")
                         .WithMany("SubMenuSections")
                         .HasForeignKey("ParentId");
+
+                    b.Navigation("Menu");
 
                     b.Navigation("Parent");
                 });

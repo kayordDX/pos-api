@@ -33,6 +33,7 @@ public static class AppDbSeed
                 .RuleFor(o => o.Name, f => f.Company.CompanyName())
                 .RuleFor(o => o.Outlets, _ => outlet.GenerateBetween(2, 5));
 
+
             var results = business.GenerateBetween(1, 1);
             await context.Business.AddRangeAsync(results);
             await context.SaveChangesAsync(cancellationToken);
@@ -46,5 +47,32 @@ public static class AppDbSeed
             await context.Role.AddAsync(new Role { Name = "Manager", Description = "Manager", RoleId = 4 });
             await context.SaveChangesAsync(cancellationToken);
         }
+        await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "Menu" RESTART IDENTITY CASCADE;""");
+        await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "MenuSection" RESTART IDENTITY CASCADE;""");
+        await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "MenuItem" RESTART IDENTITY CASCADE;""");
+
+
+        if (!context.Menu.Any())
+        {
+
+            await context.Menu.AddAsync(new Menu { Name = "Jessica's Ruimsig", OutletId = 1 });
+
+            await context.MenuSection.AddAsync(new MenuSection { Name = "Burgers", MenuId = 1 });
+            await context.MenuSection.AddAsync(new MenuSection { Name = "Drinks", MenuId = 1 });
+            await context.MenuSection.AddAsync(new MenuSection { Name = "Cocktails", MenuId = 1, ParentId = 2 });
+            await context.MenuSection.AddAsync(new MenuSection { Name = "Soft Drinks", MenuId = 1, ParentId = 2 });
+            await context.MenuSection.AddAsync(new MenuSection { Name = "Hot Beverage", MenuId = 1, ParentId = 2 });
+            await context.MenuSection.AddAsync(new MenuSection { Name = "Coffee/Cappucino", MenuId = 1, ParentId = 5 });
+            await context.MenuSection.AddAsync(new MenuSection { Name = "Desert", MenuId = 1 });
+            await context.MenuSection.AddAsync(new MenuSection { Name = "Pizza", MenuId = 1 });
+            await context.SaveChangesAsync(cancellationToken);
+            await context.MenuItem.AddAsync(new MenuItem { Name = "Coffee", MenuSectionId = 6, Price = 1 });
+            await context.MenuItem.AddAsync(new MenuItem { Name = "Cappucino", MenuSectionId = 6, Price = 1 });
+            await context.MenuItem.AddAsync(new MenuItem { Name = "Coke", MenuSectionId = 4, Price = 1 });
+            await context.SaveChangesAsync(cancellationToken);
+
+
+        }
+
     }
 }

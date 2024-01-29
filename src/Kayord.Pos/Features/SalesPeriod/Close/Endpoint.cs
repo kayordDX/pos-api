@@ -13,14 +13,14 @@ public class Endpoint : Endpoint<Request, Pos.Entities.SalesPeriod>
 
     public override void Configure()
     {
-        Post("/salesperiod/{SalesPeriodId}");
+        Post("/salesPeriod/{SalesPeriodId}");
         AllowAnonymous();
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
         var entity = await _dbContext.SalesPeriod.FindAsync(req.SalesPeriodId);
-        if(entity == null)
+        if (entity == null)
         {
             await SendNotFoundAsync();
             return;

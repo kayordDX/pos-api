@@ -15,13 +15,13 @@ public class Endpoint : Endpoint<Request, Pos.Entities.SalesPeriod>
 
     public override void Configure()
     {
-        Get("/SalesPeriod/{OutletId}");
+        Get("/salesPeriod/{OutletId}");
         AllowAnonymous();
     }
 
     public override async Task HandleAsync(Request r, CancellationToken ct)
     {
-        var result =  await _dbContext.SalesPeriod.FirstOrDefaultAsync(x=>x.OutletId == r.OutletId && x.StartDate != null && x.EndDate == null);
+        var result = await _dbContext.SalesPeriod.FirstOrDefaultAsync(x => x.OutletId == r.OutletId && x.StartDate != null && x.EndDate == null);
         if (result == null)
         {
             await SendNotFoundAsync();

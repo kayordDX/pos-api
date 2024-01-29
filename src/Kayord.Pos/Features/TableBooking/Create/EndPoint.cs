@@ -13,7 +13,7 @@ namespace Kayord.Pos.Features.TableBooking.Create
 
         public override void Configure()
         {
-            Post("/tablebooking");
+            Post("/tableBooking");
             AllowAnonymous();
         }
 
@@ -27,13 +27,13 @@ namespace Kayord.Pos.Features.TableBooking.Create
                 StaffId = req.StaffId,
             };
 
-            
+
             var tableCashUp = new Pos.Entities.TableCashUp
             {
                 TableBookingId = entity.Id
             };
 
-            
+
 
             await _dbContext.TableBooking.AddAsync(entity);
             await _dbContext.SaveChangesAsync();

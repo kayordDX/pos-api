@@ -13,7 +13,7 @@ namespace Kayord.Pos.Features.TableCashUp.Create
 
         public override void Configure()
         {
-            Post("/tablecashup");
+            Post("/tableCashup");
             AllowAnonymous();
         }
 
