@@ -5,4 +5,6 @@ public class Menu
     public string Name { get; set; } = string.Empty;
     public int OutletId { get; set; }
     public Outlet Outlet { get; set; } = default!;
+
+    public List<MenuSection>? MenuSections { get; set; }
 }
