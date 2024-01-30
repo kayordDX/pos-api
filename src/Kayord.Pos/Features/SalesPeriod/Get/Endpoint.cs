@@ -15,7 +15,7 @@ public class Endpoint : Endpoint<Request, Pos.Entities.SalesPeriod>
 
     public override void Configure()
     {
-        Get("/salesPeriod/{OutletId}");
+        Get("/salesPeriod/{outletId}");
         AllowAnonymous();
     }
 
