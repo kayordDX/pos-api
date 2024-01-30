@@ -14,7 +14,7 @@ namespace Kayord.Pos.Features.TableCashUp.ViewTableCashUps
 
         public override void Configure()
         {
-            Get("/tablecashup/tablebooking/{tableBookingId:int}");
+            Get("/tableCashUp/tableBooking/{tableBookingId:int}");
             AllowAnonymous();
         }
 

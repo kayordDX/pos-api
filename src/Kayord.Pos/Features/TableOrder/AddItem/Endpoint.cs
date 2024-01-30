@@ -13,7 +13,7 @@ namespace Kayord.Pos.Features.Order.AddItem
 
         public override void Configure()
         {
-            Post("/order/{orderId:int}/additem");
+            Post("/order/{orderId:int}/addItem");
             AllowAnonymous();
         }
 

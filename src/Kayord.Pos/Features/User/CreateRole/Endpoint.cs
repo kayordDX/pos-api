@@ -14,27 +14,27 @@ namespace Kayord.Pos.Features.Role.Create
 
         public override void Configure()
         {
-            Post("/role/createrole");
+            Post("/role/createRole");
             AllowAnonymous();
         }
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-           
-                
-                var newRole = new Entities.Role
-                {
-                    Name = req.Name,
-                    Description = req.Description
-                };
 
-                _dbContext.Role.Add(newRole);
-                await _dbContext.SaveChangesAsync();
 
-                var result = await _dbContext.Role.FindAsync(newRole.RoleId);
+            var newRole = new Entities.Role
+            {
+                Name = req.Name,
+                Description = req.Description
+            };
 
-                await SendAsync(result);
-          
+            _dbContext.Role.Add(newRole);
+            await _dbContext.SaveChangesAsync();
+
+            var result = await _dbContext.Role.FindAsync(newRole.RoleId);
+
+            await SendAsync(result);
+
         }
     }
 }

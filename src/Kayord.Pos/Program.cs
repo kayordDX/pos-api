@@ -9,20 +9,7 @@ using KayordKit.Extensions.Host;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.AddLoggingConfiguration(builder.Configuration);
-// builder.Services.ConfigureApi();
-builder.Services.AddFastEndpoints();
-builder.Services.AddFastEndpoints()
-        .SwaggerDocument(o =>
-        {
-            o.DocumentSettings = s =>
-            {
-                s.Title = AppDomain.CurrentDomain.FriendlyName;
-                s.Version = "v1";
-                // s.MarkNonNullablePropsAsRequired();
-                // s.OperationProcessors.Add(new CustomOperationsProcessor());
-                // s.SchemaSettings.SchemaNameGenerator = new CustomSchemaNameGenerator();
-            };
-        });
+builder.Services.ConfigureApi();
 builder.Services.ConfigureHealth(builder.Configuration);
 // TODO: Move url to config
 builder.Services.ConfigureCors(["http://localhost:5173"]);

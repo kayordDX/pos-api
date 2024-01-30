@@ -14,27 +14,27 @@ namespace Kayord.Pos.Features.Role.AddUserInRole
 
         public override void Configure()
         {
-            Post("/role/adduserinrole");
+            Post("/role/addUserInRole");
             AllowAnonymous();
         }
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-           
 
-                var UserRole = new Entities.UserRole
-                {
-                   RoleId = req.RoleId,
-                   UserId = req.UserId
-                };
 
-                _dbContext.UserRole.Add(UserRole);
-                await _dbContext.SaveChangesAsync();
+            var UserRole = new Entities.UserRole
+            {
+                RoleId = req.RoleId,
+                UserId = req.UserId
+            };
 
-                var result = await _dbContext.UserRole.FindAsync(UserRole.UserRoleId);
+            _dbContext.UserRole.Add(UserRole);
+            await _dbContext.SaveChangesAsync();
 
-                await SendAsync(result);
-          
+            var result = await _dbContext.UserRole.FindAsync(UserRole.UserRoleId);
+
+            await SendAsync(result);
+
         }
     }
 }

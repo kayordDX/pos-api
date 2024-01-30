@@ -17,7 +17,7 @@ namespace Kayord.Pos.Features.User.Validate
 
         public override void Configure()
         {
-            Post("/User/Validate");
+            Post("/user/validate");
             AllowAnonymous();
         }
 

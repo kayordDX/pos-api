@@ -17,25 +17,25 @@ namespace Kayord.Pos.Features.User.GetRoles
 
         public override void Configure()
         {
-            Get("/user/getroles");
+            Get("/user/getRoles");
             AllowAnonymous();
-        }   
- 
-        public override async Task HandleAsync(Request req, CancellationToken ct)  
+        }
+
+        public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-         
-              var userRoles = await _dbContext.UserRole
-                .Include(ur => ur.Role)
-                .Where(ur => ur.UserId == _cu.UserId)
-                .Select(ur => ur.Role.Name)
-                .ToListAsync();
+
+            var userRoles = await _dbContext.UserRole
+              .Include(ur => ur.Role)
+              .Where(ur => ur.UserId == _cu.UserId)
+              .Select(ur => ur.Role.Name)
+              .ToListAsync();
             if (userRoles == null)
-             {
+            {
                 await SendNotFoundAsync();
                 return;
-             }
-                await SendAsync(userRoles);
-                return;
+            }
+            await SendAsync(userRoles);
+            return;
         }
     }
-    }
+}
