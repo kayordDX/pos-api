@@ -27,8 +27,7 @@ public class AppDbContext : DbContext
     public DbSet<UserRole> UserRole => Set<UserRole>();
     public DbSet<Role> Role => Set<Role>();
     public DbSet<MenuSection> MenuSection => Set<MenuSection>();
-
-
+    public DbSet<UserOutlet> UserOutlet => Set<UserOutlet>();
 
 
 
