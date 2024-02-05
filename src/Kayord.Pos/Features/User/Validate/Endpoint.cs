@@ -52,7 +52,7 @@ namespace Kayord.Pos.Features.User.Validate
             var userRoles = await _dbContext.UserRole
                 .Include(ur => ur.Role)
                 .Where(ur => ur.UserId == req.UserId)
-                .Select(ur => ur.Role!.Name)
+                .Select(ur => ur.Role!.Name.ToLower())
                 .ToListAsync();
 
             Response r = new()
