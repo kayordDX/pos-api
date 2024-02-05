@@ -48,6 +48,7 @@ public class Endpoint : EndpointWithoutRequest<Response>
             }
             else
             {
+                resp.SalesPeriod = salesPeriod;
                 resp.SalesPeriodId = salesPeriod.Id;
             }
         }
