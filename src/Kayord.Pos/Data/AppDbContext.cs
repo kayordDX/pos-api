@@ -16,7 +16,6 @@ public class AppDbContext : DbContext
     public DbSet<Outlet> Outlet => Set<Outlet>();
     public DbSet<SalesPeriod> SalesPeriod => Set<SalesPeriod>();
     public DbSet<Section> Section => Set<Section>();
-    public DbSet<Staff> Staff => Set<Staff>();
     public DbSet<Table> Table => Set<Table>();
     public DbSet<TableBooking> TableBooking => Set<TableBooking>();
     public DbSet<Menu> Menu => Set<Menu>();

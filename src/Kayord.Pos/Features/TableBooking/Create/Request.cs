@@ -7,8 +7,6 @@ namespace Kayord.Pos.Features.TableBooking.Create
         public int TableId { get; set; }
         public string BookingName { get; set; } = string.Empty;
         public int SalesPeriodId { get; set; }
-        public int StaffId { get; set; }
-
     }
 
     public class Validator : Validator<Request>
@@ -18,7 +16,6 @@ namespace Kayord.Pos.Features.TableBooking.Create
             RuleFor(v => v.TableId).GreaterThan(0).WithMessage("TableId must be greater than 0");
             RuleFor(v => v.BookingName).NotEmpty().WithMessage("BookingName is required");
             RuleFor(v => v.SalesPeriodId).GreaterThan(0).WithMessage("SalesPeriodId must be greater than 0");
-            RuleFor(v => v.StaffId).GreaterThan(0).WithMessage("StaffId must be greater than 0");
 
         }
     }

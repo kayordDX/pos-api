@@ -9,7 +9,7 @@ namespace Kayord.Pos.Entities
         public DateTime BookingDate { get; set; } = DateTime.UtcNow;
         public int SalesPeriodId { get; set; }
         public SalesPeriod SalesPeriod { get; set; } = default!;
-        public int StaffId { get; set; }
-        public Staff Staff { get; set; } = default!;
+        public string UserId { get; set; } = string.Empty;
+        public User User { get; set; } = default!;
     }
 }

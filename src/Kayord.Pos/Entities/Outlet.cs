@@ -9,5 +9,5 @@ public class Outlet
     public int BusinessId { get; set; }
     public Business Business { get; set; } = default!;
     public ICollection<Section>? Sections { get; set; }
-    public ICollection<Staff>? Staff { get; set; }
+    // public ICollection<User>? User { get; set; }
 }

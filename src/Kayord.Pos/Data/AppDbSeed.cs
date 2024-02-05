@@ -16,9 +16,6 @@ public static class AppDbSeed
         await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "Business" RESTART IDENTITY CASCADE;""");
         if (!context.Business.Any())
         {
-            var staff = new Faker<Staff>()
-                .RuleFor(o => o.Name, f => f.Name.FullName())
-                .RuleFor(o => o.StaffType, f => f.PickRandom<StaffType>());
             var table = new Faker<Table>()
                 .RuleFor(o => o.Name, f => f.Name.JobArea())
                 .RuleFor(o => o.Capacity, f => f.Random.Int(1, 14));
@@ -27,7 +24,6 @@ public static class AppDbSeed
                 .RuleFor(o => o.Tables, _ => table.GenerateBetween(5, 7));
             var outlet = new Faker<Outlet>()
                 .RuleFor(o => o.Name, f => f.Company.CompanyName())
-                .RuleFor(o => o.Staff, f => staff.GenerateBetween(10, 12))
                 .RuleFor(o => o.Sections, _ => section.GenerateBetween(3, 5));
             var business = new Faker<Business>()
                 .RuleFor(o => o.Name, f => f.Company.CompanyName())

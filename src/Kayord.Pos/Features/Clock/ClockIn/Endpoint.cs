@@ -1,5 +1,5 @@
 using Kayord.Pos.Data;
-using Kayord.Pos.Entities;
+using Kayord.Pos.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.Clock.ClockIn;
@@ -7,21 +7,23 @@ namespace Kayord.Pos.Features.Clock.ClockIn;
 public class Endpoint : Endpoint<Request, Pos.Entities.Clock>
 {
     private readonly AppDbContext _dbContext;
+    private readonly CurrentUserService _user;
 
-    public Endpoint(AppDbContext dbContext)
+    public Endpoint(AppDbContext dbContext, CurrentUserService user)
     {
         _dbContext = dbContext;
+        _user = user;
     }
 
     public override void Configure()
     {
-        Post("/clockin");
+        Post("/clock/in");
         AllowAnonymous();
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var exists = await _dbContext.Clock.FirstOrDefaultAsync(x => x.StaffId == req.StaffId && x.OutletId == req.OutletId && x.EndDate == null);
+        var exists = await _dbContext.Clock.FirstOrDefaultAsync(x => x.UserId == _user.UserId && x.OutletId == req.OutletId && x.EndDate == null);
         if (exists != null)
         {
             await SendForbiddenAsync();
@@ -29,9 +31,9 @@ public class Endpoint : Endpoint<Request, Pos.Entities.Clock>
         }
         else
         {
-            Pos.Entities.Clock entity = new Pos.Entities.Clock()
+            Entities.Clock entity = new Entities.Clock()
             {
-                StaffId = req.StaffId,
+                UserId = _user.UserId,
                 StartDate = DateTime.Now,
                 EndDate = null,
                 OutletId = req.OutletId
