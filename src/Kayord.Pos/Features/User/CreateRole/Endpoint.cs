@@ -1,9 +1,8 @@
 using Kayord.Pos.Data;
-using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.Role.Create
 {
-    public class Endpoint : Endpoint<Request, Pos.Entities.Role>
+    public class Endpoint : Endpoint<Request>
     {
         private readonly AppDbContext _dbContext;
 
@@ -20,8 +19,6 @@ namespace Kayord.Pos.Features.Role.Create
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-
-
             var newRole = new Entities.Role
             {
                 Name = req.Name,
@@ -30,11 +27,7 @@ namespace Kayord.Pos.Features.Role.Create
 
             _dbContext.Role.Add(newRole);
             await _dbContext.SaveChangesAsync();
-
-            var result = await _dbContext.Role.FindAsync(newRole.RoleId);
-
-            await SendAsync(result);
-
+            await SendNoContentAsync();
         }
     }
 }

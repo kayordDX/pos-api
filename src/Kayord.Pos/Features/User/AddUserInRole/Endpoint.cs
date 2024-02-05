@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.Role.AddUserInRole
 {
-    public class Endpoint : Endpoint<Request, Pos.Entities.UserRole>
+    public class Endpoint : Endpoint<Request>
     {
         private readonly AppDbContext _dbContext;
 
@@ -20,8 +20,6 @@ namespace Kayord.Pos.Features.Role.AddUserInRole
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-
-
             var UserRole = new Entities.UserRole
             {
                 RoleId = req.RoleId,
@@ -30,11 +28,7 @@ namespace Kayord.Pos.Features.Role.AddUserInRole
 
             _dbContext.UserRole.Add(UserRole);
             await _dbContext.SaveChangesAsync();
-
-            var result = await _dbContext.UserRole.FindAsync(UserRole.UserRoleId);
-
-            await SendAsync(result);
-
+            await SendNoContentAsync();
         }
     }
 }

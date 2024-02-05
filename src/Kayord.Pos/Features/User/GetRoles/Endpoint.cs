@@ -27,7 +27,7 @@ namespace Kayord.Pos.Features.User.GetRoles
             var userRoles = await _dbContext.UserRole
               .Include(ur => ur.Role)
               .Where(ur => ur.UserId == _cu.UserId)
-              .Select(ur => ur.Role.Name)
+              .Select(ur => ur.Role!.Name)
               .ToListAsync();
             if (userRoles == null)
             {

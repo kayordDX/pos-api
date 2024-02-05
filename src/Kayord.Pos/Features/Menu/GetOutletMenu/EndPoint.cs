@@ -20,34 +20,40 @@ namespace Kayord.Pos.Features.Menu.GetOutletMenu
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
+            var test = await _dbContext.Menu
+                .Where(m => m.OutletId == req.OutletId)
+                .Include(m => m.MenuSections!)
+                    .ThenInclude(s => s.MenuItems)
+                .ToListAsync();
+
             var menus = await _dbContext.Menu
                 .Where(m => m.OutletId == req.OutletId)
-                .Include(m => m.MenuSections)
-                    .ThenInclude(s => s.MenuItems)
+                .Include(m => m.MenuSections!)
+                    .ThenInclude(s => s.MenuItems!)
                         .ThenInclude(mi => mi.Options)
-                .Include(m => m.MenuSections)
-                    .ThenInclude(s => s.MenuItems)
+                .Include(m => m.MenuSections!)
+                    .ThenInclude(s => s.MenuItems!)
                         .ThenInclude(mi => mi.Tags)
-                .Include(m => m.MenuSections)
-                    .ThenInclude(s => s.MenuItems)
+                .Include(m => m.MenuSections!)
+                    .ThenInclude(s => s.MenuItems!)
                         .ThenInclude(mi => mi.Extras)
-                .Include(m => m.MenuSections)
-                    .ThenInclude(s => s.SubMenuSections)
-                        .ThenInclude(ss => ss.MenuItems)
+                .Include(m => m.MenuSections!)
+                    .ThenInclude(s => s.SubMenuSections!)
+                        .ThenInclude(ss => ss.MenuItems!)
                             .ThenInclude(mi => mi.Options)
-                .Include(m => m.MenuSections)
-                    .ThenInclude(s => s.SubMenuSections)
-                        .ThenInclude(ss => ss.MenuItems)
+                .Include(m => m.MenuSections!)
+                    .ThenInclude(s => s.SubMenuSections!)
+                        .ThenInclude(ss => ss.MenuItems!)
                             .ThenInclude(mi => mi.Tags)
-                .Include(m => m.MenuSections)
-                    .ThenInclude(s => s.SubMenuSections)
-                        .ThenInclude(ss => ss.MenuItems)
+                .Include(m => m.MenuSections!)
+                    .ThenInclude(s => s.SubMenuSections!)
+                        .ThenInclude(ss => ss.MenuItems!)
                             .ThenInclude(mi => mi.Extras)
-                .Include(m => m.MenuSections)
-                    .ThenInclude(s => s.SubMenuSections)
+                .Include(m => m.MenuSections!)
+                    .ThenInclude(s => s.SubMenuSections!)
                         .ThenInclude(ss => ss.MenuItems)
+                 .ToListAsync();
 
-                .ToListAsync();
             menus = menus.Distinct().ToList();
             await SendAsync(menus);
         }

@@ -3,7 +3,7 @@ namespace Kayord.Pos.Features.Role.AddUserInRole
 {
     public class Request
     {
-     public string UserId { get; set; }
-     public int RoleId { get; set; }
+        public string UserId { get; set; } = string.Empty;
+        public int RoleId { get; set; }
     }
 }
