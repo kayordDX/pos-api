@@ -15,6 +15,7 @@ public static class AuthExtensions
                 o.Authority = configuration["Auth:ValidIssuer"];
                 o.Audience = configuration["Auth:Audience"];
                 o.TokenValidationParameters.ValidIssuer = configuration["Auth:ValidIssuer"];
+                o.MapInboundClaims = false;
             });
         // o =>
         // {

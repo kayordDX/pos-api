@@ -24,6 +24,12 @@ public class Endpoint : Endpoint<Request, Entities.UserOutlet>
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
 
+        if (_cu.UserId == null)
+        {
+            await SendForbiddenAsync();
+            return;
+        }
+
         var outlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.OutletId == req.OutletId);
         if (outlet == null)
         {

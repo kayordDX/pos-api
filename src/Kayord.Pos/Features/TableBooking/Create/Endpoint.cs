@@ -22,7 +22,13 @@ namespace Kayord.Pos.Features.TableBooking.Create
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-            Pos.Entities.TableBooking entity = new Entities.TableBooking()
+            if (_user.UserId == null)
+            {
+                await SendForbiddenAsync();
+                return;
+            }
+
+            Entities.TableBooking entity = new()
             {
                 TableId = req.TableId,
                 BookingName = req.BookingName,
@@ -30,7 +36,7 @@ namespace Kayord.Pos.Features.TableBooking.Create
                 UserId = _user.UserId
             };
 
-            var tableCashUp = new Pos.Entities.TableCashUp
+            var tableCashUp = new Entities.TableCashUp
             {
                 TableBookingId = entity.Id
             };
