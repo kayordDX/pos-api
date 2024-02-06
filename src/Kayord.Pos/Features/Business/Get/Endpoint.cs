@@ -15,7 +15,7 @@ public class Endpoint : Endpoint<Request, Pos.Entities.Business>
 
     public override void Configure()
     {
-        Get("/business/{Id}");
+        Get("/business/{id}");
         AllowAnonymous();
     }
 

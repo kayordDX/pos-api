@@ -54,11 +54,7 @@ public class Endpoint : EndpointWithoutRequest<Response>
         }
 
         var clockInStatus = await _dbContext.Clock.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.OutletId == outlet.OutletId && x.EndDate == null);
-        if (clockInStatus == null)
-        {
-            await SendAsync(resp);
-            return;
-        }
+        resp.ClockedIn = clockInStatus != null;
         await SendAsync(resp);
     }
 }
