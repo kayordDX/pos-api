@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.Menu.List
 {
-    public class Endpoint : Endpoint<Request, List<Pos.Entities.Menu>>
+    public class Endpoint : Endpoint<Request, List<Entities.Menu>>
     {
         private readonly Data.AppDbContext _dbContext;
 

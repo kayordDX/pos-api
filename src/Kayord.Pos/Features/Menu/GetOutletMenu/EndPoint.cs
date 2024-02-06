@@ -20,12 +20,6 @@ namespace Kayord.Pos.Features.Menu.GetOutletMenu
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-            var test = await _dbContext.Menu
-                .Where(m => m.OutletId == req.OutletId)
-                .Include(m => m.MenuSections!)
-                    .ThenInclude(s => s.MenuItems)
-                .ToListAsync();
-
             var menus = await _dbContext.Menu
                 .Where(m => m.OutletId == req.OutletId)
                 .Include(m => m.MenuSections!)
