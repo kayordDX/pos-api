@@ -47,10 +47,20 @@ namespace Kayord.Pos.Features.Menu.GetSections
                     .Where(e => sectionParents.Contains(e.MenuSectionId));
             }
 
-            var itemsResult = await items.ToListAsync();
+            if (!string.IsNullOrEmpty(req.Search))
+            {
+                items = items.Where(p => p.SearchVector.Matches(EF.Functions.ToTsQuery($"{req.Search}:*")));
+            }
+
+            var itemsResult = await items
+                .Include(m => m.Options)
+                .Include(m => m.Tags)
+                .Include(m => m.Extras)
+                .ToListAsync();
 
             response.Sections = sectionsResult;
             response.Items = itemsResult;
+
 
             await SendAsync(response);
         }

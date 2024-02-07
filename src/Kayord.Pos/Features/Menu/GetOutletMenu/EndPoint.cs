@@ -48,7 +48,6 @@ namespace Kayord.Pos.Features.Menu.GetOutletMenu
                         .ThenInclude(ss => ss.MenuItems)
                  .ToListAsync();
 
-            menus = menus.Distinct().ToList();
             await SendAsync(menus);
         }
     }
