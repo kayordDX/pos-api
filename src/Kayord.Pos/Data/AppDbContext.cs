@@ -28,8 +28,10 @@ public class AppDbContext : DbContext
     public DbSet<Role> Role => Set<Role>();
     public DbSet<MenuSection> MenuSection => Set<MenuSection>();
     public DbSet<UserOutlet> UserOutlet => Set<UserOutlet>();
+    public DbSet<Option> Option => Set<Option>();
+    public DbSet<OptionGroup> OptionGroup => Set<OptionGroup>();
 
-
+    public DbSet<MenuItemOptionGroup> MenuItemOptionGroup => Set<MenuItemOptionGroup>();
 
 
 

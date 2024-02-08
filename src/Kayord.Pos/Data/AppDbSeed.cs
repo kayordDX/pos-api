@@ -45,8 +45,9 @@ public static class AppDbSeed
         }
         await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "Menu" RESTART IDENTITY CASCADE;""");
         await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "MenuSection" RESTART IDENTITY CASCADE;""");
-        await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "MenuItem" RESTART IDENTITY CASCADE;""");
-
+        await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "Option" RESTART IDENTITY CASCADE;""");
+        await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "MenuItemOptionGroup" RESTART IDENTITY CASCADE;""");
+        await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "OptionGroup" RESTART IDENTITY CASCADE;""");
 
         if (!context.Menu.Any())
         {
@@ -65,6 +66,21 @@ public static class AppDbSeed
             await context.MenuItem.AddAsync(new MenuItem { Name = "Coffee", MenuSectionId = 6, Price = 1 });
             await context.MenuItem.AddAsync(new MenuItem { Name = "Cappucino", MenuSectionId = 6, Price = 1 });
             await context.MenuItem.AddAsync(new MenuItem { Name = "Coke", MenuSectionId = 4, Price = 1 });
+
+            await context.MenuItem.AddAsync(new MenuItem { Name = "Bacon & Feta", MenuSectionId = 8, Price = 1 });
+            await context.OptionGroup.AddAsync(new OptionGroup { Name = "Pizza Extras", MinSelections = 0, MaxSelections = 5 });
+            await context.OptionGroup.AddAsync(new OptionGroup { Name = "Pizza Base", MinSelections = 1, MaxSelections = 1 });
+            await context.SaveChangesAsync(cancellationToken);
+            await context.Option.AddAsync(new Option { Name = "Avo", Price = 5, OptionGroupId = 1 });
+            await context.Option.AddAsync(new Option { Name = "Double Cheese", Price = 5, OptionGroupId = 1 });
+            await context.Option.AddAsync(new Option { Name = "Triple Cheese", Price = 5, OptionGroupId = 1 });
+            await context.Option.AddAsync(new Option { Name = "Gluten Free", Price = 20, OptionGroupId = 2 });
+            await context.Option.AddAsync(new Option { Name = "Thin", Price = 0, OptionGroupId = 2 });
+            await context.Option.AddAsync(new Option { Name = "Thick", Price = 0, OptionGroupId = 2 });
+
+            await context.MenuItemOptionGroup.AddAsync(new MenuItemOptionGroup { MenuItemId = 4, OptionGroupId = 1 });
+            await context.MenuItemOptionGroup.AddAsync(new MenuItemOptionGroup { MenuItemId = 4, OptionGroupId = 2 });
+
             await context.SaveChangesAsync(cancellationToken);
 
 

@@ -3,6 +3,7 @@ using System;
 using Kayord.Pos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using NpgsqlTypes;
@@ -12,9 +13,11 @@ using NpgsqlTypes;
 namespace Kayord.Pos.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240208192747_MenuItemOptionGroup")]
+    partial class MenuItemOptionGroup
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -189,15 +192,19 @@ namespace Kayord.Pos.Data.Migrations
 
             modelBuilder.Entity("Kayord.Pos.Entities.MenuItemOptionGroup", b =>
                 {
-                    b.Property<int>("OptionGroupId")
+                    b.Property<int>("MenuItemOptionGroupId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("MenuItemOptionGroupId"));
 
                     b.Property<int>("MenuItemId")
                         .HasColumnType("integer");
 
-                    b.HasKey("OptionGroupId", "MenuItemId");
+                    b.Property<int>("OptionGroupId")
+                        .HasColumnType("integer");
 
-                    b.HasIndex("MenuItemId");
+                    b.HasKey("MenuItemOptionGroupId");
 
                     b.ToTable("MenuItemOptionGroup");
                 });
@@ -264,6 +271,9 @@ namespace Kayord.Pos.Data.Migrations
                     b.Property<int>("MaxSelections")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("MenuItemId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("MinSelections")
                         .HasColumnType("integer");
 
@@ -272,6 +282,8 @@ namespace Kayord.Pos.Data.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("OptionGroupId");
+
+                    b.HasIndex("MenuItemId");
 
                     b.ToTable("OptionGroup");
                 });
@@ -661,25 +673,6 @@ namespace Kayord.Pos.Data.Migrations
                     b.Navigation("MenuSection");
                 });
 
-            modelBuilder.Entity("Kayord.Pos.Entities.MenuItemOptionGroup", b =>
-                {
-                    b.HasOne("Kayord.Pos.Entities.MenuItem", "MenuItem")
-                        .WithMany("MenuItemOptionGroups")
-                        .HasForeignKey("MenuItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Kayord.Pos.Entities.OptionGroup", "OptionGroup")
-                        .WithMany("MenuItemOptionGroups")
-                        .HasForeignKey("OptionGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("MenuItem");
-
-                    b.Navigation("OptionGroup");
-                });
-
             modelBuilder.Entity("Kayord.Pos.Entities.MenuSection", b =>
                 {
                     b.HasOne("Kayord.Pos.Entities.Menu", "Menu")
@@ -706,6 +699,13 @@ namespace Kayord.Pos.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("OptionGroup");
+                });
+
+            modelBuilder.Entity("Kayord.Pos.Entities.OptionGroup", b =>
+                {
+                    b.HasOne("Kayord.Pos.Entities.MenuItem", null)
+                        .WithMany("OptionGroups")
+                        .HasForeignKey("MenuItemId");
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.OrderItem", b =>
@@ -860,7 +860,7 @@ namespace Kayord.Pos.Data.Migrations
                 {
                     b.Navigation("Extras");
 
-                    b.Navigation("MenuItemOptionGroups");
+                    b.Navigation("OptionGroups");
 
                     b.Navigation("Tags");
                 });
@@ -874,8 +874,6 @@ namespace Kayord.Pos.Data.Migrations
 
             modelBuilder.Entity("Kayord.Pos.Entities.OptionGroup", b =>
                 {
-                    b.Navigation("MenuItemOptionGroups");
-
                     b.Navigation("Options");
                 });
 

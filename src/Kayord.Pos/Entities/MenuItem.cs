@@ -14,8 +14,12 @@ public class MenuItem
     public decimal Price { get; set; }
     public NpgsqlTsVector SearchVector { get; set; } = default!;
     public int Position { get; set; }
-    public ICollection<Option>? Options { get; set; }
     public ICollection<Tag>? Tags { get; set; }
     public ICollection<Extra>? Extras { get; set; }
     public Common.Enums.Division Division { get; set; }
+
+    public ICollection<MenuItemOptionGroup>? MenuItemOptionGroups { get; set; }
+
+    //     public ICollection<MenuItemOptionGroup> MenuItemOptionGroups { get; set; }
+    // public ICollection<OptionGroup>? OptionGroups => MenuItemOptionGroups.Select(x=>x.OptionGroup).ToList();
 }

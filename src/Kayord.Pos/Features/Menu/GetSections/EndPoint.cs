@@ -1,6 +1,8 @@
 using Kayord.Pos.Data;
 using Kayord.Pos.Entities;
 using Microsoft.EntityFrameworkCore;
+using NpgsqlTypes;
+using System.Linq;
 namespace Kayord.Pos.Features.Menu.GetSections
 {
     public class GetOutletMenusEndpoint : Endpoint<Request, Response>
@@ -50,10 +52,13 @@ namespace Kayord.Pos.Features.Menu.GetSections
             if (!string.IsNullOrEmpty(req.Search))
             {
                 items = items.Where(p => p.SearchVector.Matches(EF.Functions.ToTsQuery($"{req.Search}:*")));
+
             }
 
             var itemsResult = await items
-                .Include(m => m.Options)
+                .Include(m => m.MenuItemOptionGroups!)
+                     .ThenInclude(m => m.OptionGroup)
+                            .ThenInclude(m => m.Options)
                 .Include(m => m.Tags)
                 .Include(m => m.Extras)
                 .ToListAsync();
