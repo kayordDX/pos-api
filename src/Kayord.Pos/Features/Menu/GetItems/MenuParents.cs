@@ -1,4 +1,4 @@
-namespace Kayord.Pos.Features.Menu.GetSections;
+namespace Kayord.Pos.Features.Menu.GetItems;
 
 public class MenuParents
 {

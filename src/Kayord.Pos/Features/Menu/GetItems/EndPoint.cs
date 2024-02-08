@@ -25,7 +25,28 @@ namespace Kayord.Pos.Features.Menu.GetItems
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-            var response = await _dbContext.MenuItem
+            IQueryable<MenuItem>? items;
+            if (req.SectionId == 0)
+            {
+                items = _dbContext.MenuItem;
+            }
+            else
+            {
+                var sectionParents = await _dbContext.Database.SqlQuery<MenuParents>($"""
+                SELECT * FROM "getMenuSectionChildren"({req.SectionId})
+                """).Select(s => s.Id).ToListAsync();
+
+                items = _dbContext.MenuItem
+                    .Where(e => sectionParents.Contains(e.MenuSectionId));
+            }
+
+            if (!string.IsNullOrEmpty(req.Search))
+            {
+                items = items.Where(p => p.SearchVector.Matches(EF.Functions.ToTsQuery($"{req.Search}:*")));
+            }
+
+
+            var response = await items
                 .Include(m => m.Tags)
                 .Include(m => m.Extras)
                 .ProjectToDto()
