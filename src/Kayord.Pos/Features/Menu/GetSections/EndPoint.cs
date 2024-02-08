@@ -58,7 +58,7 @@ namespace Kayord.Pos.Features.Menu.GetSections
             var itemsResult = await items
                 .Include(m => m.MenuItemOptionGroups!)
                      .ThenInclude(m => m.OptionGroup)
-                            .ThenInclude(m => m.Options)
+                    .ThenInclude(m => m.Options)
                 .Include(m => m.Tags)
                 .Include(m => m.Extras)
                 .ToListAsync();
