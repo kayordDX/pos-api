@@ -1,4 +1,6 @@
-namespace Kayord.Pos.Entities;
+using Riok.Mapperly.Abstractions;
+
+namespace Kayord.Pos.DTO;
 
 public class MenuItemDTO
 {
