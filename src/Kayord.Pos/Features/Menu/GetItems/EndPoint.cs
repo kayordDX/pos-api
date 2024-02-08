@@ -1,5 +1,6 @@
 using Kayord.Pos.Data;
 using Kayord.Pos.Entities;
+using Kayord.Pos.DTO;
 using Kayord.Pos.Features.Table.GetAvailable;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -24,7 +25,7 @@ namespace Kayord.Pos.Features.Menu.GetItems
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-            var response = await _dbContext.MenuItem        
+            var response = await _dbContext.MenuItem
                 .Include(m => m.Tags)
                 .Include(m => m.Extras)
                 .ProjectToDto()

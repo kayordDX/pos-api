@@ -1,6 +1,5 @@
-using Riok.Mapperly.Abstractions;
-
 namespace Kayord.Pos.DTO;
+using Kayord.Pos.Entities;
 
 public class MenuItemDTO
 {
@@ -13,6 +12,5 @@ public class MenuItemDTO
     public ICollection<Tag>? Tags { get; set; }
     public ICollection<Extra>? Extras { get; set; }
     public Common.Enums.Division Division { get; set; }
-    public ICollection<MenuItemOptionGroupDTO>? MenuItemOptionGroups { get; set; }
 }
 
