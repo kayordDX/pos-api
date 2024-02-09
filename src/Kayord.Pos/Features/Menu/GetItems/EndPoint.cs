@@ -6,12 +6,12 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 namespace Kayord.Pos.Features.Menu.GetItems
 {
-    public class GetOutletMenusEndpoint : Endpoint<Request, List<MenuItemDTO>>
+    public class GetMenuItemsEndpoint : Endpoint<Request, List<MenuItemDTO>>
     {
         private readonly AppDbContext _dbContext;
-        private readonly ILogger<GetOutletMenusEndpoint> _logger;
+        private readonly ILogger<GetMenuItemsEndpoint> _logger;
 
-        public GetOutletMenusEndpoint(AppDbContext dbContext, ILogger<GetOutletMenusEndpoint> logger)
+        public GetMenuItemsEndpoint(AppDbContext dbContext, ILogger<GetMenuItemsEndpoint> logger)
         {
             _dbContext = dbContext;
             _logger = logger;
@@ -28,12 +28,14 @@ namespace Kayord.Pos.Features.Menu.GetItems
             IQueryable<MenuItem>? items;
             if (req.SectionId == 0)
             {
-                items = _dbContext.MenuItem;
+                items = _dbContext.MenuItem
+                    .Include(m => m.MenuSection)
+                    .Where(s => s.MenuSection.MenuId.Equals(req.MenuId));
             }
             else
             {
                 var sectionParents = await _dbContext.Database.SqlQuery<MenuParents>($"""
-                SELECT * FROM "getMenuSectionChildren"({req.SectionId})
+                SELECT * FROM "getMenuSectionChildren"({req.MenuId},{req.SectionId})
                 """).Select(s => s.Id).ToListAsync();
 
                 items = _dbContext.MenuItem

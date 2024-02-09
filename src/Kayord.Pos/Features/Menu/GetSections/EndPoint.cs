@@ -1,15 +1,14 @@
 using Kayord.Pos.Data;
 using Kayord.Pos.Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 namespace Kayord.Pos.Features.Menu.GetSections
 {
-    public class GetOutletMenusEndpoint : Endpoint<Request, List<MenuSection>>
+    public class GetMenusSectionsEndpoint : Endpoint<Request, List<MenuSection>>
     {
         private readonly AppDbContext _dbContext;
-        private readonly ILogger<GetOutletMenusEndpoint> _logger;
+        private readonly ILogger<GetMenusSectionsEndpoint> _logger;
 
-        public GetOutletMenusEndpoint(AppDbContext dbContext, ILogger<GetOutletMenusEndpoint> logger)
+        public GetMenusSectionsEndpoint(AppDbContext dbContext, ILogger<GetMenusSectionsEndpoint> logger)
         {
             _dbContext = dbContext;
             _logger = logger;
@@ -29,7 +28,7 @@ namespace Kayord.Pos.Features.Menu.GetSections
                 parentId = req.SectionId;
             }
 
-            var sections = _dbContext.MenuSection.Where(x => x.ParentId == parentId);
+            var sections = _dbContext.MenuSection.Where(x => x.MenuId == req.MenuId && x.ParentId == parentId);
             var response = await sections.ToListAsync();
             await SendAsync(response);
         }

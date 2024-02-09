@@ -23,33 +23,27 @@ namespace Kayord.Pos.Features.Table.GetMyBooked
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-
+            List<Response> results = new();
             if (req.myBooking)
             {
                 //current bookings
-                var results = await _dbContext.TableBooking
+                results = await _dbContext.TableBooking
                     .Where(booking => booking.Table.Section.OutletId == req.OutletId && booking.UserId == _cu.UserId &&
                                       _dbContext.TableCashUp.All(cashUp => cashUp.TableBookingId != booking.Id))
                     .Where(x => x.Table.Section.OutletId == req.OutletId)
                     .ProjectToDto()
                     .ToListAsync();
-
-                await SendAsync(results);
             }
             else
             {
-                var results = await _dbContext.TableBooking
+                results = await _dbContext.TableBooking
                  .Where(booking => booking.Table.Section.OutletId == req.OutletId && booking.UserId != _cu.UserId &&
                                    _dbContext.TableCashUp.All(cashUp => cashUp.TableBookingId != booking.Id))
                  .Where(x => x.Table.Section.OutletId == req.OutletId)
                  .ProjectToDto()
                  .ToListAsync();
-
-                await SendAsync(results);
-
             }
-            await SendAsync(new List<Response>());
-
+            await SendAsync(results);
         }
     }
 }
