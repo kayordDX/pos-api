@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 namespace Kayord.Pos.Features.Menu.GetItems
 {
-    public class GetMenuItemsEndpoint : Endpoint<Request, List<MenuItemDTO>>
+    public class GetMenuItemsEndpoint : Endpoint<Request, List<MenuItemDTOBasic>>
     {
         private readonly AppDbContext _dbContext;
         private readonly ILogger<GetMenuItemsEndpoint> _logger;
@@ -47,11 +47,10 @@ namespace Kayord.Pos.Features.Menu.GetItems
                 items = items.Where(p => p.SearchVector.Matches(EF.Functions.ToTsQuery($"{req.Search}:*")));
             }
 
-
             var response = await items
                 .Include(m => m.Tags)
                 .Include(m => m.Extras)
-                .ProjectToDto()
+                .ProjectToBasicDto()
                 .ToListAsync();
             await SendAsync(response);
         }
