@@ -1,5 +1,4 @@
 global using FastEndpoints;
-using FastEndpoints.Swagger;
 using Kayord.Pos.Common.Extensions;
 using Kayord.Pos.Services;
 using KayordKit.Extensions.Api;
@@ -10,6 +9,7 @@ using KayordKit.Extensions.Host;
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.AddLoggingConfiguration(builder.Configuration);
 builder.Services.ConfigureApi();
+
 builder.Services.ConfigureHealth(builder.Configuration);
 // TODO: Move url to config
 builder.Services.ConfigureCors(["http://localhost:5173"]);

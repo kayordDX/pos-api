@@ -1,9 +1,11 @@
+using Azure;
 using Kayord.Pos.Data;
+using Kayord.Pos.DTO;
 using Kayord.Pos.Entities;
 using Microsoft.EntityFrameworkCore;
 namespace Kayord.Pos.Features.Menu.GetSections
 {
-    public class GetMenusSectionsEndpoint : Endpoint<Request, List<MenuSection>>
+    public class GetMenusSectionsEndpoint : Endpoint<Request, Response>
     {
         private readonly AppDbContext _dbContext;
         private readonly ILogger<GetMenusSectionsEndpoint> _logger;
@@ -28,8 +30,17 @@ namespace Kayord.Pos.Features.Menu.GetSections
                 parentId = req.SectionId;
             }
 
-            var sections = _dbContext.MenuSection.Where(x => x.MenuId == req.MenuId && x.ParentId == parentId);
-            var response = await sections.ToListAsync();
+            var sections = await _dbContext.MenuSection
+                .Where(x => x.MenuId == req.MenuId && x.ParentId == parentId)
+                .ProjectToDto()
+                .ToListAsync();
+
+            var parents = await _dbContext.MenuSection
+                .Where(x => x.MenuSectionId == req.SectionId)
+                .ProjectToDto()
+                .ToListAsync();
+
+            Response response = new() { Parents = parents, Sections = sections };
             await SendAsync(response);
         }
     }
