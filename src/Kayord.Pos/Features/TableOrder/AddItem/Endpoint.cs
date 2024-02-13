@@ -3,7 +3,7 @@ using Kayord.Pos.Entities;
 using Microsoft.EntityFrameworkCore;
 using YamlDotNet.Core.Tokens;
 
-namespace Kayord.Pos.Features.Order.AddItem
+namespace Kayord.Pos.Features.Order.AddItems
 {
     public class Endpoint : Endpoint<Request, Pos.Entities.OrderItem>
     {
