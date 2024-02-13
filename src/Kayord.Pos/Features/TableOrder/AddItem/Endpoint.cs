@@ -1,4 +1,7 @@
 using Kayord.Pos.Data;
+using Kayord.Pos.Entities;
+using Microsoft.EntityFrameworkCore;
+using YamlDotNet.Core.Tokens;
 
 namespace Kayord.Pos.Features.Order.AddItem
 {
@@ -13,43 +16,57 @@ namespace Kayord.Pos.Features.Order.AddItem
 
         public override void Configure()
         {
-            Post("/order/{orderId:int}/addItem");
-            AllowAnonymous();
+            Post("/order/addItems");
         }
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-            var order = await _dbContext.TableOrder.FindAsync(req.OrderId);
-            if (order == null)
+            int OrderItemId = 0;
+            foreach (Order order in req.Orders)
             {
-                await SendNotFoundAsync();
-                return;
+
+                var menuItem = await _dbContext.MenuItem.FindAsync(order.MenuItemId);
+                if (menuItem == null)
+                {
+                    await SendNotFoundAsync();
+                    return;
+                }
+                List<Option> Options = new List<Option>();
+
+                OrderItem entity = new OrderItem()
+                {
+                    TableBookingId = order.TableBookingId,
+                    MenuItemId = order.MenuItemId
+
+                };
+
+                await _dbContext.OrderItem.AddAsync(entity);
+
+
+                if (order.OptionIds != null)
+                    foreach (var i in order.OptionIds)
+                    {
+                        OrderItemOption o = new() { OrderItemId = entity.OrderItemId, OptionId = i };
+                        await _dbContext.OrderItemOption.AddAsync(o);
+                    }
+
+                List<Extra> Extras = new List<Extra>();
+
+                if (order.ExtraIds != null)
+                    foreach (int i in order.ExtraIds)
+                    {
+                        OrderItemExtra e = new() { OrderItemId = entity.OrderItemId, ExtraId = i };
+                        await _dbContext.OrderItemExtra.AddAsync(e);
+                    }
+
+                OrderItemId = entity.OrderItemId;
             }
 
-            var menuItem = await _dbContext.MenuItem.FindAsync(req.MenuItemId);
-            if (menuItem == null)
-            {
-                await SendNotFoundAsync();
-                return;
-            }
-
-            Pos.Entities.OrderItem entity = new Pos.Entities.OrderItem()
-            {
-                OrderId = req.OrderId,
-                MenuItemId = req.MenuItemId,
-            };
-
-            await _dbContext.OrderItem.AddAsync(entity);
             await _dbContext.SaveChangesAsync();
-
-            var result = await _dbContext.OrderItem.FindAsync(entity.OrderItemId);
-            if (result == null)
-            {
-                await SendNotFoundAsync();
-                return;
-            }
-
-            await SendAsync(result);
+            if (OrderItemId > 0)
+                await SendNoContentAsync();
+            else
+                await SendErrorsAsync(500);
         }
     }
 }

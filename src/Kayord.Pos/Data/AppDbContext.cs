@@ -30,7 +30,10 @@ public class AppDbContext : DbContext
     public DbSet<UserOutlet> UserOutlet => Set<UserOutlet>();
     public DbSet<Option> Option => Set<Option>();
     public DbSet<OptionGroup> OptionGroup => Set<OptionGroup>();
+    public DbSet<Extra> Extra => Set<Extra>();
+    public DbSet<OrderItemExtra> OrderItemExtra => Set<OrderItemExtra>();
 
+    public DbSet<OrderItemOption> OrderItemOption => Set<OrderItemOption>();
     public DbSet<MenuItemOptionGroup> MenuItemOptionGroup => Set<MenuItemOptionGroup>();
 
 

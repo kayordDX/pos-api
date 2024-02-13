@@ -17,7 +17,6 @@ public class MenuItem
     public ICollection<Tag>? Tags { get; set; }
     public ICollection<Extra>? Extras { get; set; }
     public Common.Enums.Division Division { get; set; }
-
     public ICollection<MenuItemOptionGroup>? MenuItemOptionGroups { get; set; }
 
 }

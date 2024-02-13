@@ -3,6 +3,7 @@ using System;
 using Kayord.Pos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using NpgsqlTypes;
@@ -12,9 +13,11 @@ using NpgsqlTypes;
 namespace Kayord.Pos.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240213205922_TableOrderItem2")]
+    partial class TableOrderItem2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -311,44 +314,6 @@ namespace Kayord.Pos.Data.Migrations
                     b.HasIndex("MenuItemId");
 
                     b.ToTable("OrderItem");
-                });
-
-            modelBuilder.Entity("Kayord.Pos.Entities.OrderItemExtra", b =>
-                {
-                    b.Property<int>("OrderItemExtraId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("OrderItemExtraId"));
-
-                    b.Property<int>("ExtraId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("OrderItemId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("OrderItemExtraId");
-
-                    b.ToTable("OrderItemExtra");
-                });
-
-            modelBuilder.Entity("Kayord.Pos.Entities.OrderItemOption", b =>
-                {
-                    b.Property<int>("OrderItemOptionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("OrderItemOptionId"));
-
-                    b.Property<int>("OptionId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("OrderItemId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("OrderItemOptionId");
-
-                    b.ToTable("OrderItemOption");
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.Outlet", b =>
