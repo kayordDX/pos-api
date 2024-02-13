@@ -22,6 +22,8 @@ namespace Kayord.Pos.Features.Order.AddItems
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
             int OrderItemId = 0;
+            int TableBookingId = req.TableBookingId;
+
             foreach (Order order in req.Orders)
             {
 
@@ -35,7 +37,7 @@ namespace Kayord.Pos.Features.Order.AddItems
 
                 OrderItem entity = new OrderItem()
                 {
-                    TableBookingId = order.TableBookingId,
+                    TableBookingId = TableBookingId,
                     MenuItemId = order.MenuItemId
 
                 };
