@@ -13,8 +13,9 @@ builder.Services.ConfigureConfig(builder.Configuration);
 builder.Services.ConfigureHealth(builder.Configuration);
 builder.Services.ConfigureHalo(builder.Configuration);
 
-// TODO: Move url to config
-builder.Services.ConfigureCors(["http://localhost:5173"]);
+
+var corsSection = builder.Configuration.GetSection("Cors");
+builder.Services.ConfigureCors(corsSection.Get<string[]>() ?? [""]);
 
 builder.Services.ConfigureAuth(builder.Configuration);
 builder.Services.ConfigureEF(builder.Configuration);

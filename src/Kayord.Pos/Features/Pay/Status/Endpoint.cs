@@ -1,6 +1,8 @@
+using Kayord.Pos.Common.Wrapper;
+
 namespace Kayord.Pos.Features.Pay.Status;
 
-public class Endpoint : Endpoint<Request>
+public class Endpoint : Endpoint<Request, Result<Dto.StatusResultDto>>
 {
     private ILogger<Endpoint> _logger;
     private readonly HaloService _halo;

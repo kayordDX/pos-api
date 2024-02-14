@@ -87,9 +87,9 @@ public static class AppDbSeed
                 });
 
             await context.SaveChangesAsync(cancellationToken);
-            await context.MenuItem.AddAsync(new MenuItem { Name = "Coffee", MenuSectionId = 6, Price = (decimal)21.80 });
-            await context.MenuItem.AddAsync(new MenuItem { Name = "Cappucino", MenuSectionId = 6, Price = (decimal)28.90 });
-            await context.MenuItem.AddAsync(new MenuItem { Name = "Coke", MenuSectionId = 4, Price = (decimal)18.80 });
+            await context.MenuItem.AddAsync(new MenuItem { Name = "Coffee", MenuSectionId = 6, Price = (decimal)21.80, Description = "This is more than just a cup of coffee, it's a moment of pure bliss" });
+            await context.MenuItem.AddAsync(new MenuItem { Name = "Cappucino", MenuSectionId = 6, Price = (decimal)28.90, Description = "Indulge in the Italian Dream: Our Delectable Cappuccino" });
+            await context.MenuItem.AddAsync(new MenuItem { Name = "Coke", MenuSectionId = 4, Price = (decimal)18.80, Description = "The world's most recognizable beverage" });
 
             await context.MenuItem.AddAsync(new MenuItem { Name = "Bacon & Feta", MenuSectionId = 8, Price = (decimal)99.50 });
             await context.MenuItem.AddAsync(new MenuItem { Name = "Chicken Mayo", MenuSectionId = 8, Price = (decimal)110.00 });
