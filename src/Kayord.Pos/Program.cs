@@ -9,8 +9,10 @@ using KayordKit.Extensions.Host;
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.AddLoggingConfiguration(builder.Configuration);
 builder.Services.ConfigureApi();
-
+builder.Services.ConfigureConfig(builder.Configuration);
 builder.Services.ConfigureHealth(builder.Configuration);
+builder.Services.ConfigureHalo(builder.Configuration);
+
 // TODO: Move url to config
 builder.Services.ConfigureCors(["http://localhost:5173"]);
 

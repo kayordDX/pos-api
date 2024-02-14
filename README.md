@@ -25,3 +25,12 @@ dotnet tool update --global dotnet-ef
 dotnet tool install --global dotnet-outdated-tool
 dotnet tool update --global dotnet-outdated-tool
 ```
+
+## Secrets
+
+```bash
+dotnet user-secrets init --project src/Kayord.Pos
+dotnet user-secrets set "Halo:MerchantId" "secret" --project src/Kayord.Pos
+dotnet user-secrets set "Halo:XApiKey" "secret" --project src/Kayord.Pos
+dotnet user-secrets list --project src/Kayord.Pos
+```
