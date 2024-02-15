@@ -11,4 +11,5 @@ public class OrderItem
     public int OrderItemStatusId { get; set; }
     public List<Option>? Options { get; set; }
     public List<Extra>? Extras { get; set; }
+    public string? Note { get; set; }
 }
