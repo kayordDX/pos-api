@@ -5,7 +5,7 @@
 namespace Kayord.Pos.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class OptionGroupRemoval : Migration
+    public partial class ReInit : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -13,15 +13,15 @@ using NpgsqlTypes;
 namespace Kayord.Pos.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240213205440_TableOrderItem")]
-    partial class TableOrderItem
+    [Migration("20240215082858_ReInit")]
+    partial class ReInit
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.1")
+                .HasAnnotation("ProductVersion", "8.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -316,6 +316,44 @@ namespace Kayord.Pos.Data.Migrations
                     b.ToTable("OrderItem");
                 });
 
+            modelBuilder.Entity("Kayord.Pos.Entities.OrderItemExtra", b =>
+                {
+                    b.Property<int>("OrderItemExtraId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("OrderItemExtraId"));
+
+                    b.Property<int>("ExtraId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("OrderItemId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("OrderItemExtraId");
+
+                    b.ToTable("OrderItemExtra");
+                });
+
+            modelBuilder.Entity("Kayord.Pos.Entities.OrderItemOption", b =>
+                {
+                    b.Property<int>("OrderItemOptionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("OrderItemOptionId"));
+
+                    b.Property<int>("OptionId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("OrderItemId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("OrderItemOptionId");
+
+                    b.ToTable("OrderItemOption");
+                });
+
             modelBuilder.Entity("Kayord.Pos.Entities.Outlet", b =>
                 {
                     b.Property<int>("Id")
@@ -515,12 +553,17 @@ namespace Kayord.Pos.Data.Migrations
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int?>("OrderItemId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("TableBookingId")
                         .HasColumnType("integer");
 
                     b.HasKey("TableOrderId");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("OrderItemId");
 
                     b.ToTable("TableOrder");
                 });
@@ -838,7 +881,13 @@ namespace Kayord.Pos.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Kayord.Pos.Entities.OrderItem", "OrderItem")
+                        .WithMany()
+                        .HasForeignKey("OrderItemId");
+
                     b.Navigation("Customer");
+
+                    b.Navigation("OrderItem");
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.Tag", b =>
