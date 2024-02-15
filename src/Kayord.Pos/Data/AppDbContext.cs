@@ -22,7 +22,6 @@ public class AppDbContext : DbContext
     public DbSet<MenuItem> MenuItem => Set<MenuItem>();
     public DbSet<TableCashUp> TableCashUp => Set<TableCashUp>();
     public DbSet<OrderItem> OrderItem => Set<OrderItem>();
-    public DbSet<TableOrder> TableOrder => Set<TableOrder>();
     public DbSet<User> User => Set<User>();
     public DbSet<UserRole> UserRole => Set<UserRole>();
     public DbSet<Role> Role => Set<Role>();
@@ -32,11 +31,11 @@ public class AppDbContext : DbContext
     public DbSet<OptionGroup> OptionGroup => Set<OptionGroup>();
     public DbSet<Extra> Extra => Set<Extra>();
     public DbSet<OrderItemExtra> OrderItemExtra => Set<OrderItemExtra>();
-
     public DbSet<OrderItemOption> OrderItemOption => Set<OrderItemOption>();
     public DbSet<MenuItemOptionGroup> MenuItemOptionGroup => Set<MenuItemOptionGroup>();
-
-
+    public DbSet<Division> Division => Set<Division>();
+    public DbSet<OrderItemStatus> OrderItemStatus => Set<OrderItemStatus>();
+    public DbSet<RoleDivision> RoleDivision => Set<RoleDivision>();
 
 
 

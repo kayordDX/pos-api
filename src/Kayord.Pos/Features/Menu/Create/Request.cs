@@ -7,7 +7,6 @@ namespace Kayord.Pos.Features.Menu.Create
     {
         public int OutletId { get; set; }
         public string Name { get; set; } = string.Empty;
-        public Division Division { get; set; }
     }
 
 }

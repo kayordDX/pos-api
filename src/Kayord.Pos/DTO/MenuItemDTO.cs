@@ -11,7 +11,7 @@ public class MenuItemDTO
     public int Position { get; set; }
     public ICollection<Tag>? Tags { get; set; }
     public ICollection<Extra>? Extras { get; set; }
-    public Common.Enums.Division Division { get; set; }
+    public int DivisionId { get; set; }
     public List<MenuItemOptionGroupDTO> MenuItemOptionGroups { get; set; } = default!;
 }
 

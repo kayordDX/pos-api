@@ -39,8 +39,8 @@ namespace Kayord.Pos.Features.Order.AddItems
                 entity = new OrderItem()
                 {
                     TableBookingId = TableBookingId,
-                    MenuItemId = order.MenuItemId
-
+                    MenuItemId = order.MenuItemId,
+                    OrderItemStatusId = 1
                 };
 
                 await _dbContext.OrderItem.AddAsync(entity);
