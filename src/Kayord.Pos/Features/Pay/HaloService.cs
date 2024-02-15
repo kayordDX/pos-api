@@ -16,7 +16,7 @@ public class HaloService
         _haloConfig = haloConfig.Value;
     }
 
-    public async Task<Result<GetLink.Response>> GetLink(string name)
+    public async Task<Result<GetLink.Response>> GetLink(decimal amount)
     {
         try
         {
@@ -24,7 +24,7 @@ public class HaloService
             {
                 MerchantId = _haloConfig.MerchantId ?? "",
                 PaymentReference = Guid.NewGuid().ToString(),
-                Amount = 23,
+                Amount = amount,
                 Timestamp = DateTime.UtcNow.ToString(),
                 CurrencyCode = "ZAR",
                 IsConsumerApp = false,

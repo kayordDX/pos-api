@@ -29,7 +29,7 @@ public class Endpoint : Endpoint<Request, Result<Response>>
             await SendNotFoundAsync();
             return;
         }
-        var results = await _halo.GetLink("test");
+        var results = await _halo.GetLink(req.Amount);
         await SendAsync(results);
     }
 }
