@@ -44,14 +44,14 @@
                 "build"
             ],
             "dockerBuild": {
-                "tag": "kayordposapi:dev",
+                "tag": "posapi:dev",
                 "target": "base",
-                "dockerfile": "${workspaceFolder}/src/Kayord.POS/Dockerfile",
+                "dockerfile": "${workspaceFolder}/src/Kayord.Pos/Dockerfile",
                 "context": "${workspaceFolder}",
                 "pull": true
             },
             "netCore": {
-                "appProject": "${workspaceFolder}/src/Kayord.POS/Kayord.Pos.csproj"
+                "appProject": "${workspaceFolder}/src/Kayord.Pos/Kayord.Pos.csproj"
             }
         },
         {
@@ -61,17 +61,17 @@
                 "build"
             ],
             "dockerBuild": {
-                "tag": "kayordposapi:latest",
-                "dockerfile": "${workspaceFolder}/src/Kayord.POS/Dockerfile",
+                "tag": "posapi:latest",
+                "dockerfile": "${workspaceFolder}/src/Kayord.Pos/Dockerfile",
                 "context": "${workspaceFolder}",
                 "platform": {
-                    "os": "windows",
+                    "os": "linux",
                     "architecture": "amd64"
                 },
                 "pull": true
             },
             "netCore": {
-                "appProject": "${workspaceFolder}/src/Kayord.POS/Kayord.Pos.csproj"
+                "appProject": "${workspaceFolder}/src/Kayord.Pos/Kayord.Pos.csproj"
             }
         },
         {
@@ -80,11 +80,9 @@
             "dependsOn": [
                 "docker-build: debug"
             ],
-            "dockerRun": {
-                "os": "Windows"
-            },
+            "dockerRun": {},
             "netCore": {
-                "appProject": "${workspaceFolder}/src/Kayord.POS/Kayord.Pos.csproj",
+                "appProject": "${workspaceFolder}/src/Kayord.Pos/Kayord.Pos.csproj",
                 "enableDebugging": true
             }
         },
@@ -94,11 +92,9 @@
             "dependsOn": [
                 "docker-build: release"
             ],
-            "dockerRun": {
-                "os": "Windows"
-            },
+            "dockerRun": {},
             "netCore": {
-                "appProject": "${workspaceFolder}/src/Kayord.POS/Kayord.Pos.csproj"
+                "appProject": "${workspaceFolder}/src/Kayord.Pos/Kayord.Pos.csproj"
             }
         },
         {
@@ -164,7 +160,7 @@
                     "ASPNETCORE_ENVIRONMENT": "Development"
                 }
             }
-        },
+        }
     ],
     "inputs": [
         {
