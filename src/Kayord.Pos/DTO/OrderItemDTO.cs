@@ -10,4 +10,5 @@ public class OrderItemDTO
     public int OrderItemStatusId { get; set; }
     public List<OptionDTO>? Options { get; set; }
     public List<ExtraDTO>? Extras { get; set; }
+    public string? Note { get; set; }
 }
