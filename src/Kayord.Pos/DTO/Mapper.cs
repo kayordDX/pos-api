@@ -16,5 +16,6 @@ public static partial class Mapper
     public static partial IQueryable<MenuItemOptionGroupDTO> ProjectToDto(this IQueryable<MenuItemOptionGroup> q);
     public static partial IQueryable<OptionGroupDTO> ProjectToDto(this IQueryable<OptionGroup> q);
     public static partial IQueryable<MenuSectionDTO> ProjectToDto(this IQueryable<MenuSection> q);
-
+    public static partial IQueryable<TableBookingDTO> ProjectToDto(this IQueryable<TableBooking> q);
+    public static partial IQueryable<UserDTO> ProjectToDto(this IQueryable<User> q);
 }

@@ -7,5 +7,6 @@ namespace Kayord.Pos.Entities
         public decimal Price { get; set; }
         public int OptionGroupId { get; set; }
         public OptionGroup OptionGroup { get; set; } = default!;
+        public List<OrderItemOption>? OrderItemOptions { get; set; }
     }
 }

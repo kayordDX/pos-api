@@ -3,6 +3,7 @@ using System;
 using Kayord.Pos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using NpgsqlTypes;
@@ -12,9 +13,11 @@ using NpgsqlTypes;
 namespace Kayord.Pos.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240215215038_RemoveOrderItem")]
+    partial class RemoveOrderItem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -358,6 +361,8 @@ namespace Kayord.Pos.Data.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("OrderItemExtraId");
+
+                    b.HasIndex("ExtraId");
 
                     b.ToTable("OrderItemExtra");
                 });
@@ -835,10 +840,21 @@ namespace Kayord.Pos.Data.Migrations
                     b.Navigation("TableBooking");
                 });
 
+            modelBuilder.Entity("Kayord.Pos.Entities.OrderItemExtra", b =>
+                {
+                    b.HasOne("Kayord.Pos.Entities.Extra", "Extra")
+                        .WithMany()
+                        .HasForeignKey("ExtraId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Extra");
+                });
+
             modelBuilder.Entity("Kayord.Pos.Entities.OrderItemOption", b =>
                 {
                     b.HasOne("Kayord.Pos.Entities.Option", "Option")
-                        .WithMany("OrderItemOptions")
+                        .WithMany()
                         .HasForeignKey("OptionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -995,11 +1011,6 @@ namespace Kayord.Pos.Data.Migrations
                     b.Navigation("MenuItems");
 
                     b.Navigation("SubMenuSections");
-                });
-
-            modelBuilder.Entity("Kayord.Pos.Entities.Option", b =>
-                {
-                    b.Navigation("OrderItemOptions");
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.OptionGroup", b =>
