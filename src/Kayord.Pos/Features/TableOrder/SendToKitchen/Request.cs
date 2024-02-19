@@ -1,12 +1,9 @@
-using FluentValidation;
 
-namespace Kayord.Pos.Features.Order.SendToKitchen
+namespace Kayord.Pos.Features.TableOrder.SendToKitchen
 {
     public class Request
     {
         public int TableBookingId { get; set; } = default!;
 
     }
-
-
 }

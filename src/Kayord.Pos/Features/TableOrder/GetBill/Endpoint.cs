@@ -1,11 +1,8 @@
 using Kayord.Pos.Data;
-using Kayord.Pos.Entities;
 using Kayord.Pos.Services;
 using Kayord.Pos.DTO;
 
 using Microsoft.EntityFrameworkCore;
-using SqlKata;
-using Kayord.Pos.Common.Wrapper;
 
 namespace Kayord.Pos.Features.TableOrder.GetBill;
 
