@@ -22,8 +22,6 @@ namespace Kayord.Pos.Features.Menu.GetItem
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
             var result = await _dbContext.MenuItem
-                .Include(m => m.MenuItemOptionGroups)
-                    .ThenInclude(m => m.OptionGroup)
                 .Where(x => x.MenuItemId.Equals(req.Id))
                 .ProjectToDto()
                 .FirstOrDefaultAsync();
