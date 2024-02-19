@@ -1,11 +1,9 @@
 using Kayord.Pos.Data;
 using Kayord.Pos.Entities;
-using Microsoft.EntityFrameworkCore;
-using YamlDotNet.Core.Tokens;
 
-namespace Kayord.Pos.Features.Order.RemoveItem
+namespace Kayord.Pos.Features.TableOrder.RemoveItem
 {
-    public class Endpoint : Endpoint<Request, Pos.Entities.OrderItem>
+    public class Endpoint : Endpoint<Request, Response>
     {
         private readonly AppDbContext _dbContext;
 
@@ -16,7 +14,7 @@ namespace Kayord.Pos.Features.Order.RemoveItem
 
         public override void Configure()
         {
-            Delete("/order/removeItem");
+            Post("/order/removeItem");
         }
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
@@ -26,11 +24,11 @@ namespace Kayord.Pos.Features.Order.RemoveItem
             {
                 _dbContext.Remove(entity);
                 await _dbContext.SaveChangesAsync();
-                await SendOkAsync();
+                await SendAsync(new Response() { IsSuccess = true });
             }
             else
             {
-                await SendNotFoundAsync();
+                await SendAsync(new Response() { IsSuccess = false });
             }
         }
     }
