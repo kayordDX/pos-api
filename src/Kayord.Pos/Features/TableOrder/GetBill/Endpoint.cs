@@ -31,7 +31,7 @@ public class Endpoint : Endpoint<Request, Response>
         if (tableBooking == null)
             await SendNotFoundAsync();
         response.OrderItems = await _dbContext.OrderItem
-        .Where(x => x.TableBookingId == req.TableBookingId && x.OrderCompleted != null)
+        .Where(x => x.TableBookingId == req.TableBookingId && x.OrderItemStatusId > 1) // 1: Basket 0: Cancelled
         .ProjectToDto()
         .ToListAsync();
 

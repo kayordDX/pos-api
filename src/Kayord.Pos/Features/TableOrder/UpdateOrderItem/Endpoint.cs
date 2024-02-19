@@ -5,7 +5,7 @@ using YamlDotNet.Core.Tokens;
 
 namespace Kayord.Pos.Features.Order.UpdateOrderItem
 {
-    public class Endpoint : Endpoint<Request, Pos.Entities.OrderItem>
+    public class Endpoint : Endpoint<Request, Response>
     {
         private readonly AppDbContext _dbContext;
 
@@ -29,11 +29,12 @@ namespace Kayord.Pos.Features.Order.UpdateOrderItem
                     entity.OrderCompleted = DateTime.Now;
                 _dbContext.Remove(entity);
                 await _dbContext.SaveChangesAsync();
-                await SendOkAsync();
+                await SendAsync(new Response() { IsSuccess = true });
+
             }
             else
             {
-                await SendNotFoundAsync();
+              await SendAsync(new Response() { IsSuccess = false });
             }
         }
     }
