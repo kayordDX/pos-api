@@ -9,7 +9,7 @@ public class OrderItem
     public DateTime OrderReceived { get; set; } = DateTime.Now;
     public DateTime? OrderCompleted { get; set; }
     public int OrderItemStatusId { get; set; }
-    public List<Option>? Options { get; set; }
-    public List<Extra>? Extras { get; set; }
+    public List<OrderItemOption>? OrderItemOptions { get; set; }
+    public List<OrderItemExtra>? OrderItemExtras { get; set; }
     public string? Note { get; set; }
 }

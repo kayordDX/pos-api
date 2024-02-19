@@ -3,6 +3,7 @@ using System;
 using Kayord.Pos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using NpgsqlTypes;
@@ -12,9 +13,11 @@ using NpgsqlTypes;
 namespace Kayord.Pos.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240219183544_RemoveId")]
+    partial class RemoveId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -129,6 +132,9 @@ namespace Kayord.Pos.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("OrderItemId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("PositionId")
                         .HasColumnType("integer");
 
@@ -138,6 +144,8 @@ namespace Kayord.Pos.Data.Migrations
                     b.HasKey("ExtraId");
 
                     b.HasIndex("MenuItemId");
+
+                    b.HasIndex("OrderItemId");
 
                     b.ToTable("Extra");
                 });
@@ -268,12 +276,17 @@ namespace Kayord.Pos.Data.Migrations
                     b.Property<int>("OptionGroupId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("OrderItemId")
+                        .HasColumnType("integer");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric");
 
                     b.HasKey("OptionId");
 
                     b.HasIndex("OptionGroupId");
+
+                    b.HasIndex("OrderItemId");
 
                     b.ToTable("Option");
                 });
@@ -730,6 +743,10 @@ namespace Kayord.Pos.Data.Migrations
                     b.HasOne("Kayord.Pos.Entities.MenuItem", null)
                         .WithMany("Extras")
                         .HasForeignKey("MenuItemId");
+
+                    b.HasOne("Kayord.Pos.Entities.OrderItem", null)
+                        .WithMany("Extras")
+                        .HasForeignKey("OrderItemId");
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.Menu", b =>
@@ -804,6 +821,10 @@ namespace Kayord.Pos.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Kayord.Pos.Entities.OrderItem", null)
+                        .WithMany("Options")
+                        .HasForeignKey("OrderItemId");
+
                     b.Navigation("OptionGroup");
                 });
 
@@ -829,13 +850,13 @@ namespace Kayord.Pos.Data.Migrations
             modelBuilder.Entity("Kayord.Pos.Entities.OrderItemExtra", b =>
                 {
                     b.HasOne("Kayord.Pos.Entities.Extra", "Extra")
-                        .WithMany("OrderItemExtras")
+                        .WithMany()
                         .HasForeignKey("ExtraId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Kayord.Pos.Entities.OrderItem", "OrderItem")
-                        .WithMany("OrderItemExtras")
+                        .WithMany()
                         .HasForeignKey("OrderItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -854,7 +875,7 @@ namespace Kayord.Pos.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("Kayord.Pos.Entities.OrderItem", "OrderItem")
-                        .WithMany("OrderItemOptions")
+                        .WithMany()
                         .HasForeignKey("OrderItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -994,11 +1015,6 @@ namespace Kayord.Pos.Data.Migrations
                     b.Navigation("Outlets");
                 });
 
-            modelBuilder.Entity("Kayord.Pos.Entities.Extra", b =>
-                {
-                    b.Navigation("OrderItemExtras");
-                });
-
             modelBuilder.Entity("Kayord.Pos.Entities.Menu", b =>
                 {
                     b.Navigation("MenuSections");
@@ -1034,9 +1050,9 @@ namespace Kayord.Pos.Data.Migrations
 
             modelBuilder.Entity("Kayord.Pos.Entities.OrderItem", b =>
                 {
-                    b.Navigation("OrderItemExtras");
+                    b.Navigation("Extras");
 
-                    b.Navigation("OrderItemOptions");
+                    b.Navigation("Options");
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.Outlet", b =>

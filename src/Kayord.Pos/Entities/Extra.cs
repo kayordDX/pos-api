@@ -6,4 +6,5 @@ public class Extra
     public string Name { get; set; } = string.Empty;
     public int PositionId { get; set; }
     public decimal Price { get; set; }
+    public List<OrderItemExtra>? OrderItemExtras { get; set; }
 }
