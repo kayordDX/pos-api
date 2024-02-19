@@ -1,5 +1,9 @@
+using System.Text.Json;
+using Kayord.Pos.Common.Extensions;
 using Kayord.Pos.Common.Wrapper;
 using Kayord.Pos.Config;
+using Kayord.Pos.Data;
+using Kayord.Pos.Entities;
 using Kayord.Pos.Features.Pay.Dto;
 using Microsoft.Extensions.Options;
 
@@ -9,21 +13,30 @@ public class HaloService
 {
     private readonly HttpClient _httpClient;
     private readonly HaloConfig _haloConfig;
+    private readonly AppDbContext _dbContext;
 
-    public HaloService(HttpClient httpClient, IOptions<HaloConfig> haloConfig)
+    public HaloService(HttpClient httpClient, IOptions<HaloConfig> haloConfig, AppDbContext dbContext)
     {
         _httpClient = httpClient;
         _haloConfig = haloConfig.Value;
+        _dbContext = dbContext;
     }
 
-    public async Task<Result<GetLink.Response>> GetLink(decimal amount)
+    public async Task<Result<GetLink.Response>> GetLink(decimal amount, int tableBookingId, string userId)
     {
+        Guid r = Guid.NewGuid();
+        await _dbContext.HaloReference.AddAsync(new HaloReference { Id = r, TableBookingId = tableBookingId, UserId = userId });
+        HaloLog log = new()
+        {
+            CreatedBy = userId,
+            Type = "GetLink"
+        };
         try
         {
-            using HttpResponseMessage response = await _httpClient.PostAsJsonAsync("consumer/qrCode", new Dto.GetLinkRequestDto()
+            GetLinkRequestDto requestBody = new()
             {
                 MerchantId = _haloConfig.MerchantId ?? "",
-                PaymentReference = Guid.NewGuid().ToString(),
+                PaymentReference = r.ToString(),
                 Amount = amount,
                 Timestamp = DateTime.UtcNow.ToString(),
                 CurrencyCode = "ZAR",
@@ -32,27 +45,53 @@ public class HaloService
                 {
                     Required = false
                 }
-            });
+            };
+            string? request = JsonSerializer.Serialize(requestBody);
+            log.Request = request;
+            log.RequestUrl = "consumer/qrCode";
+
+            using HttpResponseMessage response = await _httpClient.PostAsJsonAsync("consumer/qrCode", requestBody);
+            log.StatusCode = (int)response.StatusCode;
 
             if (response.IsSuccessStatusCode)
             {
-                var result = await response.Content.ReadFromJsonAsync<GetLink.Response>();
+                var resultString = await response.Content.ReadAsStringAsync();
+                log.Response = resultString;
+                GetLink.Response? result = resultString.Deserialize<GetLink.Response>();
                 if (result != null)
+                {
                     return Result.Ok(result);
+                }
             }
             return Result.Fail<GetLink.Response>(response.StatusCode.ToString() + " " + response.Content.ReadAsStringAsync());
         }
         catch (Exception ex)
         {
+            log.Error = ex.StackTrace;
             return Result.Fail<GetLink.Response>(ex.Message);
+        }
+        finally
+        {
+            await _dbContext.HaloLog.AddAsync(log);
+            await _dbContext.SaveChangesAsync();
         }
     }
 
-    public async Task<Result<StatusResultDto>> GetStatus(string reference)
+    public async Task<Result<StatusResultDto>> GetStatus(string reference, string userId)
     {
+        HaloLog log = new()
+        {
+            CreatedBy = userId,
+            Type = "GetStatus"
+        };
         try
         {
-            StatusResultDto? result = await _httpClient.GetFromJsonAsync<StatusResultDto>($"consumer/qrCode/{reference}");
+            log.RequestUrl = $"consumer/qrCode/{reference}";
+            using HttpResponseMessage response = await _httpClient.GetAsync($"consumer/qrCode/{reference}");
+            log.StatusCode = (int)response.StatusCode;
+            var logResult = await response.Content.ReadAsStringAsync();
+            log.Response = logResult;
+            StatusResultDto? result = logResult.Deserialize<StatusResultDto>();
 
             if (result != null)
             {
@@ -62,7 +101,13 @@ public class HaloService
         }
         catch (Exception ex)
         {
+            log.Error = ex.StackTrace;
             return Result.Fail<StatusResultDto>(ex.Message);
+        }
+        finally
+        {
+            await _dbContext.HaloLog.AddAsync(log);
+            await _dbContext.SaveChangesAsync();
         }
     }
 }
