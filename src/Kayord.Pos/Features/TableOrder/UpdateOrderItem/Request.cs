@@ -1,6 +1,4 @@
-using FluentValidation;
-
-namespace Kayord.Pos.Features.Order.UpdateOrderItem
+namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
 {
     public class Request
     {
@@ -10,6 +8,4 @@ namespace Kayord.Pos.Features.Order.UpdateOrderItem
 
 
     }
-
-
 }
