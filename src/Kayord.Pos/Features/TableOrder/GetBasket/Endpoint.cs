@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using SqlKata;
 using Kayord.Pos.Common.Wrapper;
 
-namespace Kayord.Pos.Features.TableOrder.GetBill;
+namespace Kayord.Pos.Features.TableOrder.GetBasket;
 
 public class Endpoint : Endpoint<Request, Response>
 {
@@ -22,7 +22,7 @@ public class Endpoint : Endpoint<Request, Response>
 
     public override void Configure()
     {
-        Get("/order/getBill");
+        Get("/order/getBasket");
         AllowAnonymous();
     }
 
@@ -34,7 +34,7 @@ public class Endpoint : Endpoint<Request, Response>
         if (tableBooking == null)
             await SendNotFoundAsync();
         response.OrderItems = await _dbContext.OrderItem
-        .Where(x => x.TableBookingId == req.TableBookingId && x.OrderCompleted != null)
+        .Where(x => x.TableBookingId == req.TableBookingId && x.OrderItemStatusId == 1)
         .ProjectToDto()
         .ToListAsync();
 
