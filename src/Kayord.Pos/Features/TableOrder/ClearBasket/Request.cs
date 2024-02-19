@@ -1,10 +1,9 @@
 using FluentValidation;
 
-namespace Kayord.Pos.Features.Order.AddItems
+namespace Kayord.Pos.Features.Order.ClearBasket
 {
     public class Request
     {
-        public List<Order> Orders { get; set; } = default!;
         public int TableBookingId { get; set; } = default!;
 
     }

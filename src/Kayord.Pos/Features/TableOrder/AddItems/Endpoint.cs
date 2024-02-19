@@ -1,4 +1,15 @@
 using Kayord.Pos.Data;
+
+
+
+
+
+
+
+
+
+
+
 using Kayord.Pos.Entities;
 using Microsoft.EntityFrameworkCore;
 using YamlDotNet.Core.Tokens;
@@ -40,7 +51,8 @@ namespace Kayord.Pos.Features.Order.AddItems
                 {
                     TableBookingId = TableBookingId,
                     MenuItemId = order.MenuItemId,
-                    OrderItemStatusId = 1
+                    OrderItemStatusId = 1,
+                    Note = order.Note
                 };
 
                 await _dbContext.OrderItem.AddAsync(entity);
