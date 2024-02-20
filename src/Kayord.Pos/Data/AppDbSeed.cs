@@ -89,12 +89,12 @@ public static class AppDbSeed
                 });
 
             await context.SaveChangesAsync(cancellationToken);
-            await context.MenuItem.AddAsync(new MenuItem { Name = "Coffee", MenuSectionId = 6, Price = (decimal)21.80, Description = "This is more than just a cup of coffee, it's a moment of pure bliss" });
-            await context.MenuItem.AddAsync(new MenuItem { Name = "Cappucino", MenuSectionId = 6, Price = (decimal)28.90, Description = "Indulge in the Italian Dream: Our Delectable Cappuccino" });
-            await context.MenuItem.AddAsync(new MenuItem { Name = "Coke", MenuSectionId = 4, Price = (decimal)18.80, Description = "The world's most recognizable beverage" });
+            await context.MenuItem.AddAsync(new MenuItem { Name = "Coffee", MenuSectionId = 6, Price = (decimal)21.80, Description = "This is more than just a cup of coffee, it's a moment of pure bliss", DivisionId = 1 });
+            await context.MenuItem.AddAsync(new MenuItem { Name = "Cappucino", MenuSectionId = 6, Price = (decimal)28.90, Description = "Indulge in the Italian Dream: Our Delectable Cappuccino", DivisionId = 1 });
+            await context.MenuItem.AddAsync(new MenuItem { Name = "Coke", MenuSectionId = 4, Price = (decimal)18.80, Description = "The world's most recognizable beverage", DivisionId = 1 });
 
-            await context.MenuItem.AddAsync(new MenuItem { Name = "Bacon & Feta", MenuSectionId = 8, Price = (decimal)99.50 });
-            await context.MenuItem.AddAsync(new MenuItem { Name = "Chicken Mayo", MenuSectionId = 8, Price = (decimal)110.00 });
+            await context.MenuItem.AddAsync(new MenuItem { Name = "Bacon & Feta", MenuSectionId = 8, Price = (decimal)99.50, DivisionId = 1 });
+            await context.MenuItem.AddAsync(new MenuItem { Name = "Chicken Mayo", MenuSectionId = 8, Price = (decimal)110.00, DivisionId = 1 });
 
             await context.OptionGroup.AddAsync(new OptionGroup { Name = "Pizza Extras", MinSelections = 0, MaxSelections = 5 });
             await context.OptionGroup.AddAsync(new OptionGroup { Name = "Pizza Base", MinSelections = 1, MaxSelections = 1 });
@@ -110,12 +110,12 @@ public static class AppDbSeed
             await context.MenuItemOptionGroup.AddAsync(new MenuItemOptionGroup { MenuItemId = 4, OptionGroupId = 2 });
             await context.MenuItemOptionGroup.AddAsync(new MenuItemOptionGroup { MenuItemId = 5, OptionGroupId = 1 });
             await context.MenuItemOptionGroup.AddAsync(new MenuItemOptionGroup { MenuItemId = 5, OptionGroupId = 2 });
-            await context.OrderItemStatus.AddAsync(new OrderItemStatus { OrderItemStatusId = 1, Status ="Basket",isKitchen = false,isFrontLine = true });
-            await context.OrderItemStatus.AddAsync(new OrderItemStatus { OrderItemStatusId = 2, Status ="Sent to Kitchen",isKitchen = true,isFrontLine = true });
-            await context.OrderItemStatus.AddAsync(new OrderItemStatus { OrderItemStatusId = 3, Status ="Being Prepared",isKitchen = true,isFrontLine = true });
-            await context.OrderItemStatus.AddAsync(new OrderItemStatus { OrderItemStatusId = 4, Status ="Kitchen Cancelled",isKitchen = false,isFrontLine = true });
-            await context.OrderItemStatus.AddAsync(new OrderItemStatus { OrderItemStatusId = 5, Status ="Ready for Collection",isKitchen = false,isFrontLine = true });
-            await context.OrderItemStatus.AddAsync(new OrderItemStatus { OrderItemStatusId = 6, Status ="Complete",isKitchen = false,isFrontLine = true });
+            await context.OrderItemStatus.AddAsync(new OrderItemStatus { OrderItemStatusId = 1, Status = "Basket", isKitchen = false, isFrontLine = true });
+            await context.OrderItemStatus.AddAsync(new OrderItemStatus { OrderItemStatusId = 2, Status = "Sent to Kitchen", isKitchen = true, isFrontLine = true });
+            await context.OrderItemStatus.AddAsync(new OrderItemStatus { OrderItemStatusId = 3, Status = "Being Prepared", isKitchen = true, isFrontLine = true });
+            await context.OrderItemStatus.AddAsync(new OrderItemStatus { OrderItemStatusId = 4, Status = "Kitchen Cancelled", isKitchen = false, isFrontLine = true });
+            await context.OrderItemStatus.AddAsync(new OrderItemStatus { OrderItemStatusId = 5, Status = "Ready for Collection", isKitchen = false, isFrontLine = true });
+            await context.OrderItemStatus.AddAsync(new OrderItemStatus { OrderItemStatusId = 6, Status = "Complete", isKitchen = false, isFrontLine = true });
 
 
 
