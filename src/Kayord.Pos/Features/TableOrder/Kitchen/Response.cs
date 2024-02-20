@@ -4,5 +4,7 @@ namespace Kayord.Pos.Features.Kitchen.GetOrders;
 
 public class Response
 {
+    public int TableBookingId {get;set;}
+    public string TableName {get;set;}
     public List<BillOrderItemDTO> OrderItems { get; set; } = new List<BillOrderItemDTO>();
 }

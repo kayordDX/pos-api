@@ -11,5 +11,7 @@ namespace Kayord.Pos.Entities
         public SalesPeriod SalesPeriod { get; set; } = default!;
         public string UserId { get; set; } = string.Empty;
         public User User { get; set; } = default!;
+
+
     }
 }
