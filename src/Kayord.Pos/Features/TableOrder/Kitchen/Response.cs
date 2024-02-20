@@ -1,6 +1,4 @@
-using Kayord.Pos.DTO;
-
-namespace Kayord.Pos.Features.Kitchen.GetOrders;
+namespace Kayord.Pos.Features.TableOrder.Kitchen;
 
 public class Response
 {
