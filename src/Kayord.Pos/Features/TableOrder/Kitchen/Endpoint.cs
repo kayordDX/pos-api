@@ -32,8 +32,8 @@ public class Endpoint : EndpointWithoutRequest<Response>
         else
             roleId = role.RoleId;
         
-        var divisionIds = _dbContext.RoleDivision.Where(x => x.RoleId == roleId).Select(rd => rd.DivisionId).ToList();
-        var kitchenStatusIds = OrderItemStatus.Where(x=>x.isKitchen == true).Select(rd => rd.OrderItemStatusId).ToList();
+        var divisionIds =  _dbContext.RoleDivision.Where(x => x.RoleId == roleId).Select(rd => rd.DivisionId).ToList();
+        var kitchenStatusIds =  _dbContext.OrderItemStatus.Where(x=>x.isKitchen == true).Select(rd => rd.OrderItemStatusId).ToList();
 
         response.OrderItems = await _dbContext.OrderItem
         .Where(x => kitchenStatusIds.Contains(x.OrderItemStatusId) && divisionIds.Contains(x.MenuItem.DivisionId)) 
