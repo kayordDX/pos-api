@@ -48,6 +48,8 @@ public static class AppDbSeed
         await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "Option" RESTART IDENTITY CASCADE;""");
         await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "MenuItemOptionGroup" RESTART IDENTITY CASCADE;""");
         await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "OptionGroup" RESTART IDENTITY CASCADE;""");
+        await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "OrderItemStatus" RESTART IDENTITY CASCADE;""");
+
 
         await context.SalesPeriod.AddAsync(new SalesPeriod { Id = 1, Name = "Test", StartDate = DateTime.Now, OutletId = 1 });
         if (!context.Menu.Any())
@@ -108,6 +110,17 @@ public static class AppDbSeed
             await context.MenuItemOptionGroup.AddAsync(new MenuItemOptionGroup { MenuItemId = 4, OptionGroupId = 2 });
             await context.MenuItemOptionGroup.AddAsync(new MenuItemOptionGroup { MenuItemId = 5, OptionGroupId = 1 });
             await context.MenuItemOptionGroup.AddAsync(new MenuItemOptionGroup { MenuItemId = 5, OptionGroupId = 2 });
+            await context.OrderItemStatus.AddAsync(new OrderItemStatus { OrderItemStatusId = 1, Status ="Basket",isKitchen = false,isFrontLine = true });
+            await context.OrderItemStatus.AddAsync(new OrderItemStatus { OrderItemStatusId = 2, Status ="Sent to Kitchen",isKitchen = true,isFrontLine = true });
+            await context.OrderItemStatus.AddAsync(new OrderItemStatus { OrderItemStatusId = 3, Status ="Being Prepared",isKitchen = true,isFrontLine = true });
+            await context.OrderItemStatus.AddAsync(new OrderItemStatus { OrderItemStatusId = 4, Status ="Kitchen Cancelled",isKitchen = false,isFrontLine = true });
+            await context.OrderItemStatus.AddAsync(new OrderItemStatus { OrderItemStatusId = 5, Status ="Ready for Collection",isKitchen = false,isFrontLine = true });
+            await context.OrderItemStatus.AddAsync(new OrderItemStatus { OrderItemStatusId = 6, Status ="Complete",isKitchen = false,isFrontLine = true });
+
+
+
+
+
             await context.SaveChangesAsync(cancellationToken);
 
 
