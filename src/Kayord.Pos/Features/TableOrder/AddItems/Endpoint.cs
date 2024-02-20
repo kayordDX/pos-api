@@ -1,15 +1,4 @@
 using Kayord.Pos.Data;
-
-
-
-
-
-
-
-
-
-
-
 using Kayord.Pos.Entities;
 using Microsoft.EntityFrameworkCore;
 using YamlDotNet.Core.Tokens;
