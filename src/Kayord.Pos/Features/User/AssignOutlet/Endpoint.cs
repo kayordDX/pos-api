@@ -23,15 +23,29 @@ public class Endpoint : Endpoint<Request, Entities.UserOutlet>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-
+        Entities.UserOutlet outlet = new();
         if (_cu.UserId == null)
         {
             await SendForbiddenAsync();
             return;
         }
-
-        var outlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.OutletId == req.OutletId);
-        if (outlet == null)
+        var UserOutlets = _dbContext.UserOutlet.Where(x=>x.UserId == _cu.UserId);
+        bool hasCurrentOutlet = false;
+        foreach(Entities.UserOutlet uo in UserOutlets)
+        {
+            if(uo.OutletId == req.OutletId)
+            {
+                uo.isCurrent = true;
+                hasCurrentOutlet = true;
+                outlet = uo;
+            }
+            else
+            {
+                uo.isCurrent = false;
+            }
+        }
+        
+        if (!hasCurrentOutlet)
         {
             outlet = new()
             {
@@ -41,10 +55,7 @@ public class Endpoint : Endpoint<Request, Entities.UserOutlet>
             };
             await _dbContext.AddAsync(outlet);
         }
-        else
-        {
-            outlet.isCurrent = true;
-        }
+      
         await _dbContext.SaveChangesAsync();
         await SendAsync(outlet);
     }
