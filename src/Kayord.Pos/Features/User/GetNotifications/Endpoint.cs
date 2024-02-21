@@ -30,6 +30,7 @@ public class Endpoint : EndpointWithoutRequest<List<UserNotificationDTO>>
         response = await _dbContext.UserNotification
         .Where(x => x.UserId == _cu.UserId && x.DateRead == null)
         .ProjectToDto()
+        .OrderByDescending(x => x.DateSent)
         .ToListAsync();
         await SendAsync(response);
     }
