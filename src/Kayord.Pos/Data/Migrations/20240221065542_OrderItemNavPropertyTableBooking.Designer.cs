@@ -3,6 +3,7 @@ using System;
 using Kayord.Pos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using NpgsqlTypes;
@@ -12,9 +13,11 @@ using NpgsqlTypes;
 namespace Kayord.Pos.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240221065542_OrderItemNavPropertyTableBooking")]
+    partial class OrderItemNavPropertyTableBooking
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -879,7 +882,7 @@ namespace Kayord.Pos.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("Kayord.Pos.Entities.TableBooking", "TableBooking")
-                        .WithMany("OrderItems")
+                        .WithMany("OrderItem")
                         .HasForeignKey("TableBookingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1124,7 +1127,7 @@ namespace Kayord.Pos.Data.Migrations
 
             modelBuilder.Entity("Kayord.Pos.Entities.TableBooking", b =>
                 {
-                    b.Navigation("OrderItems");
+                    b.Navigation("OrderItem");
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.User", b =>

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.TableOrder.Kitchen;
 
-public class Endpoint : EndpointWithoutRequest<List<Response>>
+public class Endpoint : EndpointWithoutRequest<List<TableBookingDTO>>
 {
     private readonly AppDbContext _dbContext;
     private readonly CurrentUserService _cu;
@@ -25,7 +25,6 @@ public class Endpoint : EndpointWithoutRequest<List<Response>>
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        List<Response> response = new();
         int roleId = 0;
         int outletId = 0;
         var role = await _dbContext.UserRole.FirstOrDefaultAsync(x => x.UserId == _cu.UserId);
@@ -45,27 +44,13 @@ public class Endpoint : EndpointWithoutRequest<List<Response>>
         {
             outletId = outlet.OutletId;
         }
-        var tb = await _dbContext.TableBooking.Where(x => x.SalesPeriod.OutletId == outletId).ProjectToDto().ToListAsync();
-        foreach (var t in tb)
-        {
-            var tableOrders = await _dbContext.OrderItem
 
-            .Where(x => kitchenStatusIds.Contains(x.OrderItemStatusId) && divisionIds.Contains(x.MenuItem.DivisionId) && x.TableBookingId == t.Id)
-            .ProjectToDto()
-            .ToListAsync();
-            if (tableOrders.Count() > 0)
-            {
-                Response r = new Response()
-                {
-                    OrderItems = tableOrders
-                ,
-                    TableBookingId = t.Id
-                ,
-                    TableName = t.Table.Name
-                };
-                response.Add(r);
-            }
-        }
-        await SendAsync(response);
+        var result = await _dbContext.TableBooking
+            .Include(x => x.OrderItems!
+                .Where(x => kitchenStatusIds.Contains(x.OrderItemStatusId) && divisionIds.Contains(x.MenuItem.DivisionId) && x.TableBookingId == x.TableBookingId)
+            )
+           .Where(x => x.SalesPeriod.OutletId == outletId)
+        .ProjectToDto().ToListAsync();
+        await SendAsync(result);
     }
 }

@@ -116,14 +116,15 @@ public static class AppDbSeed
             await context.OrderItemStatus.AddAsync(new OrderItemStatus { OrderItemStatusId = 4, Status = "Kitchen Cancelled", isKitchen = false, isFrontLine = true });
             await context.OrderItemStatus.AddAsync(new OrderItemStatus { OrderItemStatusId = 5, Status = "Ready for Collection", isKitchen = false, isFrontLine = true });
             await context.OrderItemStatus.AddAsync(new OrderItemStatus { OrderItemStatusId = 6, Status = "Complete", isKitchen = false, isFrontLine = true });
-
-
-
-
-
             await context.SaveChangesAsync(cancellationToken);
 
 
+            await context.TableBooking.AddAsync(new TableBooking() { BookingDate = DateTime.Now, BookingName = "TestBooking", SalesPeriodId = 1, TableId = 1, UserId = "103301258912011927884" });
+            await context.SaveChangesAsync(cancellationToken);
+
+            await context.OrderItem.AddAsync(new OrderItem() { MenuItemId = 4, Note = "test", TableBookingId = 1, OrderItemStatusId = 2, OrderReceived = DateTime.Now });
+            await context.OrderItem.AddAsync(new OrderItem() { MenuItemId = 1, Note = "Another Note", TableBookingId = 1, OrderItemStatusId = 2, OrderReceived = DateTime.Now });
+            await context.SaveChangesAsync(cancellationToken);
         }
 
     }
