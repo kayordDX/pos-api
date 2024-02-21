@@ -8,6 +8,6 @@ public class UserNotificationConfiguration : IEntityTypeConfiguration<UserNotifi
 {
     public void Configure(EntityTypeBuilder<UserNotification> builder)
     {
-        // builder.Property(t => t.JSON).HasColumnType("jsonb");
+        builder.Property(t => t.JSONContent).HasColumnType("jsonb");
     }
 }
