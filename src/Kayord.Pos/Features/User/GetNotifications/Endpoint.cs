@@ -1,5 +1,6 @@
 
 using Kayord.Pos.Data;
+using Kayord.Pos.Entities;
 using Kayord.Pos.Services;
 
 
@@ -7,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.User.GetNotifications;
 
-public class Endpoint : EndpointWithoutRequest<Response>
+public class Endpoint : EndpointWithoutRequest<List<UserNotification>>
 {
     private readonly AppDbContext _dbContext;
     private readonly CurrentUserService _cu;
@@ -25,11 +26,8 @@ public class Endpoint : EndpointWithoutRequest<Response>
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        Response response = new();
-        response.Notifications = await _dbContext.UserNotification.Where(x => x.UserId == _cu.UserId && x.DateRead == null && (x.DateExpires == null || x.DateExpires.Value > DateTime.Now)).ToListAsync();
-
-
-
+        List<UserNotification> response = new();
+        response = await _dbContext.UserNotification.Where(x => x.UserId == _cu.UserId && x.DateRead == null).ToListAsync();
         await SendAsync(response);
     }
 }
