@@ -30,6 +30,13 @@ namespace Kayord.Pos.Features.TableOrder.UpdateTableOrder
                     i.OrderItemStatusId = req.OrderItemStatusId;
                     if (ois.isComplete)
                         i.OrderCompleted = DateTime.Now;
+                    if (ois.Notify)
+                        _dbContext.Add(new UserNotification()
+                        {
+                            UserId = i.TableBooking.UserId,
+                            Notification = i.TableBooking.Table.Name + "- All Orders - " + ois.Status,
+                            DateSent = DateTime.Now,
+                        });
                 }
 
                 await _dbContext.SaveChangesAsync();

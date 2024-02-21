@@ -38,6 +38,7 @@ public class AppDbContext : DbContext
     public DbSet<RoleDivision> RoleDivision => Set<RoleDivision>();
     public DbSet<HaloLog> HaloLog => Set<HaloLog>();
     public DbSet<HaloReference> HaloReference => Set<HaloReference>();
+    public DbSet<UserNotification> UserNotification => Set<UserNotification>();
 
 
 

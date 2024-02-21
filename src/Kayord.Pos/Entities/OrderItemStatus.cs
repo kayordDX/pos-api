@@ -7,6 +7,8 @@ public class OrderItemStatus
     public bool isBackOffice { get; set; } = false;
     public bool isComplete { get; set; } = false;
     public bool isCancelled { get; set; } = false;
+    public bool Notify { get; set; } = false;
+
 
 
 }
