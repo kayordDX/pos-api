@@ -36,6 +36,7 @@ namespace Kayord.Pos.Features.TableOrder.UpdateTableOrder
                             UserId = i.TableBooking.UserId,
                             Notification = i.TableBooking.Table.Name + "- All Orders - " + ois.Status,
                             DateSent = DateTime.Now,
+                            DateExpires = DateTime.Now.AddMinutes(30)
                         });
                 }
 

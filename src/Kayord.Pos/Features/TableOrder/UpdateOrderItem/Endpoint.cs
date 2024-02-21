@@ -40,6 +40,7 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
                             UserId = entity.TableBooking.UserId,
                             Notification = entity.TableBooking.Table.Name + " - " + i.Name + " - " + oIS.Status,
                             DateSent = DateTime.Now,
+                            DateExpires = DateTime.Now.AddMinutes(30)
                         });
                 }
                 await _dbContext.SaveChangesAsync();

@@ -8,6 +8,6 @@ public class UserNotification
     public string? JSONContent { get; set; }
     public DateTime DateSent { get; set; } = DateTime.Now;
     public DateTime? DateRead { get; set; }
-    public DateTime? DateExpires { get; set; }
+    public DateTime DateExpires { get; set; } = default!;
 
 }
