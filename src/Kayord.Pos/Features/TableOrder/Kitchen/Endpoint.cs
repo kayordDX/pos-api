@@ -34,7 +34,7 @@ public class Endpoint : EndpointWithoutRequest<Response>
             roleId = role.RoleId;
 
         var divisionIds = _dbContext.RoleDivision.Where(x => x.RoleId == roleId).Select(rd => rd.DivisionId).ToList();
-        var kitchenStatusIds = _dbContext.OrderItemStatus.Where(x => x.isKitchen == true).Select(rd => rd.OrderItemStatusId).ToList();
+        var kitchenStatusIds = _dbContext.OrderItemStatus.Where(x => x.isBackOffice == true).Select(rd => rd.OrderItemStatusId).ToList();
         UserOutlet? outlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.isCurrent == true);
         if (outlet == null)
         {
@@ -46,11 +46,18 @@ public class Endpoint : EndpointWithoutRequest<Response>
         }
 
         var result = await _dbContext.TableBooking
-            .Include(x => x.OrderItems!
-                .Where(x => kitchenStatusIds.Contains(x.OrderItemStatusId) && divisionIds.Contains(x.MenuItem.DivisionId) && x.TableBookingId == x.TableBookingId)
-            )
-           .Where(x => x.SalesPeriod.OutletId == outletId)
-        .ProjectToDto().ToListAsync();
+            .Where(x => x.SalesPeriod.OutletId == outletId)
+            .ProjectToDto()
+            .ToListAsync();
+
+        result.ForEach(dto =>
+        {
+            dto.OrderItems = dto.OrderItems!
+                .Where(oi => kitchenStatusIds.Contains(oi.OrderItemStatusId) &&
+                    divisionIds.Contains(oi.MenuItem.DivisionId))
+                .ToList();
+        });
+        result = result.Where(x => x.OrderItems!.Any()).ToList();
 
         Response response = new()
         {
