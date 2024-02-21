@@ -1,5 +1,6 @@
 using Kayord.Pos.Data;
 using Kayord.Pos.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
 {
@@ -20,10 +21,12 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
             OrderItem? entity = await _dbContext.OrderItem.FindAsync(req.OrderItemId);
-            if (entity != null)
+            OrderItemStatus? oIS = await _dbContext.OrderItemStatus.FirstOrDefaultAsync(x => x.OrderItemStatusId == req.OrderItemStatusId);
+
+            if (entity != null && oIS != null)
             {
                 entity.OrderItemStatusId = req.OrderItemStatusId;
-                if (req.isComplete)
+                if (oIS.isComplete)
                     entity.OrderCompleted = DateTime.Now;
 
                 await _dbContext.SaveChangesAsync();
