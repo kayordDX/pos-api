@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.TableOrder.Kitchen;
 
-public class Endpoint : EndpointWithoutRequest<List<TableBookingDTO>>
+public class Endpoint : EndpointWithoutRequest<Response>
 {
     private readonly AppDbContext _dbContext;
     private readonly CurrentUserService _cu;
@@ -51,6 +51,14 @@ public class Endpoint : EndpointWithoutRequest<List<TableBookingDTO>>
             )
            .Where(x => x.SalesPeriod.OutletId == outletId)
         .ProjectToDto().ToListAsync();
-        await SendAsync(result);
+
+        Response response = new()
+        {
+            LastRefresh = DateTime.Now,
+            PendingItems = result.Sum(n => n.OrderItems?.Count) ?? 0,
+            PendingTables = result.Count,
+            Tables = result
+        };
+        await SendAsync(response);
     }
 }
