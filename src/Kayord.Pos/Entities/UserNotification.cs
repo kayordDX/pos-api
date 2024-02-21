@@ -7,7 +7,7 @@ public class UserNotification
     public string Notification { get; set; } = string.Empty;
     public string? JSONContent { get; set; }
     public DateTime DateSent { get; set; } = DateTime.Now;
-    public DateTime? DateRead { get; set; }
+    public DateTime DateRead { get; set; } = DateTime.Now.AddMinutes(30);
     public DateTime DateExpires { get; set; } = default!;
 
 }
