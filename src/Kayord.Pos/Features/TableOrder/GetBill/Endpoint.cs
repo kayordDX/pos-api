@@ -27,6 +27,7 @@ public class Endpoint : Endpoint<Request, Response>
     {
         Response response = new();
         response.Total = 0;
+        decimal TotalPayments = 0m;
         var tableBooking = await _dbContext.TableBooking.FirstOrDefaultAsync(x => x.Id == req.TableBookingId);
         if (tableBooking == null)
             await SendNotFoundAsync();
@@ -35,20 +36,18 @@ public class Endpoint : Endpoint<Request, Response>
         .ProjectToDto()
         .ToListAsync();
 
-        foreach (BillOrderItemDTO item in response.OrderItems)
-        {
-            response.Total += item.MenuItem.Price;
-            if (item.Options != null)
-                foreach (OptionDTO option in item.Options)
-                {
-                    response.Total += option.Price;
-                }
-            if (item.Extras != null)
-                foreach (ExtraDTO extra in item.Extras)
-                {
-                    response.Total += extra.Price;
-                }
-        }
+        response.Total += response.OrderItems.Sum(item => item.MenuItem.Price);
+
+        response.Total += response.OrderItems.Where(item => item.Options != null)
+                                      .Sum(item => item.Options!.Sum(option => option.Price));
+
+        response.Total += response.OrderItems.Where(item => item.Extras != null)
+                                      .Sum(item => item.Extras!.Sum(extra => extra.Price));
+
+        TotalPayments += response.PaymentsReceived.Where(item => item.TableBookingId! == req.TableBookingId)
+                                      .Sum(item => item.Amount);
+        response.Balance = response.Total - TotalPayments;
+        response.Balance = response.Balance < 0 ? 0m : response.Balance;
         await SendAsync(response);
     }
 }

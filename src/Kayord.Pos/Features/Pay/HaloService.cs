@@ -5,6 +5,7 @@ using Kayord.Pos.Config;
 using Kayord.Pos.Data;
 using Kayord.Pos.Entities;
 using Kayord.Pos.Features.Pay.Dto;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace Kayord.Pos.Features.Pay;
@@ -97,9 +98,20 @@ public class HaloService
             {
                 if (result.ResponseCode == 0)
                 {
-                    // Save
-                    // Check if payment reference exists -> FIRE: PaymentReceivedEvent
-                    // result.PaymentReference
+                    Payment? p = await _dbContext.Payment.FirstOrDefaultAsync(x => x.PaymentReference == result.PaymentReference);
+                    if (p == null)
+                    {
+                        p = new()
+                        {
+                            Amount = result.Amount,
+                            PaymentReference = result.PaymentReference,
+                            DateReceived = DateTime.UtcNow,
+                            UserId = userId
+                        };
+                        await _dbContext.Payment.AddAsync(p);
+                        await _dbContext.SaveChangesAsync();
+                    }
+
                 }
                 return Result.Ok(result);
             }

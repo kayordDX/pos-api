@@ -40,6 +40,7 @@ public class AppDbContext : DbContext
     public DbSet<HaloReference> HaloReference => Set<HaloReference>();
     public DbSet<UserNotification> UserNotification => Set<UserNotification>();
     public DbSet<ExtraGroup> ExtraGroup => Set<ExtraGroup>();
+    public DbSet<Payment> Payment => Set<Payment>();
     public DbSet<MenuItemExtraGroup> MenuItemExtraGroup => Set<MenuItemExtraGroup>();
 
 
