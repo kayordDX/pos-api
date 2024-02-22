@@ -7,6 +7,8 @@ public class MenuSection
     public int MenuId { get; set; }
     public MenuSection? Parent { get; set; }
     public int? ParentId { get; set; }
+
+    public int? PositionId { get; set; }
     public List<MenuSection>? SubMenuSections { get; set; }
     public ICollection<MenuItem>? MenuItems { get; set; }
 }

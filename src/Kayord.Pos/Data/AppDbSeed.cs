@@ -59,43 +59,46 @@ public static class AppDbSeed
             await context.Menu.AddAsync(new Menu { Name = "Main", OutletId = 1 });
             await context.Menu.AddAsync(new Menu { Name = "Wine List", OutletId = 1 });
 
-            await context.MenuSection.AddAsync(new MenuSection { Name = "Burgers", MenuId = 1 });
-            await context.MenuSection.AddAsync(new MenuSection { Name = "Drinks", MenuId = 1 });
-            await context.MenuSection.AddAsync(new MenuSection { Name = "Cocktails", MenuId = 1, ParentId = 2 });
-            await context.MenuSection.AddAsync(new MenuSection { Name = "Soft Drinks", MenuId = 1, ParentId = 2 });
-            await context.MenuSection.AddAsync(new MenuSection { Name = "Hot Beverage", MenuId = 1, ParentId = 2 });
-            await context.MenuSection.AddAsync(new MenuSection { Name = "Coffee/Cappucino", MenuId = 1, ParentId = 5 });
-            await context.MenuSection.AddAsync(new MenuSection { Name = "Desert", MenuId = 1 });
-            await context.MenuSection.AddAsync(new MenuSection { Name = "Pizza", MenuId = 1 });
+            await context.MenuSection.AddAsync(new MenuSection { Name = "Breakfast", MenuId = 1, PositionId = 1 });
+            await context.MenuSection.AddAsync(new MenuSection { Name = "Fillings & Extras", MenuId = 1, PositionId = 2 });
+            await context.MenuSection.AddAsync(new MenuSection { Name = "Flapjacks", MenuId = 1, PositionId = 3 });
+            await context.MenuSection.AddAsync(new MenuSection { Name = "Hot Beverages", MenuId = 1, PositionId = 4 });
+            await context.MenuSection.AddAsync(new MenuSection { Name = "Cold Beverages", MenuId = 1, PositionId = 5 });
+            await context.MenuSection.AddAsync(new MenuSection { Name = "100% Natural Smoothies", MenuId = 1, PositionId = 6 });
+            await context.MenuSection.AddAsync(new MenuSection { Name = "Natural Cold Pressed Juices", MenuId = 1, ParentId = 5, PositionId = 7 });
+            await context.MenuSection.AddAsync(new MenuSection { Name = "Toasted Sandwiches", MenuId = 1, PositionId = 8 });
+            await context.MenuSection.AddAsync(new MenuSection { Name = "Tramezzini", MenuId = 1, PositionId = 9 });
+            await context.MenuSection.AddAsync(new MenuSection { Name = "Open Sandwiches", MenuId = 1, PositionId = 10 });
+            await context.MenuSection.AddAsync(new MenuSection { Name = "Wrap", MenuId = 1, PositionId = 11 });
+            await context.MenuSection.AddAsync(new MenuSection { Name = "Clean Eats", MenuId = 1, PositionId = 12 });
+            await context.MenuSection.AddAsync(new MenuSection { Name = "Burger", MenuId = 1, PositionId = 13 });
+            await context.MenuSection.AddAsync(new MenuSection { Name = "Salad", MenuId = 1, PositionId = 14 });
+            await context.MenuSection.AddAsync(new MenuSection { Name = "Starters", MenuId = 1, PositionId = 15 });
+            await context.MenuSection.AddAsync(new MenuSection { Name = "Pasta", MenuId = 1, PositionId = 16 });
+            await context.MenuSection.AddAsync(new MenuSection { Name = "Pizza", MenuId = 1, PositionId = 17 });
+            await context.MenuSection.AddAsync(new MenuSection { Name = "Grill & Seafood", MenuId = 1, PositionId = 18 });
+            await context.MenuSection.AddAsync(new MenuSection { Name = "Curry", MenuId = 1, PositionId = 19 });
+            await context.MenuSection.AddAsync(new MenuSection { Name = "Deserts", MenuId = 1, PositionId = 20 });
+            await context.MenuSection.AddAsync(new MenuSection { Name = "White Wine", MenuId = 2, PositionId = 21 });
+            await context.MenuSection.AddAsync(new MenuSection { Name = "Red Wine", MenuId = 2, PositionId = 22 });
+            await context.MenuSection.AddAsync(new MenuSection { Name = "Fortified Wine", MenuId = 2, PositionId = 23 });
+            await context.MenuSection.AddAsync(new MenuSection { Name = "Dry", MenuId = 2, PositionId = 24, ParentId = 21 });
+            await context.MenuSection.AddAsync(new MenuSection { Name = "Sweet", MenuId = 2, PositionId = 25, ParentId = 21 });
+            await context.MenuSection.AddAsync(new MenuSection { Name = "Semi-Sweet", MenuId = 2, PositionId = 26, ParentId = 21 });
+            await context.MenuSection.AddAsync(new MenuSection { Name = "Dry", MenuId = 2, PositionId = 24, ParentId = 22 });
+            await context.MenuSection.AddAsync(new MenuSection { Name = "Sweet", MenuId = 2, PositionId = 25, ParentId = 22 });
+            await context.MenuSection.AddAsync(new MenuSection { Name = "Semi-Sweet", MenuId = 2, PositionId = 26, ParentId = 22 });
 
-            await context.MenuSection.AddAsync(
-                new MenuSection
-                {
-                    Name = "White Wine",
-                    MenuId = 2,
-                    MenuItems = new List<MenuItem>() {
-                    new MenuItem {
-                        Name = "Sauvignon blanc", Price = (decimal)75.74, DivisionId = 1 }
-                    }
-                });
-            await context.MenuSection.AddAsync(
-                new MenuSection
-                {
-                    Name = "Red Wine",
-                    MenuId = 2,
-                    MenuItems = new List<MenuItem>() {
-                    new MenuItem {
-                        Name = "Chardonnay KWV", Price = 98, DivisionId = 1 }
-                    }
-                });
 
             await context.SaveChangesAsync(cancellationToken);
-            await context.MenuItem.AddAsync(new MenuItem { Name = "Coffee", MenuSectionId = 6, Price = (decimal)21.80, Description = "This is more than just a cup of coffee, it's a moment of pure bliss", DivisionId = 1 });
-            await context.MenuItem.AddAsync(new MenuItem { Name = "Cappucino", MenuSectionId = 6, Price = (decimal)28.90, Description = "Indulge in the Italian Dream: Our Delectable Cappuccino", DivisionId = 1 });
-            await context.MenuItem.AddAsync(new MenuItem { Name = "Coke", MenuSectionId = 4, Price = (decimal)18.80, Description = "The world's most recognizable beverage", DivisionId = 1 });
+            await context.MenuItem.AddAsync(new MenuItem { Name = "Coffee", MenuSectionId = 4, Price = (decimal)21.80, Description = "This is more than just a cup of coffee, it's a moment of pure bliss", DivisionId = 1 });
+            await context.MenuItem.AddAsync(new MenuItem { Name = "Cappucino", MenuSectionId = 4, Price = (decimal)28.90, Description = "Indulge in the Italian Dream: Our Delectable Cappuccino", DivisionId = 1 });
+            await context.MenuItem.AddAsync(new MenuItem { Name = "Coke", MenuSectionId = 5, Price = (decimal)18.80, Description = "The world's most recognizable beverage", DivisionId = 1 });
+            await context.MenuItem.AddAsync(new MenuItem { Name = "Spier - Chardonnay Pinot Noir ", MenuSectionId = 5, Price = (decimal)18.80, Description = "The world's most recognizable beverage", DivisionId = 1 });
 
-            await context.MenuItem.AddAsync(new MenuItem { Name = "Bacon & Feta", MenuSectionId = 8, Price = (decimal)99.50, DivisionId = 1 });
-            await context.MenuItem.AddAsync(new MenuItem { Name = "Chicken Mayo", MenuSectionId = 8, Price = (decimal)110.00, DivisionId = 1 });
+
+            await context.MenuItem.AddAsync(new MenuItem { Name = "Bacon & Feta", MenuSectionId = 17, Price = (decimal)99.50, DivisionId = 1 });
+            await context.MenuItem.AddAsync(new MenuItem { Name = "Chicken Mayo", MenuSectionId = 17, Price = (decimal)110.00, DivisionId = 1 });
 
             await context.OptionGroup.AddAsync(new OptionGroup { Name = "Pizza Extras", MinSelections = 0, MaxSelections = 5 });
             await context.OptionGroup.AddAsync(new OptionGroup { Name = "Pizza Base", MinSelections = 1, MaxSelections = 1 });
