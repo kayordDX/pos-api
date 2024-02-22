@@ -95,6 +95,12 @@ public class HaloService
 
             if (result != null)
             {
+                if (result.ResponseCode == 0)
+                {
+                    // Save
+                    // Check if payment reference exists -> FIRE: PaymentReceivedEvent
+                    // result.PaymentReference
+                }
                 return Result.Ok(result);
             }
             return Result.Fail<StatusResultDto>("Empty Response");
