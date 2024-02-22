@@ -15,5 +15,4 @@ public class UserNotificationDTO
     }
     public DateTime? DateRead { get; set; }
     public DateTime? DateExpires { get; set; }
-
 }
