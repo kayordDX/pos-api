@@ -48,6 +48,7 @@ public class Endpoint : Endpoint<Request, CashUp>
             .ProjectToDto()
             .ToListAsync();
             tableCashUp.UserId = tb.UserId;
+            tableCashUp.PaymentsReceived = await _dbContext.Payment.Where(x => x.TableBookingId == tb.Id).ToListAsync();
 
             tableCashUp.Total += tableCashUp.OrderItems.Sum(item => item.MenuItem.Price);
 

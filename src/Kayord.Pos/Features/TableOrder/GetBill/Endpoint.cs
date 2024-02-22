@@ -36,7 +36,7 @@ public class Endpoint : Endpoint<Request, Response>
         .Where(x => paymentStatusIds.Contains(x.OrderItemStatusId) && x.TableBookingId == req.TableBookingId)
         .ProjectToDto()
         .ToListAsync();
-
+        response.PaymentsReceived = await _dbContext.Payment.Where(x => x.TableBookingId == req.TableBookingId).ToListAsync();
         response.Total += response.OrderItems.Sum(item => item.MenuItem.Price);
 
         response.Total += response.OrderItems.Where(item => item.Options != null)
