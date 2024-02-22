@@ -21,6 +21,7 @@ public class Endpoint : Endpoint<Request, CashUp>
     public override void Configure()
     {
         Get("/salesperiod/cashup");
+        AllowAnonymous();
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
@@ -32,16 +33,15 @@ public class Endpoint : Endpoint<Request, CashUp>
         List<UserCashUp> salesPeriodUserCashUps = new();
         UserCashUp userCashUp = new();
         CashUp cashUp = new();
-
-        foreach (Entities.TableBooking tb in _dbContext.TableBooking.Where(x => x.SalesPeriodId == req.SalesPeriodId))
+        List<Entities.TableBooking> bookings = await _dbContext.TableBooking.Where(x => x.SalesPeriodId == req.SalesPeriodId).ToListAsync();
+        foreach (Entities.TableBooking tb in bookings)
         {
             TableCashUp tableCashUp = new();
             tableCashUp.Total = 0;
             decimal TotalPayments = 0m;
-            var tableBooking = await _dbContext.TableBooking.FirstOrDefaultAsync(x => x.Id == tb.Id);
+
             var paymentStatusIds = _dbContext.OrderItemStatus.Where(x => x.isCancelled == false).Select(rd => rd.OrderItemStatusId).ToList();
-            if (tableBooking == null)
-                await SendNotFoundAsync();
+
             tableCashUp.OrderItems = await _dbContext.OrderItem
             .Where(x => paymentStatusIds.Contains(x.OrderItemStatusId) && x.TableBookingId == tb.Id)
             .ProjectToDto()
@@ -67,13 +67,14 @@ public class Endpoint : Endpoint<Request, CashUp>
         foreach (var userId in distinctUserIds)
         {
             UserCashUp u = new();
-            u.UserTotal += userCashUp.TableCashUps.Where(item => item.UserId! == userId)
+            u.UserId = userId;
+            u.UserTotal += salesPeriodTableCashUps.Where(item => item.UserId! == userId)
                                           .Sum(item => item.Total);
-            u.UserBalance += userCashUp.TableCashUps.Where(item => item.UserId! == userId)
+            u.UserBalance += salesPeriodTableCashUps.Where(item => item.UserId! == userId)
                                           .Sum(item => item.Balance);
-            u.UserPaymentTotal += userCashUp.TableCashUps.Where(item => item.UserId! == userId)
+            u.UserPaymentTotal += salesPeriodTableCashUps.Where(item => item.UserId! == userId)
                                           .Sum(item => item.TablePaymentTotal);
-            u.TableCashUps.AddRange(userCashUp.TableCashUps.Where(item => item.UserId! == userId));
+            u.TableCashUps.AddRange(salesPeriodTableCashUps.Where(item => item.UserId! == userId).ToList());
             salesPeriodUserCashUps.Add(u);
         }
         cashUp.UserCashUps.AddRange(salesPeriodUserCashUps);

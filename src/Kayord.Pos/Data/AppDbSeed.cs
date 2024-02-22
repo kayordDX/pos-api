@@ -53,6 +53,12 @@ public static class AppDbSeed
         await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "ExtraGroup" RESTART IDENTITY CASCADE;""");
         await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "Extra" RESTART IDENTITY CASCADE;""");
         await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "MenuItemExtraGroup" RESTART IDENTITY CASCADE;""");
+        await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "OrderItemExtra" RESTART IDENTITY CASCADE;""");
+        await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "OrderItemOption" RESTART IDENTITY CASCADE;""");
+        await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "OrderItem" RESTART IDENTITY CASCADE;""");
+        await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "Payment" RESTART IDENTITY CASCADE;""");
+
+
 
 
 
@@ -135,6 +141,35 @@ public static class AppDbSeed
             await context.OrderItemStatus.AddAsync(new OrderItemStatus { OrderItemStatusId = 4, Status = "Kitchen Cancelled", isBackOffice = false, isFrontLine = true, isComplete = false, Notify = true });
             await context.OrderItemStatus.AddAsync(new OrderItemStatus { OrderItemStatusId = 5, Status = "Ready for Collection", isBackOffice = false, isFrontLine = true, isComplete = false, Notify = true });
             await context.OrderItemStatus.AddAsync(new OrderItemStatus { OrderItemStatusId = 6, Status = "Complete", isBackOffice = false, isComplete = true, isFrontLine = false, Notify = false });
+
+            await context.SaveChangesAsync(cancellationToken);
+            await context.TableBooking.AddAsync(new TableBooking { TableId = 1, SalesPeriodId = 1, BookingName = "Seeded Booking", UserId = "103301258912011927884" });
+            await context.TableBooking.AddAsync(new TableBooking { TableId = 2, SalesPeriodId = 1, BookingName = "Seeded Booking 2", UserId = "103301258912011927884" });
+
+            await context.SaveChangesAsync(cancellationToken);
+            await context.OrderItem.AddAsync(new OrderItem() { MenuItemId = 1, OrderItemStatusId = 6, TableBookingId = 1 });
+
+
+            await context.OrderItem.AddAsync(new OrderItem() { MenuItemId = 2, OrderItemStatusId = 6, TableBookingId = 1 });
+            await context.OrderItem.AddAsync(new OrderItem() { MenuItemId = 2, OrderItemStatusId = 6, TableBookingId = 2 });
+            await context.OrderItem.AddAsync(new OrderItem() { MenuItemId = 2, OrderItemStatusId = 6, TableBookingId = 1 });
+            await context.OrderItem.AddAsync(new OrderItem() { MenuItemId = 2, OrderItemStatusId = 6, TableBookingId = 2 });
+            await context.OrderItem.AddAsync(new OrderItem() { MenuItemId = 2, OrderItemStatusId = 6, TableBookingId = 1 });
+            await context.SaveChangesAsync(cancellationToken);
+            await context.OrderItemOption.AddAsync(new OrderItemOption() { OrderItemId = 1, OptionId = 1 });
+            await context.OrderItemOption.AddAsync(new OrderItemOption() { OrderItemId = 2, OptionId = 2 });
+            await context.OrderItemExtra.AddAsync(new OrderItemExtra() { OrderItemId = 3, ExtraId = 2 });
+            await context.OrderItemOption.AddAsync(new OrderItemOption() { OrderItemId = 3, OptionId = 2 });
+            await context.OrderItemExtra.AddAsync(new OrderItemExtra() { OrderItemId = 2, ExtraId = 2 });
+            await context.Payment.AddAsync(new Payment() { Amount = 200m, TableBookingId = 1, UserId = "103301258912011927884" });
+            await context.Payment.AddAsync(new Payment() { Amount = 200m, TableBookingId = 1, UserId = "103301258912011927884" });
+            await context.Payment.AddAsync(new Payment() { Amount = 200m, TableBookingId = 1, UserId = "103301258912011927884" });
+            await context.Payment.AddAsync(new Payment() { Amount = 200m, TableBookingId = 2, UserId = "103301258912011927884" });
+            await context.Payment.AddAsync(new Payment() { Amount = 200m, TableBookingId = 2, UserId = "103301258912011927884" });
+            await context.SaveChangesAsync(cancellationToken);
+
+
+
             await context.SaveChangesAsync(cancellationToken);
 
 
