@@ -29,10 +29,11 @@ public class Endpoint : Endpoint<Request, Response>
         response.Total = 0;
         decimal TotalPayments = 0m;
         var tableBooking = await _dbContext.TableBooking.FirstOrDefaultAsync(x => x.Id == req.TableBookingId);
+        var paymentStatusIds = _dbContext.OrderItemStatus.Where(x => x.isCancelled == false).Select(rd => rd.OrderItemStatusId).ToList();
         if (tableBooking == null)
             await SendNotFoundAsync();
         response.OrderItems = await _dbContext.OrderItem
-        .Where(x => x.TableBookingId == req.TableBookingId && x.OrderItemStatusId > 1) // 1: Basket 0: Cancelled
+        .Where(x => paymentStatusIds.Contains(x.OrderItemStatusId) && x.TableBookingId == req.TableBookingId)
         .ProjectToDto()
         .ToListAsync();
 
