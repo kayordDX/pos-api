@@ -9,5 +9,7 @@ public class UserCashUp
     public string UserId { get; set; } = string.Empty;
     public decimal UserTotal { get; set; } = 0;
     public decimal UserBalance { get; set; } = 0;
+    public decimal UserPaymentTotal { get; set; } = 0;
+
 
 }

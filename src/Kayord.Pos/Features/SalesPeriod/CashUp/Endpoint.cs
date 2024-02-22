@@ -58,7 +58,7 @@ public class Endpoint : Endpoint<Request, CashUp>
             tableCashUp.Total += tableCashUp.OrderItems.Where(item => item.Extras != null)
                                           .Sum(item => item.Extras!.Sum(extra => extra.Price));
 
-            TotalPayments += tableCashUp.PaymentsReceived.Where(item => item.TableBookingId! == tb.Id)
+            tableCashUp.TablePaymentTotal += tableCashUp.PaymentsReceived.Where(item => item.TableBookingId! == tb.Id)
                                           .Sum(item => item.Amount);
             tableCashUp.Balance = tableCashUp.Total - TotalPayments;
 
@@ -68,16 +68,20 @@ public class Endpoint : Endpoint<Request, CashUp>
         foreach (var userId in distinctUserIds)
         {
             UserCashUp u = new();
-            u.UserTotal = userCashUp.TableCashUps.Where(item => item.UserId! == userId)
+            u.UserTotal += userCashUp.TableCashUps.Where(item => item.UserId! == userId)
                                           .Sum(item => item.Total);
-            u.UserBalance = userCashUp.TableCashUps.Where(item => item.UserId! == userId)
+            u.UserBalance += userCashUp.TableCashUps.Where(item => item.UserId! == userId)
                                           .Sum(item => item.Balance);
+            u.UserPaymentTotal += userCashUp.TableCashUps.Where(item => item.UserId! == userId)
+                                          .Sum(item => item.TablePaymentTotal);
             u.TableCashUps.AddRange(userCashUp.TableCashUps.Where(item => item.UserId! == userId));
             salesPeriodUserCashUps.Add(u);
         }
         cashUp.UserCashUps.AddRange(salesPeriodUserCashUps);
-        cashUp.CashUpBalance = salesPeriodUserCashUps.Sum(item => item.UserBalance);
-        cashUp.CashUpTotal = salesPeriodUserCashUps.Sum(item => item.UserTotal);
+        cashUp.CashUpBalance += salesPeriodUserCashUps.Sum(item => item.UserBalance);
+        cashUp.CashUpTotal += salesPeriodUserCashUps.Sum(item => item.UserTotal);
+        cashUp.CashUpTotalPayments += cashUp.UserCashUps.Sum(item => item.UserPaymentTotal);
+
         cashUp.SalesPeriodId = req.SalesPeriodId;
         await SendAsync(cashUp);
     }
