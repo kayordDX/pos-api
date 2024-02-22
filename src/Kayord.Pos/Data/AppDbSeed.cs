@@ -50,6 +50,10 @@ public static class AppDbSeed
         await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "OptionGroup" RESTART IDENTITY CASCADE;""");
         await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "OrderItemStatus" RESTART IDENTITY CASCADE;""");
         await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "UserNotification" RESTART IDENTITY CASCADE;""");
+        await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "ExtraGroup" RESTART IDENTITY CASCADE;""");
+        await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "Extra" RESTART IDENTITY CASCADE;""");
+        await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "MenuItemExtraGroup" RESTART IDENTITY CASCADE;""");
+
 
 
         await context.SalesPeriod.AddAsync(new SalesPeriod { Id = 1, Name = "Test", StartDate = DateTime.Now, OutletId = 1 });
@@ -97,8 +101,16 @@ public static class AppDbSeed
             await context.MenuItem.AddAsync(new MenuItem { Name = "Spier - Chardonnay Pinot Noir ", MenuSectionId = 5, Price = (decimal)18.80, Description = "The world's most recognizable beverage", DivisionId = 1 });
 
 
-            await context.MenuItem.AddAsync(new MenuItem { Name = "Bacon & Feta", MenuSectionId = 17, Price = (decimal)99.50, DivisionId = 1 });
-            await context.MenuItem.AddAsync(new MenuItem { Name = "Chicken Mayo", MenuSectionId = 17, Price = (decimal)110.00, DivisionId = 1 });
+
+            await context.ExtraGroup.AddAsync(new ExtraGroup { Name = "Pizza Extras" });
+            await context.SaveChangesAsync(cancellationToken);
+
+            await context.Extra.AddAsync(new Extra { Name = "Cheese", Price = 25.80M, ExtraGroupId = 1 });
+            await context.Extra.AddAsync(new Extra { Name = "Bacon", Price = 25.80M, ExtraGroupId = 1 });
+            await context.Extra.AddAsync(new Extra { Name = "Avo", Price = 25.80M, ExtraGroupId = 1 });
+            await context.Extra.AddAsync(new Extra { Name = "Anchovies", Price = 25.80M, ExtraGroupId = 1 });
+            await context.Extra.AddAsync(new Extra { Name = "Pilchards", Price = 25.80M, ExtraGroupId = 1 });
+            await context.Extra.AddAsync(new Extra { Name = "Pineapple", Price = -25.80M, ExtraGroupId = 1 });
 
             await context.OptionGroup.AddAsync(new OptionGroup { Name = "Pizza Extras", MinSelections = 0, MaxSelections = 5 });
             await context.OptionGroup.AddAsync(new OptionGroup { Name = "Pizza Base", MinSelections = 1, MaxSelections = 1 });
@@ -109,6 +121,9 @@ public static class AppDbSeed
             await context.Option.AddAsync(new Option { Name = "Gluten Free", Price = 20, OptionGroupId = 2 });
             await context.Option.AddAsync(new Option { Name = "Thin", Price = 0, OptionGroupId = 2 });
             await context.Option.AddAsync(new Option { Name = "Thick", Price = 0, OptionGroupId = 2 });
+            await context.MenuItem.AddAsync(new MenuItem { Name = "Bacon & Feta", MenuSectionId = 17, Price = (decimal)99.50, DivisionId = 1, });
+            await context.MenuItem.AddAsync(new MenuItem { Name = "Chicken Mayo", MenuSectionId = 17, Price = (decimal)110.00, DivisionId = 1 });
+            await context.MenuItemExtraGroup.AddAsync(new MenuItemExtraGroup { MenuItemId = 5, ExtraGroupId = 1 });
 
             await context.MenuItemOptionGroup.AddAsync(new MenuItemOptionGroup { MenuItemId = 4, OptionGroupId = 1 });
             await context.MenuItemOptionGroup.AddAsync(new MenuItemOptionGroup { MenuItemId = 4, OptionGroupId = 2 });

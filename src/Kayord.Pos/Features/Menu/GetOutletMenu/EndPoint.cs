@@ -30,7 +30,7 @@ namespace Kayord.Pos.Features.Menu.GetOutletMenu
                         .ThenInclude(mi => mi.Tags)
                 .Include(m => m.MenuSections!)
                     .ThenInclude(s => s.MenuItems!)
-                        .ThenInclude(mi => mi.Extras)
+
                 .Include(m => m.MenuSections!)
                     .ThenInclude(s => s.SubMenuSections!)
                         .ThenInclude(ss => ss.MenuItems!)
@@ -42,7 +42,7 @@ namespace Kayord.Pos.Features.Menu.GetOutletMenu
                 .Include(m => m.MenuSections!)
                     .ThenInclude(s => s.SubMenuSections!)
                         .ThenInclude(ss => ss.MenuItems!)
-                            .ThenInclude(mi => mi.Extras)
+
                 .Include(m => m.MenuSections!)
                     .ThenInclude(s => s.SubMenuSections!)
                         .ThenInclude(ss => ss.MenuItems)

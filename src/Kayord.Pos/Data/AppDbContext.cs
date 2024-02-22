@@ -39,7 +39,8 @@ public class AppDbContext : DbContext
     public DbSet<HaloLog> HaloLog => Set<HaloLog>();
     public DbSet<HaloReference> HaloReference => Set<HaloReference>();
     public DbSet<UserNotification> UserNotification => Set<UserNotification>();
-
+    public DbSet<ExtraGroup> ExtraGroup => Set<ExtraGroup>();
+    public DbSet<MenuItemExtraGroup> MenuItemExtraGroup => Set<MenuItemExtraGroup>();
 
 
     protected override void OnModelCreating(ModelBuilder builder)

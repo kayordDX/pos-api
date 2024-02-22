@@ -49,7 +49,6 @@ namespace Kayord.Pos.Features.Menu.GetItems
 
             var response = await items
                 .Include(m => m.Tags)
-                .Include(m => m.Extras)
                 .ProjectToBasicDto()
                 .ToListAsync();
             await SendAsync(response);
