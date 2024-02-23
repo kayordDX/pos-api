@@ -33,9 +33,11 @@ public class Endpoint : Endpoint<Request, CashUp>
         List<UserCashUp> salesPeriodUserCashUps = new();
         UserCashUp userCashUp = new();
         CashUp cashUp = new();
+        cashUp.TableCount = 0;
         List<Entities.TableBooking> bookings = await _dbContext.TableBooking.Where(x => x.SalesPeriodId == req.SalesPeriodId).ToListAsync();
         foreach (Entities.TableBooking tb in bookings)
         {
+            cashUp.TableCount++;
             TableCashUp tableCashUp = new();
             tableCashUp.Total = 0;
             decimal TotalPayments = 0m;

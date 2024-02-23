@@ -49,6 +49,8 @@ public class Endpoint : Endpoint<Request, Response>
         TotalPayments += response.PaymentsReceived.Where(item => item.TableBookingId! == req.TableBookingId)
                                       .Sum(item => item.Amount);
         response.Balance = response.Total - TotalPayments;
+        response.TipAmount = (response.Total - TotalPayments) * -1;
+
         response.Balance = response.Balance < 0 ? 0m : response.Balance;
         await SendAsync(response);
     }
