@@ -10,9 +10,15 @@ public class OrderItemDTO
     public int DivisionId { get; set; }
     public string? Note { get; set; }
     public DateTime OrderReceived { get; set; } = DateTime.Now;
+    public DateTime OrderUpdated { get; set; } = DateTime.Now;
+
     public string OrderReceivedFormatted
     {
         get => OrderReceived.Humanize();
+    }
+    public string OrderUpdatedFormatted
+    {
+        get => OrderUpdated.Humanize();
     }
     public int OrderItemStatusId { get; set; }
     public List<OrderItemOptionDTO>? OrderItemOptions { get; set; }
