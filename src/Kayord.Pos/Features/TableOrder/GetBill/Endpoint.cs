@@ -34,7 +34,6 @@ public class Endpoint : Endpoint<Request, Response>
             await SendNotFoundAsync();
         response.OrderItems = await _dbContext.OrderItem
         .Where(x => paymentStatusIds.Contains(x.OrderItemStatusId) && x.TableBookingId == req.TableBookingId)
-        .Include(x => x.OrderItemExtras)
         .ProjectToDto()
         .ToListAsync();
 
