@@ -28,6 +28,8 @@ namespace Kayord.Pos.Features.TableOrder.UpdateTableOrder
                 foreach (OrderItem i in entities)
                 {
                     i.OrderItemStatusId = req.OrderItemStatusId;
+                    i.OrderUpdated = DateTime.UtcNow;
+
                     if (ois.isComplete)
                         i.OrderCompleted = DateTime.Now;
                     if (ois.Notify)

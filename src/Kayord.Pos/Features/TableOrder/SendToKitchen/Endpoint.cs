@@ -28,6 +28,7 @@ namespace Kayord.Pos.Features.TableOrder.SendToKitchen
             foreach (var orderItem in orderItemsToUpdate)
             {
                 orderItem.OrderItemStatusId = 2;
+                orderItem.OrderUpdated = DateTime.UtcNow;
             }
 
             await _dbContext.SaveChangesAsync();

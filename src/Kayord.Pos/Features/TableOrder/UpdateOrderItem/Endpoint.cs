@@ -29,6 +29,7 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
             if (entity != null && oIS != null)
             {
                 entity.OrderItemStatusId = req.OrderItemStatusId;
+                entity.OrderUpdated = DateTime.UtcNow;
                 if (oIS.isComplete)
                     entity.OrderCompleted = DateTime.Now;
                 if (oIS.Notify)
