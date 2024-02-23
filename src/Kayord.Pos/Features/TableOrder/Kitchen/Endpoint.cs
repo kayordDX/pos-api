@@ -27,14 +27,14 @@ public class Endpoint : EndpointWithoutRequest<Response>
     {
         int roleId = 0;
         int outletId = 0;
-        var role = await _dbContext.UserRole.FirstOrDefaultAsync(x => x.UserId == _cu.UserId);
+        UserRole? role = await _dbContext.UserRole.FirstOrDefaultAsync(x => x.UserId == _cu.UserId);
         if (role == null)
             await SendNotFoundAsync();
         else
             roleId = role.RoleId;
 
         var divisionIds = _dbContext.RoleDivision.Where(x => x.RoleId == roleId).Select(rd => rd.DivisionId).ToList();
-        var kitchenStatusIds = _dbContext.OrderItemStatus.Where(x => x.isBackOffice == true).Select(rd => rd.OrderItemStatusId).ToList();
+        var statusIds = _dbContext.OrderItemStatus.Where(x => x.isBackOffice == role!.isBackOffice || x.isBackOffice == role!.isFrontLine).Select(rd => rd.OrderItemStatusId).ToList();
         UserOutlet? outlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.isCurrent == true);
         if (outlet == null)
         {
@@ -53,7 +53,7 @@ public class Endpoint : EndpointWithoutRequest<Response>
         result.ForEach(dto =>
         {
             dto.OrderItems = dto.OrderItems!
-                .Where(oi => kitchenStatusIds.Contains(oi.OrderItemStatusId) &&
+                .Where(oi => statusIds.Contains(oi.OrderItemStatusId) &&
                     divisionIds.Contains(oi.MenuItem.DivisionId))
                 .ToList();
         });
