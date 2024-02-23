@@ -7,8 +7,6 @@ public class OrderItemDTO
     public int OrderItemId { get; set; }
     public int TableBookingId { get; set; }
     public MenuItemDTO MenuItem { get; set; } = default!;
-    public List<OptionDTO>? Options { get; set; }
-    public List<ExtraDTO>? Extras { get; set; }
     public int DivisionId { get; set; }
     public string? Note { get; set; }
     public DateTime OrderReceived { get; set; } = DateTime.Now;
