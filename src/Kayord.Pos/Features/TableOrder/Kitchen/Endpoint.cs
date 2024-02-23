@@ -49,14 +49,25 @@ public class Endpoint : EndpointWithoutRequest<Response>
             .Where(x => x.SalesPeriod.OutletId == outletId)
             .ProjectToDto()
             .ToListAsync();
+        if (role!.isBackOffice)
+            result.ForEach(dto =>
+            {
+                if (role!.isBackOffice)
+                    dto.OrderItems = dto.OrderItems!
+                    .Where(oi => statusIds.Contains(oi.OrderItemStatusId) &&
+                        divisionIds.Contains(oi.MenuItem.DivisionId))
+                    .ToList();
+            });
 
-        result.ForEach(dto =>
-        {
-            dto.OrderItems = dto.OrderItems!
-                .Where(oi => statusIds.Contains(oi.OrderItemStatusId) &&
-                    divisionIds.Contains(oi.MenuItem.DivisionId))
-                .ToList();
-        });
+        if (role!.isFrontLine)
+            result.Where(x => x.User.UserId == _cu.UserId).ToList().ForEach(dto =>
+            {
+                if (role!.isBackOffice)
+                    dto.OrderItems = dto.OrderItems!
+                    .Where(oi => statusIds.Contains(oi.OrderItemStatusId) &&
+                        divisionIds.Contains(oi.MenuItem.DivisionId))
+                    .ToList();
+            });
         result = result.Where(x => x.OrderItems!.Any()).ToList();
 
         Response response = new()
