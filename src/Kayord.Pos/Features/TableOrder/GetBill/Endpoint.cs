@@ -34,16 +34,18 @@ public class Endpoint : Endpoint<Request, Response>
             await SendNotFoundAsync();
         response.OrderItems = await _dbContext.OrderItem
         .Where(x => paymentStatusIds.Contains(x.OrderItemStatusId) && x.TableBookingId == req.TableBookingId)
+        .Include(x => x.OrderItemExtras)
         .ProjectToDto()
         .ToListAsync();
+
         response.PaymentsReceived = await _dbContext.Payment.Where(x => x.TableBookingId == req.TableBookingId).ToListAsync();
         response.Total += response.OrderItems.Sum(item => item.MenuItem.Price);
 
-        response.Total += response.OrderItems.Where(item => item.Options != null)
-                                      .Sum(item => item.Options!.Sum(option => option.Price));
+        response.Total += response.OrderItems.Where(item => item.OrderItemOptions != null)
+                                      .Sum(item => item.OrderItemOptions!.Sum(option => option.Option.Price));
 
-        response.Total += response.OrderItems.Where(item => item.Extras != null)
-                                      .Sum(item => item.Extras!.Sum(extra => extra.Price));
+        response.Total += response.OrderItems.Where(item => item.OrderItemExtras != null)
+                                      .Sum(item => item.OrderItemExtras!.Sum(extra => extra.Extra.Price));
 
         TotalPayments += response.PaymentsReceived.Where(item => item.TableBookingId! == req.TableBookingId)
                                       .Sum(item => item.Amount);
