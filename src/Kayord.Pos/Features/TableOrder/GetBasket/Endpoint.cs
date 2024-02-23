@@ -41,15 +41,15 @@ public class Endpoint : Endpoint<Request, Response>
         foreach (BillOrderItemDTO item in response.OrderItems)
         {
             response.Total += item.MenuItem.Price;
-            if (item.Options != null)
-                foreach (OptionDTO option in item.Options)
+            if (item.OrderItemOptions != null)
+                foreach (OrderItemOptionDTO option in item.OrderItemOptions)
                 {
-                    response.Total += option.Price;
+                    response.Total += option.Option.Price;
                 }
-            if (item.Extras != null)
-                foreach (ExtraDTO extra in item.Extras)
+            if (item.OrderItemExtras != null)
+                foreach (OrderItemExtraDTO extra in item.OrderItemExtras)
                 {
-                    response.Total += extra.Price;
+                    response.Total += extra.Extra.Price;
                 }
         }
         await SendAsync(response);

@@ -51,11 +51,11 @@ public class Endpoint : Endpoint<Request, CashUp>
 
             tableCashUp.Total += tableCashUp.OrderItems.Sum(item => item.MenuItem.Price);
 
-            tableCashUp.Total += tableCashUp.OrderItems.Where(item => item.Options != null)
-                                          .Sum(item => item.Options!.Sum(option => option.Price));
+            tableCashUp.Total += tableCashUp.OrderItems.Where(item => item.OrderItemOptions != null)
+                                          .Sum(item => item.OrderItemOptions!.Sum(option => option.Option.Price));
 
-            tableCashUp.Total += tableCashUp.OrderItems.Where(item => item.Extras != null)
-                                          .Sum(item => item.Extras!.Sum(extra => extra.Price));
+            tableCashUp.Total += tableCashUp.OrderItems.Where(item => item.OrderItemExtras != null)
+                                          .Sum(item => item.OrderItemExtras!.Sum(extra => extra.Extra.Price));
 
             tableCashUp.TablePaymentTotal += tableCashUp.PaymentsReceived.Where(item => item.TableBookingId! == tb.Id)
                                           .Sum(item => item.Amount);

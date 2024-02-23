@@ -1,6 +1,7 @@
 using Kayord.Pos.DTO;
 
 namespace Kayord.Pos.Features.TableOrder.GetBill;
+
 public class BillOrderItemDTO
 {
     public int OrderItemId { get; set; }
