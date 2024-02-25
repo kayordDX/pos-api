@@ -20,7 +20,6 @@ public class AppDbContext : DbContext
     public DbSet<TableBooking> TableBooking => Set<TableBooking>();
     public DbSet<Menu> Menu => Set<Menu>();
     public DbSet<MenuItem> MenuItem => Set<MenuItem>();
-    public DbSet<TableCashUp> TableCashUp => Set<TableCashUp>();
     public DbSet<OrderItem> OrderItem => Set<OrderItem>();
     public DbSet<User> User => Set<User>();
     public DbSet<UserRole> UserRole => Set<UserRole>();

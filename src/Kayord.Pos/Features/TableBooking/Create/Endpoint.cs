@@ -36,10 +36,7 @@ namespace Kayord.Pos.Features.TableBooking.Create
                 UserId = _user.UserId
             };
 
-            var tableCashUp = new Entities.TableCashUp
-            {
-                TableBookingId = entity.Id
-            };
+
 
             await _dbContext.TableBooking.AddAsync(entity);
             await _dbContext.SaveChangesAsync();
