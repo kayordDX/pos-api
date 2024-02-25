@@ -29,7 +29,7 @@ namespace Kayord.Pos.Features.Table.GetMyBooked
                 //current bookings
                 results = await _dbContext.TableBooking
                     .Where(booking => booking.Table.Section.OutletId == req.OutletId && booking.UserId == _cu.UserId &&
-                                      _dbContext.TableCashUp.All(cashUp => cashUp.TableBookingId != booking.Id))
+                                      _dbContext.TableCashUp.All(cashUp => cashUp.TableBookingId != booking.Id) && booking.CloseDate == null)
                     .Where(x => x.Table.Section.OutletId == req.OutletId)
                     .ProjectToDto()
                     .ToListAsync();
@@ -38,7 +38,7 @@ namespace Kayord.Pos.Features.Table.GetMyBooked
             {
                 results = await _dbContext.TableBooking
                  .Where(booking => booking.Table.Section.OutletId == req.OutletId && booking.UserId != _cu.UserId &&
-                                   _dbContext.TableCashUp.All(cashUp => cashUp.TableBookingId != booking.Id))
+                                   _dbContext.TableCashUp.All(cashUp => cashUp.TableBookingId != booking.Id) && booking.CloseDate == null)
                  .Where(x => x.Table.Section.OutletId == req.OutletId)
                  .ProjectToDto()
                  .ToListAsync();

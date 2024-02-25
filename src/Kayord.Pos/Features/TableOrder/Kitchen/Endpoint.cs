@@ -59,9 +59,9 @@ public class Endpoint : EndpointWithoutRequest<Response>
         });
 
         if (role!.isBackOffice)
-            result = result.Where(x => x.OrderItems!.Any()).ToList();
+            result = result.Where(x => x.OrderItems!.Any()).Where(x => x.CloseDate == null).ToList();
         if (role!.isFrontLine)
-            result = result.Where(x => x.OrderItems!.Any()).Where(y => y.User.UserId == _cu.UserId).ToList();
+            result = result.Where(x => x.OrderItems!.Any()).Where(y => y.User.UserId == _cu.UserId && y.CloseDate == null).ToList();
 
         Response response = new()
         {
