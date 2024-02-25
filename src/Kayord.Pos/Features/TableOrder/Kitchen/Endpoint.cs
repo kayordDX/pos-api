@@ -34,7 +34,7 @@ public class Endpoint : EndpointWithoutRequest<Response>
             roleId = role.RoleId;
 
         var divisionIds = _dbContext.RoleDivision.Where(x => x.RoleId == roleId).Select(rd => rd.DivisionId).ToList();
-        var statusIds = _dbContext.OrderItemStatus.Where(x => x.isBackOffice == role!.isBackOffice || x.isBackOffice == role!.isFrontLine).Select(rd => rd.OrderItemStatusId).ToList();
+        var statusIds = _dbContext.OrderItemStatus.Where(x => x.isBackOffice == role!.isBackOffice || x.isFrontLine == role!.isFrontLine).Select(rd => rd.OrderItemStatusId).ToList();
         UserOutlet? outlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.isCurrent == true);
         if (outlet == null)
         {
