@@ -25,12 +25,12 @@ public class MigratorHostedService : IHostedService
             {
                 await context.Database.MigrateAsync(cancellationToken);
             }
+
             // Seed
-            // TODO: Add back seed only to dev check
-            // if (_env.IsDevelopment())
-            // {
-            await AppDbSeed.SeedData(context, cancellationToken);
-            // }
+            if (_env.IsDevelopment())
+            {
+                await AppDbSeed.SeedData(context, cancellationToken);
+            }
         }
         catch (Exception ex)
         {
