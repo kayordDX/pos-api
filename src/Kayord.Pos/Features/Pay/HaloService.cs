@@ -101,15 +101,20 @@ public class HaloService
                     Payment? p = await _dbContext.Payment.FirstOrDefaultAsync(x => x.PaymentReference == result.PaymentReference);
                     if (p == null)
                     {
-                        p = new()
+                        HaloReference? hRef = await _dbContext.HaloReference.FirstOrDefaultAsync(x => x.Id.ToString() == result.PaymentReference);
+                        if (hRef != null)
                         {
-                            Amount = result.Amount,
-                            PaymentReference = result.PaymentReference,
-                            DateReceived = DateTime.UtcNow,
-                            UserId = userId
-                        };
-                        await _dbContext.Payment.AddAsync(p);
-                        await _dbContext.SaveChangesAsync();
+                            p = new()
+                            {
+                                Amount = result.Amount,
+                                PaymentReference = result.PaymentReference,
+                                DateReceived = DateTime.UtcNow,
+                                UserId = userId,
+                                TableBookingId = hRef.TableBookingId
+                            };
+                            await _dbContext.Payment.AddAsync(p);
+                            await _dbContext.SaveChangesAsync();
+                        }
                     }
 
                 }
