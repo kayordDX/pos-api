@@ -10,6 +10,8 @@ public class OrderItem
     public DateTime OrderUpdated { get; set; } = DateTime.Now;
     public DateTime? OrderCompleted { get; set; }
     public int OrderItemStatusId { get; set; }
+    public OrderItemStatus OrderItemStatus { get; set; } = default!;
+
     public List<OrderItemOption>? OrderItemOptions { get; set; }
     public List<OrderItemExtra>? OrderItemExtras { get; set; }
     public string? Note { get; set; }

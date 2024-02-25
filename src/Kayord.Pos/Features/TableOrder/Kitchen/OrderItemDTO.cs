@@ -21,7 +21,7 @@ public class OrderItemDTO
         get => OrderUpdated.Humanize();
     }
     public int OrderItemStatusId { get; set; }
-    public OrderItemStatusDTO? OrderItemStatus { get; set; }
+    public OrderItemStatusDTO OrderItemStatus { get; set; } = default!;
 
     public List<OrderItemOptionDTO>? OrderItemOptions { get; set; }
     public List<OrderItemExtraDTO>? OrderItemExtras { get; set; }
