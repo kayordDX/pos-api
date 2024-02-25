@@ -10,5 +10,6 @@ public class TableBookingDTO
     public List<OrderItemDTO>? OrderItems { get; set; }
     public string BookingName { get; set; } = string.Empty;
     public DateTime BookingDate { get; set; } = DateTime.UtcNow;
+    public DateTime? CloseDate { get; set; }
     public UserDTO User { get; set; } = default!;
 }
