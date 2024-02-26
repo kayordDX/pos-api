@@ -21,6 +21,7 @@ public class Endpoint : EndpointWithoutRequest<Response>
     public override void Configure()
     {
         Get("/kitchen/getOrders");
+        AllowAnonymous();
     }
 
     public override async Task HandleAsync(CancellationToken ct)
@@ -61,7 +62,7 @@ public class Endpoint : EndpointWithoutRequest<Response>
         if (role!.isBackOffice)
             result = result.Where(x => x.OrderItems!.Any()).Where(x => x.CloseDate == null && x.OrderItems!.Count() > 0).ToList();
         if (role!.isFrontLine)
-            result = result.Where(x => x.OrderItems!.Any()).Where(y => y.User.UserId == _cu.UserId && y.CloseDate == null).ToList();
+            result = result.Where(x => x.OrderItems!.Any()).Where(y => y.User.UserId == _cu.UserId && y.CloseDate == null && y.OrderItems!.Count() > 0).ToList();
 
         Response response = new()
         {
