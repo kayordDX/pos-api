@@ -46,7 +46,7 @@ public class Endpoint : EndpointWithoutRequest<Response>
         }
 
         var result = await _dbContext.TableBooking
-            .Where(x => x.SalesPeriod.OutletId == outletId && x.OrderItems!.Count() > 0)
+            .Where(x => x.SalesPeriod.OutletId == outletId)
             .ProjectToDto()
             .ToListAsync();
 
@@ -59,7 +59,7 @@ public class Endpoint : EndpointWithoutRequest<Response>
         });
 
         if (role!.isBackOffice)
-            result = result.Where(x => x.OrderItems!.Any()).Where(x => x.CloseDate == null).ToList();
+            result = result.Where(x => x.OrderItems!.Any()).Where(x => x.CloseDate == null && x.OrderItems!.Count() > 0).ToList();
         if (role!.isFrontLine)
             result = result.Where(x => x.OrderItems!.Any()).Where(y => y.User.UserId == _cu.UserId && y.CloseDate == null).ToList();
 
