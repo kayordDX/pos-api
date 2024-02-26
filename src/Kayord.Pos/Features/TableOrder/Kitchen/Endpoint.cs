@@ -47,7 +47,7 @@ public class Endpoint : EndpointWithoutRequest<Response>
         }
 
         var result = await _dbContext.TableBooking
-            .Where(x => x.SalesPeriod.OutletId == outletId)
+            .Where(x => x.SalesPeriod.OutletId == outletId && x.CloseDate == null)
             .ProjectToDto()
             .ToListAsync();
 
