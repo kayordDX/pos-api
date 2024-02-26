@@ -11,6 +11,7 @@ public class TableCashUp
     public decimal TablePaymentTotal { get; set; } = 0;
     public decimal Balance { get; set; } = 0;
     public string UserId { get; set; } = string.Empty;
+    public UserDTO User { get; set; } = default!;
 
 
 }

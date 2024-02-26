@@ -22,7 +22,6 @@ public class Endpoint : Endpoint<Request, CashUp>
     public override void Configure()
     {
         Get("/salesperiod/cashup");
-        AllowAnonymous();
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
