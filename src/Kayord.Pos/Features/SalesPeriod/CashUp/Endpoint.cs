@@ -22,7 +22,6 @@ public class Endpoint : Endpoint<Request, CashUp>
     public override void Configure()
     {
         Get("/salesperiod/cashup");
-        AllowAnonymous();
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
@@ -78,7 +77,8 @@ public class Endpoint : Endpoint<Request, CashUp>
 
             tableCashUp.TablePaymentTotal += tableCashUp.PaymentsReceived.Where(item => item.TableBookingId! == tb.Id)
                                           .Sum(item => item.Amount);
-            tableCashUp.Balance = tableCashUp.Total - TotalPayments;
+            tableCashUp.Balance = tableCashUp.Total - tableCashUp.TablePaymentTotal;
+            tableCashUp.Balance = tableCashUp.Balance < 0 ? 0 : tableCashUp.Balance;
             tableCashUp.User = tb.User;
             salesPeriodTableCashUps.Add(tableCashUp);
         }
