@@ -20,7 +20,7 @@ namespace Kayord.Pos.Features.TableOrder.UpdateTableOrder
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-            var updateableStatus = await _dbContext.OrderItemStatus.Where(x => x.isCancelled == true).Select(rd => rd.OrderItemStatusId).ToListAsync();
+            var updateableStatus = await _dbContext.OrderItemStatus.Where(x => x.isBillable == true && x.isComplete == false).Select(rd => rd.OrderItemStatusId).ToListAsync();
             var ois = await _dbContext.OrderItemStatus.FirstOrDefaultAsync(x => x.OrderItemStatusId == req.OrderItemStatusId);
             if (updateableStatus != null && ois != null)
             {
