@@ -21,7 +21,6 @@ public class Endpoint : EndpointWithoutRequest<Response>
     public override void Configure()
     {
         Get("/kitchen/getOrders");
-        AllowAnonymous();
     }
 
     public override async Task HandleAsync(CancellationToken ct)
