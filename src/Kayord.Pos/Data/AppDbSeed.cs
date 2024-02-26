@@ -35,6 +35,18 @@ public static class AppDbSeed
             await context.SaveChangesAsync(cancellationToken);
         }
 
+        if (!context.Division.Any())
+        {
+            await context.Division.AddAsync(new Division { DivisionId = 1, DivisionName = "Kitchen" });
+            await context.SaveChangesAsync(cancellationToken);
+        }
+
+        if (!context.User.Any())
+        {
+            await context.User.AddAsync(new User { UserId = "103301258912011927884", Email = "stonk08@gmail.com", IsActive = true, Name = "Steff Bosch", Image = "a" });
+            await context.SaveChangesAsync(cancellationToken);
+        }
+
         if (!context.Role.Any())
         {
             await context.Role.AddAsync(new Role { Name = "Guest", Description = "Guest", RoleId = 1 });
