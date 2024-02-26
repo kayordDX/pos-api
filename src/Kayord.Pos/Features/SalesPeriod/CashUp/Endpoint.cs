@@ -22,7 +22,7 @@ public class Endpoint : Endpoint<Request, CashUp>
     public override void Configure()
     {
         Get("/salesperiod/cashup");
-
+        AllowAnonymous();
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
@@ -83,19 +83,24 @@ public class Endpoint : Endpoint<Request, CashUp>
             salesPeriodTableCashUps.Add(tableCashUp);
         }
         var distinctUserIds = salesPeriodTableCashUps.Select(cashUp => cashUp.UserId).Distinct();
-        foreach (var userId in distinctUserIds)
+        foreach (string? userId in distinctUserIds)
         {
-            UserCashUp u = new();
-            u.UserId = userId;
-            u.UserTotal += salesPeriodTableCashUps.Where(item => item.UserId! == userId)
-                                          .Sum(item => item.Total);
-            u.UserBalance += salesPeriodTableCashUps.Where(item => item.UserId! == userId)
-                                          .Sum(item => item.Balance);
-            u.UserPaymentTotal += salesPeriodTableCashUps.Where(item => item.UserId! == userId)
-                                          .Sum(item => item.TablePaymentTotal);
-            u.TableCashUps.AddRange(salesPeriodTableCashUps.Where(item => item.UserId! == userId).ToList());
+            if (userId != null)
+            {
+                UserCashUp u = new();
+                u.UserId = userId;
+                u.User = salesPeriodTableCashUps.FirstOrDefault(x => x.UserId == userId).User;
+                u.UserTotal += salesPeriodTableCashUps.Where(item => item.UserId! == userId)
+                                              .Sum(item => item.Total);
+                u.UserBalance += salesPeriodTableCashUps.Where(item => item.UserId! == userId)
+                                              .Sum(item => item.Balance);
+                u.UserPaymentTotal += salesPeriodTableCashUps.Where(item => item.UserId! == userId)
+                                              .Sum(item => item.TablePaymentTotal);
+                u.TableCashUps.AddRange(salesPeriodTableCashUps.Where(item => item.UserId! == userId).ToList());
 
-            salesPeriodUserCashUps.Add(u);
+                u.UserTipTotal = u.UserPaymentTotal - u.UserBalance;
+                salesPeriodUserCashUps.Add(u);
+            }
         }
         cashUp.UserCashUps.AddRange(salesPeriodUserCashUps);
         cashUp.CashUpBalance += salesPeriodUserCashUps.Sum(item => item.UserBalance);

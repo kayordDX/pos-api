@@ -11,6 +11,8 @@ public class UserCashUp
     public decimal UserTotal { get; set; } = 0;
     public decimal UserBalance { get; set; } = 0;
     public decimal UserPaymentTotal { get; set; } = 0;
+    public decimal UserTipTotal { get; set; } = 0;
+
     public TimeOnly TableTurnaroundTime { get; set; }
 
 
