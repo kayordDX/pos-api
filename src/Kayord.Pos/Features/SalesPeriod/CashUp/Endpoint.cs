@@ -3,6 +3,7 @@ using Kayord.Pos.Services;
 using Kayord.Pos.DTO;
 
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace Kayord.Pos.Features.SalesPeriod.CashUp;
 
@@ -34,7 +35,14 @@ public class Endpoint : Endpoint<Request, CashUp>
         UserCashUp userCashUp = new();
         CashUp cashUp = new();
         cashUp.TableCount = 0;
-        List<Entities.TableBooking> bookings = await _dbContext.TableBooking.Where(x => x.SalesPeriodId == req.SalesPeriodId).ToListAsync();
+        List<Entities.TableBooking> bookings = new();
+        var userIdsCashedUp = _dbContext.CashUp.Where(x => x.SalesPeriodId == req.SalesPeriodId && x.SignOffDate != null).Select(rd => rd.UserId).ToList();
+
+        if (req.UserId == string.Empty)
+            bookings = await _dbContext.TableBooking.Where(x => x.SalesPeriodId == req.SalesPeriodId).Where(oi => !userIdsCashedUp.Contains(oi.UserId)).ToListAsync();
+        else
+            bookings = await _dbContext.TableBooking.Where(x => x.SalesPeriodId == req.SalesPeriodId).ToListAsync();
+
         foreach (Entities.TableBooking tb in bookings)
         {
             cashUp.TableCount++;
@@ -42,7 +50,7 @@ public class Endpoint : Endpoint<Request, CashUp>
             tableCashUp.Total = 0;
             decimal TotalPayments = 0m;
 
-            var paymentStatusIds = _dbContext.OrderItemStatus.Where(x => x.isCancelled == false).Select(rd => rd.OrderItemStatusId).ToList();
+            var paymentStatusIds = _dbContext.OrderItemStatus.Where(x => x.isBillable == true).Select(rd => rd.OrderItemStatusId).ToList();
 
             tableCashUp.OrderItems = await _dbContext.OrderItem
             .Where(x => paymentStatusIds.Contains(x.OrderItemStatusId) && x.TableBookingId == tb.Id)
@@ -77,14 +85,15 @@ public class Endpoint : Endpoint<Request, CashUp>
             u.UserPaymentTotal += salesPeriodTableCashUps.Where(item => item.UserId! == userId)
                                           .Sum(item => item.TablePaymentTotal);
             u.TableCashUps.AddRange(salesPeriodTableCashUps.Where(item => item.UserId! == userId).ToList());
+
             salesPeriodUserCashUps.Add(u);
         }
         cashUp.UserCashUps.AddRange(salesPeriodUserCashUps);
         cashUp.CashUpBalance += salesPeriodUserCashUps.Sum(item => item.UserBalance);
         cashUp.CashUpTotal += salesPeriodUserCashUps.Sum(item => item.UserTotal);
         cashUp.CashUpTotalPayments += cashUp.UserCashUps.Sum(item => item.UserPaymentTotal);
-
         cashUp.SalesPeriodId = req.SalesPeriodId;
+        cashUp.UserId = req.UserId;
         await SendAsync(cashUp);
     }
 }

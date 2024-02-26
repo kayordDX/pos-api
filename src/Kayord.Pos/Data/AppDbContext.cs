@@ -41,6 +41,7 @@ public class AppDbContext : DbContext
     public DbSet<ExtraGroup> ExtraGroup => Set<ExtraGroup>();
     public DbSet<Payment> Payment => Set<Payment>();
     public DbSet<MenuItemExtraGroup> MenuItemExtraGroup => Set<MenuItemExtraGroup>();
+    public DbSet<CashUp> CashUp => Set<CashUp>();
 
 
     protected override void OnModelCreating(ModelBuilder builder)
