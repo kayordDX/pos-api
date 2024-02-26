@@ -22,6 +22,7 @@ public class Endpoint : Endpoint<Request, CashUp>
     public override void Configure()
     {
         Get("/salesperiod/cashup");
+
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
@@ -43,15 +44,15 @@ public class Endpoint : Endpoint<Request, CashUp>
         UserCashUp userCashUp = new();
         CashUp cashUp = new();
         cashUp.TableCount = 0;
-        List<Entities.TableBooking> bookings = new();
+        List<TableBookingDTO> bookings = new();
         var userIdsCashedUp = _dbContext.CashUp.Where(x => x.SalesPeriodId == req.SalesPeriodId && x.SignOffDate != null).Select(rd => rd.UserId).ToList();
 
         if (req.UserId == string.Empty)
-            bookings = await _dbContext.TableBooking.Where(x => x.SalesPeriodId == req.SalesPeriodId).Where(oi => !userIdsCashedUp.Contains(oi.UserId)).ToListAsync();
+            bookings = await _dbContext.TableBooking.Where(x => x.SalesPeriodId == req.SalesPeriodId).Where(oi => !userIdsCashedUp.Contains(oi.UserId)).ProjectToDto().ToListAsync();
         else
-            bookings = await _dbContext.TableBooking.Where(x => x.SalesPeriodId == req.SalesPeriodId).ToListAsync();
+            bookings = await _dbContext.TableBooking.Where(x => x.SalesPeriodId == req.SalesPeriodId).ProjectToDto().ToListAsync();
 
-        foreach (Entities.TableBooking tb in bookings)
+        foreach (TableBookingDTO tb in bookings)
         {
             cashUp.TableCount++;
             TableCashUp tableCashUp = new();
@@ -59,12 +60,12 @@ public class Endpoint : Endpoint<Request, CashUp>
             decimal TotalPayments = 0m;
 
             var paymentStatusIds = _dbContext.OrderItemStatus.Where(x => x.isBillable == true).Select(rd => rd.OrderItemStatusId).ToList();
+            tableCashUp.UserId = tb.UserId;
 
             tableCashUp.OrderItems = await _dbContext.OrderItem
             .Where(x => paymentStatusIds.Contains(x.OrderItemStatusId) && x.TableBookingId == tb.Id)
             .ProjectToDto()
             .ToListAsync();
-            tableCashUp.UserId = tb.UserId;
             tableCashUp.PaymentsReceived = await _dbContext.Payment.Where(x => x.TableBookingId == tb.Id).ToListAsync();
 
             tableCashUp.Total += tableCashUp.OrderItems.Sum(item => item.MenuItem.Price);
@@ -78,7 +79,7 @@ public class Endpoint : Endpoint<Request, CashUp>
             tableCashUp.TablePaymentTotal += tableCashUp.PaymentsReceived.Where(item => item.TableBookingId! == tb.Id)
                                           .Sum(item => item.Amount);
             tableCashUp.Balance = tableCashUp.Total - TotalPayments;
-
+            tableCashUp.User = tb.User;
             salesPeriodTableCashUps.Add(tableCashUp);
         }
         var distinctUserIds = salesPeriodTableCashUps.Select(cashUp => cashUp.UserId).Distinct();

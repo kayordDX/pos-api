@@ -10,5 +10,6 @@ public class BillOrderItemDTO
     public BillMenuItemDTO MenuItem { get; set; } = default!;
     public List<OrderItemOptionDTO>? OrderItemOptions { get; set; }
     public List<OrderItemExtraDTO>? OrderItemExtras { get; set; }
+    public string UserId { get; set; } = string.Empty;
     public string? Note { get; set; }
 }

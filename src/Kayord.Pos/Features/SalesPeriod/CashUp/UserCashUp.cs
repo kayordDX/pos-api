@@ -1,6 +1,5 @@
-using Kayord.Pos.DTO;
-using Kayord.Pos.Entities;
 
+using Kayord.Pos.DTO;
 namespace Kayord.Pos.Features.SalesPeriod.CashUp;
 
 public class UserCashUp
