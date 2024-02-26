@@ -29,7 +29,7 @@ public class Endpoint : Endpoint<Request, Response>
         response.Total = 0;
         decimal TotalPayments = 0m;
         var tableBooking = await _dbContext.TableBooking.FirstOrDefaultAsync(x => x.Id == req.TableBookingId);
-        var paymentStatusIds = _dbContext.OrderItemStatus.Where(x => x.isCancelled == false).Select(rd => rd.OrderItemStatusId).ToList();
+        var paymentStatusIds = _dbContext.OrderItemStatus.Where(x => x.isBillable).Select(rd => rd.OrderItemStatusId).ToList();
         if (tableBooking == null)
             await SendNotFoundAsync();
         response.OrderItems = await _dbContext.OrderItem
