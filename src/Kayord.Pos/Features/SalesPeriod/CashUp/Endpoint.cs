@@ -29,7 +29,10 @@ public class Endpoint : Endpoint<Request, CashUp>
     {
         Entities.SalesPeriod? sp = await _dbContext.SalesPeriod.FirstOrDefaultAsync(x => x.Id == req.SalesPeriodId);
         if (sp == null)
+        {
             await SendNotFoundAsync();
+            return;
+        }
         Entities.TableBooking? openTable = await _dbContext.TableBooking.FirstOrDefaultAsync(x => x.SalesPeriodId == req.SalesPeriodId && x.CloseDate == null);
         if (openTable != null)
         {

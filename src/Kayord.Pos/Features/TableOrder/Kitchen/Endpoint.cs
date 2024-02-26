@@ -21,6 +21,7 @@ public class Endpoint : EndpointWithoutRequest<Response>
     public override void Configure()
     {
         Get("/kitchen/getOrders");
+        AllowAnonymous();
     }
 
     public override async Task HandleAsync(CancellationToken ct)
@@ -34,7 +35,7 @@ public class Endpoint : EndpointWithoutRequest<Response>
             roleId = role.RoleId;
 
         var divisionIds = _dbContext.RoleDivision.Where(x => x.RoleId == roleId).Select(rd => rd.DivisionId).ToList();
-        var statusIds = _dbContext.OrderItemStatus.Where(x => x.isBackOffice == role!.isBackOffice || x.isFrontLine == role!.isFrontLine).Select(rd => rd.OrderItemStatusId).ToList();
+        var statusIds = _dbContext.OrderItemStatus.Where(x => (x.isBackOffice == role!.isBackOffice || x.isFrontLine == role!.isFrontLine) && x.isComplete != true && x.isCancelled != true).Select(rd => rd.OrderItemStatusId).ToList();
         UserOutlet? outlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.isCurrent == true);
         if (outlet == null)
         {
@@ -59,9 +60,11 @@ public class Endpoint : EndpointWithoutRequest<Response>
         });
 
         if (role!.isBackOffice)
-            result = result.Where(x => x.OrderItems!.Any()).Where(x => x.CloseDate == null && x.OrderItems!.Count() > 0).ToList();
+            result = result.Where(x => x.OrderItems!.Any()).Where(x => x.CloseDate == null && x.OrderItems!.Where(y => y.OrderItemStatusId != 1 && y.OrderItemStatusId != 6).Count() > 0).ToList();
         if (role!.isFrontLine)
-            result = result.Where(x => x.OrderItems!.Any()).Where(y => y.User.UserId == _cu.UserId && y.CloseDate == null && y.OrderItems!.Count() > 0).ToList();
+            result = result.Where(x => x.OrderItems!.Any())
+                    .Where(y => y.User.UserId == _cu.UserId && y.CloseDate == null
+        && y.OrderItems!.Where(x => x.OrderItemStatusId != 1 && x.OrderItemStatusId != 6).Count() > 0).ToList();
 
         Response response = new()
         {
