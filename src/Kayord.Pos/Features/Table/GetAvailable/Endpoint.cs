@@ -22,7 +22,7 @@ namespace Kayord.Pos.Features.Table.GetAvailable
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
             var bookedTableIds = await _dbContext.TableBooking
-                  .Where(booking => booking.Table.Section.OutletId == req.OutletId)
+                  .Where(booking => booking.Table.Section.OutletId == req.OutletId && booking.CloseDate == null)
                   .Select(booking => booking.TableId)
                   .ToListAsync();
 
