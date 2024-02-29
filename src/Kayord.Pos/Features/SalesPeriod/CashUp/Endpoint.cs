@@ -98,7 +98,7 @@ public class Endpoint : Endpoint<Request, CashUp>
                                               .Sum(item => item.TablePaymentTotal);
                 u.TableCashUps.AddRange(salesPeriodTableCashUps.Where(item => item.UserId! == userId).ToList());
 
-                u.UserTipTotal = u.UserPaymentTotal - u.UserBalance;
+                u.UserTipTotal = u.UserPaymentTotal - u.UserTotal;
                 salesPeriodUserCashUps.Add(u);
             }
         }
