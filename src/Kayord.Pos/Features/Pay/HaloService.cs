@@ -110,7 +110,9 @@ public class HaloService
                                 PaymentReference = result.PaymentReference,
                                 DateReceived = DateTime.UtcNow,
                                 UserId = userId,
-                                TableBookingId = hRef.TableBookingId
+                                TableBookingId = hRef.TableBookingId,
+                                PaymentTypeId = 1
+
                             };
                             await _dbContext.Payment.AddAsync(p);
                             await _dbContext.SaveChangesAsync();
