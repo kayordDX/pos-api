@@ -1,48 +1,66 @@
 using System.Runtime.CompilerServices;
-using Azure;
 using Kayord.Pos.Common.Wrapper;
-using Kayord.Pos.Data;
-using Kayord.Pos.Services;
 
 namespace Kayord.Pos.Features.Pay.HaloPay;
 
-public class Endpoint : Endpoint<Request, Result<Response>>
+public class Endpoint : Endpoint<Request, Result<GetLink.Response>>
 {
-    private readonly AppDbContext _dbContext;
-    private readonly CurrentUserService _cu;
+    private readonly ILogger<Endpoint> _logger;
     private readonly HaloService _halo;
+    private int i = 0;
+    private string _reference = string.Empty;
 
-    public Endpoint(AppDbContext dbContext, HaloService halo, CurrentUserService cu)
+    public Endpoint(HaloService halo, ILogger<Endpoint> logger)
     {
-        _dbContext = dbContext;
         _halo = halo;
-        _cu = cu;
+        _logger = logger;
     }
 
     public override void Configure()
     {
-        Get("/pay/haloPay");
+        Get("/pay/haloPay/{tableBookingId}/{amount}/{userId}");
         AllowAnonymous();
+        Options(x => x.RequireCors(p => p.AllowAnyOrigin()));
     }
 
-    public override async Task HandleAsync(Request req, CancellationToken ct)
+    public override async Task HandleAsync(Request r, CancellationToken ct)
     {
-        await SendEventStreamAsync("my-event", GetDataStream(ct), ct);
-        // if (string.IsNullOrEmpty(_cu.UserId))
-        // {
-        //     await SendUnauthorizedAsync();
-        //     return;
-        // }
-        // var results = await _halo.GetLink(req.Amount, req.TableBookingId, _cu.UserId);
-        // await SendAsync(results);
+        try
+        {
+            await SendEventStreamAsync("pay", GetStatus(ct, r), ct);
+        }
+        catch (Exception)
+        {
+            await SendErrorsAsync(500);
+        }
     }
 
-    private async IAsyncEnumerable<object> GetDataStream([EnumeratorCancellation] CancellationToken ct)
+    private async IAsyncEnumerable<object> GetStatus([EnumeratorCancellation] CancellationToken ct, Request r)
     {
         while (!ct.IsCancellationRequested)
         {
-            await Task.Delay(1000);
-            yield return new { guid = Guid.NewGuid() };
+            i++;
+            if (i > 15)
+            {
+                throw new TimeoutException("Timeout");
+            }
+
+            if (i == 1)
+            {
+                var results = await _halo.GetLink(r.Amount, r.TableBookingId, r.UserId);
+                if (!results.Failure)
+                {
+                    _reference = results.Value.reference;
+                    yield return new { results.Value.reference, results.Value.url, type = "link" };
+                }
+                else
+                {
+                    throw new Exception(results.Error);
+                }
+            }
+            var result = await _halo.GetStatus(_reference, r.UserId);
+            yield return new { result, type = "status" };
+            await Task.Delay(5000);
         }
     }
 }
