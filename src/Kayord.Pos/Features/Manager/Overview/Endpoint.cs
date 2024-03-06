@@ -1,0 +1,89 @@
+using Kayord.Pos.Data;
+using Kayord.Pos.Services;
+using Kayord.Pos.Entities;
+
+
+using Microsoft.EntityFrameworkCore;
+
+namespace Kayord.Pos.Features.Manager.OrderView;
+
+public class Endpoint : Endpoint<Request, List<Response>>
+{
+    private readonly AppDbContext _dbContext;
+    private readonly CurrentUserService _cu;
+
+    public Endpoint(AppDbContext dbContext, CurrentUserService cu)
+    {
+        _dbContext = dbContext;
+        _cu = cu;
+    }
+
+    public override void Configure()
+    {
+        Get("/manager/viewOrders");
+        AllowAnonymous();
+    }
+
+    public override async Task HandleAsync(Request req, CancellationToken ct)
+    {
+        int roleId = 0;
+        int outletId = 0;
+        List<Response> responses = new();
+        UserRole? role = await _dbContext.UserRole.FirstOrDefaultAsync(x => x.UserId == _cu.UserId);
+        if (role == null)
+            await SendNotFoundAsync();
+        else
+            roleId = role.RoleId;
+
+        List<int> divisionIds = new();
+        if (req.DivisionIds.Count == 0)
+            _dbContext.RoleDivision.Where(x => x.RoleId == roleId).Select(rd => rd.DivisionId).ToList();
+        else
+            divisionIds.AddRange(req.DivisionIds);
+        foreach (int divisionId in divisionIds)
+        {
+            var statusIds = _dbContext.OrderItemStatus.Where(x => x.isBackOffice && x.isComplete != true && x.isCancelled != true).Select(rd => rd.OrderItemStatusId).ToList();
+            UserOutlet? outlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.isCurrent == true);
+
+            Division division = await _dbContext.Division.FirstOrDefaultAsync(x => x.DivisionId == divisionId);
+            if (outlet == null)
+            {
+                await SendNotFoundAsync();
+            }
+            else
+            {
+                outletId = outlet.OutletId;
+            }
+
+            var result = await _dbContext.TableBooking
+                .Where(x => x.SalesPeriod.OutletId == outletId && x.CloseDate == null)
+                .ProjectToDto()
+                .ToListAsync();
+
+            result.ForEach(dto =>
+            {
+                dto.OrderItems = dto.OrderItems!
+                .Where(oi => statusIds.Contains(oi.OrderItemStatusId) && oi.MenuItem.DivisionId == divisionId)
+                .ToList();
+            });
+
+            if (role!.isBackOffice)
+                result = result.Where(x => x.OrderItems!.Any()).Where(x => x.CloseDate == null && x.OrderItems!.Where(y => y.OrderItemStatusId != 1 && y.OrderItemStatusId != 6).Count() > 0).ToList();
+            if (role!.isFrontLine)
+                result = result.Where(x => x.OrderItems!.Any())
+                        .Where(y => y.User.UserId == _cu.UserId && y.CloseDate == null
+            && y.OrderItems!.Where(x => x.OrderItemStatusId != 1 && x.OrderItemStatusId != 6).Count() > 0).ToList();
+
+            Response response = new()
+            {
+                LastRefresh = DateTime.Now,
+                PendingItems = result.Sum(n => n.OrderItems?.Count) ?? 0,
+                PendingTables = result.Count,
+                Tables = result,
+                Division = division!
+            };
+            responses.Add(response);
+        }
+        await SendAsync(responses);
+    }
+}
