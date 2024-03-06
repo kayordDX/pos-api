@@ -10,5 +10,7 @@ public class Payment
     public int TableBookingId { get; set; }
     public decimal Amount { get; set; }
     public string UserId { get; set; } = string.Empty;
+    public int? PaymentTypeId { get; set; }
+    public PaymentType PaymentType { get; set; } = default!;
     public DateTime DateReceived { get; set; } = DateTime.UtcNow;
 }
