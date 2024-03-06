@@ -135,4 +135,12 @@ public class HaloService
             await _dbContext.SaveChangesAsync();
         }
     }
+
+    // public async Task<Result<StatusResultDto>> Pay(string reference, string userId)
+    // {
+    //     // Fire and Forget
+    //     // GetLink
+    //     //WHILE not 120seconds
+    //     // GetStatus
+    // }
 }

@@ -39,6 +39,7 @@ public class Endpoint : Endpoint<Request, Result<GetLink.Response>>
     {
         while (!ct.IsCancellationRequested)
         {
+            _logger.LogInformation("Item {i}", i);
             i++;
             if (i > 15)
             {
