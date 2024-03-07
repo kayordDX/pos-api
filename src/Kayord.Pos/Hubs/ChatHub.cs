@@ -2,17 +2,22 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace Kayord.Pos.Hubs;
 
-public class ChatHub : Hub
+public interface IChatHub
+{
+    Task ReceiveMessage(string message);
+}
+
+public class ChatHub : Hub<IChatHub>
 {
     // public async Task ReceiveNotification()
     // {
     //     await Clients.All.ReceiveNotification("The message");
     // }
 
-    public async Task ReceiveNotification(string content)
-    {
-        await Clients.All.SendAsync("ReceiveNotification", content);
-    }
+    // public async Task ReceiveNotification(string content)
+    // {
+    //     await Clients.All.ReceiveMessage();
+    // }
 
 
     // public async Task SendStockPrice2()

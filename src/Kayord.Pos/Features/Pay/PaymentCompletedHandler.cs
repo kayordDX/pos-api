@@ -24,8 +24,7 @@ public class PaymentCompletedHandler : IEventHandler<PaymentCompletedEvent>
 
         if (_dbContext == null)
         {
-            return;
-            // TODO: Throw Error Event
+            throw new Exception("Dependency injection failed");
         }
 
         Payment? p = await _dbContext.Payment.FirstOrDefaultAsync(x => x.PaymentReference == eventModel.PaymentReference);

@@ -19,13 +19,12 @@ public class PayLinkReceivedHandler : IEventHandler<PayLinkReceivedEvent>
     public async Task HandleAsync(PayLinkReceivedEvent eventModel, CancellationToken ct)
     {
         using var scope = _scopeFactory.CreateScope();
-        var hub = scope.Resolve<IHubContext<ChatHub>>();
+        var hub = scope.Resolve<IHubContext<ChatHub, IChatHub>>();
         var service = scope.Resolve<HaloService>();
 
         if (service == null || hub == null)
         {
-            return;
-            // TODO: Throw Error Event
+            throw new Exception("Dependency injection failed");
         }
         while (!ct.IsCancellationRequested)
         {
@@ -37,16 +36,21 @@ public class PayLinkReceivedHandler : IEventHandler<PayLinkReceivedEvent>
                     status.Value.AuthorisationCode != string.Empty
                 )
                 {
-                    // TODO: Call Payment Event
+                    await new PaymentCompletedEvent
+                    {
+                        Amount = status.Value.Amount,
+                        PaymentReference = eventModel.reference,
+                        UserId = eventModel.UserId
+                    }.PublishAsync(Mode.WaitForNone);
                 }
             }
             if (i > 5)
             {
                 throw new TimeoutException("Timeout");
-
             }
             i++;
-            await hub.Clients.All.SendAsync("ReceiveNotification", "message");
+
+            await hub.Clients.All.ReceiveMessage("wazzup");
             await Task.Delay(5000);
         }
     }

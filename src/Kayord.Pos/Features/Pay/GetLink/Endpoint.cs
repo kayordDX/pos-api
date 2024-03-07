@@ -40,7 +40,7 @@ public class Endpoint : Endpoint<Request, Result<Response>>
                 url = results.Value.url,
                 reference = results.Value.reference,
                 UserId = _cu.UserId
-            });
+            }, Mode.WaitForNone);
         }
         await SendAsync(results);
     }
