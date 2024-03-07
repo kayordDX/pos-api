@@ -1,6 +1,7 @@
 using Azure;
 using Kayord.Pos.Common.Wrapper;
 using Kayord.Pos.Data;
+using Kayord.Pos.Events;
 using Kayord.Pos.Services;
 
 namespace Kayord.Pos.Features.Pay.GetLink;
@@ -32,6 +33,15 @@ public class Endpoint : Endpoint<Request, Result<Response>>
             return;
         }
         var results = await _halo.GetLink(req.Amount, req.TableBookingId, _cu.UserId);
+        if (!results.Failure)
+        {
+            await PublishAsync(new PayLinkReceivedEvent
+            {
+                url = results.Value.url,
+                reference = results.Value.reference,
+                UserId = _cu.UserId
+            });
+        }
         await SendAsync(results);
     }
 }
