@@ -14,7 +14,6 @@ public class Endpoint : Endpoint<Request, Pos.Entities.Business>
     public override void Configure()
     {
         Post("/business");
-        AllowAnonymous();
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)

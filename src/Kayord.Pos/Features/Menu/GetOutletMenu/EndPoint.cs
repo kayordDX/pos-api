@@ -15,7 +15,6 @@ namespace Kayord.Pos.Features.Menu.GetOutletMenu
         public override void Configure()
         {
             Get("/menu/outletMenus");
-            AllowAnonymous();
         }
 
         public override async Task HandleAsync(Request req, CancellationToken ct)

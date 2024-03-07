@@ -15,13 +15,12 @@ namespace Kayord.Pos.Features.Outlet.List
         public override void Configure()
         {
             Get("/outlet");
-            AllowAnonymous();
         }
 
-         public override async Task HandleAsync(CancellationToken ct)
-    {
-        var results = await _dbContext.Outlet.ToListAsync();
-        await SendAsync(results);
-    }
+        public override async Task HandleAsync(CancellationToken ct)
+        {
+            var results = await _dbContext.Outlet.ToListAsync();
+            await SendAsync(results);
+        }
     }
 }

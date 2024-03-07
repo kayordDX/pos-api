@@ -14,7 +14,6 @@ namespace Kayord.Pos.Features.Outlet.Update
         public override void Configure()
         {
             Put("/outlet/{id}");
-            AllowAnonymous();
         }
 
         public override async Task HandleAsync(Request req, CancellationToken ct)

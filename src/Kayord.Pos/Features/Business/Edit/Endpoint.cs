@@ -14,7 +14,6 @@ public class Endpoint : Endpoint<Request>
     public override void Configure()
     {
         Put("/business");
-        AllowAnonymous();
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)

@@ -32,12 +32,12 @@ public class Endpoint : Endpoint<Request, CashUp>
             await SendNotFoundAsync();
             return;
         }
-        Entities.TableBooking? openTable = await _dbContext.TableBooking.FirstOrDefaultAsync(x => x.SalesPeriodId == req.SalesPeriodId && x.CloseDate == null);
-        if (openTable != null)
-        {
-            await SendForbiddenAsync();
-            return;
-        }
+        // Entities.TableBooking? openTable = await _dbContext.TableBooking.FirstOrDefaultAsync(x => x.SalesPeriodId == req.SalesPeriodId && x.CloseDate == null);
+        // if (openTable != null)
+        // {
+        //     await SendForbiddenAsync();
+        //     return;
+        // }
         List<TableCashUp> salesPeriodTableCashUps = new();
         List<UserCashUp> salesPeriodUserCashUps = new();
         UserCashUp userCashUp = new();
@@ -56,7 +56,7 @@ public class Endpoint : Endpoint<Request, CashUp>
             cashUp.TableCount++;
             TableCashUp tableCashUp = new();
             tableCashUp.Total = 0;
-            decimal TotalPayments = 0m;
+
 
             var paymentStatusIds = _dbContext.OrderItemStatus.Where(x => x.isBillable == true).Select(rd => rd.OrderItemStatusId).ToList();
             tableCashUp.UserId = tb.UserId;
@@ -89,7 +89,8 @@ public class Endpoint : Endpoint<Request, CashUp>
             {
                 UserCashUp u = new();
                 u.UserId = userId;
-                u.User = salesPeriodTableCashUps.FirstOrDefault(x => x.UserId == userId).User;
+                var scash = salesPeriodTableCashUps.FirstOrDefault(x => x.UserId == userId) ?? new();
+                u.User = scash.User ?? new();
                 u.UserTotal += salesPeriodTableCashUps.Where(item => item.UserId! == userId)
                                               .Sum(item => item.Total);
                 u.UserBalance += salesPeriodTableCashUps.Where(item => item.UserId! == userId)

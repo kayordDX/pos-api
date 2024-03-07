@@ -16,7 +16,6 @@ public class Endpoint : EndpointWithoutRequest<List<Pos.Entities.Business>>
     public override void Configure()
     {
         Get("/business");
-        // AllowAnonymous();
     }
 
     public override async Task HandleAsync(CancellationToken ct)

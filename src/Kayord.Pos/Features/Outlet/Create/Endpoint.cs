@@ -14,7 +14,6 @@ public class Endpoint : Endpoint<Request, Pos.Entities.Outlet>
     public override void Configure()
     {
         Post("/outlet");
-        AllowAnonymous();
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)

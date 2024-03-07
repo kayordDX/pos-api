@@ -21,7 +21,6 @@ public class Endpoint : Endpoint<Request, List<Response>>
     public override void Configure()
     {
         Get("/manager/viewOrders");
-        AllowAnonymous();
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
@@ -45,7 +44,7 @@ public class Endpoint : Endpoint<Request, List<Response>>
             var statusIds = _dbContext.OrderItemStatus.Where(x => x.isBackOffice && x.isComplete != true && x.isCancelled != true).Select(rd => rd.OrderItemStatusId).ToList();
             UserOutlet? outlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.isCurrent == true);
 
-            Division division = await _dbContext.Division.FirstOrDefaultAsync(x => x.DivisionId == divisionId);
+            Division division = await _dbContext.Division.FirstOrDefaultAsync(x => x.DivisionId == divisionId) ?? new();
             if (outlet == null)
             {
                 await SendNotFoundAsync();

@@ -20,7 +20,6 @@ namespace Kayord.Pos.Features.Menu.GetItems
         public override void Configure()
         {
             Get("/menu/items");
-            AllowAnonymous();
         }
 
         public override async Task HandleAsync(Request req, CancellationToken ct)

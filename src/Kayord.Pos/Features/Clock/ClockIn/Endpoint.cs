@@ -18,7 +18,6 @@ public class Endpoint : Endpoint<Request, Pos.Entities.Clock>
     public override void Configure()
     {
         Post("/clock/in");
-        AllowAnonymous();
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)

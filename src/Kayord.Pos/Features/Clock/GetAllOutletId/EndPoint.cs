@@ -15,7 +15,6 @@ namespace Kayord.Pos.Features.Clock.List
         public override void Configure()
         {
             Get("/clock/list");
-            AllowAnonymous();
         }
 
         public override async Task HandleAsync(Request req, CancellationToken ct)

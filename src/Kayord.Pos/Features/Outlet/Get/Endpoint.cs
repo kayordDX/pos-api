@@ -14,7 +14,6 @@ namespace Kayord.Pos.Features.Outlet.Get
         public override void Configure()
         {
             Get("/outlet/{id}");
-            AllowAnonymous();
         }
 
         public override async Task HandleAsync(Request request, CancellationToken ct)
