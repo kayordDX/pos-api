@@ -19,7 +19,7 @@ public class PayLinkReceivedHandler : IEventHandler<PayLinkReceivedEvent>
     public async Task HandleAsync(PayLinkReceivedEvent eventModel, CancellationToken ct)
     {
         using var scope = _scopeFactory.CreateScope();
-        var hub = scope.Resolve<IHubContext<NotificationHub, INotificationHub>>();
+        var hub = scope.Resolve<IHubContext<KayordHub, IKayordHub>>();
         var service = scope.Resolve<HaloService>();
 
         if (service == null || hub == null)

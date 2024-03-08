@@ -6,7 +6,7 @@ using KayordKit.Extensions.Api;
 using KayordKit.Extensions.Cors;
 using KayordKit.Extensions.Health;
 using KayordKit.Extensions.Host;
-using StackExchange.Redis;
+using Microsoft.AspNetCore.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.AddLoggingConfiguration(builder.Configuration);
@@ -20,7 +20,6 @@ builder.Services.ConfigureHalo(builder.Configuration);
 //     o.Configuration = builder.Configuration.GetConnectionString("Redis");
 //     o.InstanceName = "redisTesting";
 // });
-builder.Services.AddSignalR().AddStackExchangeRedis(builder.Configuration.GetConnectionString("Redis")!);
 
 var corsSection = builder.Configuration.GetSection("Cors");
 builder.Services.ConfigureCors(corsSection.Get<string[]>() ?? [""]);
@@ -30,11 +29,16 @@ builder.Services.ConfigureEF(builder.Configuration);
 
 builder.Services.AddHostedService<MigratorHostedService>();
 builder.Services.AddSingleton<CurrentUserService>();
+builder.Services.AddSingleton<IUserIdProvider, UserProvider>();
+
+builder.Services
+    .AddSignalR()
+    .AddStackExchangeRedis(builder.Configuration.GetConnectionString("Redis")!);
 
 var app = builder.Build();
 
-app.UseApi();
-app.MapHub<NotificationHub>("/notify");
 app.UseCorsKayord();
+app.UseApi();
 app.UseHealth();
+app.MapHub<KayordHub>("/hub");
 app.Run();
