@@ -50,7 +50,7 @@ public class PayLinkReceivedHandler : IEventHandler<PayLinkReceivedEvent>
             }
             i++;
 
-            await hub.Clients.All.ReceiveMessage("wazzup");
+            await hub.Clients.User(eventModel.UserId).PayMessage(status);
             await Task.Delay(5000);
         }
     }

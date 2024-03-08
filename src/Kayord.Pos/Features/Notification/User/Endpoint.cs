@@ -23,7 +23,6 @@ public class Endpoint : Endpoint<Request, bool>
     {
         await _hub.Clients.User("100308736810173424324").ReceiveMessage("Hardcoded");
         await _hub.Clients.User(req.UserId).ReceiveMessage(req.Message);
-        await _hub.Clients.User(req.UserId).PayMessage(req);
         // await _hub.Clients.Group("monkeys").ReceiveMessage(req.Message);
         await SendAsync(true);
     }

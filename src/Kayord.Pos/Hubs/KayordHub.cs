@@ -1,3 +1,4 @@
+using Kayord.Pos.Common.Wrapper;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Kayord.Pos.Hubs;
@@ -5,7 +6,7 @@ namespace Kayord.Pos.Hubs;
 public interface IKayordHub
 {
     Task ReceiveMessage(string message);
-    Task PayMessage(Features.Notification.User.Request request);
+    Task PayMessage(Result<Features.Pay.Dto.StatusResultDto> request);
 }
 
 public class KayordHub : Hub<IKayordHub>
