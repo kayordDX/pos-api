@@ -16,7 +16,7 @@ services:
     image: redis
     restart: unless-stopped
     environment:
-      REDIS_PASSWORD: PurhsNC7&iTeuc
+      REDIS_PASSWORD: 4qWF6jAcW6e9PCeW
     ports:
       - "6379:6379"
 
