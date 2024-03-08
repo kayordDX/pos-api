@@ -9,7 +9,6 @@ public class PaymentCompletedHandler : IEventHandler<PaymentCompletedEvent>
 {
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger _logger;
-    private int i = 0;
 
     public PaymentCompletedHandler(IServiceScopeFactory scopeFactory, ILogger<PaymentCompletedHandler> logger)
     {
