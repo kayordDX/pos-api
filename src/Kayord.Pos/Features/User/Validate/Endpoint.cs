@@ -23,21 +23,27 @@ namespace Kayord.Pos.Features.User.Validate
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-            // Check User Exists Poes
             var user = await _dbContext.User.FirstOrDefaultAsync(x => x.UserId == req.UserId);
             if (user == null)
             {
                 await _dbContext.User.AddAsync(new Entities.User
                 {
-                    Email = req.Email ?? "",
-                    UserId = req.UserId ?? "",
+                    Email = req.Email,
+                    UserId = req.UserId,
                     Image = req.Image ?? "",
-                    Name = req.Name ?? "",
+                    Name = req.Name,
+                    IsActive = true
                 });
                 await _dbContext.SaveChangesAsync();
             }
+            else
+            {
+                user.Email = req.Email;
+                user.Image = req.Image ?? "";
+                user.Name = req.Name;
+                await _dbContext.SaveChangesAsync();
+            }
             user = await _dbContext.User.FirstOrDefaultAsync(x => x.UserId == req.UserId);
-            //TODO: - Double Check if details match and update if not
             var defaultRole = await _dbContext.UserRole.FirstOrDefaultAsync(x => x.UserId == req.UserId);
             if (defaultRole == null)
             {
