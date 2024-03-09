@@ -1,6 +1,7 @@
 using Kayord.Pos.Data;
 using Kayord.Pos.DTO;
 using Kayord.Pos.Entities;
+using Kayord.Pos.Events;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.TableOrder.UpdateTableOrder
@@ -40,13 +41,13 @@ namespace Kayord.Pos.Features.TableOrder.UpdateTableOrder
                         i.OrderCompleted = DateTime.Now;
                     if (ois.Notify && table.TableId == i.TableBooking.TableId && notify)
                     {
-                        _dbContext.Add(new UserNotification()
+                        await PublishAsync(new NotificationEvent()
                         {
                             UserId = i.TableBooking.UserId,
                             Notification = table.Name + "- All Orders - " + ois.Status,
                             DateSent = DateTime.Now,
                             DateExpires = DateTime.Now.AddMinutes(30)
-                        });
+                        }, Mode.WaitForNone);
                         notify = false;
                     }
                 }

@@ -1,5 +1,6 @@
 using Kayord.Pos.Data;
 using Kayord.Pos.Entities;
+using Kayord.Pos.Events;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
@@ -36,13 +37,13 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
                 {
                     MenuItem? i = await _dbContext.MenuItem.FirstOrDefaultAsync(x => x.MenuItemId == entity.MenuItemId);
                     if (i != null)
-                        _dbContext.Add(new UserNotification()
+                        await PublishAsync(new NotificationEvent()
                         {
                             UserId = entity.TableBooking.UserId,
                             Notification = entity.TableBooking.Table.Name + " - " + i.Name + " - " + oIS.Status,
                             DateSent = DateTime.Now,
                             DateExpires = DateTime.Now.AddMinutes(30)
-                        });
+                        }, Mode.WaitForNone);
                 }
                 await _dbContext.SaveChangesAsync();
                 await SendAsync(new Response() { IsSuccess = true });
