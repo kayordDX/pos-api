@@ -27,8 +27,16 @@ public class Endpoint : EndpointWithoutRequest<Response>
         {
             OutletId = 0,
             SalesPeriodId = 0,
-            ClockedIn = false
+            ClockedIn = false,
         };
+
+        var userRoles = await _dbContext.UserRole
+            .Include(ur => ur.Role)
+            .Where(ur => ur.UserId == _cu.UserId)
+            .Select(ur => ur.Role!.Name)
+            .ToListAsync();
+
+        resp.Roles = userRoles;
 
         var outlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.isCurrent);
 
