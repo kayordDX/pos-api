@@ -4,6 +4,7 @@ using Kayord.Pos.Common.Wrapper;
 using Kayord.Pos.Config;
 using Kayord.Pos.Data;
 using Kayord.Pos.Entities;
+using Kayord.Pos.Events;
 using Kayord.Pos.Features.Pay.Dto;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -104,18 +105,13 @@ public class HaloService
                         HaloReference? hRef = await _dbContext.HaloReference.FirstOrDefaultAsync(x => x.Id.ToString() == result.PaymentReference);
                         if (hRef != null)
                         {
-                            p = new()
+                            await new PaymentCompletedEvent
                             {
                                 Amount = result.Amount,
                                 PaymentReference = result.PaymentReference,
-                                DateReceived = DateTime.UtcNow,
                                 UserId = userId,
-                                TableBookingId = hRef.TableBookingId,
-                                PaymentTypeId = 1
-
-                            };
-                            await _dbContext.Payment.AddAsync(p);
-                            await _dbContext.SaveChangesAsync();
+                                TableBookingId = hRef.TableBookingId
+                            }.PublishAsync(Mode.WaitForNone);
                         }
                     }
 
@@ -135,12 +131,4 @@ public class HaloService
             await _dbContext.SaveChangesAsync();
         }
     }
-
-    // public async Task<Result<StatusResultDto>> Pay(string reference, string userId)
-    // {
-    //     // Fire and Forget
-    //     // GetLink
-    //     //WHILE not 120seconds
-    //     // GetStatus
-    // }
 }

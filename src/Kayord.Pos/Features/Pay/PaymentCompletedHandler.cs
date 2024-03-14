@@ -26,25 +26,16 @@ public class PaymentCompletedHandler : IEventHandler<PaymentCompletedEvent>
             throw new Exception("Dependency injection failed");
         }
 
-        Payment? p = await _dbContext.Payment.FirstOrDefaultAsync(x => x.PaymentReference == eventModel.PaymentReference);
-        if (p == null)
+        Payment payment = new()
         {
-            HaloReference? hRef = await _dbContext.HaloReference.FirstOrDefaultAsync(x => x.Id.ToString() == eventModel.PaymentReference);
-            if (hRef != null)
-            {
-                p = new()
-                {
-                    Amount = eventModel.Amount,
-                    PaymentReference = eventModel.PaymentReference,
-                    DateReceived = DateTime.UtcNow,
-                    UserId = eventModel.UserId,
-                    TableBookingId = hRef.TableBookingId,
-                    PaymentTypeId = 1
-
-                };
-                await _dbContext.Payment.AddAsync(p);
-                await _dbContext.SaveChangesAsync();
-            }
-        }
+            Amount = eventModel.Amount,
+            PaymentReference = eventModel.PaymentReference,
+            DateReceived = DateTime.UtcNow,
+            UserId = eventModel.UserId,
+            TableBookingId = eventModel.TableBookingId,
+            PaymentTypeId = 1
+        };
+        await _dbContext.Payment.AddAsync(payment);
+        await _dbContext.SaveChangesAsync();
     }
 }

@@ -29,21 +29,6 @@ public class PayLinkReceivedHandler : IEventHandler<PayLinkReceivedEvent>
         while (!ct.IsCancellationRequested)
         {
             var status = await service.GetStatus(eventModel.reference, eventModel.UserId);
-            if (status.Success)
-            {
-                if (status.Value.ResponseCode == 0 &&
-                    status.Value.TransactionId != string.Empty &&
-                    status.Value.AuthorisationCode != string.Empty
-                )
-                {
-                    await new PaymentCompletedEvent
-                    {
-                        Amount = status.Value.Amount,
-                        PaymentReference = eventModel.reference,
-                        UserId = eventModel.UserId
-                    }.PublishAsync(Mode.WaitForNone);
-                }
-            }
             if (i > 5)
             {
                 throw new TimeoutException("Timeout");
