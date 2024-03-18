@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.TableOrder.Kitchen;
 
-public class Endpoint : EndpointWithoutRequest<Response>
+public class Endpoint : Endpoint<Request, Response>
 {
     private readonly AppDbContext _dbContext;
     private readonly CurrentUserService _cu;
@@ -23,7 +23,7 @@ public class Endpoint : EndpointWithoutRequest<Response>
         Get("/kitchen/getOrders");
     }
 
-    public override async Task HandleAsync(CancellationToken ct)
+    public override async Task HandleAsync(Request req, CancellationToken ct)
     {
         int roleId = 0;
         int outletId = 0;
@@ -34,8 +34,24 @@ public class Endpoint : EndpointWithoutRequest<Response>
             await SendNotFoundAsync();
         else
             roleId = role.RoleId;
+        var divisionIds = new List<int>();
 
-        var divisionIds = _dbContext.RoleDivision.Where(x => x.RoleId == roleId).Select(rd => rd.DivisionId).ToList();
+        if (req.DivisionIds.Count == 0)
+        {
+            var divisionIdsNullable = _dbContext.RoleDivision
+                .Where(x => x.RoleId == roleId)
+                .Select(rd => rd.DivisionId)
+                .ToList();
+
+            divisionIds = divisionIdsNullable
+                .Where(id => id.HasValue)
+                .Select(id => id!.Value)
+                .ToList();
+        }
+        else
+        {
+            divisionIds.AddRange(req.DivisionIds);
+        }
         var statusIds = _dbContext.OrderItemStatus.Where(x => (x.isBackOffice == role!.isBackOffice || x.isFrontLine == role!.isFrontLine) && x.isComplete != true && x.isCancelled != true).Select(rd => rd.OrderItemStatusId).ToList();
         UserOutlet? outlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.isCurrent == true);
         if (outlet == null)
