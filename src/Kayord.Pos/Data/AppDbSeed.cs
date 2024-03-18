@@ -1,11 +1,6 @@
-using System.Reflection;
 using Bogus;
-using Bogus.Extensions.UnitedStates;
-using Humanizer;
-using Kayord.Pos.Common.Enums;
 using Kayord.Pos.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Kayord.Pos.Data;
 
@@ -41,12 +36,6 @@ public static class AppDbSeed
             await context.SaveChangesAsync(cancellationToken);
         }
 
-        if (!context.User.Any())
-        {
-            await context.User.AddAsync(new User { UserId = "103301258912011927884", Email = "stonk08@gmail.com", IsActive = true, Name = "Steff Bosch", Image = "a" });
-            await context.SaveChangesAsync(cancellationToken);
-        }
-
         if (!context.Role.Any())
         {
             await context.Role.AddAsync(new Role { Name = "Guest", Description = "Guest", RoleId = 1 });
@@ -55,27 +44,24 @@ public static class AppDbSeed
             await context.Role.AddAsync(new Role { Name = "Manager", Description = "Manager", RoleId = 4 });
             await context.SaveChangesAsync(cancellationToken);
         }
-        await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "Menu" RESTART IDENTITY CASCADE;""");
-        await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "MenuSection" RESTART IDENTITY CASCADE;""");
-        await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "Option" RESTART IDENTITY CASCADE;""");
-        await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "MenuItemOptionGroup" RESTART IDENTITY CASCADE;""");
-        await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "OptionGroup" RESTART IDENTITY CASCADE;""");
-        await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "OrderItemStatus" RESTART IDENTITY CASCADE;""");
-        await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "UserNotification" RESTART IDENTITY CASCADE;""");
-        await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "ExtraGroup" RESTART IDENTITY CASCADE;""");
-        await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "Extra" RESTART IDENTITY CASCADE;""");
-        await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "MenuItemExtraGroup" RESTART IDENTITY CASCADE;""");
-        await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "OrderItemExtra" RESTART IDENTITY CASCADE;""");
-        await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "OrderItemOption" RESTART IDENTITY CASCADE;""");
-        await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "OrderItem" RESTART IDENTITY CASCADE;""");
-        await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "Payment" RESTART IDENTITY CASCADE;""");
-        await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "PaymentType" RESTART IDENTITY CASCADE;""");
+        // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "Menu" RESTART IDENTITY CASCADE;""");
+        // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "MenuSection" RESTART IDENTITY CASCADE;""");
+        // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "Option" RESTART IDENTITY CASCADE;""");
+        // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "MenuItemOptionGroup" RESTART IDENTITY CASCADE;""");
+        // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "OptionGroup" RESTART IDENTITY CASCADE;""");
+        // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "OrderItemStatus" RESTART IDENTITY CASCADE;""");
+        // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "UserNotification" RESTART IDENTITY CASCADE;""");
+        // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "ExtraGroup" RESTART IDENTITY CASCADE;""");
+        // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "Extra" RESTART IDENTITY CASCADE;""");
+        // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "MenuItemExtraGroup" RESTART IDENTITY CASCADE;""");
+        // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "OrderItemExtra" RESTART IDENTITY CASCADE;""");
+        // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "OrderItemOption" RESTART IDENTITY CASCADE;""");
+        // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "OrderItem" RESTART IDENTITY CASCADE;""");
+        // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "Payment" RESTART IDENTITY CASCADE;""");
+        // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "PaymentType" RESTART IDENTITY CASCADE;""");
 
 
-
-
-
-        await context.SalesPeriod.AddAsync(new SalesPeriod { Id = 1, Name = "Test", StartDate = DateTime.Now, OutletId = 1 });
+        // await context.SalesPeriod.AddAsync(new SalesPeriod { Id = 1, Name = "Test", StartDate = DateTime.Now, OutletId = 1 });
         if (!context.Menu.Any())
         {
 
