@@ -28,7 +28,8 @@ public class Endpoint : Endpoint<Request, List<Response>>
         int roleId = 0;
         int outletId = 0;
         List<Response> responses = new();
-        UserRole? role = await _dbContext.UserRole.FirstOrDefaultAsync(x => x.UserId == _cu.UserId);
+        UserRole? Urole = await _dbContext.UserRole.FirstOrDefaultAsync(x => x.UserId == _cu.UserId);
+        Entities.Role? role = await _dbContext.Role.FirstOrDefaultAsync(x => x.RoleId == Urole!.RoleId);
         if (role == null)
             await SendNotFoundAsync();
         else
