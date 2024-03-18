@@ -8,6 +8,8 @@ public class CashUp
     public int Id { get; set; }
     public decimal CashUpTotal { get; set; } = 0;
     public int TableCount { get; set; } = 0;
+    public int OpenTableCount { get; set; } = 0;
+
     public decimal CashUpBalance { get; set; } = 0;
     public decimal CashUpTotalPayments { get; set; } = 0;
     public int SalesPeriodId { get; set; } = 0;
