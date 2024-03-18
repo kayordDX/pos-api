@@ -8,7 +8,7 @@ public static class AppDbSeed
 {
     public static async Task SeedData(AppDbContext context, CancellationToken cancellationToken)
     {
-        await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "Business" RESTART IDENTITY CASCADE;""");
+        // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "Business" RESTART IDENTITY CASCADE;""");
         if (!context.Business.Any())
         {
             var table = new Faker<Table>()
@@ -39,9 +39,9 @@ public static class AppDbSeed
         if (!context.Role.Any())
         {
             await context.Role.AddAsync(new Role { Name = "Guest", Description = "Guest", RoleId = 1 });
-            await context.Role.AddAsync(new Role { Name = "Waiter", Description = "Waiter", RoleId = 2 });
-            await context.Role.AddAsync(new Role { Name = "Chef", Description = "Chef", RoleId = 3 });
-            await context.Role.AddAsync(new Role { Name = "Manager", Description = "Manager", RoleId = 4 });
+            await context.Role.AddAsync(new Role { Name = "Waiter", Description = "Waiter", RoleId = 2, isFrontLine = true });
+            await context.Role.AddAsync(new Role { Name = "Chef", Description = "Chef", RoleId = 3, isBackOffice = true });
+            await context.Role.AddAsync(new Role { Name = "Manager", Description = "Manager", RoleId = 4, isBackOffice = true, isFrontLine = true });
             await context.SaveChangesAsync(cancellationToken);
         }
         // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "Menu" RESTART IDENTITY CASCADE;""");
@@ -61,12 +61,13 @@ public static class AppDbSeed
         // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "PaymentType" RESTART IDENTITY CASCADE;""");
 
 
-        if (!context.SalesPeriod.Where(x => x.EndDate == null).Any())
+        if (!context.SalesPeriod.Any(x => x.EndDate == null))
         {
             await context.SalesPeriod.AddAsync(new SalesPeriod { Id = 1, Name = "Test", StartDate = DateTime.Now, OutletId = 1 });
+            await context.SaveChangesAsync(cancellationToken);
         }
 
-        if (!context.Menu.Any())
+        if (!context.Menu.Any() && 1 == 2)
         {
 
             await context.Menu.AddAsync(new Menu { Name = "Main", OutletId = 1 });
