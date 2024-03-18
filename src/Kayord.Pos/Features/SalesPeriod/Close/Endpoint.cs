@@ -1,4 +1,5 @@
 using Kayord.Pos.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.SalesPeriod.Close;
 
@@ -23,6 +24,12 @@ public class Endpoint : Endpoint<Request, Pos.Entities.SalesPeriod>
         if (entity == null)
         {
             await SendNotFoundAsync();
+            return;
+        }
+        var OpenTableCount = await _dbContext.TableBooking.Where(x => x.SalesPeriodId == req.SalesPeriodId).CountAsync();
+        if (OpenTableCount > 0)
+        {
+            await SendForbiddenAsync();
             return;
         }
         entity.EndDate = DateTime.Now;
