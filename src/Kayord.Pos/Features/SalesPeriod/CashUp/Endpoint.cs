@@ -26,30 +26,26 @@ public class Endpoint : Endpoint<Request, CashUp>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
+        CashUp cashUp = new();
+
         Entities.SalesPeriod? sp = await _dbContext.SalesPeriod.FirstOrDefaultAsync(x => x.Id == req.SalesPeriodId);
         if (sp == null)
         {
             await SendNotFoundAsync();
             return;
         }
-        // Entities.TableBooking? openTable = await _dbContext.TableBooking.FirstOrDefaultAsync(x => x.SalesPeriodId == req.SalesPeriodId && x.CloseDate == null);
-        // if (openTable != null)
-        // {
-        //     await SendForbiddenAsync();
-        //     return;
-        // }
+
         List<TableCashUp> salesPeriodTableCashUps = new();
         List<UserCashUp> salesPeriodUserCashUps = new();
         UserCashUp userCashUp = new();
-        CashUp cashUp = new();
         cashUp.TableCount = 0;
         List<TableBookingDTO> bookings = new();
         var userIdsCashedUp = _dbContext.CashUp.Where(x => x.SalesPeriodId == req.SalesPeriodId && x.SignOffDate != null).Select(rd => rd.UserId).ToList();
-
         if (req.UserId == string.Empty)
             bookings = await _dbContext.TableBooking.Where(x => x.SalesPeriodId == req.SalesPeriodId).Where(oi => !userIdsCashedUp.Contains(oi.UserId)).ProjectToDto().ToListAsync();
         else
             bookings = await _dbContext.TableBooking.Where(x => x.SalesPeriodId == req.SalesPeriodId).ProjectToDto().ToListAsync();
+        cashUp.OpenTableCount = bookings.Where(x => x.CloseDate == null).Count();
 
         foreach (TableBookingDTO tb in bookings)
         {
