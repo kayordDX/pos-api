@@ -10,5 +10,6 @@ public class MenuItemDTOBasic
     public decimal Price { get; set; }
     public int Position { get; set; }
     public ICollection<Tag>? Tags { get; set; }
+    public MenuSectionBasicDTO MenuSection { get; set; } = default!;
 }
 

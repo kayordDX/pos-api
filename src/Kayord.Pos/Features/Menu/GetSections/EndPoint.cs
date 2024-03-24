@@ -32,11 +32,13 @@ namespace Kayord.Pos.Features.Menu.GetSections
 
             var sections = await _dbContext.MenuSection
                 .Where(x => x.MenuId == req.MenuId && x.ParentId == parentId)
+                .OrderBy(x => x.PositionId)
                 .ProjectToDto()
                 .ToListAsync();
 
             var parents = await _dbContext.MenuSection
                 .Where(x => x.MenuSectionId == req.SectionId)
+                .OrderBy(x => x.PositionId)
                 .ProjectToDto()
                 .ToListAsync();
 
