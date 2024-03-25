@@ -1,9 +1,7 @@
 using Kayord.Pos.Data;
 using Kayord.Pos.Entities;
 using Kayord.Pos.DTO;
-using Kayord.Pos.Features.Table.GetAvailable;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 namespace Kayord.Pos.Features.Menu.GetItems
 {
     public class GetMenuItemsEndpoint : Endpoint<Request, List<MenuItemDTOBasic>>
@@ -43,7 +41,7 @@ namespace Kayord.Pos.Features.Menu.GetItems
 
             if (!string.IsNullOrEmpty(req.Search))
             {
-                items = items.Where(p => p.SearchVector.Matches(EF.Functions.ToTsQuery($"{req.Search}:*")));
+                items = items.Where(p => p.SearchVector.Matches(EF.Functions.ToTsQuery(CreateTsQuery(req.Search))));
             }
 
             var response = await items
@@ -51,6 +49,27 @@ namespace Kayord.Pos.Features.Menu.GetItems
                 .ProjectToBasicDto()
                 .ToListAsync();
             await SendAsync(response);
+        }
+
+        public static string CreateTsQuery(string searchString)
+        {
+            if (string.IsNullOrEmpty(searchString))
+            {
+                return string.Empty;
+            }
+            var tokens = SplitSearchString(searchString);
+            tokens = tokens.Select(token =>
+            {
+                var filteredToken = new string(token.Where(c => char.IsLetterOrDigit(c)).ToArray());
+                return filteredToken.Length > 0 ? $"{filteredToken}:*" : filteredToken;
+            });
+            var tsQuery = string.Join(" & ", tokens.Where(x => x.Length > 0));
+            return tsQuery;
+        }
+
+        private static IEnumerable<string> SplitSearchString(string searchString)
+        {
+            return searchString.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
         }
     }
 }
