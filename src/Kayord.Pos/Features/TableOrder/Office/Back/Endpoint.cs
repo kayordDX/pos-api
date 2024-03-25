@@ -26,16 +26,7 @@ public class Endpoint : Endpoint<Request, Response>
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
         int outletId = 0;
-        UserRole? uRole = await _dbContext.UserRole.FirstOrDefaultAsync(x => x.UserId == _cu.UserId);
-        Entities.Role? role = await _dbContext.Role.FirstOrDefaultAsync(x => x.RoleId == uRole!.RoleId);
-
-        // var roles = await _dbContext.Role.Where(x => x.UserRole!.Any(s => s.UserId == _cu.UserId)).Select(s => s.RoleId).ToListAsync();
-
-        if (role == null)
-        {
-            await SendNotFoundAsync();
-            return;
-        }
+        var roles = await _dbContext.Role.Where(x => x.UserRole!.Any(s => s.UserId == _cu.UserId)).Select(s => s.RoleId).ToListAsync();
 
         List<int> divisionIds = req.DivisionIds?.Split(",")
             .Select(item =>
@@ -54,15 +45,12 @@ public class Endpoint : Endpoint<Request, Response>
 
         if (divisionIds.Count == 0)
         {
-            var divisionIdsNullable = _dbContext.RoleDivision
-                .Where(x => x.RoleId == role.RoleId)
-                .Select(rd => rd.DivisionId)
-                .ToList();
-
-            divisionIds = divisionIdsNullable
+            divisionIds = await _dbContext.RoleDivision
+                .Where(x => roles.Contains(x.RoleId))
+                .Select(x => x.DivisionId)
                 .Where(id => id.HasValue)
                 .Select(id => id!.Value)
-                .ToList();
+                .ToListAsync();
         }
 
         var statusIds = _dbContext.OrderItemStatus.Where(x => x.isBackOffice && x.isComplete != true && x.isCancelled != true).Select(rd => rd.OrderItemStatusId).ToList();

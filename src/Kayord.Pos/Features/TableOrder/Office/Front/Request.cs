@@ -4,5 +4,3 @@ public class Request
 {
     public string? DivisionIds { get; set; }
 }
-
-
