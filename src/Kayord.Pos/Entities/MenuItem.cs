@@ -6,7 +6,6 @@ namespace Kayord.Pos.Entities;
 public class MenuItem
 {
     public int MenuItemId { get; set; }
-
     public MenuSection MenuSection { get; set; } = default!;
     public int MenuSectionId { get; set; }
     public string Name { get; set; } = string.Empty;
@@ -19,6 +18,6 @@ public class MenuItem
     public Division? Division { get; set; }
     public ICollection<MenuItemOptionGroup>? MenuItemOptionGroups { get; set; }
     public ICollection<MenuItemExtraGroup>? MenuItemExtraGroups { get; set; }
-
-
+    public bool IsAvailable { get; set; }
+    public decimal StockPrice { get; set; }
 }
