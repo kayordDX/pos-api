@@ -15,6 +15,7 @@ public class Endpoint : Endpoint<Request, Response>
     {
         _dbContext = dbContext;
         _cu = cu;
+
     }
 
     public override void Configure()

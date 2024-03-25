@@ -89,9 +89,7 @@ public class Endpoint : Endpoint<Request, Response>
             .ToList();
         });
 
-        result = result.Where(x => x.OrderItems!.Any())
-                .Where(y => y.User.UserId == _cu.UserId && y.CloseDate == null
-    && y.OrderItems!.Where(x => x.OrderItemStatusId != 1 && x.OrderItemStatusId != 6).Count() > 0).ToList();
+        result = result.Where(x => x.OrderItems!.Any()).Where(x => x.CloseDate == null && x.OrderItems!.Where(y => y.OrderItemStatusId != 1 && y.OrderItemStatusId != 6).Count() > 0).ToList();
 
         Response response = new()
         {
