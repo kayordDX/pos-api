@@ -64,7 +64,7 @@ public class Endpoint : Endpoint<Request, Response>
                 .ToList();
         }
 
-        var statusIds = _dbContext.OrderItemStatus.Where(x => (x.isBackOffice == role!.isBackOffice || x.isFrontLine == role!.isFrontLine) && x.isComplete != true && x.isCancelled != true).Select(rd => rd.OrderItemStatusId).ToList();
+        var statusIds = _dbContext.OrderItemStatus.Where(x => x.isFrontLine && x.isComplete != true && x.isCancelled != true).Select(rd => rd.OrderItemStatusId).ToList();
         UserOutlet? outlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.isCurrent == true);
         if (outlet == null)
         {
@@ -88,12 +88,9 @@ public class Endpoint : Endpoint<Request, Response>
             .ToList();
         });
 
-        if (role!.isBackOffice)
-            result = result.Where(x => x.OrderItems!.Any()).Where(x => x.CloseDate == null && x.OrderItems!.Where(y => y.OrderItemStatusId != 1 && y.OrderItemStatusId != 6).Count() > 0).ToList();
-        if (role!.isFrontLine)
-            result = result.Where(x => x.OrderItems!.Any())
-                    .Where(y => y.User.UserId == _cu.UserId && y.CloseDate == null
-        && y.OrderItems!.Where(x => x.OrderItemStatusId != 1 && x.OrderItemStatusId != 6).Count() > 0).ToList();
+        result = result.Where(x => x.OrderItems!.Any())
+                .Where(y => y.User.UserId == _cu.UserId && y.CloseDate == null
+    && y.OrderItems!.Where(x => x.OrderItemStatusId != 1 && x.OrderItemStatusId != 6).Count() > 0).ToList();
 
         Response response = new()
         {
