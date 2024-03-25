@@ -25,21 +25,37 @@ public class Endpoint : Endpoint<Request, Response>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        int roleId = 0;
         int outletId = 0;
-        UserRole? Urole = await _dbContext.UserRole.FirstOrDefaultAsync(x => x.UserId == _cu.UserId);
-        Entities.Role? role = await _dbContext.Role.FirstOrDefaultAsync(x => x.RoleId == Urole!.RoleId);
+        UserRole? uRole = await _dbContext.UserRole.FirstOrDefaultAsync(x => x.UserId == _cu.UserId);
+        Entities.Role? role = await _dbContext.Role.FirstOrDefaultAsync(x => x.RoleId == uRole!.RoleId);
+
+        // var roles = await _dbContext.Role.Where(x => x.UserRole!.Any(s => s.UserId == _cu.UserId)).Select(s => s.RoleId).ToListAsync();
 
         if (role == null)
+        {
             await SendNotFoundAsync();
-        else
-            roleId = role.RoleId;
-        var divisionIds = new List<int>();
+            return;
+        }
 
-        if (req.DivisionIds.Count == 0)
+        List<int> divisionIds = req.DivisionIds?.Split(",")
+            .Select(item =>
+            {
+                int value;
+                bool parsed = int.TryParse(item, out value);
+                return new
+                {
+                    parsed = parsed,
+                    value = value
+                };
+            })
+            .Where(item => item.parsed)
+            .Select(item => item.value)
+            .ToList() ?? new List<int>();
+
+        if (divisionIds.Count == 0)
         {
             var divisionIdsNullable = _dbContext.RoleDivision
-                .Where(x => x.RoleId == roleId)
+                .Where(x => x.RoleId == role.RoleId)
                 .Select(rd => rd.DivisionId)
                 .ToList();
 
@@ -48,10 +64,7 @@ public class Endpoint : Endpoint<Request, Response>
                 .Select(id => id!.Value)
                 .ToList();
         }
-        else
-        {
-            divisionIds.AddRange(req.DivisionIds);
-        }
+
         var statusIds = _dbContext.OrderItemStatus.Where(x => (x.isBackOffice == role!.isBackOffice || x.isFrontLine == role!.isFrontLine) && x.isComplete != true && x.isCancelled != true).Select(rd => rd.OrderItemStatusId).ToList();
         UserOutlet? outlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.isCurrent == true);
         if (outlet == null)
