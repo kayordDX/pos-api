@@ -1,4 +1,4 @@
-namespace Kayord.Pos.Features.TableOrder.Kitchen;
+namespace Kayord.Pos.Features.TableOrder.Office;
 public class MenuItemDTO
 {
     public int MenuItemId { get; set; }

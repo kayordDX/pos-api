@@ -1,7 +1,7 @@
 using Humanizer;
 using Kayord.Pos.DTO;
 
-namespace Kayord.Pos.Features.TableOrder.Kitchen;
+namespace Kayord.Pos.Features.TableOrder.Office;
 public class OrderItemStatusDTO
 {
     public int OrderItemStatusId { get; set; }

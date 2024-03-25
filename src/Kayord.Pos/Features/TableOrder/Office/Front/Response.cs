@@ -1,4 +1,6 @@
-namespace Kayord.Pos.Features.TableOrder.Kitchen;
+using Kayord.Pos.Features.TableOrder.Office;
+
+namespace Kayord.Pos.Features.TableOrder.FrontOffice;
 
 public class Response
 {

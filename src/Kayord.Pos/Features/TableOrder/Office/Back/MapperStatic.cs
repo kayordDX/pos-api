@@ -1,6 +1,7 @@
 using Riok.Mapperly.Abstractions;
+using Kayord.Pos.Features.TableOrder.Office;
 
-namespace Kayord.Pos.Features.TableOrder.Kitchen;
+namespace Kayord.Pos.Features.TableOrder.BackOffice;
 
 [Mapper]
 public static partial class MapperStatic

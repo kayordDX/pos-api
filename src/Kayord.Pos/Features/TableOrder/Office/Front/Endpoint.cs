@@ -2,10 +2,9 @@ using Kayord.Pos.Data;
 using Kayord.Pos.Services;
 using Kayord.Pos.Entities;
 
-
 using Microsoft.EntityFrameworkCore;
 
-namespace Kayord.Pos.Features.TableOrder.Kitchen;
+namespace Kayord.Pos.Features.TableOrder.FrontOffice;
 
 public class Endpoint : Endpoint<Request, Response>
 {
@@ -20,7 +19,7 @@ public class Endpoint : Endpoint<Request, Response>
 
     public override void Configure()
     {
-        Get("/kitchen/getOrders");
+        Get("/frontOffice/getOrders");
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
