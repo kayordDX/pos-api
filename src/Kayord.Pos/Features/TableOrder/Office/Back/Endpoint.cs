@@ -69,6 +69,7 @@ public class Endpoint : Endpoint<Request, Response>
         if (outlet == null)
         {
             await SendNotFoundAsync();
+            return;
         }
         else
         {
