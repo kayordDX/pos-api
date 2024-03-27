@@ -29,6 +29,7 @@ builder.Services.ConfigureEF(builder.Configuration);
 
 builder.Services.AddHostedService<MigratorHostedService>();
 builder.Services.AddSingleton<CurrentUserService>();
+builder.Services.AddTransient<IEmailSender, EmailService>();
 builder.Services.AddSingleton<IUserIdProvider, UserProvider>();
 
 builder.Services

@@ -32,5 +32,8 @@ dotnet tool update --global dotnet-outdated-tool
 dotnet user-secrets init --project src/Kayord.Pos
 dotnet user-secrets set "Halo:MerchantId" "secret" --project src/Kayord.Pos
 dotnet user-secrets set "Halo:XApiKey" "secret" --project src/Kayord.Pos
+dotnet user-secrets set "Email:Host" "secret" --project src/Kayord.Pos
+dotnet user-secrets set "Email:Email" "secret" --project src/Kayord.Pos
+dotnet user-secrets set "Email:Password" "secret" --project src/Kayord.Pos
 dotnet user-secrets list --project src/Kayord.Pos
 ```
