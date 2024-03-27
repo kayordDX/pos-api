@@ -33,7 +33,11 @@ public class EmailService : IEmailSender
             Credentials = new NetworkCredential(_emailConfig.Email, _emailConfig.Password)
         };
 
-        await client.SendMailAsync(new MailMessage(from: _emailConfig.Email, to: email, subject, message));
+        MailMessage msg = new(from: _emailConfig.Email, to: email, subject, message);
+        // await using var stream = new MemoryStream();
+        // msg.Attachments.Add(new Attachment(stream, "application/pdf"));
+
+        await client.SendMailAsync(msg);
 
         log.Entity.IsSent = true;
         await _dbContext.SaveChangesAsync();
