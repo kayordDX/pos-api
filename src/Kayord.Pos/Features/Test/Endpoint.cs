@@ -22,7 +22,12 @@ public class Endpoint : EndpointWithoutRequest<bool>
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        await _emailSender.SendEmailAsync("kokjaco2@gmail.com", "test", "another test");
+        await _emailSender.SendEmailAsync("kokjaco2@gmail.com", "Invoice 2024-03-27", """
+        Hi Jaco,
+        Please find the attached invoice for today.
+
+        Thank you for your business!
+        """);
         await SendAsync(true);
     }
 }
