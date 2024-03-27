@@ -12,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.AddLoggingConfiguration(builder.Configuration);
 builder.Services.ConfigureApi();
 builder.Services.ConfigureConfig(builder.Configuration);
+builder.Services.ConfigureGeneral(builder.Configuration);
 builder.Services.ConfigureHealth(builder.Configuration);
 builder.Services.ConfigureHalo(builder.Configuration);
 

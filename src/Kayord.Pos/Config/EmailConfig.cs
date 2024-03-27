@@ -6,5 +6,5 @@ public class EmailConfig
     public string? Email { get; set; }
     public string? Password { get; set; }
     public int Port { get; set; } = 587;
-    public bool EnableSsl { get; set; } = true;
+    public string? Name { get; set; }
 }

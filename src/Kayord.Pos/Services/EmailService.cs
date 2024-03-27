@@ -1,10 +1,12 @@
 
 using System.Net;
-using System.Net.Mail;
 using Kayord.Pos.Config;
 using Kayord.Pos.Data;
 using Kayord.Pos.Entities;
+using MailKit.Net.Smtp;
+using MailKit.Security;
 using Microsoft.Extensions.Options;
+using MimeKit;
 
 namespace Kayord.Pos.Services;
 
@@ -18,26 +20,53 @@ public class EmailService : IEmailSender
         _dbContext = dbContext;
     }
 
-    public async Task SendEmailAsync(string email, string subject, string message)
+    public async Task SendEmailAsync(string toEmail, string toName, string subject, string message, AttachmentCollection? attachments = null)
+    {
+        List<MailboxAddress> emails = new() { new MailboxAddress(toName, toEmail) };
+        await SendAsync(emails, subject, message, attachments);
+    }
+
+    private async Task SendAsync(List<MailboxAddress> emails, string subject, string message, AttachmentCollection? attachments = null)
     {
         if (string.IsNullOrEmpty(_emailConfig.Email))
         {
             throw new Exception("Email is empty in config");
         }
 
+        var email = string.Join(";", emails.Select(x => x.Address));
+
         var log = await _dbContext.EmailLog.AddAsync(new EmailLog { Email = email, Subject = subject, Message = message });
 
-        var client = new SmtpClient(_emailConfig.Host, _emailConfig.Port)
+        var mail = new MimeMessage();
+        mail.From.Add(new MailboxAddress(_emailConfig.Name, _emailConfig.Email));
+        mail.To.AddRange(emails);
+        mail.Subject = subject;
+
+        var builder = new BodyBuilder
         {
-            EnableSsl = _emailConfig.EnableSsl,
-            Credentials = new NetworkCredential(_emailConfig.Email, _emailConfig.Password)
+            TextBody = message
         };
 
-        MailMessage msg = new(from: _emailConfig.Email, to: email, subject, message);
-        // await using var stream = new MemoryStream();
-        // msg.Attachments.Add(new Attachment(stream, "application/pdf"));
+        if (attachments != null)
+        {
+            foreach (var attachment in attachments)
+            {
+                builder.Attachments.Add(attachment);
+            }
+        }
 
-        await client.SendMailAsync(msg);
+        mail.Body = builder.ToMessageBody();
+
+        using var client = new SmtpClient();
+
+        client.Connect(_emailConfig.Host, _emailConfig.Port, SecureSocketOptions.StartTls);
+
+        // Note: only needed if the SMTP server requires authentication
+        client.Authenticate(_emailConfig.Email, _emailConfig.Password);
+
+        client.Send(mail);
+        client.Disconnect(true);
+
 
         log.Entity.IsSent = true;
         await _dbContext.SaveChangesAsync();
