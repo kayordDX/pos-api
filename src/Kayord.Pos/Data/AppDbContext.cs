@@ -43,6 +43,7 @@ public class AppDbContext : DbContext
     public DbSet<MenuItemExtraGroup> MenuItemExtraGroup => Set<MenuItemExtraGroup>();
     public DbSet<CashUp> CashUp => Set<CashUp>();
     public DbSet<PaymentType> PaymentType => Set<PaymentType>();
+    public DbSet<EmailLog> EmailLog => Set<EmailLog>();
 
 
     protected override void OnModelCreating(ModelBuilder builder)
