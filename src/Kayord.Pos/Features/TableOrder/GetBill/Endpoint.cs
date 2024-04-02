@@ -50,7 +50,8 @@ public class Endpoint : Endpoint<Request, Response>
                                       .Sum(item => item.Amount);
         response.Balance = response.Total - TotalPayments;
         response.TipAmount = (response.Total - TotalPayments) * -1;
-
+        response.TotalExVAT = Math.Round(response.Total / 1.15m, 2);
+        response.VAT = response.Total - response.TotalExVAT;
         response.Balance = response.Balance < 0 ? 0m : response.Balance;
         await SendAsync(response);
     }
