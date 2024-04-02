@@ -13,6 +13,5 @@ public class Response
     public List<Payment> PaymentsReceived { get; set; } = new List<Payment>();
     public decimal Balance { get; set; } = 0;
     public decimal TipAmount { get; set; } = 0;
-
-
+    public DateTime BillDate { get; set; }
 }
