@@ -54,7 +54,7 @@ namespace Kayord.Pos.Features.Order.AddItems
                         orderItemOptions.Add(o);
                     }
 
-                List<Extra> Extras = new List<Extra>();
+                List<Entities.Extra> Extras = new List<Entities.Extra>();
 
                 if (order.ExtraIds != null)
                     foreach (int i in order.ExtraIds)
