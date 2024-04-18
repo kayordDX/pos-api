@@ -7,11 +7,14 @@ namespace Kayord.Pos.Features.Extra.GetAll;
 public class Endpoint : EndpointWithoutRequest<List<Pos.Entities.Extra>>
 {
     private readonly AppDbContext _dbContext;
-    private readonly CurrentUserService _cu;
+    private readonly CurrentUserService _user;
 
-    public Endpoint(AppDbContext dbContext)
+
+    public Endpoint(AppDbContext dbContext, CurrentUserService user)
     {
         _dbContext = dbContext;
+        _user = user;
+
     }
 
     public override void Configure()
@@ -21,7 +24,7 @@ public class Endpoint : EndpointWithoutRequest<List<Pos.Entities.Extra>>
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var outlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.isCurrent);
+        var outlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _user.UserId && x.isCurrent);
         if (outlet == null)
         {
             await SendNotFoundAsync();
