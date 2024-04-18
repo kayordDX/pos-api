@@ -21,38 +21,69 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-            OrderItem? entity = await _dbContext.OrderItem.
-            Include(x => x.TableBooking)
-            .ThenInclude(x => x.Table)
-            .FirstOrDefaultAsync(x => x.OrderItemId == req.OrderItemId);
+            var Notification = "";
+            var TableName = "";
+            var nC = 0;
+            string tUserId = "";
+            var Status = "";
+            int nextGroupId = 0;
             OrderItemStatus? oIS = await _dbContext.OrderItemStatus.FirstOrDefaultAsync(x => x.OrderItemStatusId == req.OrderItemStatusId);
-
-            if (entity != null && oIS != null)
+            if (oIS != null && oIS.assignGroup)
             {
-                entity.OrderItemStatusId = req.OrderItemStatusId;
-                entity.OrderUpdated = DateTime.UtcNow;
-                if (oIS.isComplete)
-                    entity.OrderCompleted = DateTime.Now;
-                if (oIS.Notify)
+                nextGroupId = _dbContext.OrderGroup.Max(x => x.OrderGroupId) + 1;
+            }
+            foreach (int r in req.OrderItemIds)
+            {
+                if (nextGroupId != 0)
                 {
-                    MenuItem? i = await _dbContext.MenuItem.FirstOrDefaultAsync(x => x.MenuItemId == entity.MenuItemId);
-                    if (i != null)
-                        await PublishAsync(new NotificationEvent()
-                        {
-                            UserId = entity.TableBooking.UserId,
-                            Notification = entity.TableBooking.Table.Name + " - " + i.Name + " - " + oIS.Status,
-                            DateSent = DateTime.Now,
-                            DateExpires = DateTime.Now.AddMinutes(30)
-                        }, Mode.WaitForNone);
+                    Entities.OrderGroup order = new();
+                    order.OrderGroupId = nextGroupId;
+                    order.OrderItemId = r;
+                    _dbContext.OrderGroup.Add(order);
                 }
-                await _dbContext.SaveChangesAsync();
-                await SendAsync(new Response() { IsSuccess = true });
+                OrderItem? entity = await _dbContext.OrderItem.
+                Include(x => x.TableBooking)
+                .ThenInclude(x => x.Table)
+                .FirstOrDefaultAsync(x => x.OrderItemId == r);
 
+                if (entity != null && oIS != null)
+                {
+                    Status = oIS.Status;
+                    entity.OrderItemStatusId = req.OrderItemStatusId;
+                    entity.OrderUpdated = DateTime.UtcNow;
+                    if (oIS.isComplete)
+                        entity.OrderCompleted = DateTime.Now;
+                    if (oIS.Notify)
+                    {
+                        MenuItem? i = await _dbContext.MenuItem.FirstOrDefaultAsync(x => x.MenuItemId == entity.MenuItemId);
+                        if (i != null)
+                        {
+                            nC++;
+                            TableName = entity.TableBooking.Table.Name;
+                            Notification = Notification == "" ? i.Name : Notification + ", " + i.Name;
+                            tUserId = entity.TableBooking.UserId;
+                        }
+                    }
+                }
+                else
+                {
+                    await SendAsync(new Response() { IsSuccess = false });
+                }
             }
-            else
+            if (Notification != "")
             {
-                await SendAsync(new Response() { IsSuccess = false });
+                await PublishAsync(new NotificationEvent()
+                {
+                    UserId = tUserId,
+                    Notification = Notification + " - " + Status,
+                    DateSent = DateTime.Now,
+                    DateExpires = DateTime.Now.AddMinutes(30)
+                }, Mode.WaitForNone);
             }
+            await _dbContext.SaveChangesAsync();
+            await SendAsync(new Response() { IsSuccess = true });
+
+
         }
     }
 }

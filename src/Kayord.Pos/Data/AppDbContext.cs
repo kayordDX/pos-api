@@ -44,6 +44,7 @@ public class AppDbContext : DbContext
     public DbSet<CashUp> CashUp => Set<CashUp>();
     public DbSet<PaymentType> PaymentType => Set<PaymentType>();
     public DbSet<OutletExtraGroup> OutletExtraGroup => Set<OutletExtraGroup>();
+    public DbSet<Entities.OrderGroup> OrderGroup => Set<Entities.OrderGroup>();
 
     public DbSet<EmailLog> EmailLog => Set<EmailLog>();
 

@@ -3,6 +3,7 @@ using System;
 using Kayord.Pos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using NpgsqlTypes;
@@ -12,9 +13,11 @@ using NpgsqlTypes;
 namespace Kayord.Pos.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240418205909_Order")]
+    partial class Order
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -126,10 +129,6 @@ namespace Kayord.Pos.Data.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<int[]>("Orders")
-                        .IsRequired()
-                        .HasColumnType("integer[]");
 
                     b.Property<int?>("TableId")
                         .HasColumnType("integer");
@@ -475,7 +474,7 @@ namespace Kayord.Pos.Data.Migrations
                     b.ToTable("OptionGroup");
                 });
 
-            modelBuilder.Entity("Kayord.Pos.Entities.OrderGroup", b =>
+            modelBuilder.Entity("Kayord.Pos.Entities.Order", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -483,7 +482,10 @@ namespace Kayord.Pos.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("OrderGroupId")
+                    b.Property<int?>("CustomerId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("OrderId")
                         .HasColumnType("integer");
 
                     b.Property<int>("OrderItemId")
@@ -491,9 +493,11 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CustomerId");
+
                     b.HasIndex("OrderItemId");
 
-                    b.ToTable("OrderGroup");
+                    b.ToTable("Order");
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.OrderItem", b =>
@@ -1157,8 +1161,12 @@ namespace Kayord.Pos.Data.Migrations
                     b.Navigation("OptionGroup");
                 });
 
-            modelBuilder.Entity("Kayord.Pos.Entities.OrderGroup", b =>
+            modelBuilder.Entity("Kayord.Pos.Entities.Order", b =>
                 {
+                    b.HasOne("Kayord.Pos.Entities.Customer", null)
+                        .WithMany("Orders")
+                        .HasForeignKey("CustomerId");
+
                     b.HasOne("Kayord.Pos.Entities.OrderItem", "OrderItem")
                         .WithMany()
                         .HasForeignKey("OrderItemId")
@@ -1370,6 +1378,11 @@ namespace Kayord.Pos.Data.Migrations
             modelBuilder.Entity("Kayord.Pos.Entities.Business", b =>
                 {
                     b.Navigation("Outlets");
+                });
+
+            modelBuilder.Entity("Kayord.Pos.Entities.Customer", b =>
+                {
+                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.Extra", b =>
