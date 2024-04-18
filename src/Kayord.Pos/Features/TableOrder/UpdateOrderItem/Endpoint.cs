@@ -30,15 +30,17 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
             OrderItemStatus? oIS = await _dbContext.OrderItemStatus.FirstOrDefaultAsync(x => x.OrderItemStatusId == req.OrderItemStatusId);
             if (oIS != null && oIS.assignGroup)
             {
-                nextGroupId = _dbContext.OrderGroup.Max(x => x.OrderGroupId) + 1;
+                nextGroupId = await _dbContext.OrderGroup.MaxAsync(x => (int?)x.OrderGroupId ?? 0) + 1;
             }
             foreach (int r in req.OrderItemIds)
             {
                 if (nextGroupId != 0)
                 {
-                    Entities.OrderGroup order = new();
-                    order.OrderGroupId = nextGroupId;
-                    order.OrderItemId = r;
+                    OrderGroup order = new()
+                    {
+                        OrderGroupId = nextGroupId,
+                        OrderItemId = r
+                    };
                     _dbContext.OrderGroup.Add(order);
                 }
                 OrderItem? entity = await _dbContext.OrderItem.
