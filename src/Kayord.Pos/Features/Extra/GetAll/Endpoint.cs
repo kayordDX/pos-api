@@ -30,7 +30,7 @@ public class Endpoint : EndpointWithoutRequest<List<Pos.Entities.Extra>>
             await SendNotFoundAsync();
             return;
         }
-        var ExtraGroupIds = await _dbContext.OutletExtraGroup.Where(x => x.OutletId == outlet.Id).Select(x => x.ExtraGroupId).ToListAsync(); ;
+        var ExtraGroupIds = await _dbContext.OutletExtraGroup.Where(x => x.OutletId == outlet.OutletId).Select(x => x.ExtraGroupId).ToListAsync(); ;
         var results = await _dbContext.Extra
         .Where(x => ExtraGroupIds.Contains(x.ExtraGroupId))
         .OrderBy(x => x.Name)
