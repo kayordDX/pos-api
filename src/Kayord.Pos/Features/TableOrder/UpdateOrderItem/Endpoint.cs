@@ -37,11 +37,8 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
             {
                 if (nextGroupId != 0)
                 {
-                    OrderGroup order = new()
-                    {
-                        OrderGroupId = nextGroupId,
-                        OrderItemId = r
-                    };
+                    OrderGroup order = new();
+
                     _dbContext.OrderGroup.Add(order);
                 }
                 OrderItem? entity = await _dbContext.OrderItem.

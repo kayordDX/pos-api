@@ -2,6 +2,8 @@ namespace Kayord.Pos.Entities;
 public class OrderItem
 {
     public int OrderItemId { get; set; }
+    public int? OrderGroupId { get; set; }
+    public OrderGroup? OrderGroup { get; set; }
     public int TableBookingId { get; set; }
     public TableBooking TableBooking { get; set; } = default!;
     public int MenuItemId { get; set; }
@@ -11,7 +13,6 @@ public class OrderItem
     public DateTime? OrderCompleted { get; set; }
     public int OrderItemStatusId { get; set; }
     public OrderItemStatus OrderItemStatus { get; set; } = default!;
-
     public List<OrderItemOption>? OrderItemOptions { get; set; }
     public List<OrderItemExtra>? OrderItemExtras { get; set; }
     public string? Note { get; set; }

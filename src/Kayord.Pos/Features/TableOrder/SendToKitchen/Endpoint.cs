@@ -27,20 +27,17 @@ namespace Kayord.Pos.Features.TableOrder.SendToKitchen
 
             int nextGroupId = await _dbContext.OrderGroup.MaxAsync(x => (int?)x.OrderGroupId) ?? 0;
             nextGroupId++;
+            OrderGroup order = new();
 
             foreach (var orderItem in orderItemsToUpdate)
             {
                 orderItem.OrderItemStatusId = 2;
                 orderItem.OrderUpdated = DateTime.UtcNow;
+                orderItem.OrderGroupId = order.OrderGroupId;
 
 
-                OrderGroup order = new()
-                {
-                    OrderGroupId = nextGroupId,
-                    OrderItemId = orderItem.OrderItemId
-                };
-                _dbContext.OrderGroup.Add(order);
             }
+            _dbContext.OrderGroup.Add(order);
 
             await _dbContext.SaveChangesAsync();
             await SendAsync(new Response { IsSuccess = true });
