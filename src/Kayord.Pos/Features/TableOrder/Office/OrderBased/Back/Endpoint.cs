@@ -3,6 +3,7 @@ using Kayord.Pos.Services;
 using Kayord.Pos.Entities;
 
 using Microsoft.EntityFrameworkCore;
+using Kayord.Pos.DTO;
 
 
 namespace Kayord.Pos.Features.Order.BackOffice;
@@ -27,8 +28,6 @@ public class Endpoint : Endpoint<Request, Response>
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
         int outletId = 0;
-
-        var statusIds = _dbContext.OrderItemStatus.Where(x => x.isBackOffice && x.isComplete != true && x.isCancelled != true).Select(rd => rd.OrderItemStatusId).ToList();
         UserOutlet? outlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.isCurrent == true);
         if (outlet == null)
         {
@@ -40,11 +39,30 @@ public class Endpoint : Endpoint<Request, Response>
             outletId = outlet.OutletId;
         }
 
+        var orderItems = _dbContext.OrderItem
+            .Where(x => x.TableBooking.Table.Section.OutletId == 1)
+            .Where(x => x.OrderGroupId != null);
+        // .Where(x => x.OrderItemStatus.isBackOffice == true)
+        // .Where(x => x.OrderItemStatus.isComplete != true)
+        // .Where(x => x.OrderItemStatus.isCancelled != true)
+        // .Where(x => x.MenuItem.DivisionId == 1);
 
-        var orderGroups = await _dbContext.OrderGroup.FromSql($"""
-                SELECT "OrderGroupId" FROM "get_orders_for_outlet"({outletId},{req.DivisionIds})
-                """)
-                .ProjectToDto().ToListAsync();
+        if (orderItems == null)
+        {
+            await SendNotFoundAsync();
+            return;
+        }
+
+
+        var orderItemDTOs = await orderItems.ProjectToDto().ToListAsync();
+        var orderGroups = orderItemDTOs
+            .GroupBy(x => x.OrderGroupId)
+            .Select(s => new OrderGroupDTO()
+            {
+                OrderGroupId = s.Key ?? 0,
+                OrderItems = s.ToList()
+            })
+            .ToList();
 
         Response r = new()
         {
