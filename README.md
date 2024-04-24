@@ -37,3 +37,11 @@ dotnet user-secrets set "Email:Email" "secret" --project src/Kayord.Pos
 dotnet user-secrets set "Email:Password" "secret" --project src/Kayord.Pos
 dotnet user-secrets list --project src/Kayord.Pos
 ```
+
+## Google Admin SDK
+
+Production
+export GOOGLE_APPLICATION_CREDENTIALS=/service-account.json
+
+Dev
+create file in src/Kayord.Pos/private_key.json

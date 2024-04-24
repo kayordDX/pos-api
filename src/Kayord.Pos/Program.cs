@@ -13,6 +13,7 @@ builder.Host.AddLoggingConfiguration(builder.Configuration);
 builder.Services.ConfigureApi();
 builder.Services.ConfigureConfig(builder.Configuration);
 builder.Services.ConfigureGeneral(builder.Configuration);
+builder.Services.ConfigureFirebase(builder.Environment);
 builder.Services.ConfigureHealth(builder.Configuration);
 builder.Services.ConfigureHalo(builder.Configuration);
 
@@ -32,6 +33,7 @@ builder.Services.AddHostedService<MigratorHostedService>();
 builder.Services.AddSingleton<CurrentUserService>();
 builder.Services.AddTransient<IEmailSender, EmailService>();
 builder.Services.AddSingleton<IUserIdProvider, UserProvider>();
+builder.Services.AddTransient<NotificationService>();
 
 builder.Services
     .AddSignalR()

@@ -72,12 +72,19 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
             }
             if (Notification != "")
             {
-                await PublishAsync(new NotificationEvent()
+                await PublishAsync(new SignalEvent()
                 {
                     UserId = tUserId,
                     Notification = Notification + " - " + Status,
                     DateSent = DateTime.Now,
                     DateExpires = DateTime.Now.AddMinutes(30)
+                }, Mode.WaitForNone);
+
+                await PublishAsync(new NotificationEvent()
+                {
+                    UserId = tUserId,
+                    Title = "Test",
+                    Body = Notification + " - " + Status,
                 }, Mode.WaitForNone);
             }
             await _dbContext.SaveChangesAsync();

@@ -37,14 +37,15 @@ public class AppDbContext : DbContext
     public DbSet<RoleDivision> RoleDivision => Set<RoleDivision>();
     public DbSet<HaloLog> HaloLog => Set<HaloLog>();
     public DbSet<HaloReference> HaloReference => Set<HaloReference>();
-    public DbSet<UserNotification> UserNotification => Set<UserNotification>();
     public DbSet<ExtraGroup> ExtraGroup => Set<ExtraGroup>();
     public DbSet<Payment> Payment => Set<Payment>();
     public DbSet<MenuItemExtraGroup> MenuItemExtraGroup => Set<MenuItemExtraGroup>();
     public DbSet<CashUp> CashUp => Set<CashUp>();
     public DbSet<PaymentType> PaymentType => Set<PaymentType>();
     public DbSet<OutletExtraGroup> OutletExtraGroup => Set<OutletExtraGroup>();
-    public DbSet<Entities.OrderGroup> OrderGroup => Set<Entities.OrderGroup>();
+    public DbSet<OrderGroup> OrderGroup => Set<OrderGroup>();
+    public DbSet<NotificationUser> NotificationUser => Set<NotificationUser>();
+    public DbSet<NotificationLog> NotificationLog => Set<NotificationLog>();
 
     public DbSet<EmailLog> EmailLog => Set<EmailLog>();
 

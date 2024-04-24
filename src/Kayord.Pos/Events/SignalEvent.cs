@@ -1,6 +1,6 @@
-namespace Kayord.Pos.Entities;
+namespace Kayord.Pos.Events;
 
-public class UserNotification
+public class SignalEvent
 {
     public int Id { get; set; }
     public string UserId { get; set; } = string.Empty;
@@ -9,5 +9,4 @@ public class UserNotification
     public DateTime DateSent { get; set; } = DateTime.Now;
     public DateTime? DateRead { get; set; }
     public DateTime? DateExpires { get; set; }
-
 }
