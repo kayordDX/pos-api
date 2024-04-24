@@ -46,6 +46,7 @@ public class NotificationService
                         Title = title,
                         Body = body,
                         Icon = "https://pos.kayord.com/logo.svg",
+                        Vibrate = [100, 200, 100, 200, 400]
                     }
                 },
                 Android = new AndroidConfig
@@ -56,6 +57,7 @@ public class NotificationService
                         Title = title,
                         Body = body,
                         Icon = "https://pos.kayord.com/logo.svg",
+                        VibrateTimingsMillis = [100, 200, 100, 200, 400]
                     }
                 },
                 Token = token
