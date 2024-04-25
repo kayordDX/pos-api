@@ -29,9 +29,9 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
             var Status = "";
             EntityEntry<OrderGroup>? groupEntity = null;
             OrderItemStatus? oIS = await _dbContext.OrderItemStatus.FirstOrDefaultAsync(x => x.OrderItemStatusId == req.OrderItemStatusId);
+            OrderGroup order = new();
             if (oIS != null && oIS.assignGroup)
             {
-                OrderGroup order = new();
                 groupEntity = await _dbContext.OrderGroup.AddAsync(order);
             }
             foreach (int r in req.OrderItemIds)
@@ -45,7 +45,7 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
                 {
                     Status = oIS.Status;
                     entity.OrderItemStatusId = req.OrderItemStatusId;
-                    entity.OrderGroup = groupEntity?.Entity;
+                    entity.OrderGroup = order;
                     entity.OrderUpdated = DateTime.UtcNow;
                     if (oIS.isComplete)
                         entity.OrderCompleted = DateTime.Now;

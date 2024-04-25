@@ -25,19 +25,15 @@ namespace Kayord.Pos.Features.TableOrder.SendToKitchen
                 .Where(oi => oi.OrderItemStatusId == 1 && oi.TableBookingId == req.TableBookingId)
                 .ToListAsync();
 
-            int nextGroupId = await _dbContext.OrderGroup.MaxAsync(x => (int?)x.OrderGroupId) ?? 0;
-            nextGroupId++;
             OrderGroup order = new();
+            await _dbContext.OrderGroup.AddAsync(order);
 
             foreach (var orderItem in orderItemsToUpdate)
             {
                 orderItem.OrderItemStatusId = 2;
                 orderItem.OrderUpdated = DateTime.UtcNow;
-                orderItem.OrderGroupId = order.OrderGroupId;
-
-
+                orderItem.OrderGroup = order;
             }
-            _dbContext.OrderGroup.Add(order);
 
             await _dbContext.SaveChangesAsync();
             await SendAsync(new Response { IsSuccess = true });
