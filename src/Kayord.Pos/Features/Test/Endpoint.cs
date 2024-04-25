@@ -26,7 +26,7 @@ public class Endpoint : EndpointWithoutRequest<bool>
 
     private void CreateDocument()
     {
-        FontManager.RegisterFontWithCustomName("Roboto", Common.Helper.Fonts.GetFont());
+        FontManager.RegisterFontWithCustomName("Roboto", File.OpenRead("assets/roboto.ttf"));
         Document.Create(container =>
         {
             container.Page(page =>

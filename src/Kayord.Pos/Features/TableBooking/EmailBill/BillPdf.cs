@@ -15,7 +15,7 @@ public class BillPdf
 
     public Document Generate()
     {
-        FontManager.RegisterFontWithCustomName("Roboto", Common.Helper.Fonts.GetFont());
+        FontManager.RegisterFontWithCustomName("Roboto", File.OpenRead("assets/roboto.ttf"));
         var document = Document.Create(container =>
         {
             container.Page(page =>
