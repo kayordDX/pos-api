@@ -10,7 +10,5 @@ public class OrderItemStatus
     public bool isCancelled { get; set; } = false;
     public bool isBillable { get; set; } = true;
     public bool Notify { get; set; } = false;
-
-
-
+    public int Priority { get; set; } = 0;
 }
