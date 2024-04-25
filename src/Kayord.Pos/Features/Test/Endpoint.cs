@@ -5,6 +5,7 @@ using Kayord.Pos.Services;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
+using QuestPDF.Drawing;
 
 namespace Kayord.Pos.Features.Test;
 
@@ -23,16 +24,17 @@ public class Endpoint : EndpointWithoutRequest<bool>
         AllowAnonymous();
     }
 
-    private byte[] CreateDocument()
+    private void CreateDocument()
     {
-        return Document.Create(container =>
+        FontManager.RegisterFontWithCustomName("Roboto", Common.Helper.Fonts.GetFont());
+        Document.Create(container =>
         {
             container.Page(page =>
             {
                 page.Size(PageSizes.A4);
                 page.Margin(2, Unit.Centimetre);
                 page.PageColor(Colors.White);
-                page.DefaultTextStyle(x => x.FontSize(20));
+                page.DefaultTextStyle(x => x.FontSize(20).FontFamily("Roboto"));
 
                 page.Header()
                     .Text("Hello PDF!")
@@ -57,22 +59,12 @@ public class Endpoint : EndpointWithoutRequest<bool>
                     });
             });
         })
-        .GeneratePdf();
+        .GeneratePdf("hello.pdf");
     }
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        MimeKit.AttachmentCollection attachments = new()
-        {
-            { "test.pdf", CreateDocument() }
-        };
-
-        await _emailSender.SendEmailAsync("kokjaco2@gmail.com", "Jaco Kok", "Invoice 2024-03-27", """
-        Hi Jaco,
-        Please find the attached invoice for today. Here we go again.
-
-        Thank you for your business!
-        """, attachments);
+        CreateDocument();
         await SendAsync(true);
     }
 }

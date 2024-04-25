@@ -1,3 +1,4 @@
+using QuestPDF.Drawing;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
@@ -14,6 +15,7 @@ public class BillPdf
 
     public Document Generate()
     {
+        FontManager.RegisterFontWithCustomName("Roboto", Common.Helper.Fonts.GetFont());
         var document = Document.Create(container =>
         {
             container.Page(page =>
@@ -21,7 +23,7 @@ public class BillPdf
                 page.Size(PageSizes.A4);
                 page.Margin(20, Unit.Point);
                 page.PageColor(Colors.White);
-                page.DefaultTextStyle(t => t.FontSize(10).FontColor(Colors.Grey.Darken4));
+                page.DefaultTextStyle(t => t.FontSize(10).FontColor(Colors.Grey.Darken4).FontFamily("Roboto"));
 
                 page.Header().Element(ComposeHeader);
 
