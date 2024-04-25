@@ -81,7 +81,7 @@ public class Endpoint : Endpoint<Request, Response>
             {
                 OrderGroupId = s.Key.OrderGroupId ?? 0,
                 LastDate = s.Max(x => x.OrderUpdated),
-                Priority = s.Max(x => x.Priority),
+                Priority = s.Max(x => x.OrderItemStatus.Priority),
                 TableBooking = s.FirstOrDefault()?.TableBooking,
                 // OrderItems = s.OrderByDescending(x => x.Priority).ThenByDescending(x => x.OrderUpdated).ToList()
                 OrderItems = s.ToList()
