@@ -80,9 +80,13 @@ public class Endpoint : Endpoint<Request, Response>
             .Select(s => new OrderGroupDTO()
             {
                 OrderGroupId = s.Key.OrderGroupId ?? 0,
+                LastDate = s.Max(x => x.OrderUpdated),
+                Priority = s.Max(x => x.Priority),
                 TableBooking = s.FirstOrDefault()?.TableBooking,
-                OrderItems = s.OrderByDescending(x => x.Priority).ThenBy(x => x.OrderReceived).ToList()
+                // OrderItems = s.OrderByDescending(x => x.Priority).ThenByDescending(x => x.OrderUpdated).ToList()
+                OrderItems = s.ToList()
             })
+            .OrderByDescending(x => x.Priority).ThenByDescending(x => x.LastDate)
             .ToList();
 
         Response r = new()
