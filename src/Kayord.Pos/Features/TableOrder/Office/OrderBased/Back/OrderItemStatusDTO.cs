@@ -4,4 +4,5 @@ public class OrderItemStatusDTO
 {
     public int OrderItemStatusId { get; set; }
     public string Status { get; set; } = string.Empty;
+    public int Priority { get; set; }
 }

@@ -2,7 +2,6 @@ using Kayord.Pos.Data;
 using Kayord.Pos.Entities;
 using Kayord.Pos.Events;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
 {
@@ -27,12 +26,11 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
             var nC = 0;
             string tUserId = "";
             var Status = "";
-            EntityEntry<OrderGroup>? groupEntity = null;
             OrderItemStatus? oIS = await _dbContext.OrderItemStatus.FirstOrDefaultAsync(x => x.OrderItemStatusId == req.OrderItemStatusId);
             OrderGroup order = new();
             if (oIS != null && oIS.assignGroup)
             {
-                groupEntity = await _dbContext.OrderGroup.AddAsync(order);
+                await _dbContext.OrderGroup.AddAsync(order);
             }
             foreach (int r in req.OrderItemIds)
             {
@@ -45,11 +43,14 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
                 {
                     Status = oIS.Status;
                     entity.OrderItemStatusId = req.OrderItemStatusId;
-                    entity.OrderGroup = order;
+                    if (oIS != null && oIS.assignGroup)
+                    {
+                        entity.OrderGroup = order;
+                    }
                     entity.OrderUpdated = DateTime.UtcNow;
-                    if (oIS.isComplete)
+                    if (oIS?.isComplete ?? false)
                         entity.OrderCompleted = DateTime.Now;
-                    if (oIS.Notify)
+                    if (oIS?.Notify ?? false)
                     {
                         MenuItem? i = await _dbContext.MenuItem.FirstOrDefaultAsync(x => x.MenuItemId == entity.MenuItemId);
                         if (i != null)
@@ -68,25 +69,15 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
             }
             if (Notification != "")
             {
-                await PublishAsync(new SignalEvent()
-                {
-                    UserId = tUserId,
-                    Notification = Notification + " - " + Status,
-                    DateSent = DateTime.Now,
-                    DateExpires = DateTime.Now.AddMinutes(30)
-                }, Mode.WaitForNone);
-
                 await PublishAsync(new NotificationEvent()
                 {
                     UserId = tUserId,
-                    Title = "Item Ready",
+                    Title = "Item Status",
                     Body = TableName + " - " + Notification + " - " + Status,
                 }, Mode.WaitForNone);
             }
             await _dbContext.SaveChangesAsync();
             await SendAsync(new Response() { IsSuccess = true });
-
-
         }
     }
 }
