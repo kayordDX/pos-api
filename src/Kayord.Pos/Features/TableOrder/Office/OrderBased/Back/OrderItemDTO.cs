@@ -6,7 +6,7 @@ public class OrderItemDTO
 {
     public int OrderItemId { get; set; }
     public int? OrderGroupId { get; set; }
-
+    public TableBookingDTO? TableBooking { get; set; }
     public int TableBookingId { get; set; }
     public MenuItemDTO MenuItem { get; set; } = default!;
     public int DivisionId { get; set; }

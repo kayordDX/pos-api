@@ -2,6 +2,7 @@ using Kayord.Pos.Data;
 using Kayord.Pos.Entities;
 using Kayord.Pos.Events;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
 {
@@ -26,30 +27,25 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
             var nC = 0;
             string tUserId = "";
             var Status = "";
-            int nextGroupId = 0;
+            EntityEntry<OrderGroup>? groupEntity = null;
             OrderItemStatus? oIS = await _dbContext.OrderItemStatus.FirstOrDefaultAsync(x => x.OrderItemStatusId == req.OrderItemStatusId);
             if (oIS != null && oIS.assignGroup)
             {
-                nextGroupId = await _dbContext.OrderGroup.MaxAsync(x => (int?)x.OrderGroupId) ?? 0;
-                nextGroupId++;
+                OrderGroup order = new();
+                groupEntity = await _dbContext.OrderGroup.AddAsync(order);
             }
             foreach (int r in req.OrderItemIds)
             {
-                if (nextGroupId != 0)
-                {
-                    OrderGroup order = new();
-
-                    _dbContext.OrderGroup.Add(order);
-                }
                 OrderItem? entity = await _dbContext.OrderItem.
-                Include(x => x.TableBooking)
-                .ThenInclude(x => x.Table)
-                .FirstOrDefaultAsync(x => x.OrderItemId == r);
+                    Include(x => x.TableBooking)
+                    .ThenInclude(x => x.Table)
+                    .FirstOrDefaultAsync(x => x.OrderItemId == r);
 
                 if (entity != null && oIS != null)
                 {
                     Status = oIS.Status;
                     entity.OrderItemStatusId = req.OrderItemStatusId;
+                    entity.OrderGroup = groupEntity?.Entity;
                     entity.OrderUpdated = DateTime.UtcNow;
                     if (oIS.isComplete)
                         entity.OrderCompleted = DateTime.Now;
