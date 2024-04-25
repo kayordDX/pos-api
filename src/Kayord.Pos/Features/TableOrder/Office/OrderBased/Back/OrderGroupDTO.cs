@@ -1,11 +1,6 @@
-using Humanizer;
-using Kayord.Pos.DTO;
-
-namespace Kayord.Pos.Features.Order.BackOffice;
+namespace Kayord.Pos.Features.TableOrder.Office.OrderBased.Back;
 public class OrderGroupDTO
 {
     public int OrderGroupId { get; set; }
-
     public List<OrderItemDTO>? OrderItems { get; set; }
-
 }

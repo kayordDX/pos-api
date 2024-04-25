@@ -3,10 +3,9 @@ using Kayord.Pos.Services;
 using Kayord.Pos.Entities;
 
 using Microsoft.EntityFrameworkCore;
-using Kayord.Pos.DTO;
 
 
-namespace Kayord.Pos.Features.Order.BackOffice;
+namespace Kayord.Pos.Features.TableOrder.Office.OrderBased.Back;
 
 public class Endpoint : Endpoint<Request, Response>
 {

@@ -1,6 +1,4 @@
-using Kayord.Pos.Features.TableOrder.Office;
-
-namespace Kayord.Pos.Features.Order.BackOffice;
+namespace Kayord.Pos.Features.TableOrder.Office.OrderBased.Back;
 
 public class Response
 {
