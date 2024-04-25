@@ -23,22 +23,21 @@ namespace Kayord.Pos.Features.TableOrder.UpdateGroupOrder
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-            var orderItems = await _dbContext.OrderItem
-                .Include(x => x.TableBooking).ThenInclude(b => b.Table)
-                .Where(x => x.OrderGroupId == req.OrderGroupId)
-                .ToListAsync();
+            OrderItemStatus? orderItemStatus = await _dbContext.OrderItemStatus.FirstOrDefaultAsync(x => x.OrderItemStatusId == req.OrderItemStatusId);
 
-            bool notify = false;
+            var orderItems = await _dbContext.OrderItem
+                .Include(x => x.TableBooking)
+                    .ThenInclude(b => b.Table)
+                .Where(x => x.OrderGroupId == req.OrderGroupId)
+                .ToListAsync(ct);
+
+            bool notify = orderItemStatus?.Notify ?? false;
             NotificationEvent notification = new();
             foreach (var item in orderItems)
             {
-                if (item.OrderItemStatus.Notify && notify == false)
-                {
-                    notify = true;
-                    notification.Title = "Order ready";
-                    notification.Body = $"Order #{req.OrderGroupId} - {item.TableBooking.Table.Name}";
-                    notification.UserId = item.TableBooking.UserId;
-                }
+                notification.Title = "Order ready";
+                notification.Body = $"Order #{req.OrderGroupId} - {item.TableBooking.Table.Name}";
+                notification.UserId = item.TableBooking.UserId;
                 item.OrderItemStatusId = req.OrderItemStatusId;
             }
 
