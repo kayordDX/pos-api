@@ -3,6 +3,7 @@ using System;
 using Kayord.Pos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using NpgsqlTypes;
@@ -12,9 +13,11 @@ using NpgsqlTypes;
 namespace Kayord.Pos.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240423104343_Notifications")]
+    partial class Notifications
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -448,7 +451,7 @@ namespace Kayord.Pos.Data.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("Payload")
-                        .HasColumnType("jsonb");
+                        .HasColumnType("text");
 
                     b.Property<string>("Token")
                         .IsRequired()
@@ -465,16 +468,16 @@ namespace Kayord.Pos.Data.Migrations
 
             modelBuilder.Entity("Kayord.Pos.Entities.NotificationUser", b =>
                 {
-                    b.Property<string>("UserId")
+                    b.Property<string>("Token")
                         .HasColumnType("text");
 
-                    b.Property<string>("Token")
+                    b.Property<string>("UserId")
                         .HasColumnType("text");
 
                     b.Property<DateTime>("DateInserted")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("UserId", "Token");
+                    b.HasKey("Token", "UserId");
 
                     b.ToTable("NotificationUser");
                 });
@@ -987,6 +990,39 @@ namespace Kayord.Pos.Data.Migrations
                     b.ToTable("User");
                 });
 
+            modelBuilder.Entity("Kayord.Pos.Entities.UserNotification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("DateExpires")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DateRead")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("DateSent")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("JSONContent")
+                        .HasColumnType("jsonb");
+
+                    b.Property<string>("Notification")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserNotification");
+                });
+
             modelBuilder.Entity("Kayord.Pos.Entities.UserOutlet", b =>
                 {
                     b.Property<int>("Id")
@@ -1032,25 +1068,6 @@ namespace Kayord.Pos.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserRole");
-                });
-
-            modelBuilder.Entity("OrderItemStatusLog", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("OrderItemId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("OrderItemStatusId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("OrderItemStatusLog");
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.CashUp", b =>

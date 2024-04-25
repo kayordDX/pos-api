@@ -8,7 +8,7 @@ public interface IKayordHub
 {
     Task ReceiveMessage(string message);
     Task PayMessage(Result<Features.Pay.Dto.StatusResultDto> request);
-    Task Notification(NotificationEvent notification);
+    Task Notification(SignalEvent notification);
 }
 
 public class KayordHub : Hub<IKayordHub>

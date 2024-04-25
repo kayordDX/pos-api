@@ -1,8 +1,5 @@
-using Humanizer;
-using Kayord.Pos.DTO;
+namespace Kayord.Pos.Features.TableOrder.Office.OrderBased.Back;
 
-
-namespace Kayord.Pos.Features.Order.BackOffice;
 public class OrderItemStatusDTO
 {
     public int OrderItemStatusId { get; set; }

@@ -5,7 +5,7 @@ using Kayord.Pos.Entities;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace Kayord.Pos.Features.Order.BackOffice;
+namespace Kayord.Pos.Features.TableOrder.Office.OrderBased.Back;
 
 public class Endpoint : Endpoint<Request, Response>
 {
@@ -26,25 +26,38 @@ public class Endpoint : Endpoint<Request, Response>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        int outletId = 0;
-
-        var statusIds = _dbContext.OrderItemStatus.Where(x => x.isBackOffice && x.isComplete != true && x.isCancelled != true).Select(rd => rd.OrderItemStatusId).ToList();
         UserOutlet? outlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.isCurrent == true);
         if (outlet == null)
         {
             await SendNotFoundAsync();
             return;
         }
-        else
+
+        var orderItems = _dbContext.OrderItem
+            .Where(x => x.TableBooking.Table.Section.OutletId == outlet.OutletId)
+            .Where(x => x.OrderGroupId != null)
+            .Where(x => x.OrderItemStatus.isBackOffice == true)
+            .Where(x => x.OrderItemStatus.isComplete != true)
+            .Where(x => x.OrderItemStatus.isCancelled != true);
+        // .Where(x => x.MenuItem.DivisionId == 1);
+
+        if (orderItems == null)
         {
-            outletId = outlet.OutletId;
+            await SendNotFoundAsync();
+            return;
         }
 
 
-        var orderGroups = await _dbContext.OrderGroup.FromSql($"""
-                SELECT "OrderGroupId" FROM "get_orders_for_outlet"({outletId},{req.DivisionIds})
-                """)
-                .ProjectToDto().ToListAsync();
+        var orderItemDTOs = await orderItems.ProjectToDto().ToListAsync();
+        var orderGroups = orderItemDTOs
+            .GroupBy(x => new { x.OrderGroupId, x.TableBookingId })
+            .Select(s => new OrderGroupDTO()
+            {
+                OrderGroupId = s.Key.OrderGroupId ?? 0,
+                TableBooking = s.FirstOrDefault()?.TableBooking,
+                OrderItems = s.ToList()
+            })
+            .ToList();
 
         Response r = new()
         {

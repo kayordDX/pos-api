@@ -1,4 +1,5 @@
-namespace Kayord.Pos.Features.Order.BackOffice;
+namespace Kayord.Pos.Features.TableOrder.Office.OrderBased.Back;
+
 public class MenuItemDTO
 {
     public int MenuItemId { get; set; }

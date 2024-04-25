@@ -41,7 +41,7 @@ namespace Kayord.Pos.Features.TableOrder.UpdateTableOrder
                         i.OrderCompleted = DateTime.Now;
                     if (ois.Notify && table.TableId == i.TableBooking.TableId && notify)
                     {
-                        await PublishAsync(new NotificationEvent()
+                        await PublishAsync(new SignalEvent()
                         {
                             UserId = i.TableBooking.UserId,
                             Notification = table.Name + "- All Orders - " + ois.Status,
