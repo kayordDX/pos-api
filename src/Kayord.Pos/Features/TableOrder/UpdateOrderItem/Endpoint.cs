@@ -72,7 +72,7 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
                 await PublishAsync(new NotificationEvent()
                 {
                     UserId = tUserId,
-                    Title = "Item Ready",
+                    Title = "Item Status",
                     Body = TableName + " - " + Notification + " - " + Status,
                 }, Mode.WaitForNone);
             }
