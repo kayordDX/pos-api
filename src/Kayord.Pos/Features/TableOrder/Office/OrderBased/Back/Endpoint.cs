@@ -75,7 +75,7 @@ public class Endpoint : Endpoint<Request, Response>
 
 
         var orderItemDTOs = await orderItems.ProjectToDto().ToListAsync();
-        var orderGroups = orderItemDTOs
+        var orderGroupQuery = orderItemDTOs
             .GroupBy(x => new { x.OrderGroupId, x.TableBookingId })
             .Select(s => new OrderGroupDTO()
             {
@@ -83,11 +83,23 @@ public class Endpoint : Endpoint<Request, Response>
                 LastDate = s.Max(x => x.OrderUpdated),
                 Priority = s.Max(x => x.OrderItemStatus.Priority),
                 TableBooking = s.FirstOrDefault()?.TableBooking,
-                // OrderItems = s.OrderByDescending(x => x.Priority).ThenByDescending(x => x.OrderUpdated).ToList()
                 OrderItems = s.ToList()
-            })
-            .OrderByDescending(x => x.Priority).ThenByDescending(x => x.LastDate)
-            .ToList();
+            });
+
+        if (req.Complete)
+        {
+            orderGroupQuery = orderGroupQuery
+                .OrderByDescending(x => x.Priority).ThenByDescending(x => x.LastDate)
+                .ToList();
+        }
+        else
+        {
+            orderGroupQuery = orderGroupQuery
+                .OrderByDescending(x => x.Priority).ThenBy(x => x.LastDate)
+                .ToList();
+        }
+
+        var orderGroups = orderGroupQuery.ToList();
 
         Response r = new()
         {
