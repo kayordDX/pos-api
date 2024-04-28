@@ -1,5 +1,6 @@
 using Kayord.Pos.Events;
 using Kayord.Pos.Hubs;
+using Kayord.Pos.Services;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Kayord.Pos.Features.Pay;
@@ -19,10 +20,9 @@ public class PayLinkReceivedHandler : IEventHandler<PayLinkReceivedEvent>
     public async Task HandleAsync(PayLinkReceivedEvent eventModel, CancellationToken ct)
     {
         using var scope = _scopeFactory.CreateScope();
-        var hub = scope.Resolve<IHubContext<KayordHub, IKayordHub>>();
         var service = scope.Resolve<HaloService>();
 
-        if (service == null || hub == null)
+        if (service == null)
         {
             throw new Exception("Dependency injection failed");
         }
@@ -34,8 +34,6 @@ public class PayLinkReceivedHandler : IEventHandler<PayLinkReceivedEvent>
                 throw new TimeoutException("Timeout");
             }
             i++;
-
-            await hub.Clients.User(eventModel.UserId).PayMessage(status);
             await Task.Delay(5000);
         }
     }

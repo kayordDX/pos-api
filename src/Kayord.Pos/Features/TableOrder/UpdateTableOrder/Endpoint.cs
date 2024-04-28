@@ -27,6 +27,7 @@ namespace Kayord.Pos.Features.TableOrder.UpdateTableOrder
             var ois = await _dbContext.OrderItemStatus.FirstOrDefaultAsync(x => x.OrderItemStatusId == req.OrderItemStatusId);
             Entities.Table table = new();
             bool notify = true;
+            NotificationEvent notification = new();
             if (updateableStatus != null && ois != null)
             {
                 List<OrderItemDTO>? entities = await _dbContext.OrderItem.Where(x => updateableStatus.Contains(x.OrderItemStatusId) && x.TableBookingId == req.TableBookingId).ProjectToDto().ToListAsync();
@@ -41,18 +42,17 @@ namespace Kayord.Pos.Features.TableOrder.UpdateTableOrder
                         i.OrderCompleted = DateTime.Now;
                     if (ois.Notify && table.TableId == i.TableBooking.TableId && notify)
                     {
-                        await PublishAsync(new SignalEvent()
-                        {
-                            UserId = i.TableBooking.UserId,
-                            Notification = table.Name + "- All Orders - " + ois.Status,
-                            DateSent = DateTime.Now,
-                            DateExpires = DateTime.Now.AddMinutes(30)
-                        }, Mode.WaitForNone);
+                        notification.UserId = i.TableBooking.UserId;
+                        notification.Title = "Order Update";
+                        notification.Body = table.Name + "- All Orders - " + ois.Status;
                         notify = false;
                     }
                 }
-
                 await _dbContext.SaveChangesAsync();
+                if (notify)
+                {
+                    await PublishAsync(notification, Mode.WaitForNone);
+                }
                 await SendAsync(new Response() { IsSuccess = true });
             }
             else

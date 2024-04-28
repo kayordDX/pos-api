@@ -1,6 +1,7 @@
 using Kayord.Pos.Data;
 using Kayord.Pos.Entities;
 using Kayord.Pos.Events;
+using Kayord.Pos.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.Pay;
@@ -20,8 +21,9 @@ public class PaymentCompletedHandler : IEventHandler<PaymentCompletedEvent>
     {
         using var scope = _scopeFactory.CreateScope();
         var _dbContext = scope.Resolve<AppDbContext>();
+        var notificationService = scope.Resolve<NotificationService>();
 
-        if (_dbContext == null)
+        if (_dbContext == null || notificationService == null)
         {
             throw new Exception("Dependency injection failed");
         }
@@ -37,5 +39,10 @@ public class PaymentCompletedHandler : IEventHandler<PaymentCompletedEvent>
         };
         await _dbContext.Payment.AddAsync(payment);
         await _dbContext.SaveChangesAsync();
+
+        // Send Payment Notification
+        string title = $"Paid R{payment.Amount:0.##}";
+        string body = $"R{payment.Amount:0.##} paid for booking {payment.TableBookingId} at {payment.DateReceived:dd MM HH:mm}";
+        await notificationService.SendUserNotificationAsync(title, body, payment.UserId);
     }
 }
