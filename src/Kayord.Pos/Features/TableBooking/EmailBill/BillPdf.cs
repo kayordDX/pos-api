@@ -15,7 +15,6 @@ public class BillPdf
 
     public Document Generate()
     {
-        FontManager.RegisterFontWithCustomName("Roboto", File.OpenRead("assets/roboto.ttf"));
         var document = Document.Create(container =>
         {
             container.Page(page =>
@@ -23,7 +22,7 @@ public class BillPdf
                 page.Size(PageSizes.A4);
                 page.Margin(20, Unit.Point);
                 page.PageColor(Colors.White);
-                page.DefaultTextStyle(t => t.FontSize(10).FontColor(Colors.Grey.Darken4).FontFamily("Roboto"));
+                page.DefaultTextStyle(t => t.FontSize(10).FontColor(Colors.Grey.Darken4));
 
                 page.Header().Element(ComposeHeader);
 

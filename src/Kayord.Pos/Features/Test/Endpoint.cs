@@ -26,7 +26,6 @@ public class Endpoint : EndpointWithoutRequest<bool>
 
     private void CreateDocument()
     {
-        FontManager.RegisterFontWithCustomName("Roboto", File.OpenRead("assets/roboto.ttf"));
         Document.Create(container =>
         {
             container.Page(page =>
@@ -34,7 +33,7 @@ public class Endpoint : EndpointWithoutRequest<bool>
                 page.Size(PageSizes.A4);
                 page.Margin(2, Unit.Centimetre);
                 page.PageColor(Colors.White);
-                page.DefaultTextStyle(x => x.FontSize(20).FontFamily("Roboto"));
+                page.DefaultTextStyle(x => x.FontSize(20));
 
                 page.Header()
                     .Text("Hello PDF!")
