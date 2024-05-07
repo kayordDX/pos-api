@@ -38,7 +38,17 @@ public static class AppDbSeed
 
         if (!context.AdjustmentType.Any())
         {
-            await context.AdjustmentType.AddAsync(new AdjustmentType { AdjustmentTypeId = 1, Name = "Other", Description = "" });
+            await context.AdjustmentType.AddAsync(new AdjustmentType { AdjustmentTypeId = 1, Name = "Other" });
+            await context.AdjustmentType.AddAsync(new AdjustmentType { AdjustmentTypeId = 2, Name = "Staff Discount" });
+            await context.AdjustmentType.AddAsync(new AdjustmentType { AdjustmentTypeId = 3, Name = "Loyalty" });
+            await context.SaveChangesAsync(cancellationToken);
+        }
+
+        if (!context.AdjustmentTypeOutlet.Any())
+        {
+            await context.AdjustmentTypeOutlet.AddAsync(new AdjustmentTypeOutlet { AdjustmentTypeId = 1, OutletId = 1 });
+            await context.AdjustmentTypeOutlet.AddAsync(new AdjustmentTypeOutlet { AdjustmentTypeId = 2, OutletId = 1 });
+            await context.AdjustmentTypeOutlet.AddAsync(new AdjustmentTypeOutlet { AdjustmentTypeId = 3, OutletId = 1 });
             await context.SaveChangesAsync(cancellationToken);
         }
 
