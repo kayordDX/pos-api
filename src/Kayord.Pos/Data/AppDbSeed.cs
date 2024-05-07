@@ -36,6 +36,12 @@ public static class AppDbSeed
             await context.SaveChangesAsync(cancellationToken);
         }
 
+        if (!context.AdjustmentType.Any())
+        {
+            await context.AdjustmentType.AddAsync(new AdjustmentType { AdjustmentTypeId = 1, Name = "Other", Description = "" });
+            await context.SaveChangesAsync(cancellationToken);
+        }
+
         if (!context.Role.Any())
         {
             await context.Role.AddAsync(new Role { Name = "Guest", Description = "Guest", RoleId = 1 });

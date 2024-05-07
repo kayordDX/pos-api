@@ -11,6 +11,9 @@ public class AppDbContext : DbContext
     {
     }
 
+    public DbSet<Adjustment> Adjustment => Set<Adjustment>();
+    public DbSet<AdjustmentType> AdjustmentType => Set<AdjustmentType>();
+    public DbSet<AdjustmentTypeOutlet> AdjustmentTypeOutlet => Set<AdjustmentTypeOutlet>();
     public DbSet<Business> Business => Set<Business>();
     public DbSet<Clock> Clock => Set<Clock>();
     public DbSet<Outlet> Outlet => Set<Outlet>();

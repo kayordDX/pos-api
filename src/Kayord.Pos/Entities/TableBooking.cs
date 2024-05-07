@@ -13,5 +13,6 @@ namespace Kayord.Pos.Entities
         public string UserId { get; set; } = string.Empty;
         public User User { get; set; } = default!;
         public List<OrderItem>? OrderItems { get; set; }
+        public List<Adjustment>? Adjustments { get; set; }
     }
 }
