@@ -26,7 +26,7 @@ public class NotificationService
         }
     }
 
-    public async Task<bool> SendNotificationAsync(string title, string body, string token, string? userId)
+    public async Task<bool> SendNotificationAsync(string title, string body, string token, string userId)
     {
         bool result = false;
         try
@@ -67,6 +67,10 @@ public class NotificationService
             bool isSuccess = response.Length > 0;
             result = isSuccess;
             await LogNotification(token, isSuccess, payload, userId, null);
+            if (!isSuccess)
+            {
+                await CheckToken(userId, token);
+            }
         }
         catch (Exception ex)
         {
@@ -85,6 +89,26 @@ public class NotificationService
             await LogNotification(token, false, payload, userId, ex.Message);
         }
         return result;
+    }
+
+    public async Task CheckToken(string userId, string token)
+    {
+        var notificationLogs = await _dbContext.NotificationLog
+            .Where(x => x.UserId == userId)
+            .Where(x => x.Token == token)
+            .OrderByDescending(x => x.DateInserted)
+            .Take(5)
+            .ToListAsync();
+
+        if (notificationLogs.Sum(x => x.IsSuccess ? 0 : 1) >= 3)
+        {
+            var notificationUser = await _dbContext.NotificationUser.Where(x => x.UserId == userId && x.Token == token).FirstOrDefaultAsync();
+            if (notificationUser != null)
+            {
+                _dbContext.NotificationUser.Remove(notificationUser);
+                await _dbContext.SaveChangesAsync();
+            }
+        }
     }
 
     public async Task SaveUserToken(string userId, string token)
