@@ -1,33 +1,30 @@
 using Kayord.Pos.Data;
 using Kayord.Pos.Entities;
-using Microsoft.EntityFrameworkCore;
-using YamlDotNet.Core.Tokens;
 
-namespace Kayord.Pos.Features.Order.AddItems
+namespace Kayord.Pos.Features.Order.AddItems;
+
+public class Endpoint : Endpoint<Request, OrderItem>
 {
-    public class Endpoint : Endpoint<Request, Pos.Entities.OrderItem>
+    private readonly AppDbContext _dbContext;
+
+    public Endpoint(AppDbContext dbContext)
     {
-        private readonly AppDbContext _dbContext;
+        _dbContext = dbContext;
+    }
 
-        public Endpoint(AppDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
+    public override void Configure()
+    {
+        Post("/order/addItems");
+    }
 
-        public override void Configure()
+    public override async Task HandleAsync(Request req, CancellationToken ct)
+    {
+        int TableBookingId = req.TableBookingId;
+        OrderItem orderItem = new();
+        foreach (Order order in req.Orders)
         {
-            Post("/order/addItems");
-        }
-
-        public override async Task HandleAsync(Request req, CancellationToken ct)
-        {
-            int TableBookingId = req.TableBookingId;
-            List<OrderItemOption> orderItemOptions = new();
-            List<OrderItemExtra> orderItemExtra = new();
-            OrderItem entity = new();
-            foreach (Order order in req.Orders)
+            for (int q = 1; q <= order.Quantity; q++)
             {
-
                 var menuItem = await _dbContext.MenuItem.FindAsync(order.MenuItemId);
                 if (menuItem == null)
                 {
@@ -36,7 +33,7 @@ namespace Kayord.Pos.Features.Order.AddItems
                 }
                 List<Option> Options = new List<Option>();
 
-                entity = new OrderItem()
+                orderItem = new OrderItem()
                 {
                     TableBookingId = TableBookingId,
                     MenuItemId = order.MenuItemId,
@@ -44,43 +41,37 @@ namespace Kayord.Pos.Features.Order.AddItems
                     Note = order.Note
                 };
 
-                await _dbContext.OrderItem.AddAsync(entity);
-
-
                 if (order.OptionIds != null)
+                {
+                    List<OrderItemOption> orderItemOptions = new();
+
                     foreach (var i in order.OptionIds)
                     {
-                        OrderItemOption o = new() { OrderItemId = entity.OrderItemId, OptionId = i };
+                        OrderItemOption o = new() { OrderItemId = orderItem.OrderItemId, OptionId = i };
                         orderItemOptions.Add(o);
                     }
-
-                List<Entities.Extra> Extras = new List<Entities.Extra>();
-
+                    orderItem.OrderItemOptions = orderItemOptions;
+                }
                 if (order.ExtraIds != null)
+                {
+                    List<OrderItemExtra> orderItemExtra = new();
                     foreach (int i in order.ExtraIds)
                     {
-                        OrderItemExtra e = new() { OrderItemId = entity.OrderItemId, ExtraId = i };
+                        OrderItemExtra e = new() { OrderItemId = orderItem.OrderItemId, ExtraId = i };
                         orderItemExtra.Add(e);
                     }
-            }
+                    orderItem.OrderItemExtras = orderItemExtra;
+                }
 
-            await _dbContext.SaveChangesAsync();
-            foreach (var o in orderItemOptions)
-            {
-                o.OrderItemId = entity.OrderItemId;
-                await _dbContext.OrderItemOption.AddAsync(o);
+                await _dbContext.OrderItem.AddAsync(orderItem);
             }
-            foreach (var e in orderItemExtra)
-            {
-                e.OrderItemId = entity.OrderItemId;
-                await _dbContext.OrderItemExtra.AddAsync(e);
-            }
-            await _dbContext.SaveChangesAsync();
-
-            if (entity.OrderItemId > 0)
-                await SendNoContentAsync();
-            else
-                await SendErrorsAsync(500);
         }
+
+        await _dbContext.SaveChangesAsync();
+
+        if (orderItem.OrderItemId > 0)
+            await SendNoContentAsync();
+        else
+            await SendErrorsAsync(500);
     }
 }

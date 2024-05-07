@@ -28,31 +28,38 @@ public class Endpoint : Endpoint<Request, Response>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        Response response = new();
-        response.Total = 0;
+        Response response = new()
+        {
+            Total = 0
+        };
         var tableBooking = await _dbContext.TableBooking.FirstOrDefaultAsync(x => x.Id == req.TableBookingId);
         if (tableBooking == null)
             await SendNotFoundAsync();
         response.OrderItems = await _dbContext.OrderItem
-        .Where(x => x.TableBookingId == req.TableBookingId && x.OrderItemStatusId == 1)
-        .ProjectToDto()
-        .ToListAsync();
+            .Where(x => x.TableBookingId == req.TableBookingId && x.OrderItemStatusId == 1)
+            .ProjectToDto()
+            .ToListAsync();
 
         foreach (BillOrderItemDTO item in response.OrderItems)
         {
             response.Total += item.MenuItem.Price;
             if (item.OrderItemOptions != null)
+            {
                 foreach (OrderItemOptionDTO option in item.OrderItemOptions)
                 {
                     response.Total += option.Option.Price;
                     item.MenuItem.Price += option.Option.Price;
                 }
+            }
             if (item.OrderItemExtras != null)
+            {
                 foreach (OrderItemExtraDTO extra in item.OrderItemExtras)
                 {
                     response.Total += extra.Extra.Price;
                     item.MenuItem.Price += extra.Extra.Price;
                 }
+            }
+            item.Quantity = response.OrderItems.Sum(x => x.MenuItemId == item.MenuItemId ? 1 : 0);
         }
         await SendAsync(response);
     }

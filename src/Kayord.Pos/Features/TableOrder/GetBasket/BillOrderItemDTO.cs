@@ -7,6 +7,7 @@ public class BillOrderItemDTO
     public int TableBookingId { get; set; }
     public TableBookingDTO TableBooking { get; set; } = default!;
     public int MenuItemId { get; set; }
+    public int Quantity { get; set; }
     public BillMenuItemDTO MenuItem { get; set; } = default!;
     public List<OrderItemOptionDTO>? OrderItemOptions { get; set; }
     public List<OrderItemExtraDTO>? OrderItemExtras { get; set; }
