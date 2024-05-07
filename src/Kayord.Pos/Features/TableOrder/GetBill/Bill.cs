@@ -13,7 +13,14 @@ public static class Bill
             Total = 0
         };
         decimal TotalPayments = 0m;
-        var tableBooking = await _dbContext.TableBooking.FirstOrDefaultAsync(x => x.Id == req.TableBookingId);
+        var tableBooking = await _dbContext.TableBooking
+            .Include(x => x.Adjustments!)
+                .ThenInclude(x => x.AdjustmentType)
+            .FirstOrDefaultAsync(x => x.Id == req.TableBookingId);
+        if (tableBooking?.Adjustments != null)
+        {
+            response.Adjustments = tableBooking.Adjustments;
+        }
 
         var paymentStatusIds = _dbContext.OrderItemStatus.Where(x => x.isBillable).Select(rd => rd.OrderItemStatusId).ToList();
         if (tableBooking == null)
@@ -35,6 +42,8 @@ public static class Bill
 
         response.Total += response.OrderItems.Where(item => item.OrderItemExtras != null)
                                       .Sum(item => item.OrderItemExtras!.Sum(extra => extra.Extra.Price));
+
+        response.Total += response.Adjustments!.Sum(x => x.Amount);
 
         TotalPayments += response.PaymentsReceived.Where(item => item.TableBookingId! == req.TableBookingId)
                                       .Sum(item => item.Amount);
