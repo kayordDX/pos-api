@@ -46,6 +46,10 @@ namespace Kayord.Pos.Features.TableBooking.EmailBill
                 }
                 items.Add(new Item { Name = order.MenuItem.Name, Price = order.MenuItem.Price, Items = subItems });
             }
+            foreach (var adjustment in bill.Adjustments ?? [])
+            {
+                items.Add(new Item { Name = adjustment.AdjustmentType.Name, Price = adjustment.Amount });
+            }
 
             var tableBooking = await _dbContext.TableBooking.FindAsync(req.TableBookingId);
             if (tableBooking == null)
