@@ -9,6 +9,7 @@ public class OrderItemStatus
     public bool isComplete { get; set; } = false;
     public bool isCancelled { get; set; } = false;
     public bool isBillable { get; set; } = true;
+    public bool isHistory { get; set; } = false;
     public bool Notify { get; set; } = false;
     public int Priority { get; set; } = 0;
 }
