@@ -1,4 +1,3 @@
-using Kayord.Pos.DTO;
 using Kayord.Pos.Entities;
 
 namespace Kayord.Pos.Features.TableOrder.GetBill;
@@ -14,4 +13,5 @@ public class Response
     public decimal Balance { get; set; } = 0;
     public decimal TipAmount { get; set; } = 0;
     public DateTime BillDate { get; set; }
+    public List<Entities.Adjustment>? Adjustments { get; set; }
 }
