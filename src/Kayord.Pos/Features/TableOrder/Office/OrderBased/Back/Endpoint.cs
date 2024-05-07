@@ -63,7 +63,7 @@ public class Endpoint : Endpoint<Request, Response>
             .Where(x => x.TableBooking.Table.Section.OutletId == outlet.OutletId && x.TableBooking.CloseDate == null)
             .Where(x => x.OrderGroupId != null)
             .Where(x => x.OrderItemStatus.isBackOffice == !req.Complete)
-            .Where(x => x.OrderItemStatus.isComplete == req.Complete)
+            // .Where(x => x.OrderItemStatus.isComplete == req.Complete)
             .Where(x => x.OrderItemStatus.isCancelled != true)
             .Where(x => x.OrderItemStatus.isHistory == req.Complete)
             .Where(x => divisionIds.Contains(x.MenuItem.DivisionId ?? 0));
