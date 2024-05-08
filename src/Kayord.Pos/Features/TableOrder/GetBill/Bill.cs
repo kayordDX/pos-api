@@ -47,11 +47,17 @@ public static class Bill
 
         TotalPayments += response.PaymentsReceived.Where(item => item.TableBookingId! == req.TableBookingId)
                                       .Sum(item => item.Amount);
+        response.Total = response.Total < 0 ? 0m : response.Total;
         response.Balance = response.Total - TotalPayments;
         response.TipAmount = (response.Total - TotalPayments) * -1;
         response.TotalExVAT = Math.Round(response.Total / 1.15m, 2);
         response.VAT = response.Total - response.TotalExVAT;
         response.Balance = response.Balance < 0 ? 0m : response.Balance;
+        response.Total = response.Total < 0 ? 0m : response.Total;
+        response.Balance = response.Balance < 0 ? 0m : response.Balance;
+        response.VAT = response.VAT < 0 ? 0m : response.VAT;
+        response.TipAmount = response.TipAmount < 0 ? 0m : response.TipAmount;
+        response.TotalExVAT = response.TotalExVAT < 0 ? 0m : response.TotalExVAT;
 
         return response;
     }
