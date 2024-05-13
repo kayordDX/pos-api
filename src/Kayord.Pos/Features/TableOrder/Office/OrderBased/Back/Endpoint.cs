@@ -60,14 +60,17 @@ public class Endpoint : Endpoint<Request, Response>
         }
 
         var orderItems = _dbContext.OrderItem
-            .Where(x => x.TableBooking.Table.Section.OutletId == outlet.OutletId && x.TableBooking.CloseDate == null)
+            .Where(x => x.TableBooking.Table.Section.OutletId == outlet.OutletId)
             .Where(x => x.OrderGroupId != null)
             .Where(x => x.OrderItemStatus.isBackOffice == !req.Complete)
             // .Where(x => x.OrderItemStatus.isComplete == req.Complete)
             .Where(x => x.OrderItemStatus.isCancelled != true)
             .Where(x => x.OrderItemStatus.isHistory == req.Complete)
             .Where(x => divisionIds.Contains(x.MenuItem.DivisionId ?? 0));
-
+        if (req.Complete)
+        {
+            orderItems = orderItems.Where(x => x.TableBooking.CloseDate == null);
+        }
         if (orderItems == null)
         {
             await SendNotFoundAsync();
