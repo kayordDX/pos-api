@@ -31,17 +31,22 @@ namespace Kayord.Pos.Features.Table.GetMyBooked
                     .Where(booking => booking.Table.Section.OutletId == req.OutletId && booking.UserId == _cu.UserId &&
                                       booking.CloseDate == null)
                     .Where(x => x.Table.Section.OutletId == req.OutletId)
+                    .OrderBy(x => x.Table.Position)
                     .ProjectToDto()
                     .ToListAsync();
             }
             else
             {
                 results = await _dbContext.TableBooking
-                 .Where(booking => booking.Table.Section.OutletId == req.OutletId && booking.UserId != _cu.UserId &&
-                                    booking.CloseDate == null)
-                 .Where(x => x.Table.Section.OutletId == req.OutletId)
-                 .ProjectToDto()
-                 .ToListAsync();
+                    .Where(booking =>
+                        booking.Table.Section.OutletId == req.OutletId &&
+                        booking.UserId != _cu.UserId &&
+                        booking.CloseDate == null
+                    )
+                    .Where(x => x.Table.Section.OutletId == req.OutletId)
+                    .OrderBy(x => x.Table.Position)
+                    .ProjectToDto()
+                    .ToListAsync();
             }
             await SendAsync(results);
         }
