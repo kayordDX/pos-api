@@ -26,7 +26,7 @@ public class Endpoint : Endpoint<Request, Pos.Entities.SalesPeriod>
             await SendNotFoundAsync();
             return;
         }
-        var OpenTableCount = await _dbContext.TableBooking.Where(x => x.SalesPeriodId == req.SalesPeriodId).CountAsync();
+        var OpenTableCount = await _dbContext.TableBooking.Where(x => x.SalesPeriodId == req.SalesPeriodId && x.CloseDate == null).CountAsync();
         if (OpenTableCount > 0)
         {
             await SendForbiddenAsync();
