@@ -77,11 +77,11 @@ public static class AppDbSeed
         // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "PaymentType" RESTART IDENTITY CASCADE;""");
 
 
-        if (!context.SalesPeriod.Any(x => x.EndDate == null))
-        {
-            await context.SalesPeriod.AddAsync(new SalesPeriod { Id = 1, Name = "Test", StartDate = DateTime.Now, OutletId = 1 });
-            await context.SaveChangesAsync(cancellationToken);
-        }
+        // if (!context.SalesPeriod.Any(x => x.EndDate == null))
+        // {
+        //     await context.SalesPeriod.AddAsync(new SalesPeriod { Id = 1, Name = "Test", StartDate = DateTime.Now, OutletId = 1 });
+        //     await context.SaveChangesAsync(cancellationToken);
+        // }
 
         if (!context.Menu.Any() && 1 == 2)
         {

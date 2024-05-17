@@ -22,6 +22,7 @@ namespace Kayord.Pos.Features.Menu.List
         {
             var menus = await _dbContext.Menu
                 .Where(menu => menu.OutletId == req.OutletId)
+                .OrderBy(x => x.Position)
                 .ToListAsync();
 
             await SendAsync(menus);
