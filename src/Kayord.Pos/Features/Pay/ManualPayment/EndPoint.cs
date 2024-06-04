@@ -31,7 +31,7 @@ namespace Kayord.Pos.Features.Pay.ManualPayment
                 DateReceived = DateTime.UtcNow,
                 UserId = _cu.UserId ?? "",
                 TableBookingId = req.TableBookingId,
-                PaymentTypeId = 2
+                PaymentTypeId = req.PaymentTypeId
             };
 
             await _dbContext.Payment.AddAsync(entity);

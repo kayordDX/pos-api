@@ -51,7 +51,7 @@ public class AppDbContext : DbContext
     public DbSet<NotificationLog> NotificationLog => Set<NotificationLog>();
     public DbSet<OrderItemStatusLog> OrderItemStatusLog => Set<OrderItemStatusLog>();
     public DbSet<EmailLog> EmailLog => Set<EmailLog>();
-
+    public DbSet<OutletPaymentType> OutletPaymentType => Set<OutletPaymentType>();
     protected override void OnModelCreating(ModelBuilder builder)
     {
         var dateTimeConverter = new ValueConverter<DateTime, DateTime>(

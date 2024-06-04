@@ -1,5 +1,3 @@
-using Kayord.Pos.Entities;
-
 namespace Kayord.Pos.Entities;
 
 public class Payment

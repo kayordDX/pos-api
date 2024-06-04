@@ -11,4 +11,6 @@ public class Outlet
     public ICollection<Section>? Sections { get; set; }
     public string VATNumber { get; set; } = string.Empty;
     public string? Logo { get; set; }
+    public ICollection<OutletPaymentType>? OutletPaymentTypes { get; set; }
+
 }
