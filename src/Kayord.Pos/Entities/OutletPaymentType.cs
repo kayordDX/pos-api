@@ -6,5 +6,5 @@ public class OutletPaymentType
     public PaymentType PaymentType { get; set; } = default!;
     public int OutletId { get; set; }
     public Outlet Outlet { get; set; } = default!;
-
+    public int Position { get; set; }
 }

@@ -19,8 +19,11 @@ public class Endpoint : Endpoint<Request, List<Entities.PaymentType>>
 
     public override async Task HandleAsync(Request request, CancellationToken ct)
     {
-        var response = await _dbContext.OutletPaymentType.Where(x => x.OutletId == request.Id).Select(x => x.PaymentType).ToListAsync();
-
+        var response = await _dbContext.OutletPaymentType
+            .Where(x => x.OutletId == request.Id)
+            .OrderBy(x => x.Position)
+            .Select(x => x.PaymentType)
+            .ToListAsync();
         await SendAsync(response);
     }
 }
