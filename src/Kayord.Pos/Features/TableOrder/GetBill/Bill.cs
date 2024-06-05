@@ -34,7 +34,11 @@ public static class Bill
         .ProjectToDto()
         .ToListAsync();
 
-        response.PaymentsReceived = await _dbContext.Payment.Where(x => x.TableBookingId == req.TableBookingId).ToListAsync();
+        response.PaymentsReceived = await _dbContext.Payment
+            .Where(x => x.TableBookingId == req.TableBookingId)
+            .Include(x => x.PaymentType)
+            .ToListAsync();
+
         response.Total += response.OrderItems.Sum(item => item.MenuItem.Price);
 
         response.Total += response.OrderItems.Where(item => item.OrderItemOptions != null)
