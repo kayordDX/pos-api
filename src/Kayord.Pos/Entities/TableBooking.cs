@@ -14,5 +14,12 @@ namespace Kayord.Pos.Entities
         public User User { get; set; } = default!;
         public List<OrderItem>? OrderItems { get; set; }
         public List<Adjustment>? Adjustments { get; set; }
+        public int? CashUpUserId { get; set; }
+        public decimal? Total { get; set; }
+        public CashUpUser? CashUpUser { get; set; }
+        public List<Payment>? Payments { get; set; }
+
+
+
     }
 }
