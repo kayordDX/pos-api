@@ -6,6 +6,7 @@ public class Payment
 
     public string PaymentReference { get; set; } = string.Empty;
     public int TableBookingId { get; set; }
+    public TableBooking TableBooking { get; set; } = default!;
     public decimal Amount { get; set; }
     public string UserId { get; set; } = string.Empty;
     public int? PaymentTypeId { get; set; }
