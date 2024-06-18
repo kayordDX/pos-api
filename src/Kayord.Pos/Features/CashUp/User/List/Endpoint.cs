@@ -35,17 +35,17 @@ public class Endpoint : Endpoint<Request, Response>
 
         var listClock = await _dbContext.Clock.Where(x => x.EndDate == null && x.OutletId == req.OutletId).ToListAsync();
 
-        var outletpayTypes = await _dbContext.OutletPaymentType.Where(x => x.OutletId == req.OutletId).Include(x => x.PaymentType).ToListAsync();
-        var outletpayTypeIds = outletpayTypes.Select(x => x.PaymentTypeId).ToList();
+        var outletPayTypes = await _dbContext.OutletPaymentType.Where(x => x.OutletId == req.OutletId).Include(x => x.PaymentType).ToListAsync();
+        var outletPayTypeIds = outletPayTypes.Select(x => x.PaymentTypeId).ToList();
 
-        var payTypes = await _dbContext.PaymentType.Where(x => outletpayTypeIds.Contains(x.PaymentTypeId)).ToListAsync();
+        var payTypes = await _dbContext.PaymentType.Where(x => outletPayTypeIds.Contains(x.PaymentTypeId)).ToListAsync();
 
         var tableBooking = await _dbContext.TableBooking.Where(x => x.UserId == req.UserId && x.SalesPeriodId == req.SalesPeriodId && x.CashUpUserId == null).Include(x => x.Payments).Include(x => x.OrderItems).ToListAsync();
 
-        var paymentWithLevyIds = outletpayTypes.Where(x => x.PaymentType.TipLevyPercentage != 0m).Select(rd => rd.PaymentTypeId).ToList();
+        List<int> paymentWithLevyIds = outletPayTypes.Where(x => x.PaymentType.TipLevyPercentage != 0m).Select(rd => rd.PaymentTypeId).ToList();
 
         List<ResponseItem> responseItems = new();
-        foreach (var item in _dbContext.CashUpUserItemType.Where(x => outletpayTypeIds.Contains(x.PaymentTypeId!.Value)))
+        foreach (var item in _dbContext.CashUpUserItemType.Where(x => outletPayTypeIds.Contains(x.PaymentTypeId!.Value)))
         {
             ResponseItem ri = new();
             ri.CashUpUserItemType = item;
@@ -55,8 +55,8 @@ public class Endpoint : Endpoint<Request, Response>
 
         foreach (var item in tableBooking)
         {
-            var tablePayments = item.Payments!.Where(x => paymentWithLevyIds.Contains(x.PaymentTypeId!.Value)).Sum(x => x.Amount);
-            decimal tipOverage = (tablePayments - item.Total!.Value) * -1;
+            decimal tablePayments = item.Payments?.Where(x => paymentWithLevyIds.Contains(x.PaymentTypeId ?? 0)).Sum(x => x.Amount) ?? 0;
+            decimal tipOverage = (tablePayments - (item.Total ?? 0)) * -1;
             decimal tipLevy = 0;
             if (tipOverage > 0)
             {
@@ -69,7 +69,7 @@ public class Endpoint : Endpoint<Request, Response>
                     responseItems.FirstOrDefault(x => x.CashUpUserItemType.PaymentTypeId!.Value == ptU.PaymentTypeId)!.Value += tipOverage / levyCount * ptU.TipLevyPercentage;
                 }
             }
-            userTotal += item.Total!.Value;
+            userTotal += item.Total ?? 0;
             tipLevyTotal += tipLevy;
 
         }
