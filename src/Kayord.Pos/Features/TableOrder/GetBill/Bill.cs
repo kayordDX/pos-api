@@ -42,27 +42,69 @@ public static class Bill
         response.Total += response.OrderItems.Sum(item => item.MenuItem.Price);
 
         response.Total += response.OrderItems.Where(item => item.OrderItemOptions != null)
-                                      .Sum(item => item.OrderItemOptions!.Sum(option => option.Option.Price));
+            .Sum(item => item.OrderItemOptions!.Sum(option => option.Option.Price));
 
         response.Total += response.OrderItems.Where(item => item.OrderItemExtras != null)
-                                      .Sum(item => item.OrderItemExtras!.Sum(extra => extra.Extra.Price));
+            .Sum(item => item.OrderItemExtras!.Sum(extra => extra.Extra.Price));
 
         response.Total += response.Adjustments!.Sum(x => x.Amount);
 
         TotalPayments += response.PaymentsReceived.Where(item => item.TableBookingId! == req.TableBookingId)
-                                      .Sum(item => item.Amount);
+            .Sum(item => item.Amount);
+
         response.Total = response.Total < 0 ? 0m : response.Total;
         response.Balance = response.Total - TotalPayments;
         response.TipAmount = (response.Total - TotalPayments) * -1;
         response.TotalExVAT = Math.Round(response.Total / 1.15m, 2);
         response.VAT = response.Total - response.TotalExVAT;
         response.Balance = response.Balance < 0 ? 0m : response.Balance;
-        response.Total = response.Total < 0 ? 0m : response.Total;
-        response.Balance = response.Balance < 0 ? 0m : response.Balance;
         response.VAT = response.VAT < 0 ? 0m : response.VAT;
         response.TipAmount = response.TipAmount < 0 ? 0m : response.TipAmount;
         response.TotalExVAT = response.TotalExVAT < 0 ? 0m : response.TotalExVAT;
 
         return response;
+    }
+
+    public static async Task<decimal> GetTotal(int tableBookingId, AppDbContext _dbContext)
+    {
+        decimal total = 0;
+        decimal totalPayments = 0;
+
+        var tableBooking = await _dbContext.TableBooking
+            .Include(x => x.Adjustments!)
+                .ThenInclude(x => x.AdjustmentType)
+            .FirstOrDefaultAsync(x => x.Id == tableBookingId);
+
+        var paymentStatusIds = _dbContext.OrderItemStatus.Where(x => x.isBillable).Select(rd => rd.OrderItemStatusId).ToList();
+        if (tableBooking == null)
+        {
+            throw new Exception("Table not found");
+        }
+
+        var orderItems = await _dbContext.OrderItem
+            .Where(x => paymentStatusIds.Contains(x.OrderItemStatusId) && x.TableBookingId == tableBookingId)
+            .ProjectToDto()
+            .ToListAsync();
+
+        var payments = await _dbContext.Payment
+            .Where(x => x.TableBookingId == tableBookingId)
+            .Include(x => x.PaymentType)
+            .ToListAsync();
+
+        total += orderItems.Sum(item => item.MenuItem.Price);
+
+        total += orderItems.Where(item => item.OrderItemOptions != null)
+            .Sum(item => item.OrderItemOptions!.Sum(option => option.Option.Price));
+
+        total += orderItems.Where(item => item.OrderItemExtras != null)
+            .Sum(item => item.OrderItemExtras!.Sum(extra => extra.Extra.Price));
+
+        total += tableBooking.Adjustments?.Sum(x => x.Amount) ?? 0;
+
+        totalPayments += payments.Where(item => item.TableBookingId! == tableBookingId)
+            .Sum(item => item.Amount);
+
+        total = total < 0 ? 0 : total;
+        return total;
     }
 }
