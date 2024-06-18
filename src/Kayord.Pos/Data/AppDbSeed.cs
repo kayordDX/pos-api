@@ -60,6 +60,25 @@ public static class AppDbSeed
             await context.Role.AddAsync(new Role { Name = "Manager", Description = "Manager", RoleId = 4, isBackOffice = true, isFrontLine = true });
             await context.SaveChangesAsync(cancellationToken);
         }
+
+        if (!context.CashupConfig.Any())
+        {
+            await context.CashupConfig.AddAsync(new CashupConfig() { Id = 1, Value = 20, OutletId = 1, Name = "Breakage Config" });
+            await context.SaveChangesAsync(cancellationToken);
+        }
+        if (!context.CashupUserItemType.Any())
+        {
+
+
+
+            await context.CashupUserItemType.AddAsync(new CashupUserItemType() { ItemType = "Sales Revenue", Id = 1, isAuto = true });
+            await context.CashupUserItemType.AddAsync(new CashupUserItemType() { ItemType = "Halo Levy", Id = 2, isAuto = true, PaymentTypeId = 1 });
+            await context.CashupUserItemType.AddAsync(new CashupUserItemType() { ItemType = "Breakage Fee", Id = 3, isAuto = true, CashupConfigId = 1 });
+
+            await context.SaveChangesAsync(cancellationToken);
+
+
+        }
         // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "Menu" RESTART IDENTITY CASCADE;""");
         // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "MenuSection" RESTART IDENTITY CASCADE;""");
         // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "Option" RESTART IDENTITY CASCADE;""");

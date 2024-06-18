@@ -3,6 +3,7 @@ using System;
 using Kayord.Pos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using NpgsqlTypes;
@@ -12,9 +13,11 @@ using NpgsqlTypes;
 namespace Kayord.Pos.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240618195646_CashuptypesNullId")]
+    partial class CashuptypesNullId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -266,7 +269,7 @@ namespace Kayord.Pos.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("PaymentTypeId")
+                    b.Property<int>("PaymentTypeId")
                         .HasColumnType("integer");
 
                     b.Property<bool>("isAuto")
@@ -1360,7 +1363,9 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasOne("Kayord.Pos.Entities.PaymentType", "PaymentType")
                         .WithMany()
-                        .HasForeignKey("PaymentTypeId");
+                        .HasForeignKey("PaymentTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("CashupConfig");
 

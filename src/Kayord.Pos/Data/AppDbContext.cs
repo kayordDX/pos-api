@@ -52,6 +52,11 @@ public class AppDbContext : DbContext
     public DbSet<OrderItemStatusLog> OrderItemStatusLog => Set<OrderItemStatusLog>();
     public DbSet<EmailLog> EmailLog => Set<EmailLog>();
     public DbSet<OutletPaymentType> OutletPaymentType => Set<OutletPaymentType>();
+    public DbSet<CashupUser> CashupUser => Set<CashupUser>();
+    public DbSet<CashupUserItem> CashupUserItem => Set<CashupUserItem>();
+    public DbSet<CashupUserItemType> CashupUserItemType => Set<CashupUserItemType>();
+    public DbSet<CashupConfig> CashupConfig => Set<CashupConfig>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         var dateTimeConverter = new ValueConverter<DateTime, DateTime>(
