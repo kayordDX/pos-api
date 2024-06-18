@@ -6,7 +6,5 @@ public class CashUpConfig
     public string? Name { get; set; }
     public int OutletId { get; set; }
     public decimal Value { get; set; }
-
-
 }
 
