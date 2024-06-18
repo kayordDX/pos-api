@@ -1,6 +1,6 @@
 namespace Kayord.Pos.Entities;
 
-public class CashupConfig
+public class CashUpConfig
 {
     public int Id { get; set; }
     public string? Name { get; set; }

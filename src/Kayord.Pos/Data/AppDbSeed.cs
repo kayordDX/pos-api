@@ -61,19 +61,19 @@ public static class AppDbSeed
             await context.SaveChangesAsync(cancellationToken);
         }
 
-        if (!context.CashupConfig.Any())
+        if (!context.CashUpConfig.Any())
         {
-            await context.CashupConfig.AddAsync(new CashupConfig() { Id = 1, Value = 20, OutletId = 1, Name = "Breakage Config" });
+            await context.CashUpConfig.AddAsync(new CashUpConfig() { Id = 1, Value = 20, OutletId = 1, Name = "Breakage Config" });
             await context.SaveChangesAsync(cancellationToken);
         }
-        if (!context.CashupUserItemType.Any())
+        if (!context.CashUpUserItemType.Any())
         {
 
 
 
-            await context.CashupUserItemType.AddAsync(new CashupUserItemType() { ItemType = "Sales Revenue", Id = 1, isAuto = true });
-            await context.CashupUserItemType.AddAsync(new CashupUserItemType() { ItemType = "Halo Levy", Id = 2, isAuto = true, PaymentTypeId = 1 });
-            await context.CashupUserItemType.AddAsync(new CashupUserItemType() { ItemType = "Breakage Fee", Id = 3, isAuto = true, CashupConfigId = 1 });
+            await context.CashUpUserItemType.AddAsync(new CashUpUserItemType() { ItemType = "Sales Revenue", Id = 1, isAuto = true });
+            await context.CashUpUserItemType.AddAsync(new CashUpUserItemType() { ItemType = "Halo Levy", Id = 2, isAuto = true, PaymentTypeId = 1 });
+            await context.CashUpUserItemType.AddAsync(new CashUpUserItemType() { ItemType = "Breakage Fee", Id = 3, isAuto = true, CashupConfigId = 1 });
 
             await context.SaveChangesAsync(cancellationToken);
 

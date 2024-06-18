@@ -1,6 +1,6 @@
 namespace Kayord.Pos.Entities;
 
-public class CashupUserItemType
+public class CashUpUserItemType
 {
     public int Id { get; set; }
     public string ItemType { get; set; } = string.Empty;
@@ -9,6 +9,6 @@ public class CashupUserItemType
     public PaymentType? PaymentType { get; set; }
 
     public int? CashupConfigId { get; set; }
-    public CashupConfig? CashupConfig { get; set; }
+    public CashUpConfig? CashupConfig { get; set; }
 
 }
