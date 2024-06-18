@@ -37,8 +37,9 @@ namespace Kayord.Pos.Features.TableBooking.Close
                 return;
             }
             entity.CloseDate = DateTime.UtcNow;
-
             await _dbContext.SaveChangesAsync();
+
+            await TableBooking.SaveTotal(req.TableBookingId, _dbContext);
 
             await SendAsync(entity);
         }
