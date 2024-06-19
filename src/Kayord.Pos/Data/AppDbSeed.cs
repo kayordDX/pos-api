@@ -1,5 +1,6 @@
 using Bogus;
 using Kayord.Pos.Entities;
+using Kayord.Pos.Features.TableOrder.GetBill;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Data;
@@ -225,6 +226,18 @@ public static class AppDbSeed
             await context.OrderItem.AddAsync(new OrderItem() { MenuItemId = 1, Note = "Another Note", TableBookingId = 1, OrderItemStatusId = 2, OrderReceived = DateTime.Now });
             await context.SaveChangesAsync(cancellationToken);
         }
+        var tableBookings = await context.TableBooking
+            .Include(x => x.SalesPeriod)
+            .Where(x => x.SalesPeriod.EndDate != null && x.Total == null).ToListAsync();
 
+        if (tableBookings.Count > 0)
+        {
+            foreach (var tableBooking in tableBookings)
+            {
+                tableBooking.Total = await Bill.GetTotal(tableBooking.Id, context);
+                await context.SaveChangesAsync(cancellationToken);
+            }
+        }
     }
+
 }
