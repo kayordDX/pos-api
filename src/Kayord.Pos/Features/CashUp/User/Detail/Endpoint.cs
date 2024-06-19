@@ -2,10 +2,8 @@ using Kayord.Pos.Data;
 using Kayord.Pos.Entities;
 using Kayord.Pos.Services;
 using Microsoft.EntityFrameworkCore;
-using Namotion.Reflection;
 
-
-namespace Kayord.Pos.Features.CashUp.User.List;
+namespace Kayord.Pos.Features.CashUp.User.Detail;
 
 public class Endpoint : Endpoint<Request, Response>
 {
@@ -20,7 +18,7 @@ public class Endpoint : Endpoint<Request, Response>
 
     public override void Configure()
     {
-        Get("/cashUp/user");
+        Get("/cashUp/user/detail/{userId}/{outletId}/{salesPeriodId}");
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
@@ -30,6 +28,7 @@ public class Endpoint : Endpoint<Request, Response>
             await SendForbiddenAsync();
             return;
         }
+
         decimal userTotal = 0m;
         decimal tipLevyTotal = 0m;
 
@@ -47,9 +46,11 @@ public class Endpoint : Endpoint<Request, Response>
         List<ResponseItem> responseItems = new();
         foreach (var item in _dbContext.CashUpUserItemType.Where(x => outletPayTypeIds.Contains(x.PaymentTypeId!.Value)))
         {
-            ResponseItem ri = new();
-            ri.CashUpUserItemType = item;
-            ri.Value = 0m;
+            ResponseItem ri = new()
+            {
+                CashUpUserItemType = item,
+                Value = 0m
+            };
             responseItems.Add(ri);
         }
 
@@ -63,7 +64,10 @@ public class Endpoint : Endpoint<Request, Response>
                 List<PaymentType> PTUsed = payTypes.Where(x => paymentWithLevyIds.Contains(x.PaymentTypeId)).ToList();
                 decimal levyTotal = PTUsed.Sum(x => x.TipLevyPercentage);
                 decimal levyCount = PTUsed.Count;
-                tipLevy = levyTotal / levyCount * tipOverage;
+                if (levyCount * tipOverage != 0)
+                {
+                    tipLevy = levyTotal / (levyCount * tipOverage);
+                }
                 foreach (var ptU in PTUsed)
                 {
                     responseItems.FirstOrDefault(x => x.CashUpUserItemType.PaymentTypeId!.Value == ptU.PaymentTypeId)!.Value += tipOverage / levyCount * ptU.TipLevyPercentage;
@@ -71,13 +75,14 @@ public class Endpoint : Endpoint<Request, Response>
             }
             userTotal += item.Total ?? 0;
             tipLevyTotal += tipLevy;
-
         }
 
-        Response response = new();
-        response.ResponseItems = responseItems;
-        response.UserId = req.UserId;
-        response.User = await _dbContext.User.FirstOrDefaultAsync(x => x.UserId == req.UserId) ?? default!;
+        Response response = new()
+        {
+            ResponseItems = responseItems,
+            UserId = req.UserId,
+            User = await _dbContext.User.FirstOrDefaultAsync(x => x.UserId == req.UserId) ?? default!
+        };
         await SendAsync(response);
 
     }

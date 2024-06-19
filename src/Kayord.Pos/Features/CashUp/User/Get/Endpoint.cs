@@ -18,7 +18,7 @@ public class Endpoint : Endpoint<Request, List<Response>>
 
     public override void Configure()
     {
-        Get("/cashUp/users");
+        Get("/cashUp/user");
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
@@ -31,16 +31,10 @@ public class Endpoint : Endpoint<Request, List<Response>>
 
         var listClock = await _dbContext.Clock.Where(x => x.EndDate == null && x.OutletId == req.OutletId).ToListAsync();
 
-
         foreach (var item in listClock)
         {
 
-
         }
-
-
-
-
     }
 
 }
