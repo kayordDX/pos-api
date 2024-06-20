@@ -1,6 +1,6 @@
 using Riok.Mapperly.Abstractions;
 
-namespace Kayord.Pos.Features.TableBooking.GetHistory;
+namespace Kayord.Pos.Features.TableBooking.History;
 
 [Mapper]
 public static partial class MapperStatic

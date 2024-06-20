@@ -14,7 +14,7 @@ public class Endpoint : Endpoint<Request, List<Entities.AdjustmentType>>
 
     public override void Configure()
     {
-        Get("/adjustment/{OutletId}");
+        Get("/adjustment/{outletId}");
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
