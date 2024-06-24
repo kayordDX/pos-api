@@ -72,9 +72,9 @@ public static class AppDbSeed
 
 
 
-            await context.CashUpUserItemType.AddAsync(new CashUpUserItemType() { ItemType = "Sales Revenue", Id = 1, isAuto = true });
-            await context.CashUpUserItemType.AddAsync(new CashUpUserItemType() { ItemType = "Halo Levy", Id = 2, isAuto = true, PaymentTypeId = 1 });
-            await context.CashUpUserItemType.AddAsync(new CashUpUserItemType() { ItemType = "Breakage Fee", Id = 3, isAuto = true, CashupConfigId = 1 });
+            await context.CashUpUserItemType.AddAsync(new CashUpUserItemType() { ItemType = "Sales Revenue", Id = 1, IsAuto = true });
+            await context.CashUpUserItemType.AddAsync(new CashUpUserItemType() { ItemType = "Halo Levy", Id = 2, IsAuto = true, PaymentTypeId = 1 });
+            await context.CashUpUserItemType.AddAsync(new CashUpUserItemType() { ItemType = "Breakage Fee", Id = 3, IsAuto = true, CashupConfigId = 1 });
 
             await context.SaveChangesAsync(cancellationToken);
 
@@ -228,15 +228,16 @@ public static class AppDbSeed
         }
         var tableBookings = await context.TableBooking
             .Include(x => x.SalesPeriod)
-            .Where(x => x.SalesPeriod.EndDate != null && x.Total == null).ToListAsync();
+            .Where(x => x.CloseDate != null && x.Total == null).ToListAsync();
 
         if (tableBookings.Count > 0)
         {
             foreach (var tableBooking in tableBookings)
             {
                 tableBooking.Total = await Bill.GetTotal(tableBooking.Id, context);
-                await context.SaveChangesAsync(cancellationToken);
             }
+            await context.SaveChangesAsync(cancellationToken);
+
         }
     }
 

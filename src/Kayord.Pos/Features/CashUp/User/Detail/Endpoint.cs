@@ -18,7 +18,7 @@ public class Endpoint : Endpoint<Request, Response>
 
     public override void Configure()
     {
-        Get("/cashUp/user/detail/{userId}/{outletId}/{salesPeriodId}");
+        Get("/cashUp/user/detail/{userId}/{outletId}");
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
@@ -29,52 +29,128 @@ public class Endpoint : Endpoint<Request, Response>
             return;
         }
 
-        decimal userTotal = 0m;
-        decimal tipLevyTotal = 0m;
-
-        var listClock = await _dbContext.Clock.Where(x => x.EndDate == null && x.OutletId == req.OutletId).ToListAsync();
-
-        var outletPayTypes = await _dbContext.OutletPaymentType.Where(x => x.OutletId == req.OutletId).Include(x => x.PaymentType).ToListAsync();
-        var outletPayTypeIds = outletPayTypes.Select(x => x.PaymentTypeId).ToList();
-
-        var payTypes = await _dbContext.PaymentType.Where(x => outletPayTypeIds.Contains(x.PaymentTypeId)).ToListAsync();
-
-        var tableBooking = await _dbContext.TableBooking.Where(x => x.UserId == req.UserId && x.SalesPeriodId == req.SalesPeriodId && x.CashUpUserId == null).Include(x => x.Payments).Include(x => x.OrderItems).ToListAsync();
-
-        List<int> paymentWithLevyIds = outletPayTypes.Where(x => x.PaymentType.TipLevyPercentage != 0m).Select(rd => rd.PaymentTypeId).ToList();
-
+        List<CashUpUserItemType> cashUpUserItemTypes = await _dbContext.CashUpUserItemType.ToListAsync();
         List<ResponseItem> responseItems = new();
-        foreach (var item in _dbContext.CashUpUserItemType.Where(x => outletPayTypeIds.Contains(x.PaymentTypeId!.Value)))
-        {
-            ResponseItem ri = new()
-            {
-                CashUpUserItemType = item,
-                Value = 0m
-            };
-            responseItems.Add(ri);
-        }
+        List<PaymentTotal> paymentTotals = new();
 
-        foreach (var item in tableBooking)
+        foreach (CashUpUserItemType cashItem in cashUpUserItemTypes.Where(x => x.CashUpUserItemRule == Common.Enums.CashUpUserItemRule.PaymentTotal || x.CashUpUserItemRule == Common.Enums.CashUpUserItemRule.PaymentLevy || x.CashUpUserItemRule == Common.Enums.CashUpUserItemRule.PaymentTip))
         {
-            decimal tablePayments = item.Payments?.Where(x => paymentWithLevyIds.Contains(x.PaymentTypeId ?? 0)).Sum(x => x.Amount) ?? 0;
-            decimal tipOverage = (tablePayments - (item.Total ?? 0)) * -1;
-            decimal tipLevy = 0;
-            if (tipOverage > 0)
+            decimal userTotal = 0m;
+            decimal tipLevyTotal = 0m;
+            var listClock = await _dbContext.Clock.Where(x => x.EndDate == null && x.OutletId == req.OutletId).ToListAsync();
+            var outletPayTypes = await _dbContext.OutletPaymentType.Where(x => x.OutletId == req.OutletId).Include(x => x.PaymentType).ToListAsync();
+            var outletPayTypeIds = outletPayTypes.Select(x => x.PaymentTypeId).ToList();
+
+            var payTypes = await _dbContext.PaymentType.Where(x => outletPayTypeIds.Contains(x.PaymentTypeId)).ToListAsync();
+
+            foreach (var payType in payTypes)
             {
-                List<PaymentType> PTUsed = payTypes.Where(x => paymentWithLevyIds.Contains(x.PaymentTypeId)).ToList();
-                decimal levyTotal = PTUsed.Sum(x => x.TipLevyPercentage);
-                decimal levyCount = PTUsed.Count;
-                if (levyCount * tipOverage != 0)
+                PaymentTotal paymentTotal = new()
                 {
-                    tipLevy = levyTotal / (levyCount * tipOverage);
+                    PaymentTypeId = payType.PaymentTypeId,
+                    PaymentType = payType,
+                    Total = 0,
+                    Levy = 0,
+                    Tip = 0
+                };
+                paymentTotals.Add(paymentTotal);
+            }
+
+            var tableBooking = await _dbContext.TableBooking.Where(x => x.UserId == req.UserId && x.CashUpUserId == null).Include(x => x.Payments).Include(x => x.OrderItems).ToListAsync();
+
+            List<int> paymentWithLevyIds = outletPayTypes.Where(x => x.PaymentType.TipLevyPercentage != 0m).Select(rd => rd.PaymentTypeId).ToList();
+
+            foreach (var item in tableBooking)
+            {
+                decimal tableTotal = item.Total ?? 0;
+                decimal cashPayments = item.Payments?.Where(x => !paymentWithLevyIds.Contains(x.PaymentTypeId ?? 0)).Sum(x => x.Amount) ?? 0;
+                decimal cardPayments = item.Payments?.Where(x => paymentWithLevyIds.Contains(x.PaymentTypeId ?? 0)).Sum(x => x.Amount) ?? 0;
+
+                decimal tipOverage = cashPayments + cardPayments - tableTotal;
+                decimal tipLevy = 0;
+                if (item.Payments != null)
+                {
+                    foreach (var payment in item.Payments)
+                    {
+                        var payType = paymentTotals.FirstOrDefault(x => x.PaymentTypeId == payment.PaymentTypeId);
+                        if (payType != null)
+                        {
+                            payType.Total += payment.Amount;
+                        }
+                    }
                 }
-                foreach (var ptU in PTUsed)
+                if (tipOverage > 0)
                 {
-                    responseItems.FirstOrDefault(x => x.CashUpUserItemType.PaymentTypeId!.Value == ptU.PaymentTypeId)!.Value += tipOverage / levyCount * ptU.TipLevyPercentage;
+                    decimal cashTipCover = Math.Min(tipOverage, cashPayments);
+                    tipOverage -= cashTipCover;
+
+                    if (tipOverage > 0)
+                    {
+                        List<PaymentType> PTUsed = payTypes.Where(x => paymentWithLevyIds.Contains(x.PaymentTypeId)).ToList();
+                        decimal levyTotal = PTUsed.Sum(x => x.TipLevyPercentage);
+                        decimal levyCount = PTUsed.Count;
+                        if (levyCount != 0)
+                        {
+                            foreach (var ptU in PTUsed)
+                            {
+                                var payType = paymentTotals.FirstOrDefault(x => x.PaymentTypeId == ptU.PaymentTypeId);
+                                if (payType != null)
+                                {
+                                    decimal paymentTipOverage = tipOverage * ptU.TipLevyPercentage / levyTotal;
+                                    payType.Levy += paymentTipOverage;
+                                    payType.Tip += paymentTipOverage;
+                                }
+                            }
+                        }
+                    }
+                }
+                userTotal += tableTotal;
+                tipLevyTotal += tipLevy;
+            }
+            foreach (PaymentTotal pt in paymentTotals)
+            {
+                CashUpUserItemType? payCash = cashUpUserItemTypes.FirstOrDefault(x => x.PaymentTypeId == pt.PaymentTypeId);
+                if (payCash != null)
+                {
+                    if (cashItem.CashUpUserItemRule == Common.Enums.CashUpUserItemRule.PaymentTotal)
+                    {
+                        ResponseItem riTotal = new()
+                        {
+                            CashUpUserItemType = payCash,
+                            Value = pt.Total
+                        };
+                        responseItems.Add(riTotal);
+                    }
+                    if (cashItem.CashUpUserItemRule == Common.Enums.CashUpUserItemRule.PaymentTip)
+                    {
+                        ResponseItem riTip = new()
+                        {
+                            CashUpUserItemType = payCash,
+                            Value = pt.Tip
+                        };
+                        responseItems.Add(riTip);
+                    }
+                    if (cashItem.CashUpUserItemRule == Common.Enums.CashUpUserItemRule.PaymentLevy)
+                    {
+                        ResponseItem riLevy = new()
+                        {
+                            CashUpUserItemType = payCash,
+                            Value = pt.Levy
+                        };
+                        responseItems.Add(riLevy);
+                    }
                 }
             }
-            userTotal += item.Total ?? 0;
-            tipLevyTotal += tipLevy;
+        }
+
+        foreach (CashUpUserItemType cashItem in cashUpUserItemTypes.Where(x => x.CashUpUserItemRule == Common.Enums.CashUpUserItemRule.Adjustment))
+        {
+
+        }
+
+        foreach (CashUpUserItemType cashItem in cashUpUserItemTypes.Where(x => x.CashUpUserItemRule == Common.Enums.CashUpUserItemRule.Config))
+        {
+
         }
 
         Response response = new()
@@ -84,7 +160,5 @@ public class Endpoint : Endpoint<Request, Response>
             User = await _dbContext.User.FirstOrDefaultAsync(x => x.UserId == req.UserId) ?? default!
         };
         await SendAsync(response);
-
     }
-
 }

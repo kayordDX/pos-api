@@ -16,3 +16,14 @@ public class ResponseItem
     public decimal Value { get; set; }
 
 }
+
+public class PaymentTotal
+{
+    public int PaymentTypeId { get; set; }
+    public PaymentType PaymentType { get; set; } = default!;
+    public decimal Total { get; set; }
+    public decimal Tip { get; set; }
+    public decimal Levy { get; set; }
+
+}
+
