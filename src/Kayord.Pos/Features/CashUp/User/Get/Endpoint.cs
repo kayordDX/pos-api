@@ -18,7 +18,7 @@ public class Endpoint : Endpoint<Request, List<Response>>
 
     public override void Configure()
     {
-        Get("/cashUp/user");
+        Get("/cashUp/user/{outletId}");
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
