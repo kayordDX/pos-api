@@ -22,4 +22,10 @@ public static partial class Mapper
     public static partial IQueryable<MenuSectionDTO> ProjectToDto(this IQueryable<MenuSection> q);
     public static partial IQueryable<TableBookingDTO> ProjectToDto(this IQueryable<TableBooking> q);
     public static partial IQueryable<UserDTO> ProjectToDto(this IQueryable<User> q);
+    public static partial IQueryable<OutletPaymentTypeDTO> ProjectToDto(this IQueryable<OutletPaymentType> q);
+    public static partial IQueryable<PaymentTypeDTO> ProjectToDto(this IQueryable<PaymentType> q);
+    public static partial IQueryable<PaymentDTO> ProjectToDto(this IQueryable<Payment> q);
+    public static partial IQueryable<CashUpUserDTO> ProjectToDto(this IQueryable<CashUpUser> q);
+
+
 }

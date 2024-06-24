@@ -30,9 +30,9 @@ public class Endpoint : Endpoint<Request, Response>
         }
 
         List<CashUpUserItemType> cashUpUserItemTypes = await _dbContext.CashUpUserItemType.ToListAsync();
-        List<ResponseItem> responseItems = new();
+        Response response = new();
         List<PaymentTotal> paymentTotals = new();
-
+        CashUpUser cashUpUser = await _dbContext.CashUpUser.FirstOrDefaultAsync(c => c.UserId == req.UserId);
         foreach (CashUpUserItemType cashItem in cashUpUserItemTypes.Where(x => x.CashUpUserItemRule == Common.Enums.CashUpUserItemRule.PaymentTotal || x.CashUpUserItemRule == Common.Enums.CashUpUserItemRule.PaymentLevy || x.CashUpUserItemRule == Common.Enums.CashUpUserItemRule.PaymentTip))
         {
             decimal userTotal = 0m;
@@ -114,30 +114,38 @@ public class Endpoint : Endpoint<Request, Response>
                 {
                     if (cashItem.CashUpUserItemRule == Common.Enums.CashUpUserItemRule.PaymentTotal)
                     {
-                        ResponseItem riTotal = new()
+                        CashUpUserItem riTotal = new()
                         {
                             CashUpUserItemType = payCash,
-                            Value = pt.Total
+                            Value = pt.Total,
+                            UserId = req.UserId,
+                            CashUpUser = cashUpUser,
+                            
+                        
                         };
-                        responseItems.Add(riTotal);
+                        response.CashUpUserItems.Add(riTotal);
                     }
                     if (cashItem.CashUpUserItemRule == Common.Enums.CashUpUserItemRule.PaymentTip)
                     {
-                        ResponseItem riTip = new()
+                        CashUpUserItem riTip = new()
                         {
                             CashUpUserItemType = payCash,
-                            Value = pt.Tip
+                            Value = pt.Tip,
+                            UserId = req.UserId
+
                         };
-                        responseItems.Add(riTip);
+                        response.CashUpUserItems.Add(riTip);
                     }
                     if (cashItem.CashUpUserItemRule == Common.Enums.CashUpUserItemRule.PaymentLevy)
                     {
-                        ResponseItem riLevy = new()
+                        CashUpUserItem riLevy = new()
                         {
                             CashUpUserItemType = payCash,
-                            Value = pt.Levy
+                            Value = pt.Levy,
+                            UserId = req.UserId
+
                         };
-                        responseItems.Add(riLevy);
+                        response.CashUpUserItems.Add(riLevy);
                     }
                 }
             }
@@ -153,12 +161,9 @@ public class Endpoint : Endpoint<Request, Response>
 
         }
 
-        Response response = new()
-        {
-            ResponseItems = responseItems,
-            UserId = req.UserId,
-            User = await _dbContext.User.FirstOrDefaultAsync(x => x.UserId == req.UserId) ?? default!
-        };
+        response.UserId = req.UserId;
+        response.User = await _dbContext.User.FirstOrDefaultAsync(x => x.UserId == req.UserId) ?? default!;
+
         await SendAsync(response);
     }
 }
