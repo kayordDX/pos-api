@@ -6,6 +6,6 @@ public class CashUpUser
     public string UserId { get; set; } = string.Empty;
     public int OutletId { get; set; }
     public decimal OpeningBalance { get; set; }
-    public decimal ClosingBalance { get; set; }
+    public decimal? ClosingBalance { get; set; }
     public List<CashUpUserItem> CashUpUserItems { get; set; } = default!;
 }

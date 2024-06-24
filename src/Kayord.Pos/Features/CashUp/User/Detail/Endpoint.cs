@@ -1,4 +1,5 @@
 using Kayord.Pos.Data;
+using Kayord.Pos.DTO;
 using Kayord.Pos.Entities;
 using Kayord.Pos.Services;
 using Microsoft.EntityFrameworkCore;
@@ -28,12 +29,52 @@ public class Endpoint : Endpoint<Request, Response>
             await SendForbiddenAsync();
             return;
         }
+        CashUpUserDTO? cashUpUser = await _dbContext.CashUpUser.ProjectToDto().FirstOrDefaultAsync(x => x.UserId == req.UserId && x.ClosingBalance == null && x.OutletId == req.OutletId);
+        int userCashUpId = 0;
 
-        List<CashUpUserItemType> cashUpUserItemTypes = await _dbContext.CashUpUserItemType.ToListAsync();
-        Response response = new();
+        if (cashUpUser != null)
+        {
+            userCashUpId = cashUpUser.Id;
+        }
+        else
+        {
+            cashUpUser = await _dbContext.CashUpUser.ProjectToDto().OrderByDescending(x => x.Id).LastOrDefaultAsync(x => x.UserId == req.UserId && x.ClosingBalance != null && x.OutletId == req.OutletId);
+            if (cashUpUser != null)
+            {
+                CashUpUser u = new();
+                u.OpeningBalance = cashUpUser.ClosingBalance ?? 0;
+                u.UserId = req.UserId;
+                u.OutletId = cashUpUser.OutletId;
+                _dbContext.CashUpUser.Add(u);
+                await _dbContext.SaveChangesAsync();
+                userCashUpId = u.Id;
+                cashUpUser = await _dbContext.CashUpUser.ProjectToDto().FirstOrDefaultAsync(x => x.UserId == req.UserId && x.ClosingBalance == null && x.OutletId == req.OutletId);
+
+
+            }
+            else
+            {
+                CashUpUser u = new();
+                u.OpeningBalance = 0;
+                u.UserId = req.UserId;
+                u.OutletId = req.OutletId;
+                _dbContext.CashUpUser.Add(u);
+                await _dbContext.SaveChangesAsync();
+                userCashUpId = u.Id;
+                cashUpUser = await _dbContext.CashUpUser.ProjectToDto().FirstOrDefaultAsync(x => x.UserId == req.UserId && x.ClosingBalance == null && x.OutletId == req.OutletId);
+
+
+            }
+        }
+        List<CashUpUserItemTypeDTO> cashUpUserItemTypes = await _dbContext.CashUpUserItemType.ProjectToDto().ToListAsync();
+        Response response = new()
+        {
+            CashUpUserItems = new()
+        };
         List<PaymentTotal> paymentTotals = new();
-        CashUpUser cashUpUser = await _dbContext.CashUpUser.FirstOrDefaultAsync(c => c.UserId == req.UserId);
-        foreach (CashUpUserItemType cashItem in cashUpUserItemTypes.Where(x => x.CashUpUserItemRule == Common.Enums.CashUpUserItemRule.PaymentTotal || x.CashUpUserItemRule == Common.Enums.CashUpUserItemRule.PaymentLevy || x.CashUpUserItemRule == Common.Enums.CashUpUserItemRule.PaymentTip))
+
+
+        foreach (CashUpUserItemTypeDTO cashItem in cashUpUserItemTypes.Where(x => x.CashUpUserItemRule == Common.Enums.CashUpUserItemRule.PaymentTotal || x.CashUpUserItemRule == Common.Enums.CashUpUserItemRule.PaymentLevy || x.CashUpUserItemRule == Common.Enums.CashUpUserItemRule.PaymentTip))
         {
             decimal userTotal = 0m;
             decimal tipLevyTotal = 0m;
@@ -41,7 +82,7 @@ public class Endpoint : Endpoint<Request, Response>
             var outletPayTypes = await _dbContext.OutletPaymentType.Where(x => x.OutletId == req.OutletId).Include(x => x.PaymentType).ToListAsync();
             var outletPayTypeIds = outletPayTypes.Select(x => x.PaymentTypeId).ToList();
 
-            var payTypes = await _dbContext.PaymentType.Where(x => outletPayTypeIds.Contains(x.PaymentTypeId)).ToListAsync();
+            var payTypes = await _dbContext.PaymentType.Where(x => outletPayTypeIds.Contains(x.PaymentTypeId)).ProjectToDto().ToListAsync();
 
             foreach (var payType in payTypes)
             {
@@ -86,7 +127,7 @@ public class Endpoint : Endpoint<Request, Response>
 
                     if (tipOverage > 0)
                     {
-                        List<PaymentType> PTUsed = payTypes.Where(x => paymentWithLevyIds.Contains(x.PaymentTypeId)).ToList();
+                        List<PaymentTypeDTO> PTUsed = payTypes.Where(x => paymentWithLevyIds.Contains(x.PaymentTypeId)).ToList();
                         decimal levyTotal = PTUsed.Sum(x => x.TipLevyPercentage);
                         decimal levyCount = PTUsed.Count;
                         if (levyCount != 0)
@@ -109,25 +150,22 @@ public class Endpoint : Endpoint<Request, Response>
             }
             foreach (PaymentTotal pt in paymentTotals)
             {
-                CashUpUserItemType? payCash = cashUpUserItemTypes.FirstOrDefault(x => x.PaymentTypeId == pt.PaymentTypeId);
+                CashUpUserItemTypeDTO? payCash = cashUpUserItemTypes.FirstOrDefault(x => x.PaymentTypeId == pt.PaymentTypeId);
                 if (payCash != null)
                 {
                     if (cashItem.CashUpUserItemRule == Common.Enums.CashUpUserItemRule.PaymentTotal)
                     {
-                        CashUpUserItem riTotal = new()
+                        CashUpUserItemDTO riTotal = new()
                         {
                             CashUpUserItemType = payCash,
                             Value = pt.Total,
                             UserId = req.UserId,
-                            CashUpUser = cashUpUser,
-                            
-                        
                         };
                         response.CashUpUserItems.Add(riTotal);
                     }
                     if (cashItem.CashUpUserItemRule == Common.Enums.CashUpUserItemRule.PaymentTip)
                     {
-                        CashUpUserItem riTip = new()
+                        CashUpUserItemDTO riTip = new()
                         {
                             CashUpUserItemType = payCash,
                             Value = pt.Tip,
@@ -138,7 +176,7 @@ public class Endpoint : Endpoint<Request, Response>
                     }
                     if (cashItem.CashUpUserItemRule == Common.Enums.CashUpUserItemRule.PaymentLevy)
                     {
-                        CashUpUserItem riLevy = new()
+                        CashUpUserItemDTO riLevy = new()
                         {
                             CashUpUserItemType = payCash,
                             Value = pt.Levy,
@@ -151,17 +189,19 @@ public class Endpoint : Endpoint<Request, Response>
             }
         }
 
-        foreach (CashUpUserItemType cashItem in cashUpUserItemTypes.Where(x => x.CashUpUserItemRule == Common.Enums.CashUpUserItemRule.Adjustment))
+        foreach (CashUpUserItemTypeDTO cashItem in cashUpUserItemTypes.Where(x => x.CashUpUserItemRule == Common.Enums.CashUpUserItemRule.Adjustment))
         {
 
         }
 
-        foreach (CashUpUserItemType cashItem in cashUpUserItemTypes.Where(x => x.CashUpUserItemRule == Common.Enums.CashUpUserItemRule.Config))
+        foreach (CashUpUserItemTypeDTO cashItem in cashUpUserItemTypes.Where(x => x.CashUpUserItemRule == Common.Enums.CashUpUserItemRule.Config))
         {
 
         }
 
+        List<CashUpUserItemDTO> existing = await _dbContext.CashUpUserItem.Where(x => x.UserCashUpId == userCashUpId).ProjectToDto().ToListAsync();
         response.UserId = req.UserId;
+        response.CashUpUserItems.AddRange(existing);
         response.User = await _dbContext.User.FirstOrDefaultAsync(x => x.UserId == req.UserId) ?? default!;
 
         await SendAsync(response);
