@@ -72,9 +72,11 @@ public static class AppDbSeed
 
 
 
-            await context.CashUpUserItemType.AddAsync(new CashUpUserItemType() { ItemType = "Sales Revenue", Id = 1, IsAuto = true });
-            await context.CashUpUserItemType.AddAsync(new CashUpUserItemType() { ItemType = "Halo Levy", Id = 2, IsAuto = true, PaymentTypeId = 1 });
-            await context.CashUpUserItemType.AddAsync(new CashUpUserItemType() { ItemType = "Breakage Fee", Id = 3, IsAuto = true, CashupConfigId = 1 });
+            await context.CashUpUserItemType.AddAsync(new CashUpUserItemType() { ItemType = "Sales Revenue", Id = 1, IsAuto = true, CashUpUserItemRule = Common.Enums.CashUpUserItemRule.SalesRevenue });
+            await context.CashUpUserItemType.AddAsync(new CashUpUserItemType() { ItemType = "Halo Levy", Id = 2, IsAuto = true, PaymentTypeId = 1, CashUpUserItemRule = Common.Enums.CashUpUserItemRule.PaymentLevy });
+            await context.CashUpUserItemType.AddAsync(new CashUpUserItemType() { ItemType = "Breakage Fee", Id = 3, IsAuto = true, CashupConfigId = 1, CashUpUserItemRule = Common.Enums.CashUpUserItemRule.Config });
+            await context.CashUpUserItemType.AddAsync(new CashUpUserItemType() { ItemType = "Halo Total", Id = 4, IsAuto = true, PaymentTypeId = 1, CashUpUserItemRule = Common.Enums.CashUpUserItemRule.PaymentTotal });
+
 
             await context.SaveChangesAsync(cancellationToken);
 
