@@ -13,8 +13,8 @@ public static class TableBooking
         {
             throw new Exception("No booking found");
         }
-        decimal total = await Bill.GetTotal(tableBookingId, _dbContext);
-        booking.Total = total;
+        var billTotal = await Bill.GetTotal(tableBookingId, _dbContext);
+        booking.Total = billTotal.Total;
         await _dbContext.SaveChangesAsync();
     }
 }
