@@ -101,7 +101,7 @@ public class Endpoint : Endpoint<Request, Response>
         // Process PaymentTotal
         foreach (CashUpUserItemTypeDTO cashItem in cashUpUserItemTypes.Where(x => x.CashUpUserItemRule == Common.Enums.CashUpUserItemRule.PaymentTotal))
         {
-            foreach (var payType in payTypes)
+            foreach (var payType in payTypes.Where(x => x.PaymentTypeId == cashItem.PaymentTypeId))
             {
                 decimal total = 0m;
                 foreach (var item in tableBooking)
@@ -164,7 +164,7 @@ public class Endpoint : Endpoint<Request, Response>
                 CashUpUserItemDTO riTip = new()
                 {
                     CashUpUserItemType = payCashTip,
-                    Value = pt.Levy,
+                    Value = pt.Tip,
                     UserId = req.UserId,
                 };
                 response.CashUpUserItems.Add(riTip);
