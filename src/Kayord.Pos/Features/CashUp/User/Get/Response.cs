@@ -8,5 +8,7 @@ public class Response
     public Entities.User User { get; set; } = default!;
     public decimal Sales { get; set; }
     public decimal Tips { get; set; }
+    public decimal TotalPayments { get; set; }
+
 
 }

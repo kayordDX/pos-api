@@ -65,7 +65,7 @@ public static class Bill
         return response;
     }
 
-    public static async Task<decimal> GetTotal(int tableBookingId, AppDbContext _dbContext)
+    public static async Task<TableTotal> GetTotal(int tableBookingId, AppDbContext _dbContext)
     {
         decimal total = 0;
         decimal totalPayments = 0;
@@ -105,6 +105,13 @@ public static class Bill
             .Sum(item => item.Amount);
 
         total = total < 0 ? 0 : total;
-        return total;
+        TableTotal tableTotal = new()
+        {
+            Total = total,
+            TotalPayments = totalPayments,
+            TipTotal = totalPayments - total
+        };
+
+        return tableTotal;
     }
 }

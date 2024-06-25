@@ -15,3 +15,11 @@ public class Response
     public DateTime BillDate { get; set; }
     public List<Entities.Adjustment>? Adjustments { get; set; }
 }
+
+public class TableTotal
+{
+    public decimal Total { get; set; }
+    public decimal TotalPayments { get; set; }
+    public decimal TipTotal { get; set; }
+
+}
