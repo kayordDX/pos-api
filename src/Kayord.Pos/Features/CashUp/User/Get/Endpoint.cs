@@ -50,7 +50,7 @@ public class Endpoint : Endpoint<Request, List<Response>>
                     TableTotal bill = await Bill.GetTotal(b.Id, _dbContext);
                     sales += bill.Total;
                     tips += bill.TipTotal;
-                    totalPayments += bill.TipTotal;
+                    totalPayments += bill.TotalPayments;
                 }
                 Pos.Entities.User? u = await _dbContext.User.FirstOrDefaultAsync(x => x.UserId == item.UserId);
                 if (u != null)
