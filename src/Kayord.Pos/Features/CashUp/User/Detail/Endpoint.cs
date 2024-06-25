@@ -199,7 +199,7 @@ public class Endpoint : Endpoint<Request, Response>
 
         }
 
-        List<CashUpUserItemDTO> existing = await _dbContext.CashUpUserItem.Where(x => x.UserCashUpId == userCashUpId).ProjectToDto().ToListAsync();
+        List<CashUpUserItemDTO> existing = await _dbContext.CashUpUserItem.Where(x => x.CashUpUserId == userCashUpId).ProjectToDto().ToListAsync();
         response.UserId = req.UserId;
         response.CashUpUserItems.AddRange(existing);
         response.User = await _dbContext.User.FirstOrDefaultAsync(x => x.UserId == req.UserId) ?? default!;
