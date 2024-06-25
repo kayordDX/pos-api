@@ -34,7 +34,7 @@ public class Endpoint : Endpoint<Request, List<Response>>
         List<Response> responses = new();
         decimal sales = 0;
         decimal tips = 0;
-        Pos.Entities.SalesPeriod? salesPeriod = await _dbContext.SalesPeriod.FirstOrDefaultAsync(x => x.OutletId == req.OutletId && x.EndDate == null)
+        Pos.Entities.SalesPeriod? salesPeriod = await _dbContext.SalesPeriod.FirstOrDefaultAsync(x => x.OutletId == req.OutletId && x.EndDate == null);
         if (salesPeriod != null)
         {
             foreach (var item in listClock)
@@ -45,6 +45,7 @@ public class Endpoint : Endpoint<Request, List<Response>>
                 {
 
                 }
+                Pos.Entities.User? u = await _dbContext.User.FirstOrDefaultAsync(x => x.UserId == item.UserId);
                 if (u != null)
                 {
                     Response r = new();
