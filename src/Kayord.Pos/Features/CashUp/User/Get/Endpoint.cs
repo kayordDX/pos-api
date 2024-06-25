@@ -43,7 +43,7 @@ public class Endpoint : Endpoint<Request, List<Response>>
                 decimal sales = 0;
                 decimal tips = 0;
                 decimal totalPayments = 0;
-                var bookings = await _dbContext.TableBooking.Where(x => x.SalesPeriodId == salesPeriod.Id && x.UserId == item.UserId && x.CashUpUserId == null).ToListAsync();
+                var bookings = await _dbContext.TableBooking.Where(x => x.SalesPeriodId == salesPeriod.Id && x.UserId == item.UserId && x.CashUpUserId == null && x.CloseDate != null).ToListAsync();
 
                 foreach (var b in bookings)
                 {
