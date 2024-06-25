@@ -236,7 +236,7 @@ public static class AppDbSeed
         {
             foreach (var tableBooking in tableBookings)
             {
-                tableBooking.Total = await Bill.GetTotal(tableBooking.Id, context);
+                tableBooking.Total = (await Bill.GetTotal(tableBooking.Id, context)).Total;
             }
             await context.SaveChangesAsync(cancellationToken);
 
