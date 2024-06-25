@@ -6,6 +6,7 @@ public class Response
 {
     public string UserId { get; set; } = string.Empty;
     public Entities.User User { get; set; } = default!;
+    public int CashUpUserId { get; set; }
     public List<CashUpUserItemDTO> CashUpUserItems { get; set; } = default!;
 
 }

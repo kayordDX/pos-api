@@ -197,7 +197,7 @@ public class Endpoint : Endpoint<Request, Response>
         response.UserId = req.UserId;
         response.CashUpUserItems.AddRange(existing);
         response.User = await _dbContext.User.FirstOrDefaultAsync(x => x.UserId == req.UserId) ?? default!;
-
+        response.CashUpUserId = userCashUpId;
         await SendAsync(response);
     }
 }
