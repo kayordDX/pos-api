@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.CashUp.User.ItemType;
 
-public class Endpoint : Endpoint<Request, List<Entities.CashUpUserItemType>>
+public class Endpoint : EndpointWithoutRequest<List<Entities.CashUpUserItemType>>
 {
     private readonly AppDbContext _dbContext;
 
@@ -14,13 +14,12 @@ public class Endpoint : Endpoint<Request, List<Entities.CashUpUserItemType>>
 
     public override void Configure()
     {
-        Get("/cashUp/user/itemType/{isAuto}");
+        Get("/cashUp/user/itemType");
     }
 
-    public override async Task HandleAsync(Request req, CancellationToken ct)
+    public override async Task HandleAsync(CancellationToken ct)
     {
-        var result = await _dbContext.CashUpUserItemType.Where(x => x.IsAuto == req.IsAuto).ToListAsync();
+        var result = await _dbContext.CashUpUserItemType.Where(x => x.IsAuto == false).ToListAsync();
         await SendAsync(result);
     }
-
 }
