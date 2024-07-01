@@ -1,6 +1,5 @@
 using Kayord.Pos.Data;
 using Kayord.Pos.Services;
-using Kayord.Pos.Features.CashUp.User.Close;
 
 namespace Kayord.Pos.Features.CashUp.User.Detail;
 
@@ -28,7 +27,7 @@ public class Endpoint : Endpoint<Request, Response>
             return;
         }
 
-        Response response = await CashUp.CashUpProcess(req, _dbContext, _user, false);
+        Response response = await CashUp.CashUpProcess(req.OutletId, req.UserId, _dbContext, _user, false);
         await SendAsync(response);
     }
 }
