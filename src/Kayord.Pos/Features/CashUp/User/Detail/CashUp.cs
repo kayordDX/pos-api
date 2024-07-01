@@ -1,13 +1,15 @@
 namespace Kayord.Pos.Features.CashUp.User.Detail;
 
 using Kayord.Pos.Data;
+using Kayord.Pos.Data.Migrations;
 using Kayord.Pos.DTO;
 using Kayord.Pos.Entities;
+using Kayord.Pos.Services;
 using Microsoft.EntityFrameworkCore;
 
 public static class CashUp
 {
-    public static async Task<Response> GetCashUpDetail(Request req, AppDbContext _dbContext)
+    public static async Task<Response> CashUpProcess(Request req, AppDbContext _dbContext, CurrentUserService _cu, bool close)
     {
         Response response = new()
         {
@@ -59,7 +61,13 @@ public static class CashUp
 
         List<PaymentTotal> paymentTotals = new();
 
-        var listClock = await _dbContext.Clock.Where(x => x.EndDate == null && x.OutletId == req.OutletId).ToListAsync();
+        var clock = await _dbContext.Clock.FirstOrDefaultAsync(x => x.EndDate == null && x.OutletId == req.OutletId);
+        if (clock == null)
+        {
+            response.UserId = req.UserId;
+            response.User = await _dbContext.User.FirstOrDefaultAsync(x => x.UserId == req.UserId) ?? default!;
+            return response;
+        }
         var outletPayTypes = await _dbContext.OutletPaymentType.Where(x => x.OutletId == req.OutletId).Include(x => x.PaymentType).ToListAsync();
         var outletPayTypeIds = outletPayTypes.Select(x => x.PaymentTypeId).ToList();
 
@@ -96,6 +104,10 @@ public static class CashUp
                 CashUpUserItemDTO riTotal = new()
                 {
                     CashUpUserItemType = cashItem,
+                    CashUpUserItemTypeId = cashItem.Id,
+                    CashUpUserId = userCashUpId,
+                    OutletId = req.OutletId,
+                    UserId = req.UserId,
                     Value = total
                 };
                 response.CashUpUserItems.Add(riTotal);
@@ -148,8 +160,11 @@ public static class CashUp
                 CashUpUserItemDTO riTip = new()
                 {
                     CashUpUserItemType = payCashTip,
-                    Value = pt.Tip,
+                    CashUpUserItemTypeId = payCashTip.Id,
+                    CashUpUserId = userCashUpId,
+                    OutletId = req.OutletId,
                     UserId = req.UserId,
+                    Value = pt.Tip
                 };
                 response.CashUpUserItems.Add(riTip);
             }
@@ -160,6 +175,9 @@ public static class CashUp
                 CashUpUserItemDTO riLevy = new()
                 {
                     CashUpUserItemType = payCashLevy,
+                    CashUpUserItemTypeId = payCashLevy.Id,
+                    CashUpUserId = userCashUpId,
+                    OutletId = req.OutletId,
                     Value = pt.Levy,
                     UserId = req.UserId,
                 };
@@ -177,12 +195,55 @@ public static class CashUp
             // Config Type Calcs
         }
         response.GrossBalance = response.OpeningBalance + response.CashUpUserItems.Sum(x => x.Value);
+        if (close)
+        {
+            foreach (CashUpUserItemDTO ci in response.CashUpUserItems)
+            {
+                CashUpUserItem sci = new()
+                {
+                    CashUpUserId = ci.CashUpUserId,
+                    CashUpUserItemTypeId = ci.CashUpUserItemTypeId,
+                    Value = ci.Value,
+                    OutletId = ci.OutletId,
+                    UserId = ci.UserId
+                };
+                await _dbContext.CashUpUserItem.AddAsync(sci);
+            }
+            if (cashUpUser != null)
+            {
+                foreach (TableBooking tb in tableBooking)
+                {
+                    tb.CashUpUserId = userCashUpId;
+                }
+            }
+            if (clock != null)
+            {
+                clock.EndDate = DateTime.Now;
+            }
+
+            await _dbContext.SaveChangesAsync();
+            response.CashUpUserItems = new List<CashUpUserItemDTO>();
+        }
         List<CashUpUserItemDTO> existing = await _dbContext.CashUpUserItem.Where(x => x.CashUpUserId == userCashUpId).ProjectToDto().ToListAsync();
         response.NetBalance = response.GrossBalance + existing.Sum(x => x.Value);
         response.UserId = req.UserId;
-        response.CashUpUserItems.AddRange(existing);
         response.User = await _dbContext.User.FirstOrDefaultAsync(x => x.UserId == req.UserId) ?? default!;
+        response.CashUpUserItems.AddRange(existing);
         response.CashUpUserId = userCashUpId;
+        if (close)
+        {
+            if (cashUpUser != null)
+            {
+                cashUpUser.ClosingBalance = response.NetBalance;
+                cashUpUser.CompleterUserId = _cu.UserId ?? "";
+                CashUpUser c = new();
+                c.UserId = cashUpUser.UserId;
+                c.OpeningBalance = cashUpUser.ClosingBalance ?? 0;
+                c.OutletId = cashUpUser.OutletId;
+                await _dbContext.CashUpUser.AddAsync(c);
+                await _dbContext.SaveChangesAsync();
+            }
+        }
         return response;
     }
 }

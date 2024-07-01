@@ -1,10 +1,8 @@
 using Kayord.Pos.Data;
-using Kayord.Pos.DTO;
-using Kayord.Pos.Entities;
 using Kayord.Pos.Services;
-using Microsoft.EntityFrameworkCore;
+using Kayord.Pos.Features.CashUp.User.Detail;
 
-namespace Kayord.Pos.Features.CashUp.User.Detail;
+namespace Kayord.Pos.Features.CashUp.User.Close;
 
 public class Endpoint : Endpoint<Request, Response>
 {
@@ -19,7 +17,7 @@ public class Endpoint : Endpoint<Request, Response>
 
     public override void Configure()
     {
-        Get("/cashUp/user/detail/{userId}/{outletId}");
+        Post("/cashUp/user/close/");
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
@@ -30,7 +28,7 @@ public class Endpoint : Endpoint<Request, Response>
             return;
         }
 
-        Response response = await CashUp.CashUpProcess(req, _dbContext, _user, false);
+        Response response = await Detail.CashUp.CashUpProcess(req, _dbContext, _user, true);
         await SendAsync(response);
     }
 }
