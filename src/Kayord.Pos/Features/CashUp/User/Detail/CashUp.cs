@@ -1,9 +1,9 @@
 namespace Kayord.Pos.Features.CashUp.User.Detail;
 
 using Kayord.Pos.Data;
-using Kayord.Pos.Data.Migrations;
 using Kayord.Pos.DTO;
 using Kayord.Pos.Entities;
+using Kayord.Pos.Features.CashUp.User.Close;
 using Kayord.Pos.Services;
 using Microsoft.EntityFrameworkCore;
 

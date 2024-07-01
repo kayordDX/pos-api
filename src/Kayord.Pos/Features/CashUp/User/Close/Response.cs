@@ -1,6 +1,6 @@
 using Kayord.Pos.DTO;
 
-namespace Kayord.Pos.Features.CashUp.User.Detail;
+namespace Kayord.Pos.Features.CashUp.User.Close;
 
 public class Response
 {

@@ -1,7 +1,6 @@
+
 using Kayord.Pos.Data;
 using Kayord.Pos.Services;
-using Kayord.Pos.Features.CashUp.User.Detail;
-
 namespace Kayord.Pos.Features.CashUp.User.Close;
 
 public class Endpoint : Endpoint<Request, Response>
@@ -17,7 +16,7 @@ public class Endpoint : Endpoint<Request, Response>
 
     public override void Configure()
     {
-        Post("/cashUp/user/close/");
+        Post("/cashUp/zaber");
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)

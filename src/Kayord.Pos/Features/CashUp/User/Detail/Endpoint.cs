@@ -1,8 +1,6 @@
 using Kayord.Pos.Data;
-using Kayord.Pos.DTO;
-using Kayord.Pos.Entities;
 using Kayord.Pos.Services;
-using Microsoft.EntityFrameworkCore;
+using Kayord.Pos.Features.CashUp.User.Close;
 
 namespace Kayord.Pos.Features.CashUp.User.Detail;
 
