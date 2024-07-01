@@ -14,7 +14,7 @@ public class Endpoint : Endpoint<Request, CashUpUserItem>
 
     public override void Configure()
     {
-        Delete("/cashUp/user");
+        Delete("/cashUp/user/{id}");
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
@@ -28,6 +28,6 @@ public class Endpoint : Endpoint<Request, CashUpUserItem>
 
         _dbContext.CashUpUserItem.Remove(entity);
         await _dbContext.SaveChangesAsync();
-        await SendOkAsync();
+        await SendNoContentAsync();
     }
 }
