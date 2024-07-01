@@ -9,6 +9,10 @@ public class Response
     public int CashUpUserId { get; set; }
     public List<CashUpUserItemDTO> CashUpUserItems { get; set; } = default!;
 
+    public decimal OpeningBalance { get; set; }
+    public decimal GrossBalance { get; set; }
+    public decimal NetBalance { get; set; }
+
 }
 
 public class PaymentTotal
