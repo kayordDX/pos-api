@@ -184,7 +184,20 @@ public static class CashUp
                 response.CashUpUserItems.Add(riLevy);
             }
         }
-
+        foreach (CashUpUserItemTypeDTO cashItem in cashUpUserItemTypes.Where(x => x.CashUpUserItemRule == Common.Enums.CashUpUserItemRule.SalesRevenue))
+        {
+            decimal totalSales = tableBooking.Where(x => x.CloseDate != null).Sum(x => x.Total ?? 0);
+            CashUpUserItemDTO salesRev = new()
+            {
+                CashUpUserItemType = cashItem,
+                CashUpUserItemTypeId = cashItem.Id,
+                CashUpUserId = userCashUpId,
+                OutletId = OutletId,
+                Value = totalSales,
+                UserId = UserId,
+            };
+            response.CashUpUserItems.Add(salesRev);
+        }
         foreach (CashUpUserItemTypeDTO cashItem in cashUpUserItemTypes.Where(x => x.CashUpUserItemRule == Common.Enums.CashUpUserItemRule.Adjustment))
         {
             // Adjustment Type Calcs
