@@ -4,7 +4,6 @@ using Google.Apis.Util;
 using Kayord.Pos.Data;
 using Kayord.Pos.DTO;
 using Kayord.Pos.Entities;
-using Kayord.Pos.Features.CashUp.User.Close;
 using Kayord.Pos.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -87,7 +86,12 @@ public static class CashUp
             paymentTotals.Add(paymentTotal);
         }
 
-        var tableBooking = await _dbContext.TableBooking.Where(x => x.UserId == UserId && x.CashUpUserId == null).Include(x => x.Payments).Include(x => x.OrderItems).ToListAsync();
+        var tableBooking = await _dbContext.TableBooking.Where(x => x.UserId == UserId && x.CashUpUserId == null)
+            .Include(x => x.Payments)
+            .Include(x => x.Adjustments!)
+                .ThenInclude(x => x.AdjustmentType)
+            .Include(x => x.OrderItems)
+            .ToListAsync();
 
         List<int> paymentWithLevyIds = outletPayTypes.Where(x => x.PaymentType.TipLevyPercentage != 0m).Select(rd => rd.PaymentTypeId).ToList();
 
@@ -123,7 +127,7 @@ public static class CashUp
             decimal cardPayments = item.Payments?.Where(x => x.TableBookingId == item.Id && paymentWithLevyIds.Contains(x.PaymentTypeId ?? 0)).Sum(x => x.Amount) ?? 0;
             decimal adjustments = item.Adjustments?.Sum(x => x.Amount) ?? 0;
 
-            decimal tipOverage = cashPayments + cardPayments - tableTotal + adjustments;
+            decimal tipOverage = cashPayments + cardPayments - tableTotal;
 
             if (tipOverage > 0)
             {
@@ -200,14 +204,15 @@ public static class CashUp
             };
             response.CashUpUserItems.Add(salesRev);
         }
-        foreach (CashUpUserItemTypeDTO cashItem in cashUpUserItemTypes.Where(x => x.CashUpUserItemRule == Common.Enums.CashUpUserItemRule.Adjustment))
+        var cashUpUserItemTypesAdjustment = cashUpUserItemTypes.Where(x => x.CashUpUserItemRule.Equals(Common.Enums.CashUpUserItemRule.Adjustment)).ToList();
+        foreach (CashUpUserItemTypeDTO cashItem in cashUpUserItemTypesAdjustment)
         {
             decimal adjustTotal = 0;
             foreach (var tb in tableBooking)
             {
-                if (tb.Adjustments != null && cashItem.AdjustmentType != null)
+                if (tb.Adjustments != null && cashItem.AdjustmentTypeId != null)
                 {
-                    var adjustments = tb.Adjustments.Where(x => x.AdjustmentTypeId == cashItem.AdjustmentType.AdjustmentTypeId);
+                    var adjustments = tb.Adjustments.Where(x => x.AdjustmentTypeId == cashItem.AdjustmentTypeId).ToList();
                     if (adjustments != null)
                     {
                         adjustTotal += adjustments.Sum(x => x.Amount);
@@ -223,6 +228,7 @@ public static class CashUp
                 Value = adjustTotal,
                 UserId = UserId,
             };
+            response.CashUpUserItems.Add(adjust);
         }
 
         foreach (CashUpUserItemTypeDTO cashItem in cashUpUserItemTypes.Where(x => x.CashUpUserItemRule == Common.Enums.CashUpUserItemRule.Config))
