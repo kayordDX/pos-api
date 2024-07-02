@@ -192,9 +192,26 @@ public static class CashUp
 
         foreach (CashUpUserItemTypeDTO cashItem in cashUpUserItemTypes.Where(x => x.CashUpUserItemRule == Common.Enums.CashUpUserItemRule.Config))
         {
-            // Config Type Calcs
+
+            CashUpConfig? configItem = await _dbContext.CashUpConfig.FirstOrDefaultAsync(x => x.Id == cashItem.CashupConfigId && x.OutletId == OutletId);
+            if (configItem != null)
+            {
+                CashUpUserItemDTO configType = new()
+                {
+                    CashUpUserItemType = cashItem,
+                    CashUpUserItemTypeId = cashItem.Id,
+                    CashUpUserId = userCashUpId,
+                    OutletId = OutletId,
+                    Value = configItem.Value,
+                    UserId = UserId,
+                };
+                response.CashUpUserItems.Add(configType);
+            }
         }
-        response.GrossBalance = response.OpeningBalance + response.CashUpUserItems.Sum(x => x.Value);
+
+        response.GrossBalance = response.OpeningBalance + response.CashUpUserItems.Where(x => x.CashUpUserItemType!.IncreaseBalance).Sum(x => x.Value);
+        response.GrossBalance = response.OpeningBalance - response.CashUpUserItems.Where(x => x.CashUpUserItemType!.DecreaseBalance).Sum(x => x.Value);
+
         if (close)
         {
             foreach (CashUpUserItemDTO ci in response.CashUpUserItems)
@@ -224,8 +241,10 @@ public static class CashUp
             await _dbContext.SaveChangesAsync();
             response.CashUpUserItems = new List<CashUpUserItemDTO>();
         }
-        List<CashUpUserItemDTO> existing = await _dbContext.CashUpUserItem.Where(x => x.CashUpUserId == userCashUpId).ProjectToDto().ToListAsync();
-        response.NetBalance = response.GrossBalance + existing.Sum(x => x.Value);
+        List<CashUpUserItemDTO> existing = await _dbContext.CashUpUserItem.Include(x => x.CashUpUserItemType).Where(x => x.CashUpUserId == userCashUpId).ProjectToDto().ToListAsync();
+        response.NetBalance = response.GrossBalance + existing.Where(x => x.CashUpUserItemType!.IncreaseBalance).Sum(x => x.Value);
+        response.NetBalance = response.GrossBalance - existing.Where(x => x.CashUpUserItemType!.DecreaseBalance).Sum(x => x.Value);
+
         response.UserId = UserId;
         response.User = await _dbContext.User.ProjectToDto().FirstOrDefaultAsync(x => x.UserId == UserId) ?? default!;
         response.CashUpUserItems.AddRange(existing);
@@ -244,6 +263,8 @@ public static class CashUp
                 await _dbContext.SaveChangesAsync();
             }
         }
+        response.CashUpUserItems = response.CashUpUserItems.OrderBy(x => x.CashUpUserItemType!.Position).ToList();
+
         return response;
     }
 }

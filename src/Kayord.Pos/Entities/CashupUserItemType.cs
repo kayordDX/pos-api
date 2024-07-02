@@ -7,6 +7,9 @@ public class CashUpUserItemType
     public int Id { get; set; }
     public string ItemType { get; set; } = string.Empty;
     public bool IsAuto { get; set; }
+    public bool IncreaseBalance { get; set; }
+    public bool DecreaseBalance { get; set; }
+    public int Position { get; set; }
     public CashUpUserItemRule CashUpUserItemRule { get; set; }
     public int? PaymentTypeId { get; set; }
     public PaymentType? PaymentType { get; set; }
