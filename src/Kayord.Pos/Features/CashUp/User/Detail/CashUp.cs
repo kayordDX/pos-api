@@ -1,5 +1,6 @@
 namespace Kayord.Pos.Features.CashUp.User.Detail;
 
+using Google.Apis.Util;
 using Kayord.Pos.Data;
 using Kayord.Pos.DTO;
 using Kayord.Pos.Entities;
@@ -120,8 +121,9 @@ public static class CashUp
             decimal tableTotal = item.Total ?? 0;
             decimal cashPayments = item.Payments?.Where(x => x.TableBookingId == item.Id && !paymentWithLevyIds.Contains(x.PaymentTypeId ?? 0)).Sum(x => x.Amount) ?? 0;
             decimal cardPayments = item.Payments?.Where(x => x.TableBookingId == item.Id && paymentWithLevyIds.Contains(x.PaymentTypeId ?? 0)).Sum(x => x.Amount) ?? 0;
+            decimal adjustments = item.Adjustments?.Sum(x => x.Amount) ?? 0;
 
-            decimal tipOverage = cashPayments + cardPayments - tableTotal;
+            decimal tipOverage = cashPayments + cardPayments - tableTotal + adjustments;
 
             if (tipOverage > 0)
             {
@@ -200,7 +202,27 @@ public static class CashUp
         }
         foreach (CashUpUserItemTypeDTO cashItem in cashUpUserItemTypes.Where(x => x.CashUpUserItemRule == Common.Enums.CashUpUserItemRule.Adjustment))
         {
-            // Adjustment Type Calcs
+            decimal adjustTotal = 0;
+            foreach (var tb in tableBooking)
+            {
+                if (tb.Adjustments != null && cashItem.AdjustmentType != null)
+                {
+                    var adjustments = tb.Adjustments.Where(x => x.AdjustmentTypeId == cashItem.AdjustmentType.AdjustmentTypeId);
+                    if (adjustments != null)
+                    {
+                        adjustTotal += adjustments.Sum(x => x.Amount);
+                    }
+                }
+            }
+            CashUpUserItemDTO adjust = new()
+            {
+                CashUpUserItemType = cashItem,
+                CashUpUserItemTypeId = cashItem.Id,
+                CashUpUserId = userCashUpId,
+                OutletId = OutletId,
+                Value = adjustTotal,
+                UserId = UserId,
+            };
         }
 
         foreach (CashUpUserItemTypeDTO cashItem in cashUpUserItemTypes.Where(x => x.CashUpUserItemRule == Common.Enums.CashUpUserItemRule.Config))
