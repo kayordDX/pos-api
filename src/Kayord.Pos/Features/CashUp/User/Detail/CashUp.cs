@@ -147,7 +147,7 @@ public static class CashUp
                             var payType = paymentTotals.FirstOrDefault(x => x.PaymentTypeId == ptU.PaymentTypeId);
                             if (payType != null)
                             {
-                                decimal paymentTipOverage = tipOverage * ptU.TipLevyPercentage / levyTotal;
+                                decimal paymentTipOverage = tipOverage; // * ptU.TipLevyPercentage / levyTotal;
                                 payType.Tip += paymentTipOverage;
                                 payType.Levy += paymentTipOverage * ptU.TipLevyPercentage / 100; // Corrected Levy calculation
                             }
