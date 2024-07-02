@@ -1,11 +1,10 @@
 global using FastEndpoints;
 using Kayord.Pos.Common.Extensions;
+using Kayord.Pos.Common.Extensions.Cors;
+using Kayord.Pos.Common.Extensions.Health;
+using Kayord.Pos.Common.Extensions.Host;
 using Kayord.Pos.Hubs;
 using Kayord.Pos.Services;
-using KayordKit.Extensions.Api;
-using KayordKit.Extensions.Cors;
-using KayordKit.Extensions.Health;
-using KayordKit.Extensions.Host;
 using Microsoft.AspNetCore.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);

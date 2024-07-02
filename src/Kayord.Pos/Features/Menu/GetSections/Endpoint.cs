@@ -1,7 +1,5 @@
-using Azure;
 using Kayord.Pos.Data;
 using Kayord.Pos.DTO;
-using Kayord.Pos.Entities;
 using Microsoft.EntityFrameworkCore;
 namespace Kayord.Pos.Features.Menu.GetSections
 {

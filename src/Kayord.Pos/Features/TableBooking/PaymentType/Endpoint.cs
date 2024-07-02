@@ -1,5 +1,6 @@
 using Kayord.Pos.Data;
 using Kayord.Pos.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.TableBooking.PaymentType;
 
@@ -19,11 +20,16 @@ public class Endpoint : Endpoint<Request, CashUpUserItem>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var entity = await _dbContext.Payment.FindAsync(req.PaymentId);
+        var entity = await _dbContext.Payment.Include(x => x.TableBooking).Where(x => x.Id == req.PaymentId).FirstOrDefaultAsync();
         if (entity == null)
         {
             await SendNotFoundAsync();
             return;
+        }
+
+        if (entity.TableBooking.CashUpUserId == null)
+        {
+            throw new Exception("Cannot update payment type after cash up is done.");
         }
 
         entity.PaymentTypeId = req.PaymentTypeId;

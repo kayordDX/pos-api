@@ -1,4 +1,3 @@
-using Azure;
 using Kayord.Pos.Common.Wrapper;
 using Kayord.Pos.Data;
 using Kayord.Pos.Events;
