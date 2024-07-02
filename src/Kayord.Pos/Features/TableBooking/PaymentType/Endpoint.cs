@@ -27,7 +27,7 @@ public class Endpoint : Endpoint<Request, CashUpUserItem>
             return;
         }
 
-        if (entity.TableBooking.CashUpUserId == null)
+        if (entity.TableBooking.CashUpUserId != null)
         {
             throw new Exception("Cannot update payment type after cash up is done.");
         }
