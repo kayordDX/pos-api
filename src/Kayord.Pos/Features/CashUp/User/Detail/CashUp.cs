@@ -184,7 +184,7 @@ public static class CashUp
                     CashUpUserItemTypeId = payCashLevy.Id,
                     CashUpUserId = userCashUpId,
                     OutletId = OutletId,
-                    Value = pt.Levy,
+                    Value = pt.Levy * -1,
                     UserId = UserId,
                 };
                 response.CashUpUserItems.Add(riLevy);
@@ -250,8 +250,7 @@ public static class CashUp
             }
         }
 
-        response.GrossBalance = response.OpeningBalance + response.CashUpUserItems.Where(x => x.CashUpUserItemType!.IncreaseBalance).Sum(x => x.Value);
-        response.GrossBalance = response.OpeningBalance - response.CashUpUserItems.Where(x => x.CashUpUserItemType!.DecreaseBalance).Sum(x => x.Value);
+        response.GrossBalance = Math.Round(response.OpeningBalance + response.CashUpUserItems.Where(x => x.CashUpUserItemType!.AffectsGrossBalance).Sum(x => x.Value), 2);
 
         if (close)
         {
@@ -283,8 +282,7 @@ public static class CashUp
             response.CashUpUserItems = new List<CashUpUserItemDTO>();
         }
         List<CashUpUserItemDTO> existing = await _dbContext.CashUpUserItem.Include(x => x.CashUpUserItemType).Where(x => x.CashUpUserId == userCashUpId).ProjectToDto().ToListAsync();
-        response.NetBalance = response.GrossBalance + existing.Where(x => x.CashUpUserItemType!.IncreaseBalance).Sum(x => x.Value);
-        response.NetBalance = response.GrossBalance - existing.Where(x => x.CashUpUserItemType!.DecreaseBalance).Sum(x => x.Value);
+        response.NetBalance = Math.Round(response.OpeningBalance + response.GrossBalance, 2);
 
         response.UserId = UserId;
         response.User = await _dbContext.User.ProjectToDto().FirstOrDefaultAsync(x => x.UserId == UserId) ?? default!;

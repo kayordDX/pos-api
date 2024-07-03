@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.CashUp.User.Get;
 
-public class Endpoint : Endpoint<Request, List<Response>>
+public class Endpoint : Endpoint<Request, Response>
 {
     private readonly AppDbContext _dbContext;
     private readonly CurrentUserService _user;
@@ -32,7 +32,10 @@ public class Endpoint : Endpoint<Request, List<Response>>
 
         var listClock = await _dbContext.Clock.Where(x => x.EndDate == null && x.OutletId == req.OutletId).ToListAsync();
 
-        List<Response> responses = new();
+        Response responses = new()
+        {
+            Items = new()
+        };
 
 
         Pos.Entities.SalesPeriod? salesPeriod = await _dbContext.SalesPeriod.FirstOrDefaultAsync(x => x.OutletId == req.OutletId && x.EndDate == null);
@@ -55,16 +58,21 @@ public class Endpoint : Endpoint<Request, List<Response>>
                 Pos.Entities.User? u = await _dbContext.User.FirstOrDefaultAsync(x => x.UserId == item.UserId);
                 if (u != null)
                 {
-                    Response r = new();
+                    Items r = new();
                     r.Sales = sales;
                     r.Tips = tips;
-                    r.TotalPayments = totalPayments;
+                    r.Payments = totalPayments;
                     r.User = u;
                     r.UserId = u.UserId;
-                    responses.Add(r);
+                    responses.Items.Add(r);
                 }
             }
         }
+        responses.TotalPayments = responses.Items.Sum(x => x.Payments);
+        responses.TotalTips = responses.Items.Sum(x => x.Tips);
+        responses.TotalSales = responses.Items.Sum(x => x.Sales);
+
+
         await SendAsync(responses);
 
     }
