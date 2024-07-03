@@ -17,6 +17,9 @@ public static class Bill
             .Include(x => x.Adjustments!)
                 .ThenInclude(x => x.AdjustmentType)
             .FirstOrDefaultAsync(x => x.Id == req.TableBookingId);
+
+        response.IsCashedUp = tableBooking?.CashUpUserId != null;
+
         if (tableBooking?.Adjustments != null)
         {
             response.Adjustments = tableBooking.Adjustments;

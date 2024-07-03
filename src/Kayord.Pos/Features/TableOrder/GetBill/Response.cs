@@ -14,6 +14,7 @@ public class Response
     public decimal TipAmount { get; set; } = 0;
     public DateTime BillDate { get; set; }
     public List<Entities.Adjustment>? Adjustments { get; set; }
+    public bool IsCashedUp { get; set; }
 }
 
 public class TableTotal

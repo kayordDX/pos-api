@@ -1,5 +1,5 @@
 using Kayord.Pos.Data;
-using Kayord.Pos.Entities;
+using Kayord.Pos.Features.TableOrder.GetBill;
 using Kayord.Pos.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -47,6 +47,10 @@ public class Endpoint : Endpoint<Request>
             Note = req.Note,
             UserId = _cu.UserId ?? ""
         });
+
+        // Update Total for when adjustment is made after table is closed
+        tableBooking.Total = (await Bill.GetTotal(tableBooking.Id, _dbContext)).Total;
+
         await _dbContext.SaveChangesAsync();
         await SendNoContentAsync();
     }
