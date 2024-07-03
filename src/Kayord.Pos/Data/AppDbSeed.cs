@@ -1,7 +1,5 @@
 using Bogus;
 using Kayord.Pos.Entities;
-using Kayord.Pos.Features.TableOrder.GetBill;
-using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Data;
 
@@ -9,7 +7,6 @@ public static class AppDbSeed
 {
     public static async Task SeedData(AppDbContext context, CancellationToken cancellationToken)
     {
-        // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "Business" RESTART IDENTITY CASCADE;""");
         if (!context.Business.Any())
         {
             var table = new Faker<Table>()
@@ -36,74 +33,6 @@ public static class AppDbSeed
             await context.Division.AddAsync(new Division { DivisionId = 1, DivisionName = "Kitchen" });
             await context.SaveChangesAsync(cancellationToken);
         }
-
-        if (!context.AdjustmentType.Any())
-        {
-            await context.AdjustmentType.AddAsync(new AdjustmentType { AdjustmentTypeId = 1, Name = "Other" });
-            await context.AdjustmentType.AddAsync(new AdjustmentType { AdjustmentTypeId = 2, Name = "Staff Discount" });
-            await context.AdjustmentType.AddAsync(new AdjustmentType { AdjustmentTypeId = 3, Name = "Loyalty" });
-            await context.SaveChangesAsync(cancellationToken);
-        }
-
-        if (!context.AdjustmentTypeOutlet.Any())
-        {
-            await context.AdjustmentTypeOutlet.AddAsync(new AdjustmentTypeOutlet { AdjustmentTypeId = 1, OutletId = 1 });
-            await context.AdjustmentTypeOutlet.AddAsync(new AdjustmentTypeOutlet { AdjustmentTypeId = 2, OutletId = 1 });
-            await context.AdjustmentTypeOutlet.AddAsync(new AdjustmentTypeOutlet { AdjustmentTypeId = 3, OutletId = 1 });
-            await context.SaveChangesAsync(cancellationToken);
-        }
-
-        if (!context.Role.Any())
-        {
-            await context.Role.AddAsync(new Role { Name = "Guest", Description = "Guest", RoleId = 1 });
-            await context.Role.AddAsync(new Role { Name = "Waiter", Description = "Waiter", RoleId = 2, isFrontLine = true });
-            await context.Role.AddAsync(new Role { Name = "Chef", Description = "Chef", RoleId = 3, isBackOffice = true });
-            await context.Role.AddAsync(new Role { Name = "Manager", Description = "Manager", RoleId = 4, isBackOffice = true, isFrontLine = true });
-            await context.SaveChangesAsync(cancellationToken);
-        }
-
-        if (!context.CashUpConfig.Any())
-        {
-            await context.CashUpConfig.AddAsync(new CashUpConfig() { Id = 1, Value = 20, OutletId = 1, Name = "Breakage Config" });
-            await context.SaveChangesAsync(cancellationToken);
-        }
-        if (!context.CashUpUserItemType.Any())
-        {
-
-
-
-            await context.CashUpUserItemType.AddAsync(new CashUpUserItemType() { ItemType = "Sales Revenue", Id = 1, IsAuto = true, CashUpUserItemRule = Common.Enums.CashUpUserItemRule.SalesRevenue });
-            await context.CashUpUserItemType.AddAsync(new CashUpUserItemType() { ItemType = "Halo Levy", Id = 2, IsAuto = true, PaymentTypeId = 1, CashUpUserItemRule = Common.Enums.CashUpUserItemRule.PaymentLevy });
-            await context.CashUpUserItemType.AddAsync(new CashUpUserItemType() { ItemType = "Breakage Fee", Id = 3, IsAuto = true, CashupConfigId = 1, CashUpUserItemRule = Common.Enums.CashUpUserItemRule.Config });
-            await context.CashUpUserItemType.AddAsync(new CashUpUserItemType() { ItemType = "Halo Total", Id = 4, IsAuto = true, PaymentTypeId = 1, CashUpUserItemRule = Common.Enums.CashUpUserItemRule.PaymentTotal });
-
-
-            await context.SaveChangesAsync(cancellationToken);
-
-
-        }
-        // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "Menu" RESTART IDENTITY CASCADE;""");
-        // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "MenuSection" RESTART IDENTITY CASCADE;""");
-        // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "Option" RESTART IDENTITY CASCADE;""");
-        // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "MenuItemOptionGroup" RESTART IDENTITY CASCADE;""");
-        // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "OptionGroup" RESTART IDENTITY CASCADE;""");
-        // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "OrderItemStatus" RESTART IDENTITY CASCADE;""");
-        // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "UserNotification" RESTART IDENTITY CASCADE;""");
-        // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "ExtraGroup" RESTART IDENTITY CASCADE;""");
-        // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "Extra" RESTART IDENTITY CASCADE;""");
-        // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "MenuItemExtraGroup" RESTART IDENTITY CASCADE;""");
-        // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "OrderItemExtra" RESTART IDENTITY CASCADE;""");
-        // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "OrderItemOption" RESTART IDENTITY CASCADE;""");
-        // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "OrderItem" RESTART IDENTITY CASCADE;""");
-        // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "Payment" RESTART IDENTITY CASCADE;""");
-        // await context.Database.ExecuteSqlRawAsync("""TRUNCATE TABLE "PaymentType" RESTART IDENTITY CASCADE;""");
-
-
-        // if (!context.SalesPeriod.Any(x => x.EndDate == null))
-        // {
-        //     await context.SalesPeriod.AddAsync(new SalesPeriod { Id = 1, Name = "Test", StartDate = DateTime.Now, OutletId = 1 });
-        //     await context.SaveChangesAsync(cancellationToken);
-        // }
 
         if (!context.Menu.Any() && 1 == 2)
         {
@@ -216,10 +145,7 @@ public static class AppDbSeed
             await context.Payment.AddAsync(new Payment() { Amount = 200m, TableBookingId = 2, UserId = "103301258912011927884", PaymentTypeId = 1 });
             await context.SaveChangesAsync(cancellationToken);
 
-
-
             await context.SaveChangesAsync(cancellationToken);
-
 
             await context.TableBooking.AddAsync(new TableBooking() { BookingDate = DateTime.Now, BookingName = "TestBooking", SalesPeriodId = 1, TableId = 1, UserId = "103301258912011927884" });
             await context.SaveChangesAsync(cancellationToken);
@@ -227,19 +153,6 @@ public static class AppDbSeed
             await context.OrderItem.AddAsync(new OrderItem() { MenuItemId = 4, Note = "test", TableBookingId = 1, OrderItemStatusId = 2, OrderReceived = DateTime.Now });
             await context.OrderItem.AddAsync(new OrderItem() { MenuItemId = 1, Note = "Another Note", TableBookingId = 1, OrderItemStatusId = 2, OrderReceived = DateTime.Now });
             await context.SaveChangesAsync(cancellationToken);
-        }
-        var tableBookings = await context.TableBooking
-            .Include(x => x.SalesPeriod)
-            .Where(x => x.CloseDate != null && x.Total == null).ToListAsync();
-
-        if (tableBookings.Count > 0)
-        {
-            foreach (var tableBooking in tableBookings)
-            {
-                tableBooking.Total = (await Bill.GetTotal(tableBooking.Id, context)).Total;
-            }
-            await context.SaveChangesAsync(cancellationToken);
-
         }
     }
 
