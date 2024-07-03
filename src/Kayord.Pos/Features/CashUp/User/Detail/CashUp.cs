@@ -282,7 +282,6 @@ public static class CashUp
             response.CashUpUserItems = new List<CashUpUserItemDTO>();
         }
         List<CashUpUserItemDTO> existing = await _dbContext.CashUpUserItem.Include(x => x.CashUpUserItemType).Where(x => x.CashUpUserId == userCashUpId).ProjectToDto().ToListAsync();
-        response.NetBalance = Math.Round(response.OpeningBalance + response.GrossBalance, 2);
 
         response.UserId = UserId;
         response.User = await _dbContext.User.ProjectToDto().FirstOrDefaultAsync(x => x.UserId == UserId) ?? default!;
@@ -302,6 +301,9 @@ public static class CashUp
                 await _dbContext.SaveChangesAsync();
             }
         }
+        response.GrossBalance = Math.Round(response.OpeningBalance + response.CashUpUserItems.Where(x => x.CashUpUserItemType!.AffectsGrossBalance || x.CashUpUserItemType.IsAuto == false).Sum(x => x.Value), 2);
+        response.NetBalance = Math.Round(response.OpeningBalance + response.GrossBalance, 2);
+
         response.CashUpUserItems = response.CashUpUserItems.OrderBy(x => x.CashUpUserItemType!.Position).ToList();
 
         return response;
