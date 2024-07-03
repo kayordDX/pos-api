@@ -293,10 +293,12 @@ public static class CashUp
             {
                 cashUpUser.ClosingBalance = response.NetBalance;
                 cashUpUser.CompleterUserId = _cu.UserId ?? "";
-                CashUpUser c = new();
-                c.UserId = cashUpUser.UserId;
-                c.OpeningBalance = cashUpUser.ClosingBalance ?? 0;
-                c.OutletId = cashUpUser.OutletId;
+                CashUpUser c = new()
+                {
+                    UserId = UserId,
+                    OpeningBalance = cashUpUser.ClosingBalance ?? 0,
+                    OutletId = cashUpUser.OutletId
+                };
                 await _dbContext.CashUpUser.AddAsync(c);
                 await _dbContext.SaveChangesAsync();
             }
