@@ -274,8 +274,6 @@ public static class CashUp
             }
         }
 
-        response.GrossBalance = Math.Round(response.OpeningBalance + response.CashUpUserItems.Where(x => x.CashUpUserItemType!.AffectsGrossBalance).Sum(x => x.Value), 2);
-
         if (close)
         {
             foreach (CashUpUserItemDTO ci in response.CashUpUserItems)
@@ -313,7 +311,7 @@ public static class CashUp
         response.CashUpUserId = userCashUpId;
 
         response.GrossBalance = Math.Round(response.OpeningBalance + response.CashUpUserItems.Where(x => x.CashUpUserItemType!.AffectsGrossBalance || x.CashUpUserItemType.IsAuto == false).Sum(x => x.Value), 2);
-        response.NetBalance = Math.Round(response.OpeningBalance + response.GrossBalance, 2);
+        response.NetBalance = response.GrossBalance;
 
         if (close)
         {
