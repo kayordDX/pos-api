@@ -126,35 +126,59 @@ public static class CashUp
             decimal cashPayments = item.Payments?.Where(x => x.TableBookingId == item.Id && !paymentWithLevyIds.Contains(x.PaymentTypeId ?? 0)).Sum(x => x.Amount) ?? 0;
             decimal cardPayments = item.Payments?.Where(x => x.TableBookingId == item.Id && paymentWithLevyIds.Contains(x.PaymentTypeId ?? 0)).Sum(x => x.Amount) ?? 0;
             decimal adjustments = item.Adjustments?.Sum(x => x.Amount) ?? 0;
-
-            decimal tipOverage = cashPayments + cardPayments - tableTotal;
-
-            if (tipOverage > 0)
+            var levyOverage = cardPayments - tableTotal;
+            if (levyOverage > 0)
             {
-                decimal cashTipCover = Math.Min(tipOverage, cashPayments);
-                tipOverage -= cashTipCover;
 
-                if (tipOverage > 0)
+                List<Payment>? tablePaymentsWithLevys = item.Payments?.Where(x => x.TableBookingId == item.Id && paymentWithLevyIds.Contains(x.PaymentTypeId ?? 0)).ToList();
+                if (tablePaymentsWithLevys != null)
                 {
-                    List<PaymentTypeDTO> PTUsed = payTypes.Where(x => paymentWithLevyIds.Contains(x.PaymentTypeId)).ToList();
-                    decimal levyTotal = PTUsed.Sum(x => x.TipLevyPercentage);
-                    decimal levyCount = PTUsed.Count;
-
-                    if (levyCount != 0)
+                    foreach (var tablePaymentsWithLevy in tablePaymentsWithLevys.OrderByDescending(x => x.PaymentType.TipLevyPercentage))
                     {
-                        foreach (var ptU in PTUsed)
+                        tableTotal = tableTotal - tablePaymentsWithLevy.Amount;
+                        if (tableTotal < 0)
                         {
-                            var payType = paymentTotals.FirstOrDefault(x => x.PaymentTypeId == ptU.PaymentTypeId);
+                            var payType = paymentTotals.FirstOrDefault(x => x.PaymentTypeId == tablePaymentsWithLevy.PaymentTypeId);
                             if (payType != null)
                             {
-                                decimal paymentTipOverage = tipOverage; // * ptU.TipLevyPercentage / levyTotal;
+                                decimal paymentTipOverage = tableTotal * -1;
                                 payType.Tip += paymentTipOverage;
-                                payType.Levy += paymentTipOverage * ptU.TipLevyPercentage / 100; // Corrected Levy calculation
+                                payType.Levy += paymentTipOverage * payType.PaymentType.TipLevyPercentage / 100;
                             }
+                            tableTotal = 0;
+                        }
+
+
+                    }
+                }
+
+            }
+            var cashTipOverage = cashPayments - tableTotal;
+            if (cashTipOverage > 0)
+            {
+
+                List<Payment>? tablePaymentsWithOutLevys = item.Payments?.Where(x => x.TableBookingId == item.Id && !paymentWithLevyIds.Contains(x.PaymentTypeId ?? 0)).ToList();
+                if (tablePaymentsWithOutLevys != null)
+                {
+                    foreach (var tablePaymentsWithLevy in tablePaymentsWithOutLevys)
+                    {
+                        tableTotal = tableTotal - tablePaymentsWithLevy.Amount;
+                        if (tableTotal < 0)
+                        {
+                            var payType = paymentTotals.FirstOrDefault(x => x.PaymentTypeId == tablePaymentsWithLevy.PaymentTypeId);
+                            if (payType != null)
+                            {
+                                decimal paymentTipOverage = tableTotal * -1;
+                                payType.Tip += paymentTipOverage;
+                                payType.Levy += 0;
+                            }
+                            tableTotal = 0;
                         }
                     }
                 }
+
             }
+
         }
 
         // Create response items for PaymentTip and PaymentLevy
