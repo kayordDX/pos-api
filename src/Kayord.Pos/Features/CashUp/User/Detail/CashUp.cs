@@ -61,7 +61,7 @@ public static class CashUp
 
         List<PaymentTotal> paymentTotals = new();
 
-        var clock = await _dbContext.Clock.FirstOrDefaultAsync(x => x.EndDate == null && x.OutletId == OutletId);
+        var clock = await _dbContext.Clock.FirstOrDefaultAsync(x => x.EndDate == null && x.OutletId == OutletId && x.UserId == UserId);
         if (clock == null)
         {
             response.UserId = UserId;
