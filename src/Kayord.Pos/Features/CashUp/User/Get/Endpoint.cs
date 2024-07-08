@@ -46,7 +46,8 @@ public class Endpoint : Endpoint<Request, Response>
                 decimal sales = 0;
                 decimal tips = 0;
                 decimal totalPayments = 0;
-                var bookings = await _dbContext.TableBooking.Where(x => x.SalesPeriodId == salesPeriod.Id && x.UserId == item.UserId && x.CashUpUserId == null && x.CloseDate != null).ToListAsync();
+                int openTableCount = 0;
+                var bookings = await _dbContext.TableBooking.Where(x => x.SalesPeriodId == salesPeriod.Id && x.UserId == item.UserId && x.CashUpUserId == null).ToListAsync();
 
                 foreach (var b in bookings)
                 {
@@ -54,6 +55,7 @@ public class Endpoint : Endpoint<Request, Response>
                     sales += bill.Total;
                     tips += bill.TipTotal;
                     totalPayments += bill.TotalPayments;
+                    openTableCount += b.CloseDate == null ? 1 : 0;
                 }
                 Pos.Entities.User? u = await _dbContext.User.FirstOrDefaultAsync(x => x.UserId == item.UserId);
                 if (u != null)
@@ -64,6 +66,7 @@ public class Endpoint : Endpoint<Request, Response>
                     r.Payments = totalPayments;
                     r.User = u;
                     r.UserId = u.UserId;
+                    r.OpenTableCount = openTableCount;
                     responses.Items.Add(r);
                 }
             }
