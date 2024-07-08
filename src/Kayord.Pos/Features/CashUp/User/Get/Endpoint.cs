@@ -60,13 +60,15 @@ public class Endpoint : Endpoint<Request, Response>
                 Pos.Entities.User? u = await _dbContext.User.FirstOrDefaultAsync(x => x.UserId == item.UserId);
                 if (u != null)
                 {
-                    Items r = new();
-                    r.Sales = sales;
-                    r.Tips = tips;
-                    r.Payments = totalPayments;
-                    r.User = u;
-                    r.UserId = u.UserId;
-                    r.OpenTableCount = openTableCount;
+                    Items r = new Items
+                    {
+                        Sales = sales,
+                        Tips = tips,
+                        Payments = totalPayments,
+                        User = u,
+                        UserId = u.UserId,
+                        OpenTableCount = openTableCount
+                    };
                     responses.Items.Add(r);
                 }
             }
