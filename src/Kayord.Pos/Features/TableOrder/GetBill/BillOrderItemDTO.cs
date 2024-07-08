@@ -11,5 +11,6 @@ public class BillOrderItemDTO
     public BillMenuItemDTO MenuItem { get; set; } = default!;
     public List<OrderItemOptionDTO>? OrderItemOptions { get; set; }
     public List<OrderItemExtraDTO>? OrderItemExtras { get; set; }
+    public DateTime OrderReceived { get; set; }
     public string? Note { get; set; }
 }
