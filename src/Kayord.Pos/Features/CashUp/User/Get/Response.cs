@@ -8,9 +8,6 @@ public class Response
     public decimal TotalSales { get; set; }
     public decimal TotalTips { get; set; }
     public decimal TotalPayments { get; set; }
-
-
-
 }
 
 public class Items
