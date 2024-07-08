@@ -8,5 +8,6 @@ public class CashUpUser
     public decimal OpeningBalance { get; set; }
     public decimal? ClosingBalance { get; set; }
     public string CompleterUserId { get; set; } = string.Empty;
+    public DateTime? CashUpDate { get; set; }
     public List<CashUpUserItem> CashUpUserItems { get; set; } = default!;
 }

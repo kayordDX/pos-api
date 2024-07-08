@@ -322,6 +322,7 @@ public static class CashUp
                 {
                     cashUpUserEntity.ClosingBalance = response.NetBalance;
                     cashUpUserEntity.CompleterUserId = _cu.UserId ?? "";
+                    cashUpUserEntity.CashUpDate = DateTime.Now;
                 }
                 cashUpUser.ClosingBalance = response.NetBalance;
                 cashUpUser.CompleterUserId = _cu.UserId ?? "";
