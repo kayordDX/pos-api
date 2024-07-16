@@ -64,7 +64,7 @@ public class NotificationService
                 Token = token
             };
             var response = await FirebaseMessaging.DefaultInstance.SendAsync(message);
-            string? payload = JsonSerializer.Serialize(message);
+            // string? payload = JsonSerializer.Serialize(message);
             bool isSuccess = response.Length > 0;
             result = isSuccess;
 
