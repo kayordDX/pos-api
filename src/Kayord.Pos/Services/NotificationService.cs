@@ -2,6 +2,7 @@ using System.Text.Json;
 using FirebaseAdmin.Messaging;
 using Kayord.Pos.Data;
 using Kayord.Pos.Entities;
+using Kayord.Pos.Features.Notification;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Services;
@@ -66,7 +67,11 @@ public class NotificationService
             string? payload = JsonSerializer.Serialize(message);
             bool isSuccess = response.Length > 0;
             result = isSuccess;
-            await LogNotification(token, isSuccess, payload, userId, null);
+
+            var notificationSummary = new NotificationDTO { Title = title, Body = body, UserId = userId };
+            string? notificationPayload = JsonSerializer.Serialize(notificationSummary);
+
+            await LogNotification(token, isSuccess, notificationPayload, userId, null);
             if (!isSuccess)
             {
                 await CheckToken(userId, token);
@@ -86,6 +91,7 @@ public class NotificationService
                 Token = token
             };
             string? payload = JsonSerializer.Serialize(message);
+
             await LogNotification(token, false, payload, userId, ex.Message);
         }
         return result;
