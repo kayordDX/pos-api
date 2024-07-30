@@ -9,4 +9,5 @@ public class Stock
     public int UnitId { get; set; }
     public Unit Unit { get; set; } = default!;
     public decimal Threshold { get; set; }
+    public decimal Actual { get; set; }
 }
