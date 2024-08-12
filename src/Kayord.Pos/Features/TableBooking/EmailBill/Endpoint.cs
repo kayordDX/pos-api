@@ -86,7 +86,10 @@ namespace Kayord.Pos.Features.TableBooking.EmailBill
                 Items = items,
                 OutletName = $"{outlet.Business.Name} {outlet.Name}",
                 VATNumber = outlet.VATNumber,
-                Logo = outlet.Logo
+                Logo = outlet.Logo,
+                Address = outlet.Address,
+                Company = outlet.Company,
+                Registration = outlet.Registration
             };
             BillPdf billPdf = new(pdfRequest);
             var document = billPdf.Generate();

@@ -12,5 +12,7 @@ public class Outlet
     public string VATNumber { get; set; } = string.Empty;
     public string? Logo { get; set; }
     public ICollection<OutletPaymentType>? OutletPaymentTypes { get; set; }
-
+    public string? Address { get; set; }
+    public string? Company { get; set; }
+    public string? Registration { get; set; }
 }

@@ -6,6 +6,9 @@ public class PdfRequest
     public int TableBookingId { get; set; }
     public string VATNumber { get; set; } = string.Empty;
     public string? Logo { get; set; }
+    public string? Address { get; set; }
+    public string? Company { get; set; }
+    public string? Registration { get; set; }
     public DateTime BillDate { get; set; }
     public decimal Total { get; set; } = 0;
     public decimal TotalExVAT { get; set; } = 0;

@@ -30,8 +30,8 @@ public class Endpoint : EndpointWithoutRequest<bool>
 
     private async Task CreateDocument()
     {
-        TableOrder.GetBill.Request request = new() { TableBookingId = 45 };
-        var bill = await Bill.Get(new TableOrder.GetBill.Request() { TableBookingId = 45 }, _dbContext);
+        TableOrder.GetBill.Request request = new() { TableBookingId = 1807 };
+        var bill = await Bill.Get(new TableOrder.GetBill.Request() { TableBookingId = 1807 }, _dbContext);
 
         List<Item> items = new();
         foreach (var order in bill.OrderItems)
@@ -66,7 +66,10 @@ public class Endpoint : EndpointWithoutRequest<bool>
             Items = items,
             OutletName = "Test Company Name",
             VATNumber = "234234234234",
-            Logo = null
+            Logo = null,
+            Address = "Shop LM 132",
+            Company = "Lifestyle at Jessica's Trading Pty Ltd",
+            Registration = "Reg 2017/321508/07"
         };
         BillPdf billPdf = new(pdfRequest);
         var document = billPdf.Generate();
