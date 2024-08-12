@@ -30,6 +30,18 @@ jobs:
           platforms: linux/amd64,linux/arm64
           tags: doink/kayord-pos-api:latest, doink/kayord-pos-api:${{ github.sha }}
 
-      - name: WatchTower
-        run: |
-          curl -H "Authorization: Bearer ${{ secrets.WATCHTOWER_TOKEN }}" https://watchtower.kayord.com/v1/update
+      - name: Deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          script: |
+            cd kayord
+            docker compose pull
+            docker rollout pos-api
+            docker system prune -f
+
+      # - name: WatchTower
+      #   run: |
+      #     curl -H "Authorization: Bearer ${{ secrets.WATCHTOWER_TOKEN }}" https://watchtower.kayord.com/v1/update
