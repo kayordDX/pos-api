@@ -38,7 +38,7 @@ jobs:
           key: ${{ secrets.KEY }}
           script: |
             cd kayord
-            docker compose pull
+            docker compose pull pos-api
             docker rollout pos-api
             docker system prune -f
 
