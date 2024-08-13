@@ -1,34 +1,28 @@
-using Kayord.Pos.Features.Business.Create;
 using Kayord.Pos.Data;
-using Microsoft.EntityFrameworkCore;
-using Kayord.Pos.Services;
-using QuestPDF.Fluent;
-using QuestPDF.Helpers;
-using QuestPDF.Infrastructure;
-using QuestPDF.Drawing;
 using Kayord.Pos.Features.TableBooking.EmailBill;
 using Kayord.Pos.Features.TableOrder.GetBill;
-
+using Kayord.Pos.Services.Whatsapp;
+using QuestPDF.Fluent;
 namespace Kayord.Pos.Features.Test;
 
-public class Endpoint : EndpointWithoutRequest<bool>
+public class WhatsAppTest : EndpointWithoutRequest<Status?>
 {
-    private readonly IEmailSender _emailSender;
+    private readonly WhatsappService _whatsappService;
     private readonly AppDbContext _dbContext;
 
-    public Endpoint(IEmailSender emailSender, AppDbContext dbContext)
+    public WhatsAppTest(WhatsappService whatsappService, AppDbContext dbContext)
     {
-        _emailSender = emailSender;
+        _whatsappService = whatsappService;
         _dbContext = dbContext;
     }
 
     public override void Configure()
     {
-        Get("/test");
+        Get("/test/whatsapp");
         AllowAnonymous();
     }
 
-    private async Task CreateDocument()
+    private async Task<string> CreateDocument()
     {
         TableOrder.GetBill.Request request = new() { TableBookingId = 1807 };
         var bill = await Bill.Get(new TableOrder.GetBill.Request() { TableBookingId = 1807 }, _dbContext);
@@ -73,12 +67,31 @@ public class Endpoint : EndpointWithoutRequest<bool>
         };
         BillPdf billPdf = new(pdfRequest);
         var document = billPdf.Generate();
-        document.GeneratePdf("hello.pdf");
+        await using var stream = new MemoryStream();
+        document.GeneratePdf(stream);
+        string base64 = Convert.ToBase64String(stream.ToArray());
+        return base64;
     }
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        await CreateDocument();
-        await SendAsync(true);
+        var numberIdResponse = await _whatsappService.GetNumberId("0832142611", null);
+        if (numberIdResponse == null || numberIdResponse.Result == null) throw new Exception("Could not get number");
+
+        var base64 = await CreateDocument();
+
+        var file = await _whatsappService.SendFile(new()
+        {
+            ChatId = numberIdResponse.Result._serialized,
+            Content = new()
+            {
+                MimeType = "application/pdf",
+                Data = base64,
+                Filename = "invoice.pdf"
+            }
+        });
+
+        var s = await _whatsappService.GetStatus();
+        await SendAsync(s);
     }
 }

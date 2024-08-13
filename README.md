@@ -35,6 +35,8 @@ dotnet user-secrets set "Halo:XApiKey" "secret" --project src/Kayord.Pos
 dotnet user-secrets set "Email:Host" "secret" --project src/Kayord.Pos
 dotnet user-secrets set "Email:Email" "secret" --project src/Kayord.Pos
 dotnet user-secrets set "Email:Password" "secret" --project src/Kayord.Pos
+dotnet user-secrets set "Whatsapp:Host" "secret" --project src/Kayord.Pos
+dotnet user-secrets set "Whatsapp:XApiKey" "secret" --project src/Kayord.Pos
 dotnet user-secrets list --project src/Kayord.Pos
 ```
 
@@ -45,3 +47,22 @@ export GOOGLE_APPLICATION_CREDENTIALS=/service-account.json
 
 Dev
 create file in src/Kayord.Pos/private_key.json
+
+## Whatsapp Setup
+
+```bash
+# Get Status
+curl --request GET \
+  --url http://localhost:3000/session/status/kayord \
+  --header 'x-api-key: apiKey'
+
+# Start
+curl --request GET \
+  --url http://localhost:3000/session/start/kayord \
+  --header 'x-api-key: apiKey'
+
+# Generate QR Image to scan
+curl --request GET \
+  --url http://localhost:3000/session/qr/kayord/image \
+  --header 'x-api-key: apiKey'  
+```

@@ -15,6 +15,7 @@ builder.Services.ConfigureGeneral(builder.Configuration);
 builder.Services.ConfigureFirebase(builder.Environment);
 builder.Services.ConfigureHealth(builder.Configuration);
 builder.Services.ConfigureHalo(builder.Configuration);
+builder.Services.ConfigureWhatsapp(builder.Configuration);
 
 // builder.Services.AddStackExchangeRedisCache(o =>
 // {
