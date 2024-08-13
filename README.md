@@ -50,19 +50,21 @@ create file in src/Kayord.Pos/private_key.json
 
 ## Whatsapp Setup
 
+We can send messages using WhatsApp.
+
 ```bash
 # Get Status
 curl --request GET \
-  --url http://localhost:3000/session/status/kayord \
+  --url https://whatsapp.kayord.com/session/status/kayord \
   --header 'x-api-key: apiKey'
 
 # Start
 curl --request GET \
-  --url http://localhost:3000/session/start/kayord \
+  --url https://whatsapp.kayord.com/session/start/kayord \
   --header 'x-api-key: apiKey'
 
 # Generate QR Image to scan
 curl --request GET \
-  --url http://localhost:3000/session/qr/kayord/image \
+  --url https://whatsapp.kayord.com/session/qr/kayord/image \
   --header 'x-api-key: apiKey'  
 ```
