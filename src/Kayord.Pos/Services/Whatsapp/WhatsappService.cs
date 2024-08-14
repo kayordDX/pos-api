@@ -88,4 +88,46 @@ public class WhatsappService
         }
         throw new Exception("Could not send message");
     }
+
+    public async Task<QrResponse> QrCode()
+    {
+        var request = await _httpClient.GetAsync("/session/qr/kayord");
+        if (request.IsSuccessStatusCode)
+        {
+            var qr = await request.Content.ReadFromJsonAsync<QrResponse>();
+            if (qr != null)
+            {
+                return qr;
+            }
+        }
+        throw new Exception("Could not get qr code");
+    }
+
+    public async Task<Response> Terminate()
+    {
+        var request = await _httpClient.GetAsync("/session/terminate/kayord");
+        if (request.IsSuccessStatusCode)
+        {
+            var response = await request.Content.ReadFromJsonAsync<Response>();
+            if (response != null)
+            {
+                return response;
+            }
+        }
+        throw new Exception("Could not terminate session");
+    }
+
+    public async Task<Response> Start()
+    {
+        var request = await _httpClient.GetAsync("/session/start/kayord");
+        if (request.IsSuccessStatusCode)
+        {
+            var response = await request.Content.ReadFromJsonAsync<Response>();
+            if (response != null)
+            {
+                return response;
+            }
+        }
+        throw new Exception("Could not start session");
+    }
 }
