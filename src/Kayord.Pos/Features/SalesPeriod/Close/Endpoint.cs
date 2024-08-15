@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.SalesPeriod.Close;
 
-public class Endpoint : Endpoint<Request, Pos.Entities.SalesPeriod>
+public class Endpoint : Endpoint<Request, Entities.SalesPeriod>
 {
     private readonly AppDbContext _dbContext;
 
@@ -29,19 +29,10 @@ public class Endpoint : Endpoint<Request, Pos.Entities.SalesPeriod>
         var OpenTableCount = await _dbContext.TableBooking.Where(x => x.SalesPeriodId == req.SalesPeriodId && x.CloseDate == null).CountAsync();
         if (OpenTableCount > 0)
         {
-            await SendForbiddenAsync();
-            return;
+            throw new Exception("Cannot close sales period with open tables");
         }
         entity.EndDate = DateTime.Now;
         await _dbContext.SaveChangesAsync();
-
-        var result = await _dbContext.SalesPeriod.FindAsync(entity.Id);
-        if (result == null)
-        {
-            await SendNotFoundAsync();
-            return;
-        }
-
-        await SendAsync(result);
+        await SendAsync(entity);
     }
 }
