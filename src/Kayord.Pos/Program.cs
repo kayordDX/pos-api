@@ -10,18 +10,14 @@ using Microsoft.AspNetCore.SignalR;
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.AddLoggingConfiguration(builder.Configuration);
 builder.Services.ConfigureApi();
+builder.Services.ConfigureRedis(builder.Configuration);
 builder.Services.ConfigureConfig(builder.Configuration);
+builder.Services.ConfigurePrint();
 builder.Services.ConfigureGeneral(builder.Configuration);
 builder.Services.ConfigureFirebase(builder.Environment);
 builder.Services.ConfigureHealth(builder.Configuration);
 builder.Services.ConfigureHalo(builder.Configuration);
 builder.Services.ConfigureWhatsapp(builder.Configuration);
-
-// builder.Services.AddStackExchangeRedisCache(o =>
-// {
-//     o.Configuration = builder.Configuration.GetConnectionString("Redis");
-//     o.InstanceName = "redisTesting";
-// });
 
 var corsSection = builder.Configuration.GetSection("Cors");
 builder.Services.ConfigureCors(corsSection.Get<string[]>() ?? [""]);

@@ -1,5 +1,7 @@
 using Kayord.Pos.Data;
 using Kayord.Pos.Entities;
+using Kayord.Pos.Events;
+using Kayord.Pos.Services;
 using Microsoft.EntityFrameworkCore;
 using YamlDotNet.Core.Tokens;
 
@@ -8,10 +10,12 @@ namespace Kayord.Pos.Features.TableOrder.SendToKitchen
     public class Endpoint : Endpoint<Request, Response>
     {
         private readonly AppDbContext _dbContext;
+        private readonly CurrentUserService _cu;
 
-        public Endpoint(AppDbContext dbContext)
+        public Endpoint(AppDbContext dbContext, CurrentUserService cu)
         {
             _dbContext = dbContext;
+            _cu = cu;
         }
 
         public override void Configure()
@@ -36,8 +40,14 @@ namespace Kayord.Pos.Features.TableOrder.SendToKitchen
             }
 
             await _dbContext.SaveChangesAsync();
-            await SendAsync(new Response { IsSuccess = true });
 
+            await PublishAsync(new NotificationEvent()
+            {
+                UserId = _cu.UserId ?? "",
+                Title = "New Order",
+                Body = "New order received",
+            }, Mode.WaitForNone);
+            await SendAsync(new Response { IsSuccess = true });
         }
     }
 }

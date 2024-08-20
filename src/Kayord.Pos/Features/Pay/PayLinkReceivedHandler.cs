@@ -1,7 +1,4 @@
 using Kayord.Pos.Events;
-using Kayord.Pos.Hubs;
-using Kayord.Pos.Services;
-using Microsoft.AspNetCore.SignalR;
 
 namespace Kayord.Pos.Features.Pay;
 
