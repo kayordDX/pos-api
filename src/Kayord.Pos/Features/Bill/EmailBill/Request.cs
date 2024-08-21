@@ -1,6 +1,6 @@
 
 
-namespace Kayord.Pos.Features.TableBooking.EmailBill
+namespace Kayord.Pos.Features.Bill.EmailBill
 {
     public class Request
     {
@@ -8,5 +8,4 @@ namespace Kayord.Pos.Features.TableBooking.EmailBill
         public string Email { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
     }
-
 }

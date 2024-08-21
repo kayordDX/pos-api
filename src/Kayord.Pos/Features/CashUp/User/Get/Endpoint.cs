@@ -1,5 +1,5 @@
 using Kayord.Pos.Data;
-using Kayord.Pos.Features.TableOrder.GetBill;
+using Kayord.Pos.Features.Bill;
 using Kayord.Pos.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -51,7 +51,7 @@ public class Endpoint : Endpoint<Request, Response>
 
                 foreach (var b in bookings)
                 {
-                    TableTotal bill = await Bill.GetTotal(b.Id, _dbContext);
+                    TableTotal bill = await BillHelper.GetTotal(b.Id, _dbContext);
                     sales += bill.Total;
                     tips += bill.TipTotal;
                     totalPayments += bill.TotalPayments;

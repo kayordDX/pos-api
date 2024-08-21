@@ -1,13 +1,8 @@
-using Kayord.Pos.Features.Business.Create;
+
 using Kayord.Pos.Data;
-using Microsoft.EntityFrameworkCore;
+using Kayord.Pos.Features.Bill.EmailBill;
 using Kayord.Pos.Services;
 using QuestPDF.Fluent;
-using QuestPDF.Helpers;
-using QuestPDF.Infrastructure;
-using QuestPDF.Drawing;
-using Kayord.Pos.Features.TableBooking.EmailBill;
-using Kayord.Pos.Features.TableOrder.GetBill;
 
 namespace Kayord.Pos.Features.Test;
 
@@ -31,7 +26,7 @@ public class Endpoint : EndpointWithoutRequest<bool>
     private async Task CreateDocument()
     {
         TableOrder.GetBill.Request request = new() { TableBookingId = 1807 };
-        var bill = await Bill.Get(new TableOrder.GetBill.Request() { TableBookingId = 1807 }, _dbContext);
+        var bill = await TableOrder.GetBill.Bill.Get(new TableOrder.GetBill.Request() { TableBookingId = 1807 }, _dbContext);
 
         List<Item> items = new();
         foreach (var order in bill.OrderItems)

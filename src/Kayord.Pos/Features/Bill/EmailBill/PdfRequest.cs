@@ -1,4 +1,4 @@
-namespace Kayord.Pos.Features.TableBooking.EmailBill;
+namespace Kayord.Pos.Features.Bill.EmailBill;
 
 public class PdfRequest
 {

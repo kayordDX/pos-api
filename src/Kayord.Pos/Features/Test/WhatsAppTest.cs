@@ -1,6 +1,5 @@
 using Kayord.Pos.Data;
-using Kayord.Pos.Features.TableBooking.EmailBill;
-using Kayord.Pos.Features.TableOrder.GetBill;
+using Kayord.Pos.Features.Bill.EmailBill;
 using Kayord.Pos.Services.Whatsapp;
 using QuestPDF.Fluent;
 namespace Kayord.Pos.Features.Test;
@@ -25,7 +24,7 @@ public class WhatsAppTest : EndpointWithoutRequest<Status?>
     private async Task<string> CreateDocument()
     {
         TableOrder.GetBill.Request request = new() { TableBookingId = 1807 };
-        var bill = await Bill.Get(new TableOrder.GetBill.Request() { TableBookingId = 1807 }, _dbContext);
+        var bill = await TableOrder.GetBill.Bill.Get(new TableOrder.GetBill.Request() { TableBookingId = 1807 }, _dbContext);
 
         List<Item> items = new();
         foreach (var order in bill.OrderItems)

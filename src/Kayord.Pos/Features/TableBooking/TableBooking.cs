@@ -1,5 +1,5 @@
 using Kayord.Pos.Data;
-using Kayord.Pos.Features.TableOrder.GetBill;
+using Kayord.Pos.Features.Bill;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.TableBooking;
@@ -13,7 +13,7 @@ public static class TableBooking
         {
             throw new Exception("No booking found");
         }
-        var billTotal = await Bill.GetTotal(tableBookingId, _dbContext);
+        var billTotal = await BillHelper.GetTotal(tableBookingId, _dbContext);
         booking.Total = billTotal.Total;
         await _dbContext.SaveChangesAsync();
     }

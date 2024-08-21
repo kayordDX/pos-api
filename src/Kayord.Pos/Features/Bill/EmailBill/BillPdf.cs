@@ -1,9 +1,8 @@
-using QuestPDF.Drawing;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 
-namespace Kayord.Pos.Features.TableBooking.EmailBill;
+namespace Kayord.Pos.Features.Bill.EmailBill;
 
 public class BillPdf
 {
@@ -167,8 +166,6 @@ public class BillPdf
                     text.Span($"{_pdfRequest.BillDate:d}");
                 });
             });
-
-            // row.ConstantItem(100).Height(50).Placeholder();
         });
     }
 }
