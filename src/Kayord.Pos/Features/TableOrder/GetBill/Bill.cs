@@ -16,6 +16,8 @@ public static class Bill
         var tableBooking = await _dbContext.TableBooking
             .Include(x => x.Adjustments!)
                 .ThenInclude(x => x.AdjustmentType)
+            .Include(x => x.Table)
+            .Include(x => x.User)
             .FirstOrDefaultAsync(x => x.Id == req.TableBookingId);
 
         response.IsCashedUp = tableBooking?.CashUpUserId != null;
@@ -30,6 +32,11 @@ public static class Bill
         {
             throw new Exception("Table not found");
         }
+
+        response.TableName = tableBooking.Table.Name;
+        response.Waiter = tableBooking.User.Name;
+        response.IsClosed = tableBooking.CloseDate != null;
+
         response.BillDate = tableBooking.CloseDate ?? tableBooking.BookingDate;
 
         response.OrderItems = await _dbContext.OrderItem

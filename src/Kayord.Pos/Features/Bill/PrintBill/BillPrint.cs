@@ -41,6 +41,7 @@ public static class BillPrint
 
     private static List<byte[]> Header(PdfRequest request)
     {
+        string billStatus = request.IsClosed ? "Closed" : "Open";
         List<byte[]> header = [
             e.CenterAlign(),
             e.PrintLine(""),
@@ -57,6 +58,9 @@ public static class BillPrint
             e.PrintLine(request.Company),
             e.PrintLine($"Reg {request.Registration}"),
             e.PrintLine($"VAT no {request.VATNumber}"),
+            e.PrintLine(request.TableName),
+            e.PrintLine($"Waiter {request.Waiter}"),
+            e.PrintLine($"Bill Status {billStatus}"),
             e.PrintLine($"Date: {request.BillDate:d}"),
         ];
         return header;

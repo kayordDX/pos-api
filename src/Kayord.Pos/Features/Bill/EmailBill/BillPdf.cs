@@ -162,6 +162,20 @@ public class BillPdf
 
                 column.Item().Text(text =>
                 {
+                    text.Span($"{_pdfRequest.TableName}");
+                });
+                column.Item().Text(text =>
+                {
+                    text.Span($"Waiter {_pdfRequest.Waiter}");
+                });
+                column.Item().Text(text =>
+                {
+                    var statusText = _pdfRequest.IsClosed ? "Closed" : "Open";
+                    text.Span($"Bill Status {statusText}");
+                });
+
+                column.Item().Text(text =>
+                {
                     text.Span("Date: ").SemiBold();
                     text.Span($"{_pdfRequest.BillDate:d}");
                 });

@@ -17,6 +17,9 @@ public class PdfRequest
     public decimal TipAmount { get; set; } = 0;
     public decimal PaymentReceived { get; set; } = 0;
     public List<Item> Items { get; set; } = new List<Item>();
+    public string? TableName { get; set; }
+    public string? Waiter { get; set; }
+    public bool IsClosed { get; set; }
 }
 
 public class Item

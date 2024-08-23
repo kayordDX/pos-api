@@ -15,6 +15,9 @@ public class Response
     public DateTime BillDate { get; set; }
     public List<Entities.Adjustment>? Adjustments { get; set; }
     public bool IsCashedUp { get; set; }
+    public string? TableName { get; set; }
+    public string? Waiter { get; set; }
+    public bool IsClosed { get; set; }
 }
 
 public class TableTotal

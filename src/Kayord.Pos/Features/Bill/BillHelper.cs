@@ -181,7 +181,10 @@ public static class BillHelper
                 Logo = outlet.Logo,
                 Address = outlet.Address,
                 Company = outlet.Company,
-                Registration = outlet.Registration
+                Registration = outlet.Registration,
+                IsClosed = bill.IsClosed,
+                TableName = bill.TableName,
+                Waiter = bill.Waiter
             };
             return pdfRequest;
         }
