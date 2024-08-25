@@ -19,7 +19,7 @@ public class Endpoint : EndpointWithoutRequest<bool>
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        await PublishAsync(new SoundEvent() { OutletId = 1, Divisions = [] });
+        await PublishAsync(new SoundEvent() { OutletId = 1, Divisions = [1] });
         await SendAsync(true);
     }
 }
