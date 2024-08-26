@@ -32,11 +32,18 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
             {
                 await _dbContext.OrderGroup.AddAsync(order);
             }
+
+            List<int>? divisions = new();
+            int outletId = 0;
+            bool soundNotify = false;
+
             foreach (int r in req.OrderItemIds)
             {
-                OrderItem? entity = await _dbContext.OrderItem.
-                    Include(x => x.TableBooking)
-                    .ThenInclude(x => x.Table)
+                OrderItem? entity = await _dbContext.OrderItem
+                    .Include(x => x.TableBooking)
+                        .ThenInclude(x => x.SalesPeriod)
+                    .Include(x => x.TableBooking)
+                        .ThenInclude(x => x.Table)
                     .FirstOrDefaultAsync(x => x.OrderItemId == r);
 
                 if (entity != null && oIS != null)
@@ -61,6 +68,17 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
                             tUserId = entity.TableBooking.UserId;
                         }
                     }
+
+                    if (oIS?.isBackOffice ?? false)
+                    {
+                        outletId = entity.TableBooking.SalesPeriod.OutletId;
+                        var divisionId = entity.MenuItem.DivisionId ?? 0;
+                        if (!divisions.Contains(divisionId))
+                        {
+                            divisions.Add(divisionId);
+                        }
+                        soundNotify = true;
+                    }
                 }
                 else
                 {
@@ -76,6 +94,12 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
                     Body = TableName + " - " + Notification + " - " + Status,
                 }, Mode.WaitForNone);
             }
+
+            if (soundNotify)
+            {
+                await PublishAsync(new SoundEvent() { OutletId = outletId, Divisions = divisions });
+            }
+
             await _dbContext.SaveChangesAsync();
             await SendAsync(new Response() { IsSuccess = true });
         }
