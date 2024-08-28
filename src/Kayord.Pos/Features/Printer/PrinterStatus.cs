@@ -10,4 +10,5 @@ public class PrinterStatus
     public string DateUpdatedFormatted => DateUpdated.Humanize();
     public PrinterConfig PrinterConfig { get; set; } = new();
     public PrinterStatusEventArgs? PrinterStatusEventArgs { get; set; } = null;
+    public string? LastException { get; set; }
 }
