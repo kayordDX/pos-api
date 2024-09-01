@@ -44,6 +44,7 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
                         .ThenInclude(x => x.SalesPeriod)
                     .Include(x => x.TableBooking)
                         .ThenInclude(x => x.Table)
+                    .Include(x => x.MenuItem)
                     .FirstOrDefaultAsync(x => x.OrderItemId == r);
 
                 if (entity != null && oIS != null)
