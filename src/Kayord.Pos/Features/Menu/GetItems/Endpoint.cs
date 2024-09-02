@@ -2,17 +2,21 @@ using Kayord.Pos.Data;
 using Kayord.Pos.Entities;
 using Kayord.Pos.DTO;
 using Microsoft.EntityFrameworkCore;
+using Kayord.Pos.Services;
+using System.Web;
 namespace Kayord.Pos.Features.Menu.GetItems
 {
     public class GetMenuItemsEndpoint : Endpoint<Request, List<MenuItemDTOBasic>>
     {
         private readonly AppDbContext _dbContext;
         private readonly ILogger<GetMenuItemsEndpoint> _logger;
+        private readonly RedisClient _redisClient;
 
-        public GetMenuItemsEndpoint(AppDbContext dbContext, ILogger<GetMenuItemsEndpoint> logger)
+        public GetMenuItemsEndpoint(AppDbContext dbContext, ILogger<GetMenuItemsEndpoint> logger, RedisClient redisClient)
         {
             _dbContext = dbContext;
             _logger = logger;
+            _redisClient = redisClient;
         }
 
         public override void Configure()
@@ -22,6 +26,14 @@ namespace Kayord.Pos.Features.Menu.GetItems
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
+            string cacheKey = $"menu:items:{req.MenuId}:{req.SectionId}:{HttpUtility.UrlEncode(req.Search)}";
+            var cachedResponse = await _redisClient.GetObjectAsync<List<MenuItemDTOBasic>>(cacheKey);
+            if (cachedResponse != null)
+            {
+                await SendAsync(cachedResponse);
+                return;
+            }
+
             IQueryable<MenuItem>? items;
             if (req.SectionId == 0)
             {
@@ -48,6 +60,8 @@ namespace Kayord.Pos.Features.Menu.GetItems
                 .Include(m => m.Tags)
                 .ProjectToBasicDto()
                 .ToListAsync();
+
+            await _redisClient.SetObjectAsync(cacheKey, response);
             await SendAsync(response);
         }
 

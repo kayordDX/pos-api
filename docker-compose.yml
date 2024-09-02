@@ -10,14 +10,24 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
-  redis:
-    container_name: redis
-    image: redis
+  # redis:
+  #   container_name: redis
+  #   image: redis
+  #   restart: unless-stopped
+  #   environment:
+  #     REDIS_PASSWORD: 4qWF6jAcW6e9PCeW
+  #   ports:
+  #     - "6379:6379"
+
+  garnet:
+    container_name: garnet
+    image: ghcr.io/microsoft/garnet
     restart: unless-stopped
-    environment:
-      REDIS_PASSWORD: 4qWF6jAcW6e9PCeW
+    ulimits:
+      memlock: -1
     ports:
       - "6379:6379"
+    command: --auth Password --password 4qWF6jAcW6e9PCeW
 
 volumes:
   pgdata:

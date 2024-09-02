@@ -6,6 +6,7 @@ namespace Kayord.Pos.Services;
 
 public class RedisClient
 {
+    private static readonly TimeSpan defaultExpiry = TimeSpan.FromMinutes(10);
     private static Lazy<Task<ConnectionMultiplexer>> lazyConnection = new();
     private readonly IConfiguration _config;
 
@@ -51,8 +52,13 @@ public class RedisClient
 
     public async Task<bool> SetValueAsync(string key, string value)
     {
+        return await SetValueAsync(key, value, defaultExpiry);
+    }
+
+    public async Task<bool> SetValueAsync(string key, string value, TimeSpan expiry)
+    {
         var database = await GetDatabaseAsync();
-        return await database.StringSetAsync(key, value);
+        return await database.StringSetAsync(key, value, expiry);
     }
 
     public async Task<string?> GetValueAsync(string key)
@@ -71,7 +77,13 @@ public class RedisClient
     public async Task<bool> SetObjectAsync<T>(string key, T value)
     {
         var serializedValue = SerializeObject(value);
-        return await SetValueAsync(key, serializedValue);
+        return await SetValueAsync(key, serializedValue, defaultExpiry);
+    }
+
+    public async Task<bool> SetObjectAsync<T>(string key, T value, TimeSpan expiry)
+    {
+        var serializedValue = SerializeObject(value);
+        return await SetValueAsync(key, serializedValue, expiry);
     }
 
     public async Task<T?> GetObjectAsync<T>(string key)
