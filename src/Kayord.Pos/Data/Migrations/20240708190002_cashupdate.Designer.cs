@@ -13,8 +13,8 @@ using NpgsqlTypes;
 namespace Kayord.Pos.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240708190002_cashupdate")]
-    partial class cashupdate
+    [Migration("20240708190002_Cashupdate")]
+    partial class Cashupdate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -1,3 +1,4 @@
+using Kayord.Pos.DTO;
 using Kayord.Pos.Features.Manager.OrderView;
 
 namespace Kayord.Pos.Features.TableBooking.History;
@@ -12,4 +13,5 @@ public class Response
     public DateTime? CloseDate { get; set; }
     public int SalesPeriodId { get; set; }
     public decimal Total { get; set; }
+    public UserDTO User { get; set; } = default!;
 }

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.TableBooking.History
 {
-    public class Endpoint : EndpointWithoutRequest<List<Response>>
+    public class Endpoint : Endpoint<Request, List<Response>>
     {
         private readonly AppDbContext _dbContext;
         private readonly CurrentUserService _user;
@@ -20,11 +20,18 @@ namespace Kayord.Pos.Features.TableBooking.History
             Get("/tableBooking/myHistory");
         }
 
-        public override async Task HandleAsync(CancellationToken ct)
+        public override async Task HandleAsync(Request r, CancellationToken ct)
         {
-            var result = await _dbContext.TableBooking
+            var bookings = _dbContext.TableBooking
                 .Where(x => x.UserId == _user.UserId)
-                .Where(x => x.CloseDate != null)
+                .Where(x => x.CloseDate != null);
+
+            if (r.TableBookingId > 0)
+            {
+                bookings = bookings.Where(x => x.Id.ToString().StartsWith(r.TableBookingId.ToString()));
+            }
+
+            var result = await bookings
                 .OrderByDescending(x => x.CloseDate)
                 .ProjectToDto()
                 .ToListAsync();

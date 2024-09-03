@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Kayord.Pos.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class cashupdate : Migration
+    public partial class Cashupdate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
