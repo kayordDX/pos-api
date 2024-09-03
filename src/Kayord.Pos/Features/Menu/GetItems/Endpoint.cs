@@ -61,7 +61,7 @@ namespace Kayord.Pos.Features.Menu.GetItems
                 .ProjectToBasicDto()
                 .ToListAsync();
 
-            await _redisClient.SetObjectAsync(cacheKey, response);
+            _ = _redisClient.SetObjectAsync(cacheKey, response);
             await SendAsync(response);
         }
 

@@ -52,7 +52,7 @@ namespace Kayord.Pos.Features.Menu.GetSections
                 .ToListAsync();
 
             Response response = new() { Parents = parents, Sections = sections };
-            await _redisClient.SetObjectAsync(cacheKey, response);
+            _ = _redisClient.SetObjectAsync(cacheKey, response);
             await SendAsync(response);
         }
     }

@@ -36,7 +36,7 @@ namespace Kayord.Pos.Features.Menu.List
                 .OrderBy(x => x.Position)
                 .ToListAsync();
 
-            await _redisClient.SetObjectAsync(cacheKey, menus);
+            _ = _redisClient.SetObjectAsync(cacheKey, menus);
             await SendAsync(menus);
         }
     }
