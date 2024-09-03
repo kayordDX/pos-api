@@ -23,12 +23,20 @@ namespace Kayord.Pos.Features.TableBooking.HistoryUser
         {
             var booking = _dbContext.TableBooking
                 .Where(x => x.UserId == req.UserId)
-                .Where(x => x.CloseDate != null)
-                .Where(x => x.CashUpUserId == null);
+                .Where(x => x.CloseDate != null);
 
             if (req.TableBookingId > 0)
             {
                 booking = booking.Where(x => x.Id.ToString().StartsWith(req.TableBookingId.ToString()));
+            }
+
+            if (req.CashUpUserId > 0)
+            {
+                booking = booking.Where(x => x.CashUpUserId == req.CashUpUserId);
+            }
+            else
+            {
+                booking = booking.Where(x => x.CashUpUserId == null);
             }
 
             var result = await booking.OrderByDescending(x => x.CloseDate)

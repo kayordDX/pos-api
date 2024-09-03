@@ -27,7 +27,7 @@ public class Endpoint : Endpoint<Request, Response>
             return;
         }
 
-        Response response = await CashUp.CashUpProcess(req.OutletId, req.UserId, _dbContext, _user, false);
+        Response response = await CashUp.CashUpProcess(req.OutletId, req.UserId, _dbContext, _user, false, req.CashUpUserId);
         await SendAsync(response);
     }
 }

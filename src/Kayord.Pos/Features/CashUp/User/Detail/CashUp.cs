@@ -9,14 +9,41 @@ using Microsoft.EntityFrameworkCore;
 
 public static class CashUp
 {
-    public static async Task<Response> CashUpProcess(int OutletId, string UserId, AppDbContext _dbContext, CurrentUserService _cu, bool close)
+    public static async Task<Response> CashUpProcess(int OutletId, string UserId, AppDbContext _dbContext, CurrentUserService _cu, bool close, int cashUpUserId = 0)
     {
         Response response = new()
         {
-            CashUpUserItems = new()
+            CashUpUserItems = new(),
+            IsCashedUp = false
         };
+
+        if (cashUpUserId > 0)
+        {
+            var savedCashUpUser = await _dbContext.CashUpUser.ProjectToDto().FirstOrDefaultAsync(x => x.Id == cashUpUserId);
+            response.OpeningBalance = savedCashUpUser?.OpeningBalance ?? 0;
+            var savedBalance = (savedCashUpUser?.OpeningBalance ?? 0) - (savedCashUpUser?.ClosingBalance ?? 0);
+
+            response.CashUpUserId = cashUpUserId;
+            var items = _dbContext.CashUpUserItem.Where(x => x.CashUpUserId == cashUpUserId).ProjectToDto();
+            response.CashUpUserItems.AddRange(items);
+
+            response.GrossBalance = Math.Round(response.OpeningBalance + response.CashUpUserItems.Where(x => x.CashUpUserItemType!.AffectsGrossBalance || x.CashUpUserItemType.IsAuto == false).Sum(x => x.Value), 2);
+            response.NetBalance = response.GrossBalance;
+            response.IsCashedUp = true;
+
+            response.UserId = UserId;
+            var savedUser = await _dbContext.User.ProjectToDto().FirstOrDefaultAsync(x => x.UserId == UserId);
+            if (savedUser != null)
+            {
+                response.User = savedUser;
+            }
+            return response;
+        }
+
         CashUpUserDTO? cashUpUser = await _dbContext.CashUpUser.ProjectToDto().OrderByDescending(x => x.Id).FirstOrDefaultAsync(x => x.UserId == UserId && x.ClosingBalance == null && x.OutletId == OutletId);
         int userCashUpId = 0;
+
+        var salesPeriod = await _dbContext.SalesPeriod.FirstOrDefaultAsync(x => x.OutletId == OutletId && x.EndDate == null);
 
         if (cashUpUser != null)
         {
@@ -31,7 +58,7 @@ public static class CashUp
                 {
                     OpeningBalance = cashUpUser.ClosingBalance ?? 0,
                     UserId = UserId,
-                    OutletId = cashUpUser.OutletId
+                    OutletId = cashUpUser.OutletId,
                 };
                 _dbContext.CashUpUser.Add(u);
                 await _dbContext.SaveChangesAsync();
@@ -44,7 +71,7 @@ public static class CashUp
                 {
                     OpeningBalance = 0,
                     UserId = UserId,
-                    OutletId = OutletId
+                    OutletId = OutletId,
                 };
                 _dbContext.CashUpUser.Add(u);
                 await _dbContext.SaveChangesAsync();
@@ -323,6 +350,7 @@ public static class CashUp
                     cashUpUserEntity.ClosingBalance = response.NetBalance;
                     cashUpUserEntity.CompleterUserId = _cu.UserId ?? "";
                     cashUpUserEntity.CashUpDate = DateTime.Now;
+                    cashUpUserEntity.SalesPeriodId = salesPeriod?.Id ?? 0;
                 }
                 cashUpUser.ClosingBalance = response.NetBalance;
                 cashUpUser.CompleterUserId = _cu.UserId ?? "";
@@ -330,7 +358,7 @@ public static class CashUp
                 {
                     UserId = UserId,
                     OpeningBalance = cashUpUser.ClosingBalance ?? 0,
-                    OutletId = cashUpUser.OutletId
+                    OutletId = cashUpUser.OutletId,
                 };
                 await _dbContext.CashUpUser.AddAsync(c);
                 await _dbContext.SaveChangesAsync();

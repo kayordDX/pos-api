@@ -10,4 +10,5 @@ public class CashUpUser
     public string CompleterUserId { get; set; } = string.Empty;
     public DateTime? CashUpDate { get; set; }
     public List<CashUpUserItem> CashUpUserItems { get; set; } = default!;
+    public int SalesPeriodId { get; set; }
 }

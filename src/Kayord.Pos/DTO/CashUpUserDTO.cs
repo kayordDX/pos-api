@@ -9,4 +9,5 @@ public class CashUpUserDTO
     public decimal? ClosingBalance { get; set; }
     public string CompleterUserId { get; set; } = string.Empty;
     public List<CashUpUserItemDTO> CashUpUserItems { get; set; } = default!;
+    public int SalesPeriodId { get; set; }
 }

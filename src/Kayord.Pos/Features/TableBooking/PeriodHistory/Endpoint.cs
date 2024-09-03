@@ -21,9 +21,7 @@ namespace Kayord.Pos.Features.TableBooking.PeriodHistory
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
             var booking = _dbContext.TableBooking
-                .Where(x => x.SalesPeriodId == req.SalesPeriodId)
-                .Where(x => x.CloseDate != null)
-                .Where(x => x.CashUpUserId == null);
+                .Where(x => x.SalesPeriodId == req.SalesPeriodId);
 
             if (req.TableBookingId > 0)
             {

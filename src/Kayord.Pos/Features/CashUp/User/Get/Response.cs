@@ -17,6 +17,6 @@ public class Items
     public decimal Sales { get; set; }
     public decimal Tips { get; set; }
     public decimal Payments { get; set; }
-    public int OpenTableCount { get; set; } = 0;
-
+    public int OpenTableCount { get; set; }
+    public int CashUpUserId { get; set; }
 }
