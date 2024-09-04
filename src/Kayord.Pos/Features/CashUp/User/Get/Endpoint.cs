@@ -41,7 +41,7 @@ public class Endpoint : Endpoint<Request, Response>
         if (salesPeriod != null)
         {
             List<string> userIds = listClock.Select(x => x.UserId).ToList();
-            var todoItems = await GetUserCashUpItems(userIds, salesPeriod.Id, _dbContext);
+            var todoItems = await GetUserCashUpItems(userIds, salesPeriod.Id, _dbContext, req.OutletId);
             responses.Items.AddRange(todoItems);
 
             var cashedUpUserIds = await _dbContext.CashUpUser
@@ -50,7 +50,7 @@ public class Endpoint : Endpoint<Request, Response>
                 .Select(x => x.UserId)
                 .ToListAsync();
 
-            var cashedUpItems = await GetUserCashUpItems(cashedUpUserIds, salesPeriod.Id, _dbContext, true);
+            var cashedUpItems = await GetUserCashUpItems(cashedUpUserIds, salesPeriod.Id, _dbContext, req.OutletId, true);
             responses.Items.AddRange(cashedUpItems);
         }
         responses.TotalPayments = responses.Items.Sum(x => x.Payments);
@@ -62,7 +62,7 @@ public class Endpoint : Endpoint<Request, Response>
 
     }
 
-    public static async Task<List<Items>> GetUserCashUpItems(List<string> userIds, int salesPeriodId, AppDbContext _dbContext, bool isCashedUp = false)
+    public static async Task<List<Items>> GetUserCashUpItems(List<string> userIds, int salesPeriodId, AppDbContext _dbContext, int outletId, bool isCashedUp = false)
     {
         List<Items> items = new();
         foreach (var userId in userIds)
@@ -84,6 +84,16 @@ public class Endpoint : Endpoint<Request, Response>
             else
             {
                 booking = booking.Where(x => x.CashUpUserId != null);
+            }
+
+            if (isCashedUp)
+            {
+                var cashUp = await _dbContext.CashUpUser
+               .Where(x => x.OutletId == outletId)
+               .Where(x => x.UserId == userId)
+               .Where(x => x.SalesPeriodId == salesPeriodId)
+               .FirstOrDefaultAsync();
+                userCashUpId = cashUp?.Id ?? 0;
             }
 
             var bookings = await booking.ToListAsync();
