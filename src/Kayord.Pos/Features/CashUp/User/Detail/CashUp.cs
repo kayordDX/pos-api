@@ -1,6 +1,5 @@
 namespace Kayord.Pos.Features.CashUp.User.Detail;
 
-using Google.Apis.Util;
 using Kayord.Pos.Data;
 using Kayord.Pos.DTO;
 using Kayord.Pos.Entities;
@@ -351,6 +350,14 @@ public static class CashUp
                     cashUpUserEntity.CompleterUserId = _cu.UserId ?? "";
                     cashUpUserEntity.CashUpDate = DateTime.Now;
                     cashUpUserEntity.SalesPeriodId = salesPeriod?.Id ?? 0;
+
+                    // TODO: Check if this needs adjustments. Save Payment, Sales and Tips to DB
+                    var tips = paymentTotals.Sum(x => x.Tip);
+                    var paymentTotal = tableBooking.Sum(x => x.Payments?.Select(x => x.Amount).Sum()) ?? 0;
+                    var sales = tableBooking.Sum(x => x.Total) ?? 0;
+                    cashUpUserEntity.Tips = tips;
+                    cashUpUserEntity.Sales = sales;
+                    cashUpUserEntity.Payments = paymentTotal;
                 }
                 cashUpUser.ClosingBalance = response.NetBalance;
                 cashUpUser.CompleterUserId = _cu.UserId ?? "";

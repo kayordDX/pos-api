@@ -11,4 +11,7 @@ public class CashUpUser
     public DateTime? CashUpDate { get; set; }
     public List<CashUpUserItem> CashUpUserItems { get; set; } = default!;
     public int SalesPeriodId { get; set; }
+    public decimal Sales { get; set; }
+    public decimal Tips { get; set; }
+    public decimal Payments { get; set; }
 }
