@@ -32,6 +32,13 @@ public class Endpoint : Endpoint<Request, Entities.SalesPeriod>
             throw new Exception("Cannot close sales period with open tables");
         }
         entity.EndDate = DateTime.Now;
+
+        // Clock out all users
+        _dbContext.Clock
+            .Where(x => x.OutletId == entity.OutletId && x.EndDate == null)
+            .ToList()
+            .ForEach(x => x.EndDate = DateTime.Now);
+
         await _dbContext.SaveChangesAsync();
         await SendAsync(entity);
     }

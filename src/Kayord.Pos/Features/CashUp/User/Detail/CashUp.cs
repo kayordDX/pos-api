@@ -87,13 +87,6 @@ public static class CashUp
 
         List<PaymentTotal> paymentTotals = new();
 
-        var clock = await _dbContext.Clock.FirstOrDefaultAsync(x => x.EndDate == null && x.OutletId == OutletId && x.UserId == UserId);
-        if (clock == null)
-        {
-            response.UserId = UserId;
-            response.User = await _dbContext.User.ProjectToDto().FirstOrDefaultAsync(x => x.UserId == UserId) ?? default!;
-            return response;
-        }
         var outletPayTypes = await _dbContext.OutletPaymentType.Where(x => x.OutletId == OutletId).Include(x => x.PaymentType).ToListAsync();
         var outletPayTypeIds = outletPayTypes.Select(x => x.PaymentTypeId).ToList();
 
@@ -321,6 +314,7 @@ public static class CashUp
                     tb.CashUpUserId = userCashUpId;
                 }
             }
+            var clock = await _dbContext.Clock.FirstOrDefaultAsync(x => x.EndDate == null && x.OutletId == OutletId && x.UserId == UserId);
             if (clock != null)
             {
                 clock.EndDate = DateTime.Now;

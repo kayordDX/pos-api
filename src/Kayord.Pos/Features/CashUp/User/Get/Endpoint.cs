@@ -30,7 +30,12 @@ public class Endpoint : Endpoint<Request, Response>
             return;
         }
 
-        var listClock = await _dbContext.Clock.Where(x => x.EndDate == null && x.OutletId == req.OutletId).ToListAsync();
+        List<string> userIds = await _dbContext.TableBooking
+            .Include(x => x.SalesPeriod)
+            .Where(x => x.CashUpUserId == null && x.SalesPeriod.OutletId == req.OutletId)
+            .Select(x => x.UserId)
+            .Distinct()
+            .ToListAsync();
 
         Response responses = new()
         {
@@ -40,7 +45,6 @@ public class Endpoint : Endpoint<Request, Response>
         Entities.SalesPeriod? salesPeriod = await _dbContext.SalesPeriod.FirstOrDefaultAsync(x => x.OutletId == req.OutletId && x.EndDate == null);
         if (salesPeriod != null)
         {
-            List<string> userIds = listClock.Select(x => x.UserId).ToList();
             var todoItems = await GetUserCashUpItems(userIds, salesPeriod.Id, _dbContext, req.OutletId);
             responses.Items.AddRange(todoItems);
 
@@ -89,23 +93,20 @@ public class Endpoint : Endpoint<Request, Response>
             if (isCashedUp)
             {
                 var cashUp = await _dbContext.CashUpUser
-               .Where(x => x.OutletId == outletId)
-               .Where(x => x.UserId == userId)
-               .Where(x => x.SalesPeriodId == salesPeriodId)
-               .FirstOrDefaultAsync();
+                    .Where(x => x.OutletId == outletId)
+                    .Where(x => x.UserId == userId)
+                    .Where(x => x.SalesPeriodId == salesPeriodId)
+                    .FirstOrDefaultAsync();
                 userCashUpId = cashUp?.Id ?? 0;
             }
-
             var bookings = await booking.ToListAsync();
 
             foreach (var b in bookings)
             {
-                TableTotal bill = await BillHelper.GetTotal(b.Id, _dbContext);
-                sales += bill.Total;
-                tips += bill.TipTotal;
-                totalPayments += bill.TotalPayments;
-                openTableCount += b.CloseDate == null ? 1 : 0;
-                userCashUpId = b.CashUpUserId ?? 0;
+                sales += b?.Total ?? 0;
+                tips += b?.TotalTips ?? 0;
+                totalPayments += b?.TotalPayments ?? 0;
+                openTableCount += b?.CloseDate == null ? 1 : 0;
             }
             Entities.User? u = await _dbContext.User.FirstOrDefaultAsync(x => x.UserId == userId);
             if (u != null)

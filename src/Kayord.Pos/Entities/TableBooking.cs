@@ -16,10 +16,9 @@ namespace Kayord.Pos.Entities
         public List<Adjustment>? Adjustments { get; set; }
         public int? CashUpUserId { get; set; }
         public decimal? Total { get; set; }
+        public decimal? TotalTips { get; set; }
+        public decimal? TotalPayments { get; set; }
         public CashUpUser? CashUpUser { get; set; }
         public List<Payment>? Payments { get; set; }
-
-
-
     }
 }

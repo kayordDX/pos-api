@@ -15,6 +15,8 @@ public static class TableBooking
         }
         var billTotal = await BillHelper.GetTotal(tableBookingId, _dbContext);
         booking.Total = billTotal.Total;
+        booking.TotalPayments = billTotal.TotalPayments;
+        booking.TotalTips = billTotal.TipTotal;
         await _dbContext.SaveChangesAsync();
     }
 }

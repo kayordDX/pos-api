@@ -10,15 +10,21 @@ public static class ProdSeed
     {
         // Seed Totals
         var tableBookings = await context.TableBooking
-            .Include(x => x.SalesPeriod)
-            .Where(x => x.CloseDate != null && x.Total == null)
+            .Where(x => x.CloseDate != null)
+            .Where(x => x.Total == null || x.TotalPayments == null || x.TotalTips == null)
             .ToListAsync();
 
         if (tableBookings.Count > 0)
         {
             foreach (var tableBooking in tableBookings)
             {
-                tableBooking.Total = (await Bill.GetTotal(tableBooking.Id, context)).Total;
+                var totals = await Bill.GetTotal(tableBooking.Id, context);
+                if (totals != null)
+                {
+                    tableBooking.Total = totals.Total;
+                    tableBooking.TotalPayments = totals.TotalPayments;
+                    tableBooking.TotalTips = totals.TipTotal;
+                }
             }
             await context.SaveChangesAsync(cancellationToken);
         }

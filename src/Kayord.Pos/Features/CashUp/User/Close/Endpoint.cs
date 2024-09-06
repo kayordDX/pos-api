@@ -28,6 +28,7 @@ public class Endpoint : Endpoint<Request, Detail.Response>
         }
 
         var response = await Detail.CashUp.CashUpProcess(req.OutletId, req.UserId, _dbContext, _user, true);
+
         await SendAsync(response);
     }
 }
