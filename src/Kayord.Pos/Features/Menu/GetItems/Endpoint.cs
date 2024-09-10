@@ -39,6 +39,7 @@ namespace Kayord.Pos.Features.Menu.GetItems
             {
                 items = _dbContext.MenuItem
                     .Include(m => m.MenuSection)
+                    .Where(x => x.IsEnabled.Equals(true))
                     .Where(s => s.MenuSection.MenuId.Equals(req.MenuId));
             }
             else
@@ -48,6 +49,7 @@ namespace Kayord.Pos.Features.Menu.GetItems
                 """).Select(s => s.Id).ToListAsync();
 
                 items = _dbContext.MenuItem
+                    .Where(x => x.IsEnabled.Equals(true))
                     .Where(e => sectionParents.Contains(e.MenuSectionId));
             }
 

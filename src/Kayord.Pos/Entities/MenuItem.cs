@@ -19,5 +19,6 @@ public class MenuItem
     public ICollection<MenuItemOptionGroup>? MenuItemOptionGroups { get; set; }
     public ICollection<MenuItemExtraGroup>? MenuItemExtraGroups { get; set; }
     public bool IsAvailable { get; set; }
+    public bool IsEnabled { get; set; } = true;
     public decimal StockPrice { get; set; }
 }

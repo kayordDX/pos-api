@@ -12,5 +12,6 @@ public class MenuItemDTOBasic
     public ICollection<Tag>? Tags { get; set; }
     public MenuSectionBasicDTO MenuSection { get; set; } = default!;
     public bool IsAvailable { get; set; }
+    public bool IsEnabled { get; set; }
 }
 

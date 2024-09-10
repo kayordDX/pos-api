@@ -12,5 +12,7 @@ public class MenuItemConfiguration : IEntityTypeConfiguration<MenuItem>
             .HasGeneratedTsVectorColumn(p => p.SearchVector, "english", p => new { p.Name, p.Description })
             .HasIndex(p => p.SearchVector)
             .HasMethod("GIN");
+
+        builder.Property(t => t.IsEnabled).HasDefaultValue(true);
     }
 }
