@@ -1,5 +1,6 @@
 using System.Reflection;
 using Kayord.Pos.Entities;
+using Kayord.Pos.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
@@ -7,8 +8,10 @@ namespace Kayord.Pos.Data;
 
 public class AppDbContext : DbContext
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+    private readonly CurrentUserService _currentUserService;
+    public AppDbContext(DbContextOptions<AppDbContext> options, CurrentUserService currentUserService) : base(options)
     {
+        _currentUserService = currentUserService;
     }
 
     public DbSet<Adjustment> Adjustment => Set<Adjustment>();
@@ -90,5 +93,31 @@ public class AppDbContext : DbContext
 
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         base.OnModelCreating(builder);
+    }
+
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+    {
+        int returnValue = await base.SaveChangesAsync(cancellationToken);
+        if (returnValue > 0)
+        {
+            bool saveAudit = false;
+            foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<OrderItem> entry in ChangeTracker.Entries<OrderItem>())
+            {
+                OrderItemStatusAudit audit = new()
+                {
+                    OrderItemId = entry.Entity.OrderItemId,
+                    OrderItemStatusId = entry.Entity.OrderItemStatusId,
+                    StatusDate = DateTime.UtcNow,
+                    UserId = _currentUserService.UserId ?? ""
+                };
+                _ = await AddAsync(audit, cancellationToken);
+                saveAudit = true;
+            }
+            if (saveAudit)
+            {
+                await base.SaveChangesAsync(cancellationToken);
+            }
+        }
+        return returnValue;
     }
 }
