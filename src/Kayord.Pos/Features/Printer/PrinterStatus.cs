@@ -6,9 +6,13 @@ namespace Kayord.Pos.Features.Printer;
 public class PrinterStatus
 {
     public DateTime DateUpdated { get; set; } = DateTime.Now;
-    public bool IsOutdated => DateTime.Now - DateUpdated > TimeSpan.FromMinutes(10);
+    public bool IsOutdated => DateTime.UtcNow - DateUpdated > TimeSpan.FromMinutes(10);
     public string DateUpdatedFormatted => DateUpdated.Humanize();
-    public PrinterConfig PrinterConfig { get; set; } = new();
     public PrinterStatusEventArgs? PrinterStatusEventArgs { get; set; } = null;
     public string? LastException { get; set; }
+    public int PrinterId { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public int OutletId { get; set; }
+    // TODO: Remove this and delete PrinterConfig file. This is just for now to have backwards compatibility
+    public PrinterConfig? PrinterConfig { get; set; }
 }
