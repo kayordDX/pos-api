@@ -7,6 +7,5 @@ public class PaymentTypeDTO
     public decimal TipLevyPercentage { get; set; }
     public decimal DiscountPercentage { get; set; }
     public ICollection<OutletPaymentTypeDTO>? OutletPaymentTypes { get; set; }
-
-
+    public bool CanEdit { get; set; }
 }
