@@ -1,0 +1,23 @@
+name: Docker
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          script: |
+            cd kayord
+            docker compose pull pos-api
+            docker compose pull pos
+            docker rollout pos-api
+            docker rollout pos
+            docker system prune -f
