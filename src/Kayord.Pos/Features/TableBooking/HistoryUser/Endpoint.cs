@@ -21,8 +21,9 @@ namespace Kayord.Pos.Features.TableBooking.HistoryUser
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-            var booking = _dbContext.TableBooking
+            var booking = _dbContext.TableBooking.Include(i => i.SalesPeriod)
                 .Where(x => x.UserId == req.UserId)
+                .Where(x => x.SalesPeriod.OutletId == req.OutletId)
                 .Where(x => x.CloseDate != null);
 
             if (req.TableBookingId > 0)
