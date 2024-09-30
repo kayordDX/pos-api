@@ -49,6 +49,16 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
 
                 if (entity != null && oIS != null)
                 {
+
+                    // If send to kitchen add extra validation
+                    if (req.OrderItemStatusId == 2)
+                    {
+                        if (entity.TableBooking.CloseDate != null)
+                        {
+                            throw new Exception("Table is closed");
+                        }
+                    }
+
                     Status = oIS.Status;
                     entity.OrderItemStatusId = req.OrderItemStatusId;
                     if (oIS != null && oIS.assignGroup)

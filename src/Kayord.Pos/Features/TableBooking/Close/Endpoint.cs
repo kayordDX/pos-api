@@ -36,10 +36,15 @@ namespace Kayord.Pos.Features.TableBooking.Close
                 await SendNotFoundAsync();
                 return;
             }
+            var totals = await TableBooking.SaveTotal(req.TableBookingId, _dbContext);
+            // Has Outstanding Balance
+            if (totals.Total - totals.TotalPayments > 0)
+            {
+                throw new Exception("Cannot close table with outstanding balance");
+            }
+
             entity.CloseDate = DateTime.UtcNow;
             await _dbContext.SaveChangesAsync();
-
-            await TableBooking.SaveTotal(req.TableBookingId, _dbContext);
 
             await SendAsync(entity);
         }

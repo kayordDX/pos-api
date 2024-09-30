@@ -13,6 +13,4 @@ public class PrinterStatus
     public int PrinterId { get; set; }
     public string Name { get; set; } = string.Empty;
     public int OutletId { get; set; }
-    // TODO: Remove this and delete PrinterConfig file. This is just for now to have backwards compatibility
-    public PrinterConfig? PrinterConfig { get; set; }
 }

@@ -29,6 +29,18 @@ namespace Kayord.Pos.Features.TableOrder.SendToKitchen
                 .Include(x => x.SalesPeriod)
                 .Where(x => x.Id == req.TableBookingId).FirstOrDefaultAsync();
 
+            if (tableBooking == null)
+            {
+                throw new Exception("No booking found");
+            }
+            else
+            {
+                if (tableBooking.CloseDate != null)
+                {
+                    throw new Exception("Table is closed");
+                }
+            }
+
             var orderItemsToUpdate = await _dbContext.OrderItem
                 .Include(x => x.MenuItem)
                 .Where(oi => oi.OrderItemStatusId == 1 && oi.TableBookingId == req.TableBookingId)

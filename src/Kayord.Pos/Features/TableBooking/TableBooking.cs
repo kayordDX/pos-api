@@ -6,7 +6,7 @@ namespace Kayord.Pos.Features.TableBooking;
 
 public static class TableBooking
 {
-    public static async Task SaveTotal(int tableBookingId, AppDbContext _dbContext)
+    public static async Task<TableTotal> SaveTotal(int tableBookingId, AppDbContext _dbContext)
     {
         var booking = await _dbContext.TableBooking.Where(x => x.Id == tableBookingId).FirstOrDefaultAsync();
         if (booking == null)
@@ -18,5 +18,6 @@ public static class TableBooking
         booking.TotalPayments = billTotal.TotalPayments;
         booking.TotalTips = billTotal.TipTotal;
         await _dbContext.SaveChangesAsync();
+        return billTotal;
     }
 }

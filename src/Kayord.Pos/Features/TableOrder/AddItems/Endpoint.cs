@@ -1,5 +1,6 @@
 using Kayord.Pos.Data;
 using Kayord.Pos.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.Order.AddItems;
 
@@ -19,7 +20,19 @@ public class Endpoint : Endpoint<Request, OrderItem>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        int TableBookingId = req.TableBookingId;
+        var tableBooking = await _dbContext.TableBooking.FirstOrDefaultAsync(x => x.Id == req.TableBookingId);
+        if (tableBooking == null)
+        {
+            throw new Exception("No booking found");
+        }
+        else
+        {
+            if (tableBooking.CloseDate != null)
+            {
+                throw new Exception("Table is closed");
+            }
+        }
+
         OrderItem orderItem = new();
         foreach (Order order in req.Orders)
         {
@@ -35,7 +48,7 @@ public class Endpoint : Endpoint<Request, OrderItem>
 
                 orderItem = new OrderItem()
                 {
-                    TableBookingId = TableBookingId,
+                    TableBookingId = req.TableBookingId,
                     MenuItemId = order.MenuItemId,
                     OrderItemStatusId = 1,
                     Note = order.Note
