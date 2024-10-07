@@ -9,7 +9,12 @@ namespace Kayord.Pos.Data;
 public class AppDbContext : DbContext
 {
     private readonly CurrentUserService _currentUserService;
-    public AppDbContext(DbContextOptions<AppDbContext> options, CurrentUserService currentUserService) : base(options)
+
+    public AppDbContext(
+        DbContextOptions<AppDbContext> options,
+        CurrentUserService currentUserService
+    )
+        : base(options)
     {
         _currentUserService = currentUserService;
     }
@@ -29,6 +34,7 @@ public class AppDbContext : DbContext
     public DbSet<OrderItem> OrderItem => Set<OrderItem>();
     public DbSet<User> User => Set<User>();
     public DbSet<UserRole> UserRole => Set<UserRole>();
+    public DbSet<UserRoleOutlet> UserRoleOutlet => Set<UserRoleOutlet>();
     public DbSet<Role> Role => Set<Role>();
     public DbSet<MenuSection> MenuSection => Set<MenuSection>();
     public DbSet<UserOutlet> UserOutlet => Set<UserOutlet>();
@@ -69,7 +75,8 @@ public class AppDbContext : DbContext
 
         var nullableDateTimeConverter = new ValueConverter<DateTime?, DateTime?>(
             v => v.HasValue ? v.Value.ToUniversalTime() : v,
-            v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : v);
+            v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : v
+        );
 
         foreach (var entityType in builder.Model.GetEntityTypes())
         {
@@ -95,21 +102,26 @@ public class AppDbContext : DbContext
         base.OnModelCreating(builder);
     }
 
-    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+    public override async Task<int> SaveChangesAsync(
+        CancellationToken cancellationToken = new CancellationToken()
+    )
     {
         int returnValue = await base.SaveChangesAsync(cancellationToken);
         if (returnValue > 0)
         {
             bool saveAudit = false;
-            foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<OrderItem> entry in ChangeTracker.Entries<OrderItem>())
+            foreach (
+                Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<OrderItem> entry in ChangeTracker.Entries<OrderItem>()
+            )
             {
-                OrderItemStatusAudit audit = new()
-                {
-                    OrderItemId = entry.Entity.OrderItemId,
-                    OrderItemStatusId = entry.Entity.OrderItemStatusId,
-                    StatusDate = DateTime.UtcNow,
-                    UserId = _currentUserService.UserId ?? ""
-                };
+                OrderItemStatusAudit audit =
+                    new()
+                    {
+                        OrderItemId = entry.Entity.OrderItemId,
+                        OrderItemStatusId = entry.Entity.OrderItemStatusId,
+                        StatusDate = DateTime.UtcNow,
+                        UserId = _currentUserService.UserId ?? "",
+                    };
                 _ = await AddAsync(audit, cancellationToken);
                 saveAudit = true;
             }

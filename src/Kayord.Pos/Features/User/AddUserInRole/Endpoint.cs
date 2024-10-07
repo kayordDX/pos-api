@@ -1,5 +1,4 @@
 using Kayord.Pos.Data;
-using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.Role.AddUserInRole
 {

@@ -1,4 +1,3 @@
-using FluentValidation;
 namespace Kayord.Pos.Features.Role.Create
 {
     public class Request
