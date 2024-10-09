@@ -4,7 +4,7 @@ using Kayord.Pos.Data;
 using Kayord.Pos.Services;
 using Microsoft.EntityFrameworkCore;
 
-namespace Kayord.Pos.Features.User.UnassignedUsers;
+namespace Kayord.Pos.Features.User.Users;
 
 public class Endpoint : Endpoint<Request, PaginatedList<UserResponse>>
 {
@@ -19,7 +19,7 @@ public class Endpoint : Endpoint<Request, PaginatedList<UserResponse>>
 
     public override void Configure()
     {
-        Get("/user/unassigned");
+        Get("/user/list");
     }
 
     public override async Task HandleAsync(Request req, CancellationToken c)
@@ -39,15 +39,22 @@ public class Endpoint : Endpoint<Request, PaginatedList<UserResponse>>
                 u."Email",
                 u."Image",
                 u."Name",
-                '' "Roles"
+                STRING_AGG(r."Name", ',') "Roles"
                 FROM "UserOutlet" uo
                 JOIN "User" u
                     ON u."UserId" = uo."UserId"
-                LEFT JOIN "UserRoleOutlet" ur
+                JOIN "UserRoleOutlet" ur
                     ON uo."OutletId" = ur."OutletId"
                 AND u."UserId" = ur."UserId"
+                JOIN "Role" r
+                    ON r."RoleId" = ur."RoleId" 
                 WHERE uo."OutletId" = {userOutlet.OutletId}
-                AND ur."Id" IS NULL
+                GROUP BY 
+                uo."IsCurrent",
+                    u."UserId",
+                u."Email",
+                u."Image",
+                u."Name"
             """
             ).GetPagedAsync(req, c);
 

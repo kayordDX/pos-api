@@ -1,4 +1,4 @@
-namespace Kayord.Pos.Features.Role.AddUserInRole
+namespace Kayord.Pos.Features.User.AddUserOutletRole
 {
     public class Request
     {

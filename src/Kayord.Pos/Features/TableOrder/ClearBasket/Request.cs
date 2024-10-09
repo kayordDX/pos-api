@@ -1,5 +1,3 @@
-using FluentValidation;
-
 namespace Kayord.Pos.Features.Order.ClearBasket
 {
     public class Request
@@ -7,6 +5,4 @@ namespace Kayord.Pos.Features.Order.ClearBasket
         public int TableBookingId { get; set; } = default!;
 
     }
-
-
 }
