@@ -43,7 +43,7 @@ public class Endpoint : Endpoint<Request, List<Response>>
         foreach (int divisionId in divisionIds)
         {
             var statusIds = _dbContext.OrderItemStatus.Where(x => x.isBackOffice && x.isComplete != true && x.isCancelled != true).Select(rd => rd.OrderItemStatusId).ToList();
-            UserOutlet? outlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.isCurrent == true);
+            UserOutlet? outlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.IsCurrent == true);
 
             Division division = await _dbContext.Division.FirstOrDefaultAsync(x => x.DivisionId == divisionId) ?? new();
             if (outlet == null)

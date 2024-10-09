@@ -53,7 +53,7 @@ public class Endpoint : Endpoint<Request, Response>
         }
 
         var statusIds = _dbContext.OrderItemStatus.Where(x => x.isFrontLine && x.isComplete != true && x.isCancelled != true).Select(rd => rd.OrderItemStatusId).ToList();
-        UserOutlet? outlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.isCurrent == true);
+        UserOutlet? outlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.IsCurrent == true);
         if (outlet == null)
         {
             await SendNotFoundAsync();

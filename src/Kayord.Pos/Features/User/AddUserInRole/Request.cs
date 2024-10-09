@@ -1,4 +1,3 @@
-using FluentValidation;
 namespace Kayord.Pos.Features.Role.AddUserInRole
 {
     public class Request

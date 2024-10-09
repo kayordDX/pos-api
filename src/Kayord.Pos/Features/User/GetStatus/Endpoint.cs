@@ -38,7 +38,7 @@ public class Endpoint : EndpointWithoutRequest<Response>
 
         resp.Roles = userRoles;
 
-        var outlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.isCurrent);
+        var outlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.IsCurrent);
 
         if (outlet == null)
         {

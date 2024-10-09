@@ -28,7 +28,7 @@ public class UserService
             JOIN "Role" r
                 ON r."RoleId" = ur."RoleId"
             WHERE u."UserId" = {_cu.UserId}
-            AND u."isCurrent" = true
+            AND u."IsCurrent" = true
         """
         )
         .ToListAsync();

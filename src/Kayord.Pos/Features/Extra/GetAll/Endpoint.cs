@@ -24,7 +24,7 @@ public class Endpoint : EndpointWithoutRequest<List<Pos.Entities.Extra>>
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var outlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _user.UserId && x.isCurrent);
+        var outlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _user.UserId && x.IsCurrent);
         if (outlet == null)
         {
             await SendNotFoundAsync();

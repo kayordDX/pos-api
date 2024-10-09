@@ -26,7 +26,7 @@ public class Endpoint : Endpoint<Request, Response>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        UserOutlet? outlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.isCurrent == true);
+        UserOutlet? outlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.IsCurrent == true);
         var roles = await _dbContext.Role.Where(x => x.UserRole!.Any(s => s.UserId == _cu.UserId)).Select(s => s.RoleId).ToListAsync();
 
         if (outlet == null)

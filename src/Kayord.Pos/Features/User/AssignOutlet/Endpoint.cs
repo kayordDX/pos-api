@@ -1,7 +1,5 @@
 using Kayord.Pos.Data;
-using Kayord.Pos.Data.Migrations;
 using Kayord.Pos.Services;
-using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.User.AssignOutlet;
 
@@ -29,33 +27,33 @@ public class Endpoint : Endpoint<Request, Entities.UserOutlet>
             await SendForbiddenAsync();
             return;
         }
-        var UserOutlets = _dbContext.UserOutlet.Where(x=>x.UserId == _cu.UserId);
+        var UserOutlets = _dbContext.UserOutlet.Where(x => x.UserId == _cu.UserId);
         bool hasCurrentOutlet = false;
-        foreach(Entities.UserOutlet uo in UserOutlets)
+        foreach (Entities.UserOutlet uo in UserOutlets)
         {
-            if(uo.OutletId == req.OutletId)
+            if (uo.OutletId == req.OutletId)
             {
-                uo.isCurrent = true;
+                uo.IsCurrent = true;
                 hasCurrentOutlet = true;
                 outlet = uo;
             }
             else
             {
-                uo.isCurrent = false;
+                uo.IsCurrent = false;
             }
         }
-        
+
         if (!hasCurrentOutlet)
         {
             outlet = new()
             {
                 OutletId = req.OutletId,
                 UserId = _cu.UserId,
-                isCurrent = true
+                IsCurrent = true
             };
             await _dbContext.AddAsync(outlet);
         }
-      
+
         await _dbContext.SaveChangesAsync();
         await SendAsync(outlet);
     }
