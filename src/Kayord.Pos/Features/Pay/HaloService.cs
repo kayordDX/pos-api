@@ -28,6 +28,7 @@ public class HaloService
     {
         Guid r = Guid.NewGuid();
         await _dbContext.HaloReference.AddAsync(new HaloReference { Id = r, TableBookingId = tableBookingId, UserId = userId });
+        await _dbContext.SaveChangesAsync();
         HaloLog log = new()
         {
             CreatedBy = userId,
@@ -62,6 +63,11 @@ public class HaloService
                 GetLink.Response? result = resultString.Deserialize<GetLink.Response>();
                 if (result != null)
                 {
+                    var haloReference = await _dbContext.HaloReference.FirstOrDefaultAsync(x => x.Id == r);
+                    if (haloReference != null)
+                    {
+                        haloReference.HaloRef = result.reference;
+                    }
                     return Result.Ok(result);
                 }
             }
