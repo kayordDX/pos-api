@@ -10,4 +10,5 @@ public class Stock
     public Unit Unit { get; set; } = default!;
     public decimal Threshold { get; set; }
     public decimal Actual { get; set; }
+    public bool IsBulkRecipe { get; set; }
 }
