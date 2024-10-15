@@ -9,5 +9,4 @@ public class Role
     public bool isFrontLine { get; set; } = false;
     public bool isBackOffice { get; set; } = false;
     public int? OutletId { get; set; }
-    public ICollection<UserRole>? UserRole { get; set; }
 }

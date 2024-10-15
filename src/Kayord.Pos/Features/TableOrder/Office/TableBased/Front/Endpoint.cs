@@ -24,8 +24,17 @@ public class Endpoint : Endpoint<Request, Response>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        int outletId = 0;
-        var roles = await _dbContext.Role.Where(x => x.UserRole!.Any(s => s.UserId == _cu.UserId)).Select(s => s.RoleId).ToListAsync();
+        UserOutlet? userOutlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.IsCurrent == true);
+        if (userOutlet == null)
+        {
+            await SendNotFoundAsync();
+            return;
+        }
+
+        var roles = await _dbContext.UserRoleOutlet
+            .Where(x => x.OutletId == userOutlet.OutletId && x.UserId == _cu.UserId)
+            .Select(x => x.RoleId)
+            .ToListAsync();
 
         List<int> divisionIds = req.DivisionIds?.Split(",")
             .Select(item =>
@@ -53,19 +62,9 @@ public class Endpoint : Endpoint<Request, Response>
         }
 
         var statusIds = _dbContext.OrderItemStatus.Where(x => x.isFrontLine && x.isComplete != true && x.isCancelled != true).Select(rd => rd.OrderItemStatusId).ToList();
-        UserOutlet? outlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.IsCurrent == true);
-        if (outlet == null)
-        {
-            await SendNotFoundAsync();
-            return;
-        }
-        else
-        {
-            outletId = outlet.OutletId;
-        }
 
         var result = await _dbContext.TableBooking
-            .Where(x => x.SalesPeriod.OutletId == outletId && x.CloseDate == null)
+            .Where(x => x.SalesPeriod.OutletId == userOutlet.OutletId && x.CloseDate == null)
             .ProjectToDto()
             .ToListAsync();
 
@@ -80,11 +79,7 @@ public class Endpoint : Endpoint<Request, Response>
         result = result.Where(x => x.OrderItems!.Any())
             .Where(y => y.User.UserId == _cu.UserId && y.CloseDate == null &&
                 y.OrderItems!.Where(x => x.OrderItemStatusId != 1 && x.OrderItemStatusId != 6).Count() > 0)
-                .ToList();
-
-        // result = result.Where(x => x.OrderItems!.Any())
-        //     .Where(x => x.CloseDate == null 
-        //     && x.OrderItems!.Where(y => y.OrderItemStatusId != 1 && y.OrderItemStatusId != 6).Count() > 0).ToList();
+            .ToList();
 
         Response response = new()
         {

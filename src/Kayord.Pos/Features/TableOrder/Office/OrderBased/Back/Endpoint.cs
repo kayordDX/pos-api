@@ -26,14 +26,18 @@ public class Endpoint : Endpoint<Request, Response>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        UserOutlet? outlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.IsCurrent == true);
-        var roles = await _dbContext.Role.Where(x => x.UserRole!.Any(s => s.UserId == _cu.UserId)).Select(s => s.RoleId).ToListAsync();
-
-        if (outlet == null)
+        UserOutlet? userOutlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.IsCurrent == true);
+        if (userOutlet == null)
         {
             await SendNotFoundAsync();
             return;
         }
+
+        var roles = await _dbContext.UserRoleOutlet
+            .Where(x => x.OutletId == userOutlet.OutletId)
+            .Select(x => x.RoleId)
+            .ToListAsync();
+
         List<int> divisionIds = req.DivisionIds?.Split(",")
            .Select(item =>
            {
@@ -60,7 +64,7 @@ public class Endpoint : Endpoint<Request, Response>
         }
 
         var orderItems = _dbContext.OrderItem
-            .Where(x => x.TableBooking.Table.Section.OutletId == outlet.OutletId)
+            .Where(x => x.TableBooking.Table.Section.OutletId == userOutlet.OutletId)
             .Where(x => x.OrderGroupId != null)
             .Where(x => x.OrderItemStatus.isBackOffice == !req.Complete)
             // .Where(x => x.OrderItemStatus.isComplete == req.Complete)

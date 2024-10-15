@@ -25,11 +25,17 @@ public class Endpoint : Endpoint<Request, List<Response>>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
+        UserOutlet? userOutlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.IsCurrent == true);
+        if (userOutlet == null)
+        {
+            await SendNotFoundAsync();
+            return;
+        }
+
         int roleId = 0;
-        int outletId = 0;
         List<Response> responses = new();
-        UserRole? Urole = await _dbContext.UserRole.FirstOrDefaultAsync(x => x.UserId == _cu.UserId);
-        Entities.Role? role = await _dbContext.Role.FirstOrDefaultAsync(x => x.RoleId == Urole!.RoleId);
+        UserRole? userRole = await _dbContext.UserRole.FirstOrDefaultAsync(x => x.UserId == _cu.UserId);
+        Entities.Role? role = await _dbContext.Role.FirstOrDefaultAsync(x => x.RoleId == userRole!.RoleId);
         if (role == null)
             await SendNotFoundAsync();
         else
@@ -43,20 +49,10 @@ public class Endpoint : Endpoint<Request, List<Response>>
         foreach (int divisionId in divisionIds)
         {
             var statusIds = _dbContext.OrderItemStatus.Where(x => x.isBackOffice && x.isComplete != true && x.isCancelled != true).Select(rd => rd.OrderItemStatusId).ToList();
-            UserOutlet? outlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.IsCurrent == true);
-
             Division division = await _dbContext.Division.FirstOrDefaultAsync(x => x.DivisionId == divisionId) ?? new();
-            if (outlet == null)
-            {
-                await SendNotFoundAsync();
-            }
-            else
-            {
-                outletId = outlet.OutletId;
-            }
 
             var result = await _dbContext.TableBooking
-                .Where(x => x.SalesPeriod.OutletId == outletId && x.CloseDate == null)
+                .Where(x => x.SalesPeriod.OutletId == userOutlet.OutletId && x.CloseDate == null)
                 .ProjectToDto()
                 .ToListAsync();
 

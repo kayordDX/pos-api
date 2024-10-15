@@ -30,38 +30,37 @@ public class Endpoint : EndpointWithoutRequest<Response>
             ClockedIn = false,
         };
 
-        var userRoles = await _dbContext.UserRole
+        var userOutlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.IsCurrent);
+        if (userOutlet == null)
+        {
+            await SendAsync(resp);
+            return;
+        }
+
+        var userRoles = await _dbContext.UserRoleOutlet
             .Include(ur => ur.Role)
-            .Where(ur => ur.UserId == _cu.UserId)
+            .Where(ur => ur.UserId == _cu.UserId && ur.OutletId == userOutlet.OutletId)
             .Select(ur => ur.Role!.Name)
             .ToListAsync();
 
         resp.Roles = userRoles;
 
-        var outlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.IsCurrent);
-
-        if (outlet == null)
+        resp.OutletId = userOutlet.OutletId;
+        var salesPeriod = await _dbContext.SalesPeriod.FirstOrDefaultAsync(x => x.OutletId == userOutlet.OutletId && x.StartDate != null && x.EndDate == null);
+        if (salesPeriod == null)
         {
             await SendAsync(resp);
             return;
         }
         else
         {
-            resp.OutletId = outlet.OutletId;
-            var salesPeriod = await _dbContext.SalesPeriod.FirstOrDefaultAsync(x => x.OutletId == outlet.OutletId && x.StartDate != null && x.EndDate == null);
-            if (salesPeriod == null)
-            {
-                await SendAsync(resp);
-                return;
-            }
-            else
-            {
-                resp.SalesPeriod = salesPeriod;
-                resp.SalesPeriodId = salesPeriod.Id;
-            }
+            resp.SalesPeriod = salesPeriod;
+            resp.SalesPeriodId = salesPeriod.Id;
         }
 
-        var clockInStatus = await _dbContext.Clock.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.OutletId == outlet.OutletId && x.EndDate == null);
+
+        var clockInStatus = await _dbContext.Clock
+            .FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.OutletId == userOutlet.OutletId && x.EndDate == null);
         resp.ClockedIn = clockInStatus != null;
         await SendAsync(resp);
     }
