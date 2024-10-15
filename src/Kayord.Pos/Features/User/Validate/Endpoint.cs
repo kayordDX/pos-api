@@ -43,30 +43,11 @@ namespace Kayord.Pos.Features.User.Validate
                 user.Name = req.Name;
                 await _dbContext.SaveChangesAsync();
             }
-            user = await _dbContext.User.FirstOrDefaultAsync(x => x.UserId == req.UserId);
-            var defaultRole = await _dbContext.UserRole.FirstOrDefaultAsync(x => x.UserId == req.UserId);
-            if (defaultRole == null)
-            {
-                await _dbContext.UserRole.AddAsync(new Entities.UserRole
-                {
-                    RoleId = 1,
-                    UserId = req.UserId ?? ""
-                });
-                await _dbContext.SaveChangesAsync();
-            }
-
-            var userRoles = await _dbContext.UserRole
-                .Include(ur => ur.Role)
-                .Where(ur => ur.UserId == req.UserId)
-                .Select(ur => ur.Role!.Name.ToLower())
-                .ToListAsync();
 
             Response r = new()
             {
-                UserId = req.UserId ?? "",
-                UserRoles = userRoles
+                UserId = req.UserId ?? ""
             };
-
             await SendAsync(r);
         }
     }
