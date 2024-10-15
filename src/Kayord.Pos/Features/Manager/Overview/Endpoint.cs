@@ -1,8 +1,6 @@
 using Kayord.Pos.Data;
 using Kayord.Pos.Services;
 using Kayord.Pos.Entities;
-
-
 using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.Manager.OrderView;
@@ -34,7 +32,7 @@ public class Endpoint : Endpoint<Request, List<Response>>
 
         int roleId = 0;
         List<Response> responses = new();
-        UserRole? userRole = await _dbContext.UserRole.FirstOrDefaultAsync(x => x.UserId == _cu.UserId);
+        UserRoleOutlet? userRole = await _dbContext.UserRoleOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.OutletId == userOutlet.OutletId);
         Entities.Role? role = await _dbContext.Role.FirstOrDefaultAsync(x => x.RoleId == userRole!.RoleId);
         if (role == null)
             await SendNotFoundAsync();
