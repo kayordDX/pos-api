@@ -43,6 +43,10 @@ public static class CashUp
         int userCashUpId = 0;
 
         var salesPeriod = await _dbContext.SalesPeriod.FirstOrDefaultAsync(x => x.OutletId == OutletId && x.EndDate == null);
+        if (salesPeriod == null)
+        {
+            throw new Exception("Sales period not found");
+        }
 
         if (cashUpUser != null)
         {
@@ -105,7 +109,7 @@ public static class CashUp
             paymentTotals.Add(paymentTotal);
         }
 
-        var tableBooking = await _dbContext.TableBooking.Where(x => x.UserId == UserId && x.CashUpUserId == null)
+        var tableBooking = await _dbContext.TableBooking.Where(x => x.UserId == UserId && x.CashUpUserId == null && x.SalesPeriodId == salesPeriod.Id)
             .Include(x => x.Payments)
             .Include(x => x.Adjustments!)
                 .ThenInclude(x => x.AdjustmentType)
