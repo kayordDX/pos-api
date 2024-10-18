@@ -11,4 +11,6 @@ public class Stock
     public decimal Threshold { get; set; }
     public decimal Actual { get; set; }
     public bool IsBulkRecipe { get; set; }
+    public int StockCategoryId { get; set; }
+    public StockCategory StockCategory { get; set; } = default!;
 }
