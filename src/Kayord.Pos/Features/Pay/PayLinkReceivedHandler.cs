@@ -6,8 +6,6 @@ public class PayLinkReceivedHandler : IEventHandler<PayLinkReceivedEvent>
 {
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger _logger;
-    private int i = 0;
-
     public PayLinkReceivedHandler(IServiceScopeFactory scopeFactory, ILogger<PayLinkReceivedHandler> logger)
     {
         _logger = logger;
@@ -23,15 +21,16 @@ public class PayLinkReceivedHandler : IEventHandler<PayLinkReceivedEvent>
         {
             throw new Exception("Dependency injection failed");
         }
+        int i = 0;
         while (!ct.IsCancellationRequested)
         {
             var status = await service.GetStatus(eventModel.reference, eventModel.UserId);
-            if (i > 5)
+            if (i > 12)
             {
                 throw new TimeoutException("Timeout");
             }
             i++;
-            await Task.Delay(5000);
+            await Task.Delay(10000);
         }
     }
 }
