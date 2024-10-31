@@ -1,34 +1,33 @@
 using System.Text.Json;
 using Kayord.Pos.Common.Extensions;
 using Kayord.Pos.Common.Wrapper;
-using Kayord.Pos.Config;
 using Kayord.Pos.Data;
 using Kayord.Pos.Entities;
 using Kayord.Pos.Events;
 using Kayord.Pos.Features.Pay.Dto;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 namespace Kayord.Pos.Features.Pay;
 
 public class HaloService
 {
     private readonly HttpClient _httpClient;
-    private readonly HaloConfig _haloConfig;
     private readonly AppDbContext _dbContext;
 
-    public HaloService(HttpClient httpClient, IOptions<HaloConfig> haloConfig, AppDbContext dbContext)
+    public HaloService(HttpClient httpClient, AppDbContext dbContext)
     {
         _httpClient = httpClient;
-        _haloConfig = haloConfig.Value;
         _dbContext = dbContext;
     }
 
-    public async Task<Result<GetLink.Response>> GetLink(decimal amount, int tableBookingId, string userId)
+    public async Task<Result<GetLink.Response>> GetLink(decimal amount, int tableBookingId, string userId, int outletId)
     {
         Guid r = Guid.NewGuid();
         await _dbContext.HaloReference.AddAsync(new HaloReference { Id = r, TableBookingId = tableBookingId, UserId = userId });
         await _dbContext.SaveChangesAsync();
+
+        var haloConfig = await Halo.GetHaloConfig(outletId, _dbContext);
+
         HaloLog log = new()
         {
             CreatedBy = userId,
@@ -38,7 +37,7 @@ public class HaloService
         {
             GetLinkRequestDto requestBody = new()
             {
-                MerchantId = _haloConfig.MerchantId ?? "",
+                MerchantId = haloConfig.MerchantId,
                 PaymentReference = r.ToString(),
                 Amount = amount,
                 Timestamp = DateTime.UtcNow.ToString(),
@@ -53,7 +52,11 @@ public class HaloService
             log.Request = request;
             log.RequestUrl = "consumer/qrCode";
 
-            using HttpResponseMessage response = await _httpClient.PostAsJsonAsync("consumer/qrCode", requestBody);
+            using var requestMessage = new HttpRequestMessage(HttpMethod.Post, "consumer/qrCode");
+            requestMessage.Headers.Add("x-api-key", haloConfig.XApiKey);
+            requestMessage.Content = new StringContent(JsonSerializer.Serialize(requestBody));
+            var response = await _httpClient.SendAsync(requestMessage);
+            // using HttpResponseMessage response = await _httpClient.PostAsJsonAsync("consumer/qrCode", requestBody);
             log.StatusCode = (int)response.StatusCode;
 
             if (response.IsSuccessStatusCode)
@@ -85,17 +88,22 @@ public class HaloService
         }
     }
 
-    public async Task<Result<StatusResultDto>> GetStatus(string reference, string userId)
+    public async Task<Result<StatusResultDto>> GetStatus(string reference, string userId, int outletId)
     {
         HaloLog log = new()
         {
             CreatedBy = userId,
             Type = "GetStatus"
         };
+
         try
         {
+            var haloConfig = await Halo.GetHaloConfig(outletId, _dbContext);
             log.RequestUrl = $"consumer/qrCode/{reference}";
-            using HttpResponseMessage response = await _httpClient.GetAsync($"consumer/qrCode/{reference}");
+            using var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"consumer/qrCode/{reference}");
+            requestMessage.Headers.Add("x-api-key", haloConfig.XApiKey);
+            var response = await _httpClient.SendAsync(requestMessage);
+            // using HttpResponseMessage response = await _httpClient.GetAsync($"consumer/qrCode/{reference}");
             log.StatusCode = (int)response.StatusCode;
             var logResult = await response.Content.ReadAsStringAsync();
             log.Response = logResult;

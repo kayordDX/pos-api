@@ -1,17 +1,18 @@
 using Kayord.Pos.Common.Wrapper;
+using Kayord.Pos.Data;
 using Kayord.Pos.Services;
 
 namespace Kayord.Pos.Features.Pay.Status;
 
 public class Endpoint : Endpoint<Request, Result<Dto.StatusResultDto>>
 {
-    private ILogger<Endpoint> _logger;
+    private readonly AppDbContext _dbContext;
     private readonly HaloService _halo;
     private readonly CurrentUserService _cu;
 
-    public Endpoint(ILogger<Endpoint> logger, HaloService halo, CurrentUserService cu)
+    public Endpoint(AppDbContext dbContext, HaloService halo, CurrentUserService cu)
     {
-        _logger = logger;
+        _dbContext = dbContext;
         _halo = halo;
         _cu = cu;
     }
@@ -19,7 +20,6 @@ public class Endpoint : Endpoint<Request, Result<Dto.StatusResultDto>>
     public override void Configure()
     {
         Get("pay/status/{reference}");
-        // AllowAnonymous();
     }
 
     public override async Task HandleAsync(Request r, CancellationToken ct)
@@ -29,7 +29,8 @@ public class Endpoint : Endpoint<Request, Result<Dto.StatusResultDto>>
             await SendUnauthorizedAsync();
             return;
         }
-        var result = await _halo.GetStatus(r.Reference, _cu.UserId);
+        int outletId = await Helper.GetUserOutlet(_dbContext, _cu.UserId);
+        var result = await _halo.GetStatus(r.Reference, _cu.UserId, outletId);
         await SendAsync(result);
     }
 }

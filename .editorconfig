@@ -1,3 +1,7 @@
 [*.cs]
 indent_style = space
 indent_size = 4
+
+# TODO: Remove this and make sure you have valid mappings
+dotnet_diagnostic.RMG012.severity = none
+dotnet_diagnostic.RMG020.severity = none

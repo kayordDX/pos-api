@@ -8,6 +8,7 @@ public static class ConfigExtensions
     {
         services.Configure<HaloConfig>(configuration.GetSection("Halo"));
         services.Configure<EmailConfig>(configuration.GetSection("Email"));
+        services.Configure<AppConfig>(configuration.GetSection("App"));
         return services;
     }
 }

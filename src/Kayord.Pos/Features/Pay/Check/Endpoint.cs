@@ -36,11 +36,13 @@ public class Endpoint : Endpoint<Request, Response>
             .Where(x => x.TableBookingId == req.TableBookingId)
             .ToListAsync(ct);
 
+        int outletId = await Helper.GetUserOutlet(_dbContext, _cu.UserId);
+
         foreach (var haloRequest in haloRequests)
         {
             if (haloRequest.HaloRef != null)
             {
-                await _halo.GetStatus(haloRequest.HaloRef, _cu.UserId);
+                await _halo.GetStatus(haloRequest.HaloRef, _cu.UserId, outletId);
                 response.Checked = response.Checked + 1;
             }
         }

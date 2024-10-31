@@ -2,6 +2,7 @@ using Kayord.Pos.Common.Wrapper;
 using Kayord.Pos.Data;
 using Kayord.Pos.Events;
 using Kayord.Pos.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.Pay.GetLink;
 
@@ -31,14 +32,22 @@ public class Endpoint : Endpoint<Request, Result<Response>>
             await SendUnauthorizedAsync();
             return;
         }
-        var results = await _halo.GetLink(req.Amount, req.TableBookingId, _cu.UserId);
+        var userOutlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.IsCurrent);
+        if (userOutlet == null)
+        {
+            await SendNotFoundAsync();
+            return;
+        }
+
+        var results = await _halo.GetLink(req.Amount, req.TableBookingId, _cu.UserId, userOutlet.OutletId);
         if (!results.Failure)
         {
             await PublishAsync(new PayLinkReceivedEvent
             {
                 url = results.Value.url,
                 reference = results.Value.reference,
-                UserId = _cu.UserId
+                UserId = _cu.UserId,
+                OutletId = userOutlet.OutletId
             }, Mode.WaitForNone);
         }
         await SendAsync(results);

@@ -48,6 +48,7 @@ public class AppDbContext : DbContext
     public DbSet<OrderItemStatus> OrderItemStatus => Set<OrderItemStatus>();
     public DbSet<RoleDivision> RoleDivision => Set<RoleDivision>();
     public DbSet<HaloLog> HaloLog => Set<HaloLog>();
+    public DbSet<HaloConfig> HaloConfig => Set<HaloConfig>();
     public DbSet<HaloReference> HaloReference => Set<HaloReference>();
     public DbSet<ExtraGroup> ExtraGroup => Set<ExtraGroup>();
     public DbSet<Payment> Payment => Set<Payment>();

@@ -24,7 +24,7 @@ public class PayLinkReceivedHandler : IEventHandler<PayLinkReceivedEvent>
         int i = 0;
         while (!ct.IsCancellationRequested)
         {
-            var status = await service.GetStatus(eventModel.reference, eventModel.UserId);
+            var status = await service.GetStatus(eventModel.reference, eventModel.UserId, eventModel.OutletId);
             if (i > 12)
             {
                 throw new TimeoutException("Timeout");

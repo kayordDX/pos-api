@@ -1,4 +1,3 @@
-global using FastEndpoints;
 using Kayord.Pos.Common.Extensions;
 using Kayord.Pos.Common.Extensions.Cors;
 using Kayord.Pos.Common.Extensions.Health;
@@ -21,7 +20,7 @@ var corsSection = builder.Configuration.GetSection("Cors");
 builder.Services.ConfigureCors(corsSection.Get<string[]>() ?? [""]);
 
 builder.Services.ConfigureAuth(builder.Configuration);
-builder.Services.ConfigureEF(builder.Configuration);
+builder.Services.ConfigureEF(builder.Configuration, builder.Environment);
 
 builder.Services.ConfigureGeneral(builder.Configuration);
 
@@ -36,3 +35,5 @@ app.UseApi();
 app.UseHealth();
 app.MapHub<KayordHub>("/hub");
 app.Run();
+
+public partial class Program { }

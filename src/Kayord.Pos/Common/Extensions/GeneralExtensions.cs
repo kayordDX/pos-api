@@ -16,6 +16,7 @@ public static class GeneralExtensions
         services.AddScoped<UserService>();
         services.AddTransient<IEmailSender, EmailService>();
         services.AddSingleton<IUserIdProvider, UserProvider>();
+        services.AddSingleton<EncryptionService>();
         services.AddTransient<NotificationService>();
 
         return services;
