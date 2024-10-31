@@ -7,5 +7,6 @@ namespace Kayord.Pos.Features.Bill.PrintBill
         public int TableBookingId { get; set; }
         public int OutletId { get; set; }
         public int PrinterId { get; set; }
+        public int LineCharacters { get; set; } = 64;
     }
 }

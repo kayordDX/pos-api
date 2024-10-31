@@ -13,4 +13,5 @@ public class PrinterStatus
     public int PrinterId { get; set; }
     public string Name { get; set; } = string.Empty;
     public int OutletId { get; set; }
+    public int LineCharacters { get; set; } = 64;
 }

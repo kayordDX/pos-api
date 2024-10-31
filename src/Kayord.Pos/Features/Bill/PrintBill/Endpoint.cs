@@ -23,7 +23,7 @@ namespace Kayord.Pos.Features.Bill.PrintBill
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
             PdfRequest pdfRequest = await BillHelper.GetPdfRequestAsync(req.TableBookingId, _dbContext);
-            var printInstructions = BillPrint.GetBillPrintInstructions(pdfRequest);
+            var printInstructions = BillPrint.GetBillPrintInstructions(pdfRequest, req.LineCharacters);
             await _printService.Print(printInstructions, req.OutletId, req.PrinterId);
             await SendAsync(true);
         }
