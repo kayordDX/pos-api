@@ -1,3 +1,4 @@
+using System.Net;
 using System.Text.Json;
 using Kayord.Pos.Common.Extensions;
 using Kayord.Pos.Common.Wrapper;
@@ -5,6 +6,7 @@ using Kayord.Pos.Data;
 using Kayord.Pos.Entities;
 using Kayord.Pos.Events;
 using Kayord.Pos.Features.Pay.Dto;
+using Kayord.Pos.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.Pay;
@@ -13,11 +15,13 @@ public class HaloService
 {
     private readonly HttpClient _httpClient;
     private readonly AppDbContext _dbContext;
+    private readonly EncryptionService _encryption;
 
-    public HaloService(HttpClient httpClient, AppDbContext dbContext)
+    public HaloService(HttpClient httpClient, AppDbContext dbContext, EncryptionService encryption)
     {
         _httpClient = httpClient;
         _dbContext = dbContext;
+        _encryption = encryption;
     }
 
     public async Task<Result<GetLink.Response>> GetLink(decimal amount, int tableBookingId, string userId, int outletId)
@@ -26,7 +30,7 @@ public class HaloService
         await _dbContext.HaloReference.AddAsync(new HaloReference { Id = r, TableBookingId = tableBookingId, UserId = userId });
         await _dbContext.SaveChangesAsync();
 
-        var haloConfig = await Halo.GetHaloConfig(outletId, _dbContext);
+        var haloConfig = await Halo.GetHaloConfig(outletId, _dbContext, _encryption);
 
         HaloLog log = new()
         {
@@ -98,7 +102,7 @@ public class HaloService
 
         try
         {
-            var haloConfig = await Halo.GetHaloConfig(outletId, _dbContext);
+            var haloConfig = await Halo.GetHaloConfig(outletId, _dbContext, _encryption);
             log.RequestUrl = $"consumer/qrCode/{reference}";
             using var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"consumer/qrCode/{reference}");
             requestMessage.Headers.Add("x-api-key", haloConfig.XApiKey);
@@ -143,6 +147,23 @@ public class HaloService
         {
             await _dbContext.HaloLog.AddAsync(log);
             await _dbContext.SaveChangesAsync();
+        }
+    }
+
+    public async Task<bool> TestConfig(int configId)
+    {
+        try
+        {
+            var haloConfig = await Halo.GetHaloSpecificConfig(configId, _dbContext, _encryption);
+            var reference = Guid.NewGuid();
+            using var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"consumer/qrCode/{reference}");
+            requestMessage.Headers.Add("x-api-key", haloConfig.XApiKey);
+            var response = await _httpClient.SendAsync(requestMessage);
+            return response.IsSuccessStatusCode || response.StatusCode == HttpStatusCode.NotFound;
+        }
+        catch
+        {
+            return false;
         }
     }
 }

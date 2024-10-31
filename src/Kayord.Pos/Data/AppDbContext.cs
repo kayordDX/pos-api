@@ -103,11 +103,25 @@ public class AppDbContext : DbContext
         base.OnModelCreating(builder);
     }
 
-    public override async Task<int> SaveChangesAsync(
-        CancellationToken cancellationToken = new CancellationToken()
-    )
+    public override async Task<int> SaveChangesAsync(CancellationToken ct = new CancellationToken())
     {
-        int returnValue = await base.SaveChangesAsync(cancellationToken);
+        foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<AuditableEntity> entry in ChangeTracker.Entries<AuditableEntity>())
+        {
+            switch (entry.State)
+            {
+                case EntityState.Added:
+                    entry.Entity.Created = DateTime.Now;
+                    entry.Entity.CreatedBy = _currentUserService.UserId;
+                    break;
+
+                case EntityState.Modified:
+                    entry.Entity.LastModified = DateTime.Now;
+                    entry.Entity.LastModifiedBy = _currentUserService.UserId;
+                    break;
+            }
+        }
+
+        int returnValue = await base.SaveChangesAsync(ct);
         if (returnValue > 0)
         {
             bool saveAudit = false;
@@ -123,12 +137,12 @@ public class AppDbContext : DbContext
                         StatusDate = DateTime.UtcNow,
                         UserId = _currentUserService.UserId ?? "",
                     };
-                _ = await AddAsync(audit, cancellationToken);
+                _ = await AddAsync(audit, ct);
                 saveAudit = true;
             }
             if (saveAudit)
             {
-                await base.SaveChangesAsync(cancellationToken);
+                await base.SaveChangesAsync(ct);
             }
         }
         return returnValue;

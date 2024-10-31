@@ -7,4 +7,5 @@ public class HaloConfig : AuditableEntity
     public string XApiKey { get; set; } = string.Empty;
     public string MerchantId { get; set; } = string.Empty;
     public bool IsEnabled { get; set; }
+    public required byte[] Iv { get; set; }
 }
