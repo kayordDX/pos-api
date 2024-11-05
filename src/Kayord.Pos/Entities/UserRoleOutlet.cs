@@ -1,6 +1,6 @@
 namespace Kayord.Pos.Entities;
 
-public class UserRoleOutlet
+public class UserRoleOutlet : AuditableEntity
 {
     public int Id { get; set; }
     public string UserId { get; set; } = string.Empty;

@@ -1,6 +1,6 @@
 namespace Kayord.Pos.Entities;
 
-public class User
+public class User : AuditableEntity
 {
     public string UserId { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
