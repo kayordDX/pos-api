@@ -1,4 +1,5 @@
 using System.Net;
+using System.Text;
 using System.Text.Json;
 using Kayord.Pos.Common.Extensions;
 using Kayord.Pos.Common.Wrapper;
@@ -52,13 +53,13 @@ public class HaloService
                     Required = false
                 }
             };
-            string? request = JsonSerializer.Serialize(requestBody);
+            string? request = JsonSerializer.Serialize(requestBody, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
             log.Request = request;
             log.RequestUrl = "consumer/qrCode";
 
             using var requestMessage = new HttpRequestMessage(HttpMethod.Post, "consumer/qrCode");
             requestMessage.Headers.Add("x-api-key", haloConfig.XApiKey);
-            requestMessage.Content = new StringContent(JsonSerializer.Serialize(requestBody));
+            requestMessage.Content = new StringContent(request, Encoding.UTF8, "application/json");
             var response = await _httpClient.SendAsync(requestMessage);
             // using HttpResponseMessage response = await _httpClient.PostAsJsonAsync("consumer/qrCode", requestBody);
             log.StatusCode = (int)response.StatusCode;

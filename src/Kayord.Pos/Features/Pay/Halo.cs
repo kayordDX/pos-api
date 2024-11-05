@@ -11,6 +11,7 @@ public static class Halo
         //TODO: Cache this somehow
         var result = await dbContext.HaloConfig
             .Where(x => x.OutletId == outletId && x.IsEnabled)
+            .AsNoTracking()
             .FirstOrDefaultAsync();
         if (result == null)
         {
@@ -24,6 +25,7 @@ public static class Halo
     {
         var result = await dbContext.HaloConfig
             .Where(x => x.Id == configId)
+            .AsNoTracking()
             .FirstOrDefaultAsync();
         if (result == null)
         {
