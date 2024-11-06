@@ -1,6 +1,6 @@
-namespace Kayord.Pos.Entities;
+namespace Kayord.Pos.DTO;
 
-public class Printer : AuditableEntity
+public class PrinterDTO
 {
     public int Id { get; set; }
     public int OutletId { get; set; }

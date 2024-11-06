@@ -29,8 +29,5 @@ public static partial class Mapper
     public static partial CashUpUserDTO ProjectToDto(this CashUpUser q);
     public static partial IQueryable<CashUpUserItemDTO> ProjectToDto(this IQueryable<CashUpUserItem> q);
     public static partial IQueryable<CashUpUserItemTypeDTO> ProjectToDto(this IQueryable<CashUpUserItemType> q);
-
-
-
-
+    public static partial IQueryable<PrinterDTO> ProjectToDto(this IQueryable<Printer> q);
 }
