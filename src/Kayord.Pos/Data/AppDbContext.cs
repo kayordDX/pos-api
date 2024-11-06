@@ -54,6 +54,7 @@ public class AppDbContext : DbContext
     public DbSet<MenuItemExtraGroup> MenuItemExtraGroup => Set<MenuItemExtraGroup>();
     public DbSet<CashUp> CashUp => Set<CashUp>();
     public DbSet<PaymentType> PaymentType => Set<PaymentType>();
+    public DbSet<Printer> Printer => Set<Printer>();
     public DbSet<OutletExtraGroup> OutletExtraGroup => Set<OutletExtraGroup>();
     public DbSet<OrderGroup> OrderGroup => Set<OrderGroup>();
     public DbSet<NotificationUser> NotificationUser => Set<NotificationUser>();
