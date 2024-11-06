@@ -33,7 +33,6 @@ public class AppDbContext : DbContext
     public DbSet<MenuItem> MenuItem => Set<MenuItem>();
     public DbSet<OrderItem> OrderItem => Set<OrderItem>();
     public DbSet<User> User => Set<User>();
-    public DbSet<UserRole> UserRole => Set<UserRole>();
     public DbSet<UserRoleOutlet> UserRoleOutlet => Set<UserRoleOutlet>();
     public DbSet<Role> Role => Set<Role>();
     public DbSet<MenuSection> MenuSection => Set<MenuSection>();
