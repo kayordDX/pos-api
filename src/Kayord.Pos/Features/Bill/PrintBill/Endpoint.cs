@@ -1,6 +1,8 @@
 using Kayord.Pos.Data;
 using Kayord.Pos.Features.Bill.EmailBill;
+using Kayord.Pos.Features.Printer;
 using Kayord.Pos.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.Bill.PrintBill
 {
@@ -22,9 +24,24 @@ namespace Kayord.Pos.Features.Bill.PrintBill
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
+            var printer = await _dbContext.Printer.Where(x => x.Id == req.PrinterId).AsNoTracking().FirstOrDefaultAsync();
+            if (printer == null)
+            {
+                await SendAsync(false);
+                return;
+            }
+
             PdfRequest pdfRequest = await BillHelper.GetPdfRequestAsync(req.TableBookingId, _dbContext);
-            var printInstructions = BillPrint.GetBillPrintInstructions(pdfRequest, req.LineCharacters);
-            await _printService.Print(printInstructions, req.OutletId, req.PrinterId);
+            var printInstructions = BillPrint.GetBillPrintInstructions(pdfRequest, printer.LineCharacters);
+
+            PrintMessage printMessage = new()
+            {
+                PrinterName = printer.PrinterName,
+                IPAddress = printer.IPAddress,
+                Port = printer.Port,
+                PrintInstructions = printInstructions
+            };
+            await _printService.Print(printer.OutletId, printer.DeviceId, printMessage);
             await SendAsync(true);
         }
     }

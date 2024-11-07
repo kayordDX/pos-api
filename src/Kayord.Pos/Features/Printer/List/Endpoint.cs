@@ -20,7 +20,12 @@ namespace Kayord.Pos.Features.Printer.List
 
         public override async Task HandleAsync(Request r, CancellationToken ct)
         {
-            var result = await _dbContext.Printer.Where(x => x.OutletId == r.OutletId).ProjectToDto().ToListAsync();
+            var result = await _dbContext.Printer
+                .Where(x => x.OutletId == r.OutletId)
+                .OrderByDescending(x => x.IsEnabled)
+                    .ThenBy(x => x.PrinterName)
+                .ProjectToDto()
+                .ToListAsync();
             await SendAsync(result);
         }
     }

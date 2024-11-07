@@ -10,6 +10,7 @@ public class Request
     public int Port { get; set; } = 9100;
     public int LineCharacters { get; set; } = 64;
     public bool IsEnabled { get; set; }
+    public int DeviceId { get; set; }
 }
 
 public class Validator : Validator<Request>

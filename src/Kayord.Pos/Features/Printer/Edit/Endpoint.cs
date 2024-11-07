@@ -32,6 +32,7 @@ public class Endpoint : Endpoint<Request, PrinterDTO>
         entity.IPAddress = req.IPAddress;
         entity.LineCharacters = req.LineCharacters;
         entity.IsEnabled = req.IsEnabled;
+        entity.DeviceId = req.DeviceId;
 
         await _dbContext.SaveChangesAsync();
         await SendNoContentAsync();
