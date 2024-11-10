@@ -1,34 +1,31 @@
-using Kayord.Pos.Services;
+using Kayord.Pos.Data;
+using Kayord.Pos.DTO;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.Printer.List
 {
-    public class Endpoint : Endpoint<Request, List<PrinterStatus>>
+    public class Endpoint : Endpoint<Request, List<PrinterDTO>>
     {
-        private readonly RedisClient _redisClient;
+        private readonly AppDbContext _dbContext;
 
-        public Endpoint(RedisClient redisClient)
+        public Endpoint(AppDbContext dbContext)
         {
-            _redisClient = redisClient;
+            _dbContext = dbContext;
         }
 
         public override void Configure()
         {
-            Get("/printer/list/{outletId}");
-            AllowAnonymous();
+            Get("/printer/{outletId}");
         }
 
         public override async Task HandleAsync(Request r, CancellationToken ct)
         {
-            List<PrinterStatus> result = new();
-            var keys = await _redisClient.GetKeys($"printer:{r.OutletId}:*");
-            foreach (var key in keys)
-            {
-                var status = await _redisClient.GetObjectAsync<PrinterStatus>(key);
-                if (status != null)
-                {
-                    result.Add(status);
-                }
-            }
+            var result = await _dbContext.Printer
+                .Where(x => x.OutletId == r.OutletId)
+                .OrderByDescending(x => x.IsEnabled)
+                    .ThenBy(x => x.PrinterName)
+                .ProjectToDto()
+                .ToListAsync();
             await SendAsync(result);
         }
     }

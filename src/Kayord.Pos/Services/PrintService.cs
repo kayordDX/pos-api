@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Kayord.Pos.Features.Printer;
 using StackExchange.Redis;
 
 namespace Kayord.Pos.Services;
@@ -10,11 +11,11 @@ public class PrintService
     {
         _redisClient = redisClient;
     }
-    public async Task Print(List<byte[]> printInstructions, int outletId, int printerId)
+    public async Task Print(int outletId, int deviceId, PrintMessage printMessage)
     {
         var subscriber = await _redisClient.GetSubscriber();
-        RedisChannel channel = new RedisChannel($"print:{outletId}:{printerId}", RedisChannel.PatternMode.Auto);
-        string printInstructionsSerialized = JsonSerializer.Serialize(printInstructions);
+        RedisChannel channel = new RedisChannel($"print:{outletId}:{deviceId}", RedisChannel.PatternMode.Auto);
+        string printInstructionsSerialized = JsonSerializer.Serialize(printMessage);
         await subscriber.PublishAsync(channel, printInstructionsSerialized);
     }
 }
