@@ -59,7 +59,6 @@ public class AppDbContext : DbContext
     public DbSet<OrderGroup> OrderGroup => Set<OrderGroup>();
     public DbSet<NotificationUser> NotificationUser => Set<NotificationUser>();
     public DbSet<NotificationLog> NotificationLog => Set<NotificationLog>();
-    public DbSet<OrderItemStatusLog> OrderItemStatusLog => Set<OrderItemStatusLog>();
     public DbSet<EmailLog> EmailLog => Set<EmailLog>();
     public DbSet<OutletPaymentType> OutletPaymentType => Set<OutletPaymentType>();
     public DbSet<CashUpUser> CashUpUser => Set<CashUpUser>();
