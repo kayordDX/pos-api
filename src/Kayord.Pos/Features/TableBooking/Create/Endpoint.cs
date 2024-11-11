@@ -1,5 +1,6 @@
 using Kayord.Pos.Data;
 using Kayord.Pos.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.TableBooking.Create
 {
@@ -28,6 +29,13 @@ namespace Kayord.Pos.Features.TableBooking.Create
                 return;
             }
 
+            Entities.SalesPeriod? salesPeriod = await _dbContext.SalesPeriod.FirstOrDefaultAsync(x=>x.Id == req.SalesPeriodId);
+
+            if(salesPeriod!.EndDate != null)
+            {
+                await SendNotFoundAsync();
+                return;
+            }
             Entities.TableBooking entity = new()
             {
                 TableId = req.TableId,
