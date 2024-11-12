@@ -116,7 +116,7 @@ public class HaloService
 
             if (result != null)
             {
-                if (result.ResponseCode == 0 && result.TransactionId != string.Empty && result.AuthorisationCode != string.Empty)
+                if (result.ResponseCode == 0 && result.TransactionId != string.Empty && result.AuthorisationCode != string.Empty && result.Disposition == "Approved")
                 {
                     Payment? p = await _dbContext.Payment.FirstOrDefaultAsync(x => x.PaymentReference == result.PaymentReference);
                     if (p == null)
