@@ -70,7 +70,7 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
                         entity.OrderCompleted = DateTime.Now;
                     if (oIS?.Notify ?? false)
                     {
-                        MenuItem? i = await _dbContext.MenuItem.FirstOrDefaultAsync(x => x.MenuItemId == entity.MenuItemId);
+                        Entities.MenuItem? i = await _dbContext.MenuItem.FirstOrDefaultAsync(x => x.MenuItemId == entity.MenuItemId);
                         if (i != null)
                         {
                             nC++;

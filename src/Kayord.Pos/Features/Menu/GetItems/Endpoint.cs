@@ -34,7 +34,7 @@ namespace Kayord.Pos.Features.Menu.GetItems
                 return;
             }
 
-            IQueryable<MenuItem>? items;
+            IQueryable<Entities.MenuItem>? items;
             if (req.SectionId == 0)
             {
                 items = _dbContext.MenuItem

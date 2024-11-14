@@ -93,4 +93,19 @@ public class RedisClient
             return DeserializeObject<T>(serializedValue);
         return default;
     }
+
+    public async Task DeletePatternAsync(string pattern)
+    {
+        var keys = await GetKeys(pattern);
+        foreach (var key in keys)
+        {
+            await DeleteKeyAsync(key);
+        }
+    }
+
+    public async Task DeleteKeyAsync(string key)
+    {
+        var database = await GetDatabaseAsync();
+        await database.KeyDeleteAsync(key);
+    }
 }
