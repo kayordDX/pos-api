@@ -1,36 +1,37 @@
 using Kayord.Pos.Data;
-using Kayord.Pos.Entities;
-using Microsoft.EntityFrameworkCore;
+using Kayord.Pos.Services;
 
 
-namespace Kayord.Pos.Features.Menu.Create
+namespace Kayord.Pos.Features.Menu.Create;
+
+public class Endpoint : Endpoint<Request, Pos.Entities.Menu>
 {
-    public class Endpoint : Endpoint<Request, Pos.Entities.Menu>
+    private readonly AppDbContext _dbContext;
+    private readonly RedisClient _redisClient;
+
+    public Endpoint(AppDbContext dbContext, RedisClient redisClient)
     {
-        private readonly AppDbContext _dbContext;
+        _dbContext = dbContext;
+        _redisClient = redisClient;
+    }
 
-        public Endpoint(AppDbContext dbContext)
+    public override void Configure()
+    {
+        Post("/menu");
+    }
+
+    public override async Task HandleAsync(Request req, CancellationToken ct)
+    {
+
+        var menuEntity = new Entities.Menu
         {
-            _dbContext = dbContext;
-        }
+            OutletId = req.OutletId,
+            Name = req.Name
+        };
 
-        public override void Configure()
-        {
-            Post("/menu");
-        }
+        await _dbContext.Menu.AddAsync(menuEntity);
+        await _dbContext.SaveChangesAsync();
 
-        public override async Task HandleAsync(Request req, CancellationToken ct)
-        {
-
-            var menuEntity = new Pos.Entities.Menu
-            {
-                OutletId = req.OutletId,
-                Name = req.Name
-            };
-
-            await _dbContext.Menu.AddAsync(menuEntity);
-            await _dbContext.SaveChangesAsync();
-
-        }
+        await Helper.ClearCacheOutlet(_dbContext, _redisClient, req.OutletId);
     }
 }
