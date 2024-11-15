@@ -5,7 +5,9 @@ namespace Kayord.Pos.Features.MenuItem;
 public class MenuItemAdminDTO
 {
     public int MenuItemId { get; set; }
+    public int MenuId { get; set; }
     public int MenuSectionId { get; set; }
+    public MenuSectionAdminDTO MenuSection { get; set; } = default!;
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public decimal Price { get; set; }
