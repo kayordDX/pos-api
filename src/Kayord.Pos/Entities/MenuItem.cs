@@ -2,8 +2,7 @@ using NpgsqlTypes;
 
 namespace Kayord.Pos.Entities;
 
-
-public class MenuItem
+public class MenuItem : AuditableEntity
 {
     public int MenuItemId { get; set; }
     public MenuSection MenuSection { get; set; } = default!;

@@ -1,5 +1,5 @@
 namespace Kayord.Pos.Entities;
-public class MenuSection
+public class MenuSection : AuditableEntity
 {
     public int MenuSectionId { get; set; }
     public string? Name { get; set; } = string.Empty;
@@ -7,7 +7,6 @@ public class MenuSection
     public int MenuId { get; set; }
     public MenuSection? Parent { get; set; }
     public int? ParentId { get; set; }
-
     public int? PositionId { get; set; }
     public List<MenuSection>? SubMenuSections { get; set; }
     public ICollection<MenuItem>? MenuItems { get; set; }
