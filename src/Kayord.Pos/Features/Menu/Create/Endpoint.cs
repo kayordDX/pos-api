@@ -22,11 +22,11 @@ public class Endpoint : Endpoint<Request, Pos.Entities.Menu>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-
         var menuEntity = new Entities.Menu
         {
             OutletId = req.OutletId,
-            Name = req.Name
+            Name = req.Name,
+            Position = req.Position,
         };
 
         await _dbContext.Menu.AddAsync(menuEntity);
