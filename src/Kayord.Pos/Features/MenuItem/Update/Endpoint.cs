@@ -42,7 +42,7 @@ public class Endpoint : Endpoint<Request, Pos.Entities.MenuItem>
         }
         else
         {
-            throw new Exception("Menu Section not found");
+            throw new Exception("Sorry, the princess is in another castle.");
         }
 
 
