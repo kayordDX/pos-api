@@ -3,7 +3,7 @@ using Kayord.Pos.Services;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace Kayord.Pos.Features.Menu.Sections.Create;
+namespace Kayord.Pos.Features.Menu.Sections.Delete;
 
 public class Endpoint : Endpoint<Request, Pos.Entities.MenuSection>
 {
@@ -18,13 +18,13 @@ public class Endpoint : Endpoint<Request, Pos.Entities.MenuSection>
 
     public override void Configure()
     {
-        Post("/menuSection");
+        Delete("/menuSection/{id}");
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
 
-        Entities.Menu? menu = await _dbContext.Menu.FirstOrDefaultAsync(x => x.Id == req.MenuId);
+        Entities.Menu? menu = await _dbContext.MenuSection.FirstOrDefaultAsync(x => x.MenuSectionId == req.Id);
 
         if (menu != null)
         {
@@ -33,6 +33,7 @@ public class Endpoint : Endpoint<Request, Pos.Entities.MenuSection>
                 MenuId = req.MenuId,
                 Name = req.Name,
                 PositionId = req.PositionId,
+                ParentId = req.ParentId
             };
 
             await _dbContext.MenuSection.AddAsync(menuSection);
