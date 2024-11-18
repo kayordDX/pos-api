@@ -35,7 +35,7 @@ public class Endpoint : Endpoint<Request, Pos.Entities.MenuItem>
                 Name = req.Name,
                 Description = req.Description,
                 Price = req.Price,
-                Position = req.Position,
+                Position = req.PositionId,
                 DivisionId = req.DivisionId,
                 IsAvailable = req.IsAvailable,
                 IsEnabled = req.IsEnabled,

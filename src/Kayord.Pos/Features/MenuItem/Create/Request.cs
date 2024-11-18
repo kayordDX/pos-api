@@ -8,7 +8,7 @@ public class Request
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public decimal Price { get; set; }
-    public int Position { get; set; }
+    public int PositionId { get; set; }
     public int? DivisionId { get; set; }
     public bool IsAvailable { get; set; }
     public bool IsEnabled { get; set; } = true;
