@@ -2,7 +2,7 @@ namespace Kayord.Pos.Entities;
 public class MenuSection : AuditableEntity
 {
     public int MenuSectionId { get; set; }
-    public string? Name { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
     public Menu Menu { get; set; } = default!;
     public int MenuId { get; set; }
     public MenuSection? Parent { get; set; }
