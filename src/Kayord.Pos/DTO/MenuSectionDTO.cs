@@ -6,4 +6,5 @@ public class MenuSectionDTO
     public int MenuId { get; set; }
     public int? ParentId { get; set; }
     public MenuSectionParentDTO? Parent { get; set; }
+    public int? PositionId { get; set; }
 }
