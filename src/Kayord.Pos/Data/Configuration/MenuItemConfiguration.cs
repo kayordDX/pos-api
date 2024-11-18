@@ -14,5 +14,6 @@ public class MenuItemConfiguration : IEntityTypeConfiguration<MenuItem>
             .HasMethod("GIN");
 
         builder.Property(t => t.IsEnabled).HasDefaultValue(true);
+        builder.Property(t => t.MenuItemId).UseIdentityColumn();
     }
 }
