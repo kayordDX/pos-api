@@ -4,6 +4,7 @@ using Kayord.Pos.Common.Extensions;
 using Kayord.Pos.Common.Models;
 using Kayord.Pos.Data;
 using Kayord.Pos.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.MenuItem.GetAll
 {
@@ -25,10 +26,16 @@ namespace Kayord.Pos.Features.MenuItem.GetAll
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-            int outletId = await Helper.GetUserOutlet(_dbContext, _cu.UserId ?? "");
+            int outletId = await Helper.GetUserOutlet(_dbContext, _cu.UserId ?? string.Empty);
 
-            // TODO: Filter on outlet
-            var menuItems = await _dbContext.MenuItem.ProjectToAdminDto().GetPagedAsync(req, ct);
+            // Filter on outlet
+            var menuItems = await _dbContext.MenuItem
+                .Include(x => x.MenuSection)
+                    .ThenInclude(x => x.Menu)
+                .Where(x => x.MenuSection.Menu.OutletId == outletId)
+                .ProjectToAdminDto()
+                .GetPagedAsync(req, ct);
+
             await SendAsync(menuItems);
         }
     }
