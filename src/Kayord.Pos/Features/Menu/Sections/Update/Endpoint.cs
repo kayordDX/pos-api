@@ -30,6 +30,8 @@ public class Endpoint : Endpoint<Request, Pos.Entities.MenuSection>
         {
             menuSection.Name = req.Name;
             menuSection.PositionId = req.PositionId;
+            // menuSection.MenuId = req.MenuId;
+
             await _dbContext.SaveChangesAsync();
 
             Entities.Menu? menu = await _dbContext.Menu.FirstOrDefaultAsync(x => x.Id == menuSection.MenuId);
