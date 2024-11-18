@@ -28,10 +28,17 @@ public class Endpoint : Endpoint<Request>
             await SendNotFoundAsync();
             return;
         }
-
-        _dbContext.Menu.Remove(entity);
-        await _dbContext.SaveChangesAsync();
-        await Helper.ClearCacheOutlet(_dbContext, _redisClient, entity.OutletId);
-        await SendNoContentAsync();
+        Entities.MenuSection? menuSection = await _dbContext.MenuSection.FirstOrDefaultAsync(x => x.MenuId == req.Id);
+        if (menuSection == null)
+        {
+            _dbContext.Menu.Remove(entity);
+            await _dbContext.SaveChangesAsync();
+            await Helper.ClearCacheOutlet(_dbContext, _redisClient, entity.OutletId);
+            await SendNoContentAsync();
+        }
+        else
+        {
+            throw new Exception("Can't Delete Menu containing Menu Sections");
+        }
     }
 }

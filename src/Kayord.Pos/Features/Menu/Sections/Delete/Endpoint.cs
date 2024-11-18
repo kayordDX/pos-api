@@ -32,7 +32,7 @@ public class Endpoint : Endpoint<Request, Pos.Entities.MenuSection>
             // Do not delete menu section if it contains menu items
             if (menuItem == null)
             {
-                Entities.Menu? menu = await _dbContext.Menu.FirstOrDefaultAsync(x => x.Id == req.Id);
+                Entities.Menu? menu = await _dbContext.Menu.FindAsync(req.Id);
                 if (menu != null)
                 {
                     _dbContext.MenuSection.Remove(menuSection);
