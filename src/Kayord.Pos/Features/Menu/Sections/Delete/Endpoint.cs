@@ -24,7 +24,9 @@ public class Endpoint : Endpoint<Request, Pos.Entities.MenuSection>
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
 
-        Entities.MenuSection? menuSection = await _dbContext.MenuSection.FirstOrDefaultAsync(x => x.MenuSectionId == req.Id);
+        Entities.MenuSection? menuSection = await _dbContext.MenuSection
+            .Include(x => x.Menu)
+            .FirstOrDefaultAsync(x => x.MenuSectionId == req.Id);
 
         if (menuSection != null)
         {
@@ -32,13 +34,10 @@ public class Endpoint : Endpoint<Request, Pos.Entities.MenuSection>
             // Do not delete menu section if it contains menu items
             if (menuItem == null)
             {
-                Entities.Menu? menu = await _dbContext.Menu.FirstOrDefaultAsync(x => x.Id == req.Id);
-                if (menu != null)
-                {
-                    _dbContext.MenuSection.Remove(menuSection);
-                    await _dbContext.SaveChangesAsync();
-                    await Helper.ClearCacheOutlet(_dbContext, _redisClient, menu!.OutletId);
-                }
+
+                _dbContext.MenuSection.Remove(menuSection);
+                await _dbContext.SaveChangesAsync();
+                await Helper.ClearCacheOutlet(_dbContext, _redisClient, menuSection.Menu.OutletId);
             }
             else
             {
@@ -49,7 +48,5 @@ public class Endpoint : Endpoint<Request, Pos.Entities.MenuSection>
         {
             throw new Exception("Menu Section not found");
         }
-
-
     }
 }
