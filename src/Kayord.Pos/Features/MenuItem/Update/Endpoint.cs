@@ -39,6 +39,9 @@ public class Endpoint : Endpoint<Request, Pos.Entities.MenuItem>
             menuItem.StockPrice = req.StockPrice;
 
             await _dbContext.SaveChangesAsync();
+            Entities.MenuSection? menuSection = await _dbContext.MenuSection.Include(x => x.Menu).FirstOrDefaultAsync(x => x.MenuSectionId == req.MenuSectionId);
+            if (menuSection != null)
+                await Helper.ClearCacheOutlet(_dbContext, _redisClient, menuSection.Menu.OutletId);
         }
         else
         {
