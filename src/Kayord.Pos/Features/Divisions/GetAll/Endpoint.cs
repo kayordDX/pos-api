@@ -2,9 +2,9 @@ using Kayord.Pos.Data;
 using Kayord.Pos.Services;
 using Microsoft.EntityFrameworkCore;
 
-namespace Kayord.Pos.Features.Business.GetAll;
+namespace Kayord.Pos.Features.Divisions.GetAll;
 
-public class Endpoint : EndpointWithoutRequest<List<Pos.Entities.Business>>
+public class Endpoint : EndpointWithoutRequest<List<Pos.Entities.Division>>
 {
     private readonly AppDbContext _dbContext;
 
@@ -15,12 +15,12 @@ public class Endpoint : EndpointWithoutRequest<List<Pos.Entities.Business>>
 
     public override void Configure()
     {
-        Get("/business");
+        Get("/division");
     }
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var results = await _dbContext.Business.ToListAsync();
+        var results = await _dbContext.Division.ToListAsync();
         await SendAsync(results);
     }
 }
