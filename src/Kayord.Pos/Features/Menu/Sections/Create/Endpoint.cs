@@ -33,7 +33,7 @@ public class Endpoint : Endpoint<Request, Pos.Entities.MenuSection>
                 MenuId = req.MenuId,
                 Name = req.Name,
                 PositionId = req.PositionId,
-                ParentId = req.ParentId
+
             };
 
             await _dbContext.MenuSection.AddAsync(menuSection);
