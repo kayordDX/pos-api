@@ -54,9 +54,9 @@ public class Endpoint : Endpoint<Request, Pos.Entities.MenuItem>
                     MenuItemId = menuItem.MenuItemId
                 });
                 await _dbContext.MenuItemExtraGroup.AddRangeAsync(newExtraGroups);
+                await _dbContext.SaveChangesAsync();
 
             }
-            await _dbContext.SaveChangesAsync();
 
             Entities.Menu? menu = await _dbContext.Menu.FindAsync(menuSection.MenuId);
             if (menu != null)
