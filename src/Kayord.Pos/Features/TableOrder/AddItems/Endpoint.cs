@@ -44,7 +44,7 @@ public class Endpoint : Endpoint<Request, OrderItem>
                     await SendNotFoundAsync();
                     return;
                 }
-                List<Option> Options = new List<Option>();
+                List<Entities.Option> Options = new List<Entities.Option>();
 
                 orderItem = new OrderItem()
                 {

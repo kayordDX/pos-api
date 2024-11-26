@@ -9,5 +9,5 @@ public class Extra
     public int ExtraGroupId { get; set; }
     public ExtraGroup ExtraGroup { get; set; } = default!;
     public List<OrderItemExtra>? OrderItemExtras { get; set; }
-
+    public int OutletId { get; set; }
 }
