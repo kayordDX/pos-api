@@ -1,4 +1,5 @@
 using Kayord.Pos.Data;
+using Kayord.Pos.Entities;
 using Kayord.Pos.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -37,6 +38,36 @@ public class Endpoint : Endpoint<Request, Pos.Entities.MenuItem>
             menuItem.IsAvailable = req.IsAvailable;
             menuItem.IsEnabled = req.IsEnabled;
             menuItem.StockPrice = req.StockPrice;
+
+            if (req.ExtraGroupIds != null)
+            {
+
+                var existingExtraGroups = await _dbContext.MenuItemExtraGroup
+                    .Where(x => x.MenuItemId == menuItem.MenuItemId)
+                    .ToListAsync();
+
+
+                var existingExtraGroupIds = existingExtraGroups.Select(x => x.ExtraGroupId).ToHashSet();
+                var receivedExtraGroupIds = req.ExtraGroupIds.ToHashSet();
+
+
+                var idsToAdd = receivedExtraGroupIds.Except(existingExtraGroupIds);
+
+                var idsToRemove = existingExtraGroupIds.Except(receivedExtraGroupIds);
+
+
+                var newExtraGroups = idsToAdd.Select(id => new MenuItemExtraGroup
+                {
+                    ExtraGroupId = id,
+                    MenuItemId = menuItem.MenuItemId
+                });
+                await _dbContext.MenuItemExtraGroup.AddRangeAsync(newExtraGroups);
+
+
+                var extraGroupsToRemove = existingExtraGroups
+                    .Where(x => idsToRemove.Contains(x.ExtraGroupId));
+                _dbContext.MenuItemExtraGroup.RemoveRange(extraGroupsToRemove);
+            }
 
             await _dbContext.SaveChangesAsync();
             Entities.MenuSection? menuSection = await _dbContext.MenuSection.Include(x => x.Menu).FirstOrDefaultAsync(x => x.MenuSectionId == req.MenuSectionId);
