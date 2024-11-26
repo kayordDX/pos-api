@@ -41,8 +41,21 @@ public class Endpoint : Endpoint<Request, Pos.Entities.MenuItem>
                 IsEnabled = req.IsEnabled,
                 StockPrice = req.StockPrice
             };
-
             await _dbContext.MenuItem.AddAsync(menuItem);
+
+            if (req.ExtraGroupIds != null)
+            {
+
+                var receivedExtraGroupIds = req.ExtraGroupIds.ToHashSet();
+
+                var newExtraGroups = receivedExtraGroupIds.Select(id => new Entities.MenuItemExtraGroup
+                {
+                    ExtraGroupId = id,
+                    MenuItemId = menuItem.MenuItemId
+                });
+                await _dbContext.MenuItemExtraGroup.AddRangeAsync(newExtraGroups);
+
+            }
             await _dbContext.SaveChangesAsync();
 
             Entities.Menu? menu = await _dbContext.Menu.FindAsync(menuSection.MenuId);
