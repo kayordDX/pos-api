@@ -10,11 +10,13 @@ public class Endpoint : Endpoint<Request>
 {
     private readonly AppDbContext _dbContext;
     private readonly RedisClient _redisClient;
+    private readonly CurrentUserService _user;
 
-    public Endpoint(AppDbContext dbContext, RedisClient redisClient)
+    public Endpoint(AppDbContext dbContext, RedisClient redisClient, CurrentUserService user)
     {
         _dbContext = dbContext;
         _redisClient = redisClient;
+        _user = user;
     }
 
     public override void Configure()
@@ -24,17 +26,17 @@ public class Endpoint : Endpoint<Request>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-
+        var outletId = await Helper.GetUserOutlet(_dbContext, _user.UserId ?? "");
         Entities.ExtraGroup? extraGroupEntity = await _dbContext.ExtraGroup.FindAsync(req.ExtraGroupId);
         if (extraGroupEntity == null)
         {
             throw new Exception("Extra Group Not Found");
         }
 
-        Entities.OutletExtraGroup? outletExtraGroupExist = await _dbContext.OutletExtraGroup.FirstOrDefaultAsync(x => x.ExtraGroupId == req.ExtraGroupId && x.OutletId == req.OutletId);
+        Entities.OutletExtraGroup? outletExtraGroupExist = await _dbContext.OutletExtraGroup.FirstOrDefaultAsync(x => x.ExtraGroupId == req.ExtraGroupId && x.OutletId == outletId);
 
         extraGroupEntity.ExtraGroupId = req.ExtraGroupId;
-        extraGroupEntity.OutletId = req.OutletId;
+        extraGroupEntity.OutletId = outletId;
         extraGroupEntity.Name = req.Name;
 
         if (req.isGlobal)
@@ -43,7 +45,7 @@ public class Endpoint : Endpoint<Request>
             {
                 Entities.OutletExtraGroup outletExtraGroup = new()
                 {
-                    OutletId = req.OutletId,
+                    OutletId = outletId,
                     ExtraGroupId = req.ExtraGroupId
                 };
                 await _dbContext.OutletExtraGroup.AddAsync(outletExtraGroup);
