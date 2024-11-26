@@ -41,7 +41,7 @@ public class Endpoint : Endpoint<Request>
 
         extraEntity.Name = req.Name;
         extraEntity.Price = req.Price;
-        extraEntity.Price = req.PositionId;
+        extraEntity.PositionId = req.PositionId;
         extraEntity.ExtraGroupId = req.ExtraGroupId;
         extraEntity.OutletId = req.OutletId;
 
