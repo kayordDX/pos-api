@@ -42,6 +42,7 @@ public class Endpoint : Endpoint<Request, Pos.Entities.MenuItem>
                 StockPrice = req.StockPrice
             };
             await _dbContext.MenuItem.AddAsync(menuItem);
+            await _dbContext.SaveChangesAsync();
 
             if (req.ExtraGroupIds != null)
             {
