@@ -14,6 +14,6 @@ public class Request
     public bool IsAvailable { get; set; }
     public bool IsEnabled { get; set; } = true;
     public List<int>? ExtraGroupIds { get; set; }
-
+    public List<int>? OptionGroupIds { get; set; }
 }
 

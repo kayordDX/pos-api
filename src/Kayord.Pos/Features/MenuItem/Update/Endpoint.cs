@@ -69,8 +69,38 @@ public class Endpoint : Endpoint<Request, Pos.Entities.MenuItem>
                 _dbContext.MenuItemExtraGroup.RemoveRange(extraGroupsToRemove);
             }
 
+            if (req.OptionGroupIds != null)
+            {
+
+                var existingOptionGroups = await _dbContext.MenuItemOptionGroup
+                    .Where(x => x.MenuItemId == menuItem.MenuItemId)
+                    .ToListAsync();
+
+
+                var existingOptionGroupIds = existingOptionGroups.Select(x => x.OptionGroupId).ToHashSet();
+                var receivedOptionGroupIds = req.OptionGroupIds.ToHashSet();
+
+
+                var idsToAdd = receivedOptionGroupIds.Except(existingOptionGroupIds);
+
+                var idsToRemove = existingOptionGroupIds.Except(receivedOptionGroupIds);
+
+
+                var newOptionGroups = idsToAdd.Select(id => new MenuItemOptionGroup
+                {
+                    OptionGroupId = id,
+                    MenuItemId = menuItem.MenuItemId
+                });
+                await _dbContext.MenuItemOptionGroup.AddRangeAsync(newOptionGroups);
+
+
+                var optionGroupsToRemove = existingOptionGroups
+                    .Where(x => idsToRemove.Contains(x.OptionGroupId));
+                _dbContext.MenuItemOptionGroup.RemoveRange(optionGroupsToRemove);
+            }
+
             await _dbContext.SaveChangesAsync();
-            Entities.MenuSection? menuSection = await _dbContext.MenuSection.Include(x => x.Menu).FirstOrDefaultAsync(x => x.MenuSectionId == req.MenuSectionId);
+            MenuSection? menuSection = await _dbContext.MenuSection.Include(x => x.Menu).FirstOrDefaultAsync(x => x.MenuSectionId == req.MenuSectionId);
             if (menuSection != null)
                 await Helper.ClearCacheOutlet(_dbContext, _redisClient, menuSection.Menu.OutletId);
         }

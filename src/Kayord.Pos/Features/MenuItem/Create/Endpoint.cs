@@ -55,7 +55,19 @@ public class Endpoint : Endpoint<Request, Pos.Entities.MenuItem>
                 });
                 await _dbContext.MenuItemExtraGroup.AddRangeAsync(newExtraGroups);
                 await _dbContext.SaveChangesAsync();
+            }
 
+            if (req.OptionGroupIds != null)
+            {
+                var receivedOptionGroupIds = req.OptionGroupIds.ToHashSet();
+
+                var newOptionGroups = receivedOptionGroupIds.Select(id => new Entities.MenuItemOptionGroup
+                {
+                    OptionGroupId = id,
+                    MenuItemId = menuItem.MenuItemId
+                });
+                await _dbContext.MenuItemOptionGroup.AddRangeAsync(newOptionGroups);
+                await _dbContext.SaveChangesAsync();
             }
 
             Entities.Menu? menu = await _dbContext.Menu.FindAsync(menuSection.MenuId);
