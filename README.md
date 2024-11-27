@@ -19,11 +19,7 @@ docker compose up -d
 ## Tools
 
 ```bash
-dotnet tool install --global dotnet-ef
-dotnet tool update --global dotnet-ef
-
-dotnet tool install --global dotnet-outdated-tool
-dotnet tool update --global dotnet-outdated-tool
+dotnet tool restore
 ```
 
 ## Secrets
