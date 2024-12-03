@@ -21,9 +21,8 @@ public class PaymentCompletedHandler : IEventHandler<PaymentCompletedEvent>
     {
         using var scope = _scopeFactory.CreateScope();
         var _dbContext = scope.Resolve<AppDbContext>();
-        var notificationService = scope.Resolve<NotificationService>();
 
-        if (_dbContext == null || notificationService == null)
+        if (_dbContext == null)
         {
             throw new Exception("Dependency injection failed");
         }
@@ -43,6 +42,11 @@ public class PaymentCompletedHandler : IEventHandler<PaymentCompletedEvent>
         // Send Payment Notification
         string title = $"Paid R{payment.Amount:0.##}";
         string body = $"R{payment.Amount:0.##} paid for booking {payment.TableBookingId} at {payment.DateReceived:dd MM HH:mm}";
-        await notificationService.SendUserNotificationAsync(title, body, payment.UserId);
+        await new NotificationEvent
+        {
+            UserId = payment.UserId,
+            Title = title,
+            Body = body
+        }.PublishAsync(Mode.WaitForNone);
     }
 }

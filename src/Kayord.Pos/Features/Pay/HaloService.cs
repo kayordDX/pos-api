@@ -130,7 +130,7 @@ public class HaloService
                                 PaymentReference = result.PaymentReference,
                                 UserId = userId,
                                 TableBookingId = hRef.TableBookingId
-                            }.PublishAsync(Mode.WaitForNone);
+                            }.PublishAsync();
                         }
                     }
 
