@@ -1,10 +1,9 @@
 using Kayord.Pos.Data;
-using Kayord.Pos.Data.Migrations;
 using Kayord.Pos.Services;
 
 namespace Kayord.Pos.Features.Pay.ManualPayment
 {
-    public class Endpoint : Endpoint<Request, Pos.Entities.Payment>
+    public class Endpoint : Endpoint<Request, Entities.Payment>
     {
         private readonly AppDbContext _dbContext;
         private readonly CurrentUserService _cu;
@@ -22,9 +21,7 @@ namespace Kayord.Pos.Features.Pay.ManualPayment
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-            Entities.Payment entity = new();
-            var reference =
-            entity = new()
+            Entities.Payment entity = new()
             {
                 Amount = req.Amount,
                 PaymentReference = Guid.NewGuid().ToString(),

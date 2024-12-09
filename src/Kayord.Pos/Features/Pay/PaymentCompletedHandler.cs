@@ -36,8 +36,10 @@ public class PaymentCompletedHandler : IEventHandler<PaymentCompletedEvent>
             TableBookingId = eventModel.TableBookingId,
             PaymentTypeId = 1
         };
-        await _dbContext.Payment.AddAsync(payment);
-        await _dbContext.SaveChangesAsync();
+
+        // Running this in process to prevent duplicates.
+        // await _dbContext.Payment.AddAsync(payment);
+        // await _dbContext.SaveChangesAsync();
 
         // Send Payment Notification
         string title = $"Paid R{payment.Amount:0.##}";
