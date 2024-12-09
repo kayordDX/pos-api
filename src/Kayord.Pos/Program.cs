@@ -15,6 +15,7 @@ builder.Services.ConfigureFirebase(builder.Environment);
 builder.Services.ConfigureHealth(builder.Configuration);
 builder.Services.ConfigureHalo(builder.Configuration);
 builder.Services.ConfigureWhatsapp(builder.Configuration);
+builder.Services.ConfigureAI(builder.Configuration);
 
 var corsSection = builder.Configuration.GetSection("Cors");
 builder.Services.ConfigureCors(corsSection.Get<string[]>() ?? [""]);

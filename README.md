@@ -33,6 +33,7 @@ dotnet user-secrets set "Email:Email" "secret" --project src/Kayord.Pos
 dotnet user-secrets set "Email:Password" "secret" --project src/Kayord.Pos
 dotnet user-secrets set "Whatsapp:Host" "secret" --project src/Kayord.Pos
 dotnet user-secrets set "Whatsapp:XApiKey" "secret" --project src/Kayord.Pos
+dotnet user-secrets set "App:GeminiKey" "secret" --project src/Kayord.Pos 
 dotnet user-secrets list --project src/Kayord.Pos
 ```
 
