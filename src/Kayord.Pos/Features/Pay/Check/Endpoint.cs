@@ -38,12 +38,16 @@ public class Endpoint : Endpoint<Request, Response>
 
         int outletId = await Helper.GetUserOutlet(_dbContext, _cu.UserId);
 
+        List<string> checkedHalo = new();
+
         foreach (var haloRequest in haloRequests)
         {
-            if (haloRequest.HaloRef != null)
+            if (haloRequest.HaloRef != null && !checkedHalo.Contains(haloRequest.HaloRef))
             {
                 await _halo.GetStatus(haloRequest.HaloRef, _cu.UserId, outletId);
                 response.Checked = response.Checked + 1;
+                checkedHalo.Add(haloRequest.HaloRef);
+                await Task.Delay(600);
             }
         }
 
