@@ -114,7 +114,7 @@ public class HaloService
             log.Response = logResult;
             StatusResultDto? result = logResult.Deserialize<StatusResultDto>();
 
-            if (result != null)
+            if (result != null && result.Amount != 0)
             {
                 if (result.ResponseCode == 0 && result.TransactionId != string.Empty && result.AuthorisationCode != string.Empty && result.Disposition == "Approved")
                 {
