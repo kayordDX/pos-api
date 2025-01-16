@@ -108,7 +108,8 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
 
             if (soundNotify)
             {
-                await PublishAsync(new SoundEvent() { OutletId = outletId, Divisions = divisions });
+                var roleIds = _dbContext.RoleDivision.Where(x => divisions.Contains(x.DivisionId)).Select(x => x.RoleId).ToList();
+                await PublishAsync(new SoundEvent() { OutletId = outletId, RoleIds = roleIds });
             }
 
             await _dbContext.SaveChangesAsync();

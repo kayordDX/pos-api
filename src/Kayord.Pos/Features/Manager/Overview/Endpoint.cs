@@ -2,6 +2,7 @@ using Kayord.Pos.Data;
 using Kayord.Pos.Services;
 using Kayord.Pos.Entities;
 using Microsoft.EntityFrameworkCore;
+using Kayord.Pos.Features.Role;
 
 namespace Kayord.Pos.Features.Manager.OrderView;
 
@@ -39,18 +40,8 @@ public class Endpoint : Endpoint<Request, List<Response>>
         else
             roleId = role.RoleId;
 
-        List<int> divisionIds = new();
-        if (req.DivisionIds.Count == 0)
-        {
-            divisionIds = _dbContext.RoleDivision
-                .Where(x => x.RoleId == roleId && x.DivisionId != null)
-                .Select(rd => rd.DivisionId)
-                .Where(x => x.HasValue)
-                .Select(x => x!.Value)
-                .ToList();
-        }
-        else
-            divisionIds.AddRange(req.DivisionIds);
+        List<int> divisionIds = await RoleHelper.GetDivisionsForRoles(req.RoleIds, _dbContext, userOutlet.OutletId, _cu.UserId);
+
         foreach (int divisionId in divisionIds)
         {
             var statusIds = _dbContext.OrderItemStatus.Where(x => x.isBackOffice && x.isComplete != true && x.isCancelled != true).Select(rd => rd.OrderItemStatusId).ToList();

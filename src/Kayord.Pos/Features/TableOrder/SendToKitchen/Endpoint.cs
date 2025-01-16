@@ -64,9 +64,11 @@ namespace Kayord.Pos.Features.TableOrder.SendToKitchen
                 }
             }
 
+            var roleIds = _dbContext.RoleDivision.Where(x => divisions.Contains(x.DivisionId)).Select(x => x.RoleId).ToList();
+
             await _dbContext.SaveChangesAsync();
 
-            await PublishAsync(new SoundEvent() { OutletId = outletId, Divisions = divisions });
+            await PublishAsync(new SoundEvent() { OutletId = outletId, RoleIds = roleIds });
 
             await SendAsync(new Response { IsSuccess = true });
         }
