@@ -1,6 +1,6 @@
 namespace Kayord.Pos.Entities;
 
-public class Location
+public class StockLocation
 {
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;

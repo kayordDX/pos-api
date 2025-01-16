@@ -10,8 +10,8 @@ public class InventoryOrder
     public int UnitId { get; set; }
     public Unit Unit { get; set; } = default!;
     public decimal Quantity { get; set; }
-    public int LocationId { get; set; }
-    public Location Location { get; set; } = default!;
+    public int StockLocationId { get; set; }
+    public StockLocation StockLocation { get; set; } = default!;
     public int SupplierId { get; set; }
     public Supplier Supplier { get; set; } = default!;
     public decimal Price { get; set; }

@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Kayord.Pos.Data.Configuration;
 
-public class LocationConfiguration : IEntityTypeConfiguration<Location>
+public class StockLocationConfiguration : IEntityTypeConfiguration<StockLocation>
 {
-    public void Configure(EntityTypeBuilder<Location> builder)
+    public void Configure(EntityTypeBuilder<StockLocation> builder)
     {
         builder.Property(t => t.Id).UseIdentityColumn();
     }
