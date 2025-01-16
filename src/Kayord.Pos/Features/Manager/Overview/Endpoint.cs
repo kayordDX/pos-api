@@ -41,7 +41,14 @@ public class Endpoint : Endpoint<Request, List<Response>>
 
         List<int> divisionIds = new();
         if (req.DivisionIds.Count == 0)
-            _dbContext.RoleDivision.Where(x => x.RoleId == roleId).Select(rd => rd.DivisionId).ToList();
+        {
+            divisionIds = _dbContext.RoleDivision
+                .Where(x => x.RoleId == roleId && x.DivisionId != null)
+                .Select(rd => rd.DivisionId)
+                .Where(x => x.HasValue)
+                .Select(x => x!.Value)
+                .ToList();
+        }
         else
             divisionIds.AddRange(req.DivisionIds);
         foreach (int divisionId in divisionIds)
