@@ -1,8 +1,8 @@
 using Kayord.Pos.Data;
-using Kayord.Pos.Entities;
 using Microsoft.EntityFrameworkCore;
 using Kayord.Pos.Common.Extensions;
 using Kayord.Pos.Common.Models;
+using Kayord.Pos.DTO;
 namespace Kayord.Pos.Features.Stock.GetAll
 {
     public class GetMenuItemsEndpoint : Endpoint<Request, PaginatedList<StockDTO>>

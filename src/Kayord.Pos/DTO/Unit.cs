@@ -1,4 +1,4 @@
-namespace Kayord.Pos.Entities;
+namespace Kayord.Pos.DTO;
 
 public class UnitDTO
 {

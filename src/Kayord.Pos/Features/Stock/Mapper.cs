@@ -1,4 +1,4 @@
-using Kayord.Pos.Entities;
+using Kayord.Pos.DTO;
 using Riok.Mapperly.Abstractions;
 
 namespace Kayord.Pos.Features.Stock;
