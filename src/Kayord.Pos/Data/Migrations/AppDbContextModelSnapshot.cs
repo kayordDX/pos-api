@@ -57,7 +57,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Address");
+                    b.ToTable("Address", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.Adjustment", b =>
@@ -93,7 +93,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasIndex("TableBookingId");
 
-                    b.ToTable("Adjustment");
+                    b.ToTable("Adjustment", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.AdjustmentType", b =>
@@ -113,7 +113,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasKey("AdjustmentTypeId");
 
-                    b.ToTable("AdjustmentType");
+                    b.ToTable("AdjustmentType", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.AdjustmentTypeOutlet", b =>
@@ -136,7 +136,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasIndex("OutletId");
 
-                    b.ToTable("AdjustmentTypeOutlet");
+                    b.ToTable("AdjustmentTypeOutlet", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.Business", b =>
@@ -154,7 +154,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Business");
+                    b.ToTable("Business", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.CashUp", b =>
@@ -198,7 +198,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasIndex("SalesPeriodId");
 
-                    b.ToTable("CashUp");
+                    b.ToTable("CashUp", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.CashUpConfig", b =>
@@ -220,7 +220,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CashUpConfig");
+                    b.ToTable("CashUpConfig", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.CashUpUser", b =>
@@ -265,7 +265,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CashUpUser");
+                    b.ToTable("CashUpUser", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.CashUpUserItem", b =>
@@ -298,7 +298,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasIndex("CashUpUserItemTypeId");
 
-                    b.ToTable("CashUpUserItem");
+                    b.ToTable("CashUpUserItem", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.CashUpUserItemType", b =>
@@ -342,7 +342,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasIndex("PaymentTypeId");
 
-                    b.ToTable("CashUpUserItemType");
+                    b.ToTable("CashUpUserItemType", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.Clock", b =>
@@ -372,7 +372,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Clock");
+                    b.ToTable("Clock", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.Customer", b =>
@@ -398,7 +398,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasIndex("TableId");
 
-                    b.ToTable("Customer");
+                    b.ToTable("Customer", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.Division", b =>
@@ -421,7 +421,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasKey("DivisionId");
 
-                    b.ToTable("Division");
+                    b.ToTable("Division", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.EmailLog", b =>
@@ -450,7 +450,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("EmailLog");
+                    b.ToTable("EmailLog", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.Extra", b =>
@@ -481,7 +481,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasIndex("ExtraGroupId");
 
-                    b.ToTable("Extra");
+                    b.ToTable("Extra", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.ExtraGroup", b =>
@@ -501,7 +501,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasKey("ExtraGroupId");
 
-                    b.ToTable("ExtraGroup");
+                    b.ToTable("ExtraGroup", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.ExtraStock", b =>
@@ -524,7 +524,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasIndex("UnitId");
 
-                    b.ToTable("ExtraStock");
+                    b.ToTable("ExtraStock", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.HaloConfig", b =>
@@ -567,7 +567,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("HaloConfig");
+                    b.ToTable("HaloConfig", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.HaloLog", b =>
@@ -606,7 +606,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("HaloLog");
+                    b.ToTable("HaloLog", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.HaloReference", b =>
@@ -627,7 +627,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("HaloReference");
+                    b.ToTable("HaloReference", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.Menu", b =>
@@ -664,7 +664,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasIndex("OutletId");
 
-                    b.ToTable("Menu");
+                    b.ToTable("Menu", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.MenuItem", b =>
@@ -735,7 +735,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("SearchVector"), "GIN");
 
-                    b.ToTable("MenuItem");
+                    b.ToTable("MenuItem", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.MenuItemExtraGroup", b =>
@@ -750,7 +750,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasIndex("MenuItemId");
 
-                    b.ToTable("MenuItemExtraGroup");
+                    b.ToTable("MenuItemExtraGroup", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.MenuItemOptionGroup", b =>
@@ -765,7 +765,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasIndex("MenuItemId");
 
-                    b.ToTable("MenuItemOptionGroup");
+                    b.ToTable("MenuItemOptionGroup", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.MenuItemStock", b =>
@@ -783,7 +783,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasIndex("StockId");
 
-                    b.ToTable("MenuItemStock");
+                    b.ToTable("MenuItemStock", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.MenuSection", b =>
@@ -825,7 +825,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("MenuSection");
+                    b.ToTable("MenuSection", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.NotificationLog", b =>
@@ -864,7 +864,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("NotificationLog");
+                    b.ToTable("NotificationLog", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.NotificationUser", b =>
@@ -880,7 +880,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasKey("UserId", "Token");
 
-                    b.ToTable("NotificationUser");
+                    b.ToTable("NotificationUser", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.Option", b =>
@@ -911,7 +911,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasIndex("OptionGroupId");
 
-                    b.ToTable("Option");
+                    b.ToTable("Option", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.OptionGroup", b =>
@@ -937,7 +937,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasKey("OptionGroupId");
 
-                    b.ToTable("OptionGroup");
+                    b.ToTable("OptionGroup", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.OptionStock", b =>
@@ -960,7 +960,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasIndex("UnitId");
 
-                    b.ToTable("OptionStock");
+                    b.ToTable("OptionStock", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.OrderGroup", b =>
@@ -973,7 +973,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasKey("OrderGroupId");
 
-                    b.ToTable("OrderGroup");
+                    b.ToTable("OrderGroup", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.OrderItem", b =>
@@ -1018,7 +1018,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasIndex("TableBookingId");
 
-                    b.ToTable("OrderItem");
+                    b.ToTable("OrderItem", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.OrderItemExtra", b =>
@@ -1041,7 +1041,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasIndex("OrderItemId");
 
-                    b.ToTable("OrderItemExtra");
+                    b.ToTable("OrderItemExtra", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.OrderItemOption", b =>
@@ -1064,7 +1064,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasIndex("OrderItemId");
 
-                    b.ToTable("OrderItemOption");
+                    b.ToTable("OrderItemOption", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.OrderItemStatus", b =>
@@ -1108,7 +1108,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasKey("OrderItemStatusId");
 
-                    b.ToTable("OrderItemStatus");
+                    b.ToTable("OrderItemStatus", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.Outlet", b =>
@@ -1146,7 +1146,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasIndex("BusinessId");
 
-                    b.ToTable("Outlet");
+                    b.ToTable("Outlet", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.OutletExtraGroup", b =>
@@ -1169,7 +1169,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasIndex("OutletId");
 
-                    b.ToTable("OutletExtraGroup");
+                    b.ToTable("OutletExtraGroup", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.OutletPaymentType", b =>
@@ -1187,7 +1187,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasIndex("PaymentTypeId");
 
-                    b.ToTable("OutletPaymentType");
+                    b.ToTable("OutletPaymentType", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.Payment", b =>
@@ -1227,7 +1227,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasIndex("TableBookingId");
 
-                    b.ToTable("Payment");
+                    b.ToTable("Payment", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.PaymentType", b =>
@@ -1253,7 +1253,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasKey("PaymentTypeId");
 
-                    b.ToTable("PaymentType");
+                    b.ToTable("PaymentType", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.Printer", b =>
@@ -1301,7 +1301,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Printer");
+                    b.ToTable("Printer", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.Role", b =>
@@ -1331,7 +1331,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasKey("RoleId");
 
-                    b.ToTable("Role");
+                    b.ToTable("Role", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.RoleDivision", b =>
@@ -1352,7 +1352,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasIndex("DivisionId");
 
-                    b.ToTable("RoleDivision");
+                    b.ToTable("RoleDivision", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.SalesPeriod", b =>
@@ -1379,7 +1379,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasIndex("OutletId");
 
-                    b.ToTable("SalesPeriod");
+                    b.ToTable("SalesPeriod", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.Section", b =>
@@ -1401,7 +1401,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasIndex("OutletId");
 
-                    b.ToTable("Section");
+                    b.ToTable("Section", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.Stock", b =>
@@ -1431,7 +1431,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasIndex("UnitId");
 
-                    b.ToTable("Stock");
+                    b.ToTable("Stock", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.StockCategory", b =>
@@ -1448,7 +1448,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("StockCategory");
+                    b.ToTable("StockCategory", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.StockItem", b =>
@@ -1469,7 +1469,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasIndex("StockLocationId");
 
-                    b.ToTable("StockItem");
+                    b.ToTable("StockItem", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.StockLocation", b =>
@@ -1496,7 +1496,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasIndex("OutletId");
 
-                    b.ToTable("StockLocation");
+                    b.ToTable("StockLocation", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.Supplier", b =>
@@ -1538,7 +1538,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasIndex("SupplierPlatformId");
 
-                    b.ToTable("Supplier");
+                    b.ToTable("Supplier", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.SupplierPlatform", b =>
@@ -1558,7 +1558,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SupplierPlatform");
+                    b.ToTable("SupplierPlatform", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.Table", b =>
@@ -1586,7 +1586,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasIndex("SectionId");
 
-                    b.ToTable("Table");
+                    b.ToTable("Table", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.TableBooking", b =>
@@ -1639,7 +1639,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("TableBooking");
+                    b.ToTable("TableBooking", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.Tag", b =>
@@ -1661,7 +1661,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasIndex("MenuItemId");
 
-                    b.ToTable("Tag");
+                    b.ToTable("Tag", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.Unit", b =>
@@ -1678,7 +1678,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Unit");
+                    b.ToTable("Unit", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.User", b =>
@@ -1715,7 +1715,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("User");
+                    b.ToTable("User", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.UserOutlet", b =>
@@ -1738,7 +1738,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserOutlet");
+                    b.ToTable("UserOutlet", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.UserRoleOutlet", b =>
@@ -1779,7 +1779,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserRoleOutlet");
+                    b.ToTable("UserRoleOutlet", (string)null);
                 });
 
             modelBuilder.Entity("OrderItemStatusAudit", b =>
@@ -1805,7 +1805,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("OrderItemStatusAudit");
+                    b.ToTable("OrderItemStatusAudit", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.Adjustment", b =>
