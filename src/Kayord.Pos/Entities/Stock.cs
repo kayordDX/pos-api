@@ -1,6 +1,6 @@
 namespace Kayord.Pos.Entities;
 
-public class Stock
+public class Stock : AuditableEntity
 {
     public int Id { get; set; }
     public int OutletId { get; set; }

@@ -58,6 +58,10 @@ public class AppDbContext : DbContext
     public DbSet<OutletExtraGroup> OutletExtraGroup => Set<OutletExtraGroup>();
     public DbSet<OrderGroup> OrderGroup => Set<OrderGroup>();
     public DbSet<Stock> Stock => Set<Stock>();
+    public DbSet<StockItem> StockItem => Set<StockItem>();
+    public DbSet<StockLocation> StockLocation => Set<StockLocation>();
+    public DbSet<StockOrder> StockOrder => Set<StockOrder>();
+    public DbSet<StockOrderItem> StockOrderItem => Set<StockOrderItem>();
     public DbSet<Supplier> Supplier => Set<Supplier>();
     public DbSet<NotificationUser> NotificationUser => Set<NotificationUser>();
     public DbSet<NotificationLog> NotificationLog => Set<NotificationLog>();

@@ -65,3 +65,23 @@ curl --request GET \
   --url https://whatsapp.kayord.com/session/qr/kayord/image \
   --header 'x-api-key: apiKey'  
 ```
+
+## TODO:
+
+- MenuItemStock
+  - Delete all items
+  - Should have StockItemId
+  - Quantity should become Amount
+- StockLocation
+  - Remove table completely
+  - Fix all references and replace with division
+- StockOrderItem
+  - Should have StockId instead of StockItemId
+- StockItemAudit Table
+  - Table should show who changed it
+  - Date
+  - Old Value and New Value
+- StockAllocate
+- StockAllocateItem
+- StockAllocateStatus
+  
