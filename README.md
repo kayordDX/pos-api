@@ -85,3 +85,8 @@ curl --request GET \
 - [ ] StockAllocateItem
 - [ ] StockAllocateStatus
   
+## On Deployment
+  
+- [ ] Truncate Tables
+  - [ ] MenuItemStock
+  - [ ] Supplier (Had to delete not truncate)

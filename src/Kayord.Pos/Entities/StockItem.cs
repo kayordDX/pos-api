@@ -2,6 +2,7 @@ namespace Kayord.Pos.Entities;
 
 public class StockItem
 {
+    public int Id { get; set; }
     public int StockId { get; set; }
     public Stock Stock { get; set; } = default!;
     public int DivisionId { get; set; }

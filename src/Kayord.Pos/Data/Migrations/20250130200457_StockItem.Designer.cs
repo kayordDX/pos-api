@@ -13,8 +13,8 @@ using NpgsqlTypes;
 namespace Kayord.Pos.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250128132038_StockAuditable")]
-    partial class StockAuditable
+    [Migration("20250130200457_StockItem")]
+    partial class StockItem
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -427,6 +427,23 @@ namespace Kayord.Pos.Data.Migrations
                     b.ToTable("Division");
                 });
 
+            modelBuilder.Entity("Kayord.Pos.Entities.DivisionType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("DivisionName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DivisionType");
+                });
+
             modelBuilder.Entity("Kayord.Pos.Entities.EmailLog", b =>
                 {
                     b.Property<long>("Id")
@@ -776,15 +793,15 @@ namespace Kayord.Pos.Data.Migrations
                     b.Property<int>("MenuItemId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("StockId")
+                    b.Property<int>("StockItemId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("Quantity")
+                    b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
-                    b.HasKey("MenuItemId", "StockId");
+                    b.HasKey("MenuItemId", "StockItemId");
 
-                    b.HasIndex("StockId");
+                    b.HasIndex("StockItemId");
 
                     b.ToTable("MenuItemStock");
                 });
@@ -1468,50 +1485,31 @@ namespace Kayord.Pos.Data.Migrations
 
             modelBuilder.Entity("Kayord.Pos.Entities.StockItem", b =>
                 {
-                    b.Property<int>("StockId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("StockLocationId")
-                        .HasColumnType("integer");
-
-                    b.Property<decimal>("Actual")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal>("Threshold")
-                        .HasColumnType("numeric");
-
-                    b.HasKey("StockId", "StockLocationId");
-
-                    b.HasIndex("StockLocationId");
-
-                    b.ToTable("StockItem");
-                });
-
-            modelBuilder.Entity("Kayord.Pos.Entities.StockLocation", b =>
-                {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AddressId")
+                    b.Property<decimal>("Actual")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("DivisionId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("OutletId")
+                    b.Property<int>("StockId")
                         .HasColumnType("integer");
+
+                    b.Property<decimal>("Threshold")
+                        .HasColumnType("numeric");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddressId");
+                    b.HasIndex("DivisionId");
 
-                    b.HasIndex("OutletId");
+                    b.HasIndex("StockId");
 
-                    b.ToTable("StockLocation");
+                    b.ToTable("StockItem");
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.StockOrder", b =>
@@ -1527,6 +1525,9 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("text");
+
+                    b.Property<int>("DivisionId")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("timestamp with time zone");
@@ -1544,9 +1545,6 @@ namespace Kayord.Pos.Data.Migrations
                     b.Property<int>("OutletId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("StockLocationId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("StockOrderStatusId")
                         .HasColumnType("integer");
 
@@ -1555,7 +1553,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("StockLocationId");
+                    b.HasIndex("DivisionId");
 
                     b.HasIndex("StockOrderStatusId");
 
@@ -1569,7 +1567,7 @@ namespace Kayord.Pos.Data.Migrations
                     b.Property<int>("StockOrderId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("StockItemId")
+                    b.Property<int>("StockId")
                         .HasColumnType("integer");
 
                     b.Property<decimal>("Actual")
@@ -1594,15 +1592,9 @@ namespace Kayord.Pos.Data.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric");
 
-                    b.Property<int>("StockItemStockId")
-                        .HasColumnType("integer");
+                    b.HasKey("StockOrderId", "StockId");
 
-                    b.Property<int>("StockItemStockLocationId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("StockOrderId", "StockItemId");
-
-                    b.HasIndex("StockItemStockId", "StockItemStockLocationId");
+                    b.HasIndex("StockId");
 
                     b.ToTable("StockOrderItem");
                 });
@@ -1652,6 +1644,9 @@ namespace Kayord.Pos.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("DivisionId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
@@ -1663,15 +1658,12 @@ namespace Kayord.Pos.Data.Migrations
                     b.Property<int>("OutletId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("StockLocationId")
-                        .HasColumnType("integer");
-
                     b.Property<int?>("SupplierPlatformId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("StockLocationId");
+                    b.HasIndex("DivisionId");
 
                     b.HasIndex("SupplierPlatformId");
 
@@ -2168,15 +2160,15 @@ namespace Kayord.Pos.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Kayord.Pos.Entities.Stock", "Stock")
+                    b.HasOne("Kayord.Pos.Entities.StockItem", "StockItem")
                         .WithMany()
-                        .HasForeignKey("StockId")
+                        .HasForeignKey("StockItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("MenuItem");
 
-                    b.Navigation("Stock");
+                    b.Navigation("StockItem");
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.MenuSection", b =>
@@ -2425,47 +2417,28 @@ namespace Kayord.Pos.Data.Migrations
 
             modelBuilder.Entity("Kayord.Pos.Entities.StockItem", b =>
                 {
+                    b.HasOne("Kayord.Pos.Entities.Division", "Division")
+                        .WithMany()
+                        .HasForeignKey("DivisionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Kayord.Pos.Entities.Stock", "Stock")
                         .WithMany("StockItems")
                         .HasForeignKey("StockId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Kayord.Pos.Entities.StockLocation", "StockLocation")
-                        .WithMany()
-                        .HasForeignKey("StockLocationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Division");
 
                     b.Navigation("Stock");
-
-                    b.Navigation("StockLocation");
-                });
-
-            modelBuilder.Entity("Kayord.Pos.Entities.StockLocation", b =>
-                {
-                    b.HasOne("Kayord.Pos.Entities.Address", "Address")
-                        .WithMany()
-                        .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Kayord.Pos.Entities.Outlet", "Outlet")
-                        .WithMany()
-                        .HasForeignKey("OutletId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Address");
-
-                    b.Navigation("Outlet");
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.StockOrder", b =>
                 {
-                    b.HasOne("Kayord.Pos.Entities.StockLocation", "StockLocation")
+                    b.HasOne("Kayord.Pos.Entities.Division", "Division")
                         .WithMany()
-                        .HasForeignKey("StockLocationId")
+                        .HasForeignKey("DivisionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -2481,7 +2454,7 @@ namespace Kayord.Pos.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("StockLocation");
+                    b.Navigation("Division");
 
                     b.Navigation("StockOrderStatus");
 
@@ -2490,28 +2463,28 @@ namespace Kayord.Pos.Data.Migrations
 
             modelBuilder.Entity("Kayord.Pos.Entities.StockOrderItem", b =>
                 {
+                    b.HasOne("Kayord.Pos.Entities.Stock", "Stock")
+                        .WithMany()
+                        .HasForeignKey("StockId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Kayord.Pos.Entities.StockOrder", "StockOrder")
                         .WithMany("StockOrderItems")
                         .HasForeignKey("StockOrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Kayord.Pos.Entities.StockItem", "StockItem")
-                        .WithMany()
-                        .HasForeignKey("StockItemStockId", "StockItemStockLocationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("StockItem");
+                    b.Navigation("Stock");
 
                     b.Navigation("StockOrder");
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.Supplier", b =>
                 {
-                    b.HasOne("Kayord.Pos.Entities.StockLocation", "StockLocation")
+                    b.HasOne("Kayord.Pos.Entities.Division", "Division")
                         .WithMany()
-                        .HasForeignKey("StockLocationId")
+                        .HasForeignKey("DivisionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -2519,7 +2492,7 @@ namespace Kayord.Pos.Data.Migrations
                         .WithMany()
                         .HasForeignKey("SupplierPlatformId");
 
-                    b.Navigation("StockLocation");
+                    b.Navigation("Division");
 
                     b.Navigation("SupplierPlatform");
                 });

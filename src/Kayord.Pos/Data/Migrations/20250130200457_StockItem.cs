@@ -13,6 +13,10 @@ namespace Kayord.Pos.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
+                name: "FK_MenuItemStock_Stock_StockId",
+                table: "MenuItemStock");
+
+            migrationBuilder.DropForeignKey(
                 name: "FK_RoleDivision_Division_DivisionId",
                 table: "RoleDivision");
 
@@ -31,39 +35,44 @@ namespace Kayord.Pos.Data.Migrations
             migrationBuilder.DropTable(
                 name: "InventoryOrder");
 
-            migrationBuilder.Sql("""
-            DROP TABLE "InventoryStock" CASCADE;
-            """);
+            migrationBuilder.DropTable(
+                name: "InventoryStock");
 
             migrationBuilder.DropTable(
                 name: "Inventory");
 
-            migrationBuilder.DropColumn(
-                name: "Actual",
-                table: "Stock");
+            migrationBuilder.DropIndex(
+                name: "IX_Supplier_LocationId",
+                table: "Supplier");
 
-            migrationBuilder.DropColumn(
-                name: "IsBulkRecipe",
-                table: "Stock");
-
-            migrationBuilder.DropColumn(
-                name: "Threshold",
+            migrationBuilder.DropIndex(
+                name: "IX_Stock_LocationId",
                 table: "Stock");
 
             migrationBuilder.RenameColumn(
                 name: "LocationId",
                 table: "Supplier",
-                newName: "StockLocationId");
-
-            migrationBuilder.RenameIndex(
-                name: "IX_Supplier_LocationId",
-                table: "Supplier",
-                newName: "IX_Supplier_StockLocationId");
+                newName: "OutletId");
 
             migrationBuilder.RenameColumn(
                 name: "LocationId",
                 table: "Stock",
                 newName: "OutletId");
+
+            migrationBuilder.RenameColumn(
+                name: "Quantity",
+                table: "MenuItemStock",
+                newName: "Amount");
+
+            migrationBuilder.RenameColumn(
+                name: "StockId",
+                table: "MenuItemStock",
+                newName: "StockItemId");
+
+            migrationBuilder.RenameIndex(
+                name: "IX_MenuItemStock_StockId",
+                table: "MenuItemStock",
+                newName: "IX_MenuItemStock_StockItemId");
 
             migrationBuilder.AlterColumn<int>(
                 name: "SupplierPlatformId",
@@ -74,11 +83,36 @@ namespace Kayord.Pos.Data.Migrations
                 oldType: "integer");
 
             migrationBuilder.AddColumn<int>(
-                name: "OutletId",
+                name: "DivisionId",
                 table: "Supplier",
                 type: "integer",
                 nullable: false,
                 defaultValue: 0);
+
+            migrationBuilder.AddColumn<DateTime>(
+                name: "Created",
+                table: "Stock",
+                type: "timestamp with time zone",
+                nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
+            migrationBuilder.AddColumn<string>(
+                name: "CreatedBy",
+                table: "Stock",
+                type: "text",
+                nullable: true);
+
+            migrationBuilder.AddColumn<DateTime>(
+                name: "LastModified",
+                table: "Stock",
+                type: "timestamp with time zone",
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "LastModifiedBy",
+                table: "Stock",
+                type: "text",
+                nullable: true);
 
             migrationBuilder.AlterColumn<int>(
                 name: "DivisionId",
@@ -105,64 +139,37 @@ namespace Kayord.Pos.Data.Migrations
                 defaultValue: 0);
 
             migrationBuilder.CreateTable(
-                name: "StockLocation",
+                name: "DivisionType",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    AddressId = table.Column<int>(type: "integer", nullable: false),
-                    OutletId = table.Column<int>(type: "integer", nullable: false)
+                    DivisionName = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_StockLocation", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_StockLocation_Address_AddressId",
-                        column: x => x.AddressId,
-                        principalTable: "Address",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_StockLocation_Outlet_OutletId",
-                        column: x => x.OutletId,
-                        principalTable: "Outlet",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                    table.PrimaryKey("PK_DivisionType", x => x.Id);
                 });
-
-
-            migrationBuilder.Sql("""
-            INSERT INTO "StockLocation" ("Id", "AddressId", "OutletId", "Name")
-            SELECT "Id", "AddressId", "OutletId", "Name" FROM "Location";
-            """);
-
-            migrationBuilder.DropTable(
-                name: "Location");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Stock_LocationId",
-                table: "Stock");
-
-
 
             migrationBuilder.CreateTable(
                 name: "StockItem",
                 columns: table => new
                 {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     StockId = table.Column<int>(type: "integer", nullable: false),
-                    StockLocationId = table.Column<int>(type: "integer", nullable: false),
+                    DivisionId = table.Column<int>(type: "integer", nullable: false),
                     Threshold = table.Column<decimal>(type: "numeric", nullable: false),
                     Actual = table.Column<decimal>(type: "numeric", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_StockItem", x => new { x.StockId, x.StockLocationId });
+                    table.PrimaryKey("PK_StockItem", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_StockItem_StockLocation_StockLocationId",
-                        column: x => x.StockLocationId,
-                        principalTable: "StockLocation",
-                        principalColumn: "Id",
+                        name: "FK_StockItem_Division_DivisionId",
+                        column: x => x.DivisionId,
+                        principalTable: "Division",
+                        principalColumn: "DivisionId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_StockItem_Stock_StockId",
@@ -172,20 +179,136 @@ namespace Kayord.Pos.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "StockOrderStatus",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: true),
+                    LastModified = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastModifiedBy = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StockOrderStatus", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "StockOrder",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    OutletId = table.Column<int>(type: "integer", nullable: false),
+                    OrderNumber = table.Column<string>(type: "text", nullable: false),
+                    StockOrderStatusId = table.Column<int>(type: "integer", nullable: false),
+                    DivisionId = table.Column<int>(type: "integer", nullable: false),
+                    OrderDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    SupplierId = table.Column<int>(type: "integer", nullable: false),
+                    Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: true),
+                    LastModified = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastModifiedBy = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StockOrder", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_StockOrder_Division_DivisionId",
+                        column: x => x.DivisionId,
+                        principalTable: "Division",
+                        principalColumn: "DivisionId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_StockOrder_StockOrderStatus_StockOrderStatusId",
+                        column: x => x.StockOrderStatusId,
+                        principalTable: "StockOrderStatus",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_StockOrder_Supplier_SupplierId",
+                        column: x => x.SupplierId,
+                        principalTable: "Supplier",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "StockOrderItem",
+                columns: table => new
+                {
+                    StockOrderId = table.Column<int>(type: "integer", nullable: false),
+                    StockId = table.Column<int>(type: "integer", nullable: false),
+                    OrderNumber = table.Column<string>(type: "text", nullable: false),
+                    Actual = table.Column<decimal>(type: "numeric", nullable: false),
+                    Price = table.Column<decimal>(type: "numeric", nullable: false),
+                    Created = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: true),
+                    LastModified = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastModifiedBy = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StockOrderItem", x => new { x.StockOrderId, x.StockId });
+                    table.ForeignKey(
+                        name: "FK_StockOrderItem_StockOrder_StockOrderId",
+                        column: x => x.StockOrderId,
+                        principalTable: "StockOrder",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_StockOrderItem_Stock_StockId",
+                        column: x => x.StockId,
+                        principalTable: "Stock",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
-                name: "IX_StockItem_StockLocationId",
+                name: "IX_Supplier_DivisionId",
+                table: "Supplier",
+                column: "DivisionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StockItem_DivisionId",
                 table: "StockItem",
-                column: "StockLocationId");
+                column: "DivisionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StockLocation_AddressId",
-                table: "StockLocation",
-                column: "AddressId");
+                name: "IX_StockItem_StockId",
+                table: "StockItem",
+                column: "StockId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StockLocation_OutletId",
-                table: "StockLocation",
-                column: "OutletId");
+                name: "IX_StockOrder_DivisionId",
+                table: "StockOrder",
+                column: "DivisionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StockOrder_StockOrderStatusId",
+                table: "StockOrder",
+                column: "StockOrderStatusId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StockOrder_SupplierId",
+                table: "StockOrder",
+                column: "SupplierId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StockOrderItem_StockId",
+                table: "StockOrderItem",
+                column: "StockId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_MenuItemStock_StockItem_StockItemId",
+                table: "MenuItemStock",
+                column: "StockItemId",
+                principalTable: "StockItem",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_RoleDivision_Division_DivisionId",
@@ -196,11 +319,11 @@ namespace Kayord.Pos.Data.Migrations
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Supplier_StockLocation_StockLocationId",
+                name: "FK_Supplier_Division_DivisionId",
                 table: "Supplier",
-                column: "StockLocationId",
-                principalTable: "StockLocation",
-                principalColumn: "Id",
+                column: "DivisionId",
+                principalTable: "Division",
+                principalColumn: "DivisionId",
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
@@ -209,49 +332,40 @@ namespace Kayord.Pos.Data.Migrations
                 column: "SupplierPlatformId",
                 principalTable: "SupplierPlatform",
                 principalColumn: "Id");
+
+            // migrationBuilder.DropTable(
+            //     name: "Location");
+            migrationBuilder.Sql("""
+            DROP TABLE "Location" CASCADE;
+            """);
+
+            migrationBuilder.DropColumn(
+                name: "Actual",
+                table: "Stock");
+
+            migrationBuilder.DropColumn(
+                            name: "IsBulkRecipe",
+                            table: "Stock");
+
+            migrationBuilder.DropColumn(
+                name: "Threshold",
+                table: "Stock");
+
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Location",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    AddressId = table.Column<int>(type: "integer", nullable: false),
-                    OutletId = table.Column<int>(type: "integer", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Location", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Location_Address_AddressId",
-                        column: x => x.AddressId,
-                        principalTable: "Address",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Location_Outlet_OutletId",
-                        column: x => x.OutletId,
-                        principalTable: "Outlet",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.Sql("""
-            INSERT INTO "Location" ("Id", "AddressId", "OutletId", "Name")
-            SELECT "Id", "AddressId", "OutletId", "Name" FROM "StockLocation";
-            """);
+            migrationBuilder.DropForeignKey(
+                name: "FK_MenuItemStock_StockItem_StockItemId",
+                table: "MenuItemStock");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_RoleDivision_Division_DivisionId",
                 table: "RoleDivision");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_Supplier_StockLocation_StockLocationId",
+                name: "FK_Supplier_Division_DivisionId",
                 table: "Supplier");
 
             migrationBuilder.DropForeignKey(
@@ -259,14 +373,43 @@ namespace Kayord.Pos.Data.Migrations
                 table: "Supplier");
 
             migrationBuilder.DropTable(
+                name: "DivisionType");
+
+            migrationBuilder.DropTable(
                 name: "StockItem");
 
             migrationBuilder.DropTable(
-                name: "StockLocation");
+                name: "StockOrderItem");
+
+            migrationBuilder.DropTable(
+                name: "StockOrder");
+
+            migrationBuilder.DropTable(
+                name: "StockOrderStatus");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Supplier_DivisionId",
+                table: "Supplier");
 
             migrationBuilder.DropColumn(
-                name: "OutletId",
+                name: "DivisionId",
                 table: "Supplier");
+
+            migrationBuilder.DropColumn(
+                name: "Created",
+                table: "Stock");
+
+            migrationBuilder.DropColumn(
+                name: "CreatedBy",
+                table: "Stock");
+
+            migrationBuilder.DropColumn(
+                name: "LastModified",
+                table: "Stock");
+
+            migrationBuilder.DropColumn(
+                name: "LastModifiedBy",
+                table: "Stock");
 
             migrationBuilder.DropColumn(
                 name: "DivisionTypeId",
@@ -277,19 +420,29 @@ namespace Kayord.Pos.Data.Migrations
                 table: "Division");
 
             migrationBuilder.RenameColumn(
-                name: "StockLocationId",
+                name: "OutletId",
                 table: "Supplier",
                 newName: "LocationId");
-
-            migrationBuilder.RenameIndex(
-                name: "IX_Supplier_StockLocationId",
-                table: "Supplier",
-                newName: "IX_Supplier_LocationId");
 
             migrationBuilder.RenameColumn(
                 name: "OutletId",
                 table: "Stock",
                 newName: "LocationId");
+
+            migrationBuilder.RenameColumn(
+                name: "Amount",
+                table: "MenuItemStock",
+                newName: "Quantity");
+
+            migrationBuilder.RenameColumn(
+                name: "StockItemId",
+                table: "MenuItemStock",
+                newName: "StockId");
+
+            migrationBuilder.RenameIndex(
+                name: "IX_MenuItemStock_StockItemId",
+                table: "MenuItemStock",
+                newName: "IX_MenuItemStock_StockId");
 
             migrationBuilder.AlterColumn<int>(
                 name: "SupplierPlatformId",
@@ -330,6 +483,32 @@ namespace Kayord.Pos.Data.Migrations
                 oldClrType: typeof(int),
                 oldType: "integer");
 
+            migrationBuilder.CreateTable(
+                name: "Location",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    AddressId = table.Column<int>(type: "integer", nullable: false),
+                    OutletId = table.Column<int>(type: "integer", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Location", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Location_Address_AddressId",
+                        column: x => x.AddressId,
+                        principalTable: "Address",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Location_Outlet_OutletId",
+                        column: x => x.OutletId,
+                        principalTable: "Outlet",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
 
             migrationBuilder.CreateTable(
                 name: "Inventory",
@@ -439,6 +618,11 @@ namespace Kayord.Pos.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Supplier_LocationId",
+                table: "Supplier",
+                column: "LocationId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Stock_LocationId",
                 table: "Stock",
                 column: "LocationId");
@@ -492,6 +676,14 @@ namespace Kayord.Pos.Data.Migrations
                 name: "IX_Location_OutletId",
                 table: "Location",
                 column: "OutletId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_MenuItemStock_Stock_StockId",
+                table: "MenuItemStock",
+                column: "StockId",
+                principalTable: "Stock",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_RoleDivision_Division_DivisionId",

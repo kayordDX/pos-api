@@ -796,15 +796,9 @@ namespace Kayord.Pos.Data.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
-                    b.Property<int>("StockItemDivisionId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("StockItemStockId")
-                        .HasColumnType("integer");
-
                     b.HasKey("MenuItemId", "StockItemId");
 
-                    b.HasIndex("StockItemStockId", "StockItemDivisionId");
+                    b.HasIndex("StockItemId");
 
                     b.ToTable("MenuItemStock");
                 });
@@ -1488,21 +1482,29 @@ namespace Kayord.Pos.Data.Migrations
 
             modelBuilder.Entity("Kayord.Pos.Entities.StockItem", b =>
                 {
-                    b.Property<int>("StockId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    b.Property<int>("DivisionId")
-                        .HasColumnType("integer");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("Actual")
                         .HasColumnType("numeric");
 
+                    b.Property<int>("DivisionId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("StockId")
+                        .HasColumnType("integer");
+
                     b.Property<decimal>("Threshold")
                         .HasColumnType("numeric");
 
-                    b.HasKey("StockId", "DivisionId");
+                    b.HasKey("Id");
 
                     b.HasIndex("DivisionId");
+
+                    b.HasIndex("StockId");
 
                     b.ToTable("StockItem");
                 });
@@ -2157,7 +2159,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasOne("Kayord.Pos.Entities.StockItem", "StockItem")
                         .WithMany()
-                        .HasForeignKey("StockItemStockId", "StockItemDivisionId")
+                        .HasForeignKey("StockItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
