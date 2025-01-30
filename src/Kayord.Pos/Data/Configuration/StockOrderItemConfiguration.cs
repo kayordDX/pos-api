@@ -8,6 +8,6 @@ public class StockOrderItemConfiguration : IEntityTypeConfiguration<StockOrderIt
 {
     public void Configure(EntityTypeBuilder<StockOrderItem> builder)
     {
-        builder.HasKey(k => new { k.StockOrderId, k.StockItemId });
+        builder.HasKey(k => new { k.StockOrderId, k.StockId });
     }
 }

@@ -21,7 +21,7 @@ namespace Kayord.Pos.Features.Stock.Order.GetAll
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
             var results = await _dbContext.StockOrder
-                .Include(x => x.StockLocation)
+                .Include(x => x.Division)
                 .Include(x => x.Supplier)
                 .Include(x => x.StockOrderStatus)
                 .GetPagedAsync(req, ct);

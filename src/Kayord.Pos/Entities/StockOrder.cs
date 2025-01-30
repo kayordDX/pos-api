@@ -7,8 +7,8 @@ public class StockOrder : AuditableEntity
     public string OrderNumber { get; set; } = string.Empty;
     public int StockOrderStatusId { get; set; }
     public StockOrderStatus StockOrderStatus { get; set; } = default!;
-    public int StockLocationId { get; set; }
-    public StockLocation StockLocation { get; set; } = default!;
+    public int DivisionId { get; set; }
+    public Division Division { get; set; } = default!;
     public DateTime OrderDate { get; set; }
     public int SupplierId { get; set; }
     public Supplier Supplier { get; set; } = default!;

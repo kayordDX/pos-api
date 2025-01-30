@@ -68,20 +68,20 @@ curl --request GET \
 
 ## TODO:
 
-- MenuItemStock
-  - Delete all items
-  - Should have StockItemId
-  - Quantity should become Amount
-- StockLocation
-  - Remove table completely
-  - Fix all references and replace with division
-- StockOrderItem
-  - Should have StockId instead of StockItemId
-- StockItemAudit Table
-  - Table should show who changed it
-  - Date
-  - Old Value and New Value
-- StockAllocate
-- StockAllocateItem
-- StockAllocateStatus
+- [x] MenuItemStock
+  - [x] Delete all items
+  - [x] Should have StockItemId
+  - [x] Quantity should become Amount
+- [x] StockLocation
+  - [x] Remove table completely
+  - [x] Fix all references and replace with division
+- [x] StockOrderItem
+  - [x] Should have StockId instead of StockItemId
+- [ ] StockItemAudit Table
+  - [ ] Table should show who changed it
+  - [ ] Date
+  - [ ] Old Value and New Value
+- [ ] StockAllocate
+- [ ] StockAllocateItem
+- [ ] StockAllocateStatus
   

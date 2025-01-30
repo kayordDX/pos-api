@@ -6,7 +6,7 @@ public class Request
 {
     public int Id { get; set; }
     public string OrderNumber { get; set; } = string.Empty;
-    public int StockLocationId { get; set; }
+    public int DivisionId { get; set; }
     public int SupplierId { get; set; }
 }
 

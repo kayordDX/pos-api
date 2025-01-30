@@ -9,6 +9,6 @@ public class StockItemConfiguration : IEntityTypeConfiguration<StockItem>
     public void Configure(EntityTypeBuilder<StockItem> builder)
     {
         builder
-            .HasKey(k => new { k.StockId, k.StockLocationId });
+            .HasKey(k => new { k.StockId, k.DivisionId });
     }
 }

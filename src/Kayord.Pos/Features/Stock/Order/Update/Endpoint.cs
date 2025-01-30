@@ -26,7 +26,7 @@ public class Endpoint : Endpoint<Request, Entities.StockOrder>
         }
 
         entity.OrderNumber = req.OrderNumber;
-        entity.StockLocationId = req.StockLocationId;
+        entity.DivisionId = req.DivisionId;
         entity.SupplierId = req.SupplierId;
 
         await _dbContext.SaveChangesAsync();

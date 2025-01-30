@@ -24,7 +24,7 @@ public class Endpoint : Endpoint<Request, Entities.StockOrder>
         {
             OutletId = req.OutletId,
             OrderNumber = req.OrderNumber,
-            StockLocationId = req.StockLocationId,
+            DivisionId = req.DivisionId,
             SupplierId = req.SupplierId,
             StockOrderStatusId = 1,
         };

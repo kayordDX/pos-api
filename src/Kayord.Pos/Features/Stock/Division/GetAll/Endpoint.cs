@@ -1,11 +1,9 @@
 using Kayord.Pos.Data;
 using Microsoft.EntityFrameworkCore;
-using Kayord.Pos.Common.Extensions;
-using Kayord.Pos.Common.Models;
-using Kayord.Pos.DTO;
-namespace Kayord.Pos.Features.Stock.Location.GetAll
+
+namespace Kayord.Pos.Features.Stock.Division.GetAll
 {
-    public class Endpoint : Endpoint<Request, List<Entities.StockLocation>>
+    public class Endpoint : Endpoint<Request, List<Entities.Division>>
     {
         private readonly AppDbContext _dbContext;
 
@@ -16,12 +14,12 @@ namespace Kayord.Pos.Features.Stock.Location.GetAll
 
         public override void Configure()
         {
-            Get("/stock/location");
+            Get("/stock/division");
         }
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-            var results = await _dbContext.StockLocation.Where(x => x.OutletId == req.OutletId).ToListAsync(ct);
+            var results = await _dbContext.Division.Where(x => x.OutletId == req.OutletId).ToListAsync(ct);
             await SendAsync(results);
         }
     }
