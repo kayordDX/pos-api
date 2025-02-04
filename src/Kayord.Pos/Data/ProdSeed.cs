@@ -93,5 +93,13 @@ public static class ProdSeed
             await context.CashUpUserItemType.AddAsync(new CashUpUserItemType() { ItemType = "Withdrawal", Id = 16, IsAuto = false, CashUpUserItemRule = Common.Enums.CashUpUserItemRule.None, Position = 16 });
             await context.SaveChangesAsync(cancellationToken);
         }
+
+        if (!context.StockOrderStatus.Any())
+        {
+            await context.StockOrderStatus.AddAsync(new StockOrderStatus() { Id = 1, Name = "Pending" });
+            await context.StockOrderStatus.AddAsync(new StockOrderStatus() { Id = 2, Name = "Order Placed" });
+            await context.StockOrderStatus.AddAsync(new StockOrderStatus() { Id = 3, Name = "Done" });
+            await context.SaveChangesAsync(cancellationToken);
+        }
     }
 }
