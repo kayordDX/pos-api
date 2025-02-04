@@ -1,11 +1,9 @@
 using Kayord.Pos.Data;
 using Microsoft.EntityFrameworkCore;
-using Kayord.Pos.Common.Extensions;
-using Kayord.Pos.Common.Models;
 using Kayord.Pos.DTO;
-namespace Kayord.Pos.Features.Stock.GetAll
+namespace Kayord.Pos.Features.Stock.Order.Get
 {
-    public class Endpoint : Endpoint<Request, PaginatedList<StockDTO>>
+    public class Endpoint : Endpoint<Request, StockOrderDTO>
     {
         private readonly AppDbContext _dbContext;
 
@@ -16,18 +14,20 @@ namespace Kayord.Pos.Features.Stock.GetAll
 
         public override void Configure()
         {
-            Get("/stock");
+            Get("/stock/order/{Id}");
         }
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-            var results = await _dbContext.Stock
+            var results = await _dbContext.StockOrder
+                .Where(x => x.Id == req.Id)
                 .ProjectToDto()
-                .GetPagedAsync(req, ct);
+                .FirstOrDefaultAsync(ct);
 
-            foreach (var item in results.Items)
+            if (results == null)
             {
-                item.TotalActual = item?.StockItems?.Sum(x => x.Actual) ?? 0;
+                await SendNotFoundAsync();
+                return;
             }
 
             await SendAsync(results);
