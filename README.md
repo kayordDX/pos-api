@@ -77,6 +77,8 @@ curl --request GET \
   - [x] Fix all references and replace with division
 - [x] StockOrderItem
   - [x] Should have StockId instead of StockItemId
+  - [ ] StockOrderItemStatus
+  - [ ] StockerOrderItem Add Ordered amount and keep actual. Also Add status.
 - [ ] StockItemAudit Table
   - [ ] Table should show who changed it
   - [ ] Date
