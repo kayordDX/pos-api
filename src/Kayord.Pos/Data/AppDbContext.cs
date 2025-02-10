@@ -67,6 +67,7 @@ public class AppDbContext : DbContext
     public DbSet<StockOrder> StockOrder => Set<StockOrder>();
     public DbSet<StockOrderStatus> StockOrderStatus => Set<StockOrderStatus>();
     public DbSet<StockOrderItem> StockOrderItem => Set<StockOrderItem>();
+    public DbSet<StockOrderItemStatus> StockOrderItemStatus => Set<StockOrderItemStatus>();
     public DbSet<Supplier> Supplier => Set<Supplier>();
     public DbSet<Table> Table => Set<Table>();
     public DbSet<TableBooking> TableBooking => Set<TableBooking>();

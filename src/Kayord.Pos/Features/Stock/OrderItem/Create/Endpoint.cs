@@ -22,7 +22,8 @@ public class Endpoint : Endpoint<Request, Entities.StockOrder>
         {
             StockOrderId = req.StockOrderId,
             StockId = req.StockId,
-            Actual = req.Actual,
+            OrderAmount = req.OrderAmount,
+            StockOrderItemStatusId = 1,
             Price = req.Price,
         };
 
