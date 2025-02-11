@@ -37,7 +37,8 @@ public class Endpoint : Endpoint<Request>
                 await SendNotFoundAsync();
                 return;
             }
-            entity.Actual = entity.OrderAmount;
+            if (req.StockOrderItemStatusId == 2)
+                entity.Actual = entity.OrderAmount;
             entity.StockOrderItemStatusId = req.StockOrderItemStatusId;
         }
 
