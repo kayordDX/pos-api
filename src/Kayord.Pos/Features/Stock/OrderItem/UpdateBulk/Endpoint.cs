@@ -1,5 +1,6 @@
 using Kayord.Pos.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Kayord.Pos.Features.Stock.OrderItem.UpdateBulk;
 
@@ -36,7 +37,7 @@ public class Endpoint : Endpoint<Request>
                 await SendNotFoundAsync();
                 return;
             }
-
+            entity.Actual = entity.OrderAmount;
             entity.StockOrderItemStatusId = req.StockOrderItemStatusId;
         }
 

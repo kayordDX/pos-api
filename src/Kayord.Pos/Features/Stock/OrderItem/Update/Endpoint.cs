@@ -26,6 +26,7 @@ public class Endpoint : Endpoint<Request, Entities.StockOrderItem>
             return;
         }
 
+        entity.OrderAmount = req.OrderAmount;
         entity.Actual = req.Actual;
         entity.Price = req.Price;
         entity.StockOrderItemStatusId = req.StockOrderItemStatusId;
