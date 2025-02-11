@@ -1,9 +1,8 @@
 using Kayord.Pos.Data;
 using Kayord.Pos.DTO;
-using Kayord.Pos.Services;
 using Microsoft.EntityFrameworkCore;
 
-namespace Kayord.Pos.Features.Stock.OrderItemStatus.GetAll;
+namespace Kayord.Pos.Features.Stock.OrderItem.Status;
 
 public class Endpoint : EndpointWithoutRequest<List<StockOrderItemStatusDTO>>
 {
@@ -16,7 +15,7 @@ public class Endpoint : EndpointWithoutRequest<List<StockOrderItemStatusDTO>>
 
     public override void Configure()
     {
-        Get("/stockorderitemstatus");
+        Get("/stock/orderItem/status");
     }
 
     public override async Task HandleAsync(CancellationToken ct)
