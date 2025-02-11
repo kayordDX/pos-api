@@ -28,6 +28,7 @@ public class Endpoint : Endpoint<Request, Entities.StockOrderItem>
 
         entity.Actual = req.Actual;
         entity.Price = req.Price;
+        entity.StockOrderItemStatusId = req.StockOrderItemStatusId;
 
         await _dbContext.SaveChangesAsync();
         await SendAsync(entity);
