@@ -72,6 +72,7 @@ public class AppDbContext : DbContext
     public DbSet<Table> Table => Set<Table>();
     public DbSet<TableBooking> TableBooking => Set<TableBooking>();
     public DbSet<User> User => Set<User>();
+    public DbSet<Unit> Unit => Set<Unit>();
     public DbSet<UserOutlet> UserOutlet => Set<UserOutlet>();
     public DbSet<UserRoleOutlet> UserRoleOutlet => Set<UserRoleOutlet>();
 
