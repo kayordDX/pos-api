@@ -1,8 +1,7 @@
-namespace Kayord.Pos.DTO;
+namespace Kayord.Pos.Features.Supplier.Create;
 
-public class SupplierDTO
+public class Request
 {
-    public int Id { get; set; }
     public int OutletId { get; set; }
     public string Name { get; set; } = string.Empty;
     public string ContactName { get; set; } = string.Empty;

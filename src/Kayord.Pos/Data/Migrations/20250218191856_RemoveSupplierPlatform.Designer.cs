@@ -3,6 +3,7 @@ using System;
 using Kayord.Pos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using NpgsqlTypes;
@@ -12,9 +13,11 @@ using NpgsqlTypes;
 namespace Kayord.Pos.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250218191856_RemoveSupplierPlatform")]
+    partial class RemoveSupplierPlatform
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1674,6 +1677,9 @@ namespace Kayord.Pos.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("DivisionId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
@@ -1686,6 +1692,8 @@ namespace Kayord.Pos.Data.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DivisionId");
 
                     b.ToTable("Supplier");
                 });
@@ -2486,6 +2494,17 @@ namespace Kayord.Pos.Data.Migrations
                     b.Navigation("StockOrder");
 
                     b.Navigation("StockOrderItemStatus");
+                });
+
+            modelBuilder.Entity("Kayord.Pos.Entities.Supplier", b =>
+                {
+                    b.HasOne("Kayord.Pos.Entities.Division", "Division")
+                        .WithMany()
+                        .HasForeignKey("DivisionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Division");
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.Table", b =>
