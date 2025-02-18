@@ -1,12 +1,12 @@
-namespace Kayord.Pos.DTO;
+namespace Kayord.Pos.Features.Stock.GetAll;
 
-public class StockDTO
+public class Response
 {
     public int Id { get; set; }
     public int OutletId { get; set; }
     public string Name { get; set; } = string.Empty;
     public int UnitId { get; set; }
-    public UnitDTO Unit { get; set; } = default!;
+    public string UnitName { get; set; } = default!;
     public int StockCategoryId { get; set; }
-    public List<StockItemDTO>? StockItems { get; set; }
+    public decimal TotalActual { get; set; }
 }

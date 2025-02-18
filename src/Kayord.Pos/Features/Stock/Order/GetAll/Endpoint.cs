@@ -1,6 +1,6 @@
-using Kayord.Pos.Data;
 using Kayord.Pos.Common.Extensions;
 using Kayord.Pos.Common.Models;
+using Kayord.Pos.Data;
 using Microsoft.EntityFrameworkCore;
 namespace Kayord.Pos.Features.Stock.Order.GetAll
 {
@@ -21,6 +21,7 @@ namespace Kayord.Pos.Features.Stock.Order.GetAll
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
             var results = await _dbContext.StockOrder
+                .Where(x => x.OutletId == req.OutletId)
                 .Include(x => x.Division)
                 .Include(x => x.Supplier)
                 .Include(x => x.StockOrderStatus)
