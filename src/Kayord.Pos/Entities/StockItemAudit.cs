@@ -10,4 +10,5 @@ public class StockItemAudit
     public decimal ToActual { get; set; }
     public int StockItemAuditTypeId { get; set; }
     public StockItemAuditType StockItemAuditType { get; set; } = default!;
+    public int? OrderItemId { get; set; }
 }

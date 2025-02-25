@@ -3,6 +3,7 @@ using System;
 using Kayord.Pos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using NpgsqlTypes;
@@ -12,9 +13,11 @@ using NpgsqlTypes;
 namespace Kayord.Pos.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250225200827_AllocationVacation")]
+    partial class AllocationVacation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1688,9 +1691,6 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.Property<decimal>("FromActual")
                         .HasColumnType("numeric");
-
-                    b.Property<int?>("OrderItemId")
-                        .HasColumnType("integer");
 
                     b.Property<int>("StockItemAuditTypeId")
                         .HasColumnType("integer");
