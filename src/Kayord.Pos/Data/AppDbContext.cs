@@ -64,6 +64,12 @@ public class AppDbContext : DbContext
     public DbSet<Section> Section => Set<Section>();
     public DbSet<Stock> Stock => Set<Stock>();
     public DbSet<StockItem> StockItem => Set<StockItem>();
+    public DbSet<StockItemAudit> StockItemAudit => Set<StockItemAudit>();
+    public DbSet<StockItemAuditType> StockItemAuditType => Set<StockItemAuditType>();
+    public DbSet<StockAllocate> StockAllocate => Set<StockAllocate>();
+    public DbSet<StockAllocateStatus> StockAllocateStatus => Set<StockAllocateStatus>();
+    public DbSet<StockAllocateItem> StockAllocateItem => Set<StockAllocateItem>();
+    public DbSet<StockAllocateItemStatus> StockAllocateItemStatus => Set<StockAllocateItemStatus>();
     public DbSet<StockOrder> StockOrder => Set<StockOrder>();
     public DbSet<StockOrderStatus> StockOrderStatus => Set<StockOrderStatus>();
     public DbSet<StockOrderItem> StockOrderItem => Set<StockOrderItem>();

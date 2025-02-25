@@ -1,6 +1,6 @@
 namespace Kayord.Pos.Entities;
 
-public class StockAllocate : AuditableEntity
+public class StockAllocate
 {
     public int Id { get; set; }
     public int OutletId { get; set; }
@@ -13,5 +13,9 @@ public class StockAllocate : AuditableEntity
     public Division ToDivision { get; set; } = default!;
     public int AssignedUserId { get; set; }
     public User? AssignedUser { get; set; }
+    public int FromUserId { get; set; }
+    public User? FromUser { get; set; }
+    public DateTime Created { get; set; }
+    public DateTime Completed { get; set; }
     public List<StockAllocateItem>? StockAllocateItems { get; set; }
 }
