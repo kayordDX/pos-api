@@ -33,21 +33,21 @@ public class Endpoint : Endpoint<Request, PaginatedList<UserResponse>>
         var results = await _dbContext.Database
             .SqlQuery<UserResponse>(
             $"""
-                SELECT
-                    uo."IsCurrent",
-                    u."UserId",
-                u."Email",
-                u."Image",
-                u."Name",
-                '' "Roles"
-                FROM "UserOutlet" uo
-                JOIN "User" u
-                    ON u."UserId" = uo."UserId"
-                LEFT JOIN "UserRoleOutlet" ur
-                    ON uo."OutletId" = ur."OutletId"
-                AND u."UserId" = ur."UserId"
-                WHERE uo."OutletId" = {userOutlet.OutletId}
-                AND ur."Id" IS NULL
+            SELECT
+                uo.is_current,
+                u.user_id,
+                u.email,
+                u.image,
+                u.name,
+                '' roles
+            FROM user_outlet uo
+            JOIN "user" u
+                ON u.user_id = uo.user_id
+            LEFT JOIN user_role_outlet ur
+                ON uo.outlet_id = ur.outlet_id
+            AND u.user_id = ur.user_id
+            WHERE uo.outlet_id = {userOutlet.OutletId}
+            AND ur.id IS NULL
             """
             ).GetPagedAsync(req, c);
 

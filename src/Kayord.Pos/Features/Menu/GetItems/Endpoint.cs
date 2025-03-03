@@ -1,9 +1,9 @@
-using Kayord.Pos.Data;
-using Kayord.Pos.Entities;
-using Kayord.Pos.DTO;
-using Microsoft.EntityFrameworkCore;
-using Kayord.Pos.Services;
 using System.Web;
+using Kayord.Pos.Data;
+using Kayord.Pos.DTO;
+using Kayord.Pos.Entities;
+using Kayord.Pos.Services;
+using Microsoft.EntityFrameworkCore;
 namespace Kayord.Pos.Features.Menu.GetItems
 {
     public class GetMenuItemsEndpoint : Endpoint<Request, List<MenuItemDTOBasic>>
@@ -45,7 +45,7 @@ namespace Kayord.Pos.Features.Menu.GetItems
             else
             {
                 var sectionParents = await _dbContext.Database.SqlQuery<MenuParents>($"""
-                SELECT * FROM "getMenuSectionChildren"({req.MenuId},{req.SectionId})
+                SELECT * FROM "get_menu_section_children"({req.MenuId},{req.SectionId})
                 """).Select(s => s.Id).ToListAsync();
 
                 items = _dbContext.MenuItem
