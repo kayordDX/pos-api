@@ -33,28 +33,28 @@ public class Endpoint : Endpoint<Request, PaginatedList<UserResponse>>
         var results = await _dbContext.Database
             .SqlQuery<UserResponse>(
             $"""
-                SELECT
-                    uo."IsCurrent",
-                    u."UserId",
-                u."Email",
-                u."Image",
-                u."Name",
-                STRING_AGG(r."Name", ',') "Roles"
-                FROM "UserOutlet" uo
-                JOIN "User" u
-                    ON u."UserId" = uo."UserId"
-                JOIN "UserRoleOutlet" ur
-                    ON uo."OutletId" = ur."OutletId"
-                AND u."UserId" = ur."UserId"
-                JOIN "Role" r
-                    ON r."RoleId" = ur."RoleId" 
-                WHERE uo."OutletId" = {userOutlet.OutletId}
-                GROUP BY 
-                uo."IsCurrent",
-                    u."UserId",
-                u."Email",
-                u."Image",
-                u."Name"
+            SELECT
+                uo.is_current,
+                u.user_id,
+                u.email,
+                u.image,
+                u.name,
+            STRING_AGG(r.name, ',') roles
+            FROM user_outlet uo
+            JOIN "user" u
+                ON u.user_id = uo.user_id
+            JOIN user_role_outlet ur
+                ON uo.outlet_id = ur.outlet_id
+            AND u.user_Id = ur.user_Id
+            JOIN role r
+                ON r.role_id = ur.role_id 
+            WHERE uo.outlet_id = {userOutlet.OutletId}
+            GROUP BY 
+                uo.is_current,
+                u.user_id,
+                u.email,
+                u.image,
+                u.name
             """
             ).GetPagedAsync(req, c);
 

@@ -1,10 +1,9 @@
 using Kayord.Pos.Data;
-using Kayord.Pos.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.Division.GetAll;
 
-public class Endpoint : EndpointWithoutRequest<List<Pos.Entities.Division>>
+public class Endpoint : Endpoint<Request, List<Entities.Division>>
 {
     private readonly AppDbContext _dbContext;
 
@@ -18,9 +17,9 @@ public class Endpoint : EndpointWithoutRequest<List<Pos.Entities.Division>>
         Get("/division");
     }
 
-    public override async Task HandleAsync(CancellationToken ct)
+    public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var results = await _dbContext.Division.ToListAsync();
+        var results = await _dbContext.Division.Where(x => x.OutletId == req.OutletId).ToListAsync();
         await SendAsync(results);
     }
 }

@@ -21,21 +21,21 @@ namespace Kayord.Pos.Features.Stock.Items.GetAll
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
             var results = await _dbContext.Database.SqlQuery<Response>($"""
-                SELECT
-                    coalesce(i."Id", 0) "Id",
-                coalesce(s."Id", 0) "StockId",
-                coalesce(s."Name", '') "StockName",
-                d."DivisionId",
-                d."DivisionName",
-                coalesce(i."Threshold", 0) "Threshold",
-                coalesce(i."Actual", 0) "Actual"
-                FROM "Stock" s
-                LEFT JOIN "Division" d
-                    ON s."OutletId" = d."OutletId"
-                LEFT JOIN "StockItem" i
-                    ON i."StockId" = s."Id"
-                AND i."DivisionId" = d."DivisionId"
-                WHERE s."Id" = {req.Id}
+                select
+                    coalesce(i."id", 0) "id",
+                coalesce(s."id", 0) "stock_id",
+                coalesce(s."name", '') "stock_name",
+                d."division_id",
+                d."division_name",
+                coalesce(i."threshold", 0) "threshold",
+                coalesce(i."actual", 0) "actual"
+                from "stock" s
+                left join "division" d
+                    on s."outlet_id" = d."outlet_id"
+                left join "stock_item" i
+                    on i."stock_id" = s."id"
+                and i."division_id" = d."division_id"
+                where s."id" = {req.Id}
             """).ToListAsync(ct);
 
             await SendAsync(results);
