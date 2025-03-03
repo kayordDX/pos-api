@@ -126,9 +126,21 @@ FROM (
 ) a
 WHERE a."MenuItemId" = b."MenuItemId"
 AND b."DivisionId" = a."OldDivisionId"
+AND a."DivisionId" = 1
 
 
 DELETE FROM "Division" WHERE "DivisionId" = 1
 DELETE FROM "Division" WHERE "DivisionId" = 2
 
+
+ALTER TABLE
+  "public"."__EFMigrationsHistory"
+RENAME COLUMN
+  "MigrationId" TO "migration_id";
+  
+  ALTER TABLE
+  "public"."__EFMigrationsHistory"
+RENAME COLUMN
+  "ProductVersion" TO "product_version";
+ 
 ```
