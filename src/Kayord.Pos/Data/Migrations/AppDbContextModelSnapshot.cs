@@ -413,9 +413,32 @@ namespace Kayord.Pos.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("DivisionTypeId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("OutletId")
+                        .HasColumnType("integer");
+
                     b.HasKey("DivisionId");
 
                     b.ToTable("Division");
+                });
+
+            modelBuilder.Entity("Kayord.Pos.Entities.DivisionType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("DivisionName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DivisionType");
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.EmailLog", b =>
@@ -624,143 +647,6 @@ namespace Kayord.Pos.Data.Migrations
                     b.ToTable("HaloReference");
                 });
 
-            modelBuilder.Entity("Kayord.Pos.Entities.Inventory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Actual")
-                        .HasColumnType("numeric");
-
-                    b.Property<int>("LocationId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<decimal>("Threshold")
-                        .HasColumnType("numeric");
-
-                    b.Property<int>("UnitId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LocationId");
-
-                    b.HasIndex("UnitId");
-
-                    b.ToTable("Inventory");
-                });
-
-            modelBuilder.Entity("Kayord.Pos.Entities.InventoryOrder", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("GRVCode")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("InventoryId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("LocationId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("OrderDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal>("Quantity")
-                        .HasColumnType("numeric");
-
-                    b.Property<DateTime>("ReceivedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("SupplierDeliveredName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("SupplierId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("UnitId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("InventoryId");
-
-                    b.HasIndex("LocationId");
-
-                    b.HasIndex("SupplierId");
-
-                    b.HasIndex("UnitId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("InventoryOrder");
-                });
-
-            modelBuilder.Entity("Kayord.Pos.Entities.InventoryStock", b =>
-                {
-                    b.Property<int>("InventoryId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("StockId")
-                        .HasColumnType("integer");
-
-                    b.Property<decimal>("Quantity")
-                        .HasColumnType("numeric");
-
-                    b.HasKey("InventoryId", "StockId");
-
-                    b.HasIndex("StockId");
-
-                    b.ToTable("InventoryStock");
-                });
-
-            modelBuilder.Entity("Kayord.Pos.Entities.Location", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AddressId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("OutletId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AddressId");
-
-                    b.HasIndex("OutletId");
-
-                    b.ToTable("Location");
-                });
-
             modelBuilder.Entity("Kayord.Pos.Entities.Menu", b =>
                 {
                     b.Property<int>("Id")
@@ -904,15 +790,15 @@ namespace Kayord.Pos.Data.Migrations
                     b.Property<int>("MenuItemId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("StockId")
+                    b.Property<int>("StockItemId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("Quantity")
+                    b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
-                    b.HasKey("MenuItemId", "StockId");
+                    b.HasKey("MenuItemId", "StockItemId");
 
-                    b.HasIndex("StockId");
+                    b.HasIndex("StockItemId");
 
                     b.ToTable("MenuItemStock");
                 });
@@ -1473,7 +1359,7 @@ namespace Kayord.Pos.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("DivisionId")
+                    b.Property<int>("DivisionId")
                         .HasColumnType("integer");
 
                     b.Property<int>("RoleId")
@@ -1543,37 +1429,207 @@ namespace Kayord.Pos.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("Actual")
-                        .HasColumnType("numeric");
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<bool>("IsBulkRecipe")
-                        .HasColumnType("boolean");
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
 
-                    b.Property<int>("LocationId")
-                        .HasColumnType("integer");
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("StockCategoryId")
+                    b.Property<int>("OutletId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("Threshold")
-                        .HasColumnType("numeric");
+                    b.Property<int>("StockCategoryId")
+                        .HasColumnType("integer");
 
                     b.Property<int>("UnitId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LocationId");
-
                     b.HasIndex("StockCategoryId");
 
                     b.HasIndex("UnitId");
 
                     b.ToTable("Stock");
+                });
+
+            modelBuilder.Entity("Kayord.Pos.Entities.StockAllocate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AssignedUserId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("AssignedUserUserId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("Completed")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("FromDivisionId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("FromUserId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("FromUserUserId")
+                        .HasColumnType("text");
+
+                    b.Property<int>("OutletId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("StockAllocateStatusId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ToDivisionId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssignedUserUserId");
+
+                    b.HasIndex("FromDivisionId");
+
+                    b.HasIndex("FromUserUserId");
+
+                    b.HasIndex("StockAllocateStatusId");
+
+                    b.HasIndex("ToDivisionId");
+
+                    b.ToTable("StockAllocate");
+                });
+
+            modelBuilder.Entity("Kayord.Pos.Entities.StockAllocateItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Actual")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("AllocateAmount")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("Completed")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<int>("DivisionId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("StockAllocateId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("StockAllocateItemStatusId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("StockId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DivisionId");
+
+                    b.HasIndex("StockAllocateId");
+
+                    b.HasIndex("StockAllocateItemStatusId");
+
+                    b.HasIndex("StockId");
+
+                    b.ToTable("StockAllocateItem");
+                });
+
+            modelBuilder.Entity("Kayord.Pos.Entities.StockAllocateItemStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StockAllocateItemStatus");
+                });
+
+            modelBuilder.Entity("Kayord.Pos.Entities.StockAllocateStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StockAllocateStatus");
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.StockCategory", b =>
@@ -1591,6 +1647,238 @@ namespace Kayord.Pos.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("StockCategory");
+                });
+
+            modelBuilder.Entity("Kayord.Pos.Entities.StockItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Actual")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("DivisionId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("StockId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Threshold")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DivisionId");
+
+                    b.HasIndex("StockId");
+
+                    b.ToTable("StockItem");
+                });
+
+            modelBuilder.Entity("Kayord.Pos.Entities.StockItemAudit", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<decimal>("FromActual")
+                        .HasColumnType("numeric");
+
+                    b.Property<int?>("OrderItemId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("StockItemAuditTypeId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("StockItemId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("ToActual")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("Updated")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StockItemAuditTypeId");
+
+                    b.ToTable("StockItemAudit");
+                });
+
+            modelBuilder.Entity("Kayord.Pos.Entities.StockItemAuditType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StockItemAuditType");
+                });
+
+            modelBuilder.Entity("Kayord.Pos.Entities.StockOrder", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<int>("DivisionId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("OrderNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("OutletId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("StockOrderStatusId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("SupplierId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DivisionId");
+
+                    b.HasIndex("StockOrderStatusId");
+
+                    b.HasIndex("SupplierId");
+
+                    b.ToTable("StockOrder");
+                });
+
+            modelBuilder.Entity("Kayord.Pos.Entities.StockOrderItem", b =>
+                {
+                    b.Property<int>("StockOrderId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("StockId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Actual")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("OrderAmount")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("StockOrderItemStatusId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("StockOrderId", "StockId");
+
+                    b.HasIndex("StockId");
+
+                    b.HasIndex("StockOrderItemStatusId");
+
+                    b.ToTable("StockOrderItem");
+                });
+
+            modelBuilder.Entity("Kayord.Pos.Entities.StockOrderItemStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StockOrderItemStatus");
+                });
+
+            modelBuilder.Entity("Kayord.Pos.Entities.StockOrderStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StockOrderStatus");
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.Supplier", b =>
@@ -1613,43 +1901,16 @@ namespace Kayord.Pos.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("LocationId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("SupplierPlatformId")
+                    b.Property<int>("OutletId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("LocationId");
-
-                    b.HasIndex("SupplierPlatformId");
 
                     b.ToTable("Supplier");
-                });
-
-            modelBuilder.Entity("Kayord.Pos.Entities.SupplierPlatform", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Url")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SupplierPlatform");
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.Table", b =>
@@ -2048,106 +2309,6 @@ namespace Kayord.Pos.Data.Migrations
                     b.Navigation("Unit");
                 });
 
-            modelBuilder.Entity("Kayord.Pos.Entities.Inventory", b =>
-                {
-                    b.HasOne("Kayord.Pos.Entities.Location", "Location")
-                        .WithMany()
-                        .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Kayord.Pos.Entities.Unit", "Unit")
-                        .WithMany()
-                        .HasForeignKey("UnitId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Location");
-
-                    b.Navigation("Unit");
-                });
-
-            modelBuilder.Entity("Kayord.Pos.Entities.InventoryOrder", b =>
-                {
-                    b.HasOne("Kayord.Pos.Entities.Inventory", "Inventory")
-                        .WithMany()
-                        .HasForeignKey("InventoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Kayord.Pos.Entities.Location", "Location")
-                        .WithMany()
-                        .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Kayord.Pos.Entities.Supplier", "Supplier")
-                        .WithMany()
-                        .HasForeignKey("SupplierId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Kayord.Pos.Entities.Unit", "Unit")
-                        .WithMany()
-                        .HasForeignKey("UnitId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Kayord.Pos.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Inventory");
-
-                    b.Navigation("Location");
-
-                    b.Navigation("Supplier");
-
-                    b.Navigation("Unit");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Kayord.Pos.Entities.InventoryStock", b =>
-                {
-                    b.HasOne("Kayord.Pos.Entities.Inventory", "Inventory")
-                        .WithMany()
-                        .HasForeignKey("InventoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Kayord.Pos.Entities.Stock", "Stock")
-                        .WithMany()
-                        .HasForeignKey("StockId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Inventory");
-
-                    b.Navigation("Stock");
-                });
-
-            modelBuilder.Entity("Kayord.Pos.Entities.Location", b =>
-                {
-                    b.HasOne("Kayord.Pos.Entities.Address", "Address")
-                        .WithMany()
-                        .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Kayord.Pos.Entities.Outlet", "Outlet")
-                        .WithMany()
-                        .HasForeignKey("OutletId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Address");
-
-                    b.Navigation("Outlet");
-                });
-
             modelBuilder.Entity("Kayord.Pos.Entities.Menu", b =>
                 {
                     b.HasOne("Kayord.Pos.Entities.Outlet", "Outlet")
@@ -2222,15 +2383,15 @@ namespace Kayord.Pos.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Kayord.Pos.Entities.Stock", "Stock")
+                    b.HasOne("Kayord.Pos.Entities.StockItem", "StockItem")
                         .WithMany()
-                        .HasForeignKey("StockId")
+                        .HasForeignKey("StockItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("MenuItem");
 
-                    b.Navigation("Stock");
+                    b.Navigation("StockItem");
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.MenuSection", b =>
@@ -2429,7 +2590,9 @@ namespace Kayord.Pos.Data.Migrations
                 {
                     b.HasOne("Kayord.Pos.Entities.Division", "Division")
                         .WithMany()
-                        .HasForeignKey("DivisionId");
+                        .HasForeignKey("DivisionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Division");
                 });
@@ -2458,12 +2621,6 @@ namespace Kayord.Pos.Data.Migrations
 
             modelBuilder.Entity("Kayord.Pos.Entities.Stock", b =>
                 {
-                    b.HasOne("Kayord.Pos.Entities.Location", "Location")
-                        .WithMany()
-                        .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Kayord.Pos.Entities.StockCategory", "StockCategory")
                         .WithMany()
                         .HasForeignKey("StockCategoryId")
@@ -2476,30 +2633,163 @@ namespace Kayord.Pos.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Location");
-
                     b.Navigation("StockCategory");
 
                     b.Navigation("Unit");
                 });
 
-            modelBuilder.Entity("Kayord.Pos.Entities.Supplier", b =>
+            modelBuilder.Entity("Kayord.Pos.Entities.StockAllocate", b =>
                 {
-                    b.HasOne("Kayord.Pos.Entities.Location", "Location")
+                    b.HasOne("Kayord.Pos.Entities.User", "AssignedUser")
                         .WithMany()
-                        .HasForeignKey("LocationId")
+                        .HasForeignKey("AssignedUserUserId");
+
+                    b.HasOne("Kayord.Pos.Entities.Division", "FromDivision")
+                        .WithMany()
+                        .HasForeignKey("FromDivisionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Kayord.Pos.Entities.SupplierPlatform", "SupplierPlatform")
+                    b.HasOne("Kayord.Pos.Entities.User", "FromUser")
                         .WithMany()
-                        .HasForeignKey("SupplierPlatformId")
+                        .HasForeignKey("FromUserUserId");
+
+                    b.HasOne("Kayord.Pos.Entities.StockAllocateStatus", "StockAllocateStatus")
+                        .WithMany()
+                        .HasForeignKey("StockAllocateStatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Location");
+                    b.HasOne("Kayord.Pos.Entities.Division", "ToDivision")
+                        .WithMany()
+                        .HasForeignKey("ToDivisionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("SupplierPlatform");
+                    b.Navigation("AssignedUser");
+
+                    b.Navigation("FromDivision");
+
+                    b.Navigation("FromUser");
+
+                    b.Navigation("StockAllocateStatus");
+
+                    b.Navigation("ToDivision");
+                });
+
+            modelBuilder.Entity("Kayord.Pos.Entities.StockAllocateItem", b =>
+                {
+                    b.HasOne("Kayord.Pos.Entities.Division", "Division")
+                        .WithMany()
+                        .HasForeignKey("DivisionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Kayord.Pos.Entities.StockAllocate", null)
+                        .WithMany("StockAllocateItems")
+                        .HasForeignKey("StockAllocateId");
+
+                    b.HasOne("Kayord.Pos.Entities.StockAllocateItemStatus", "StockAllocateItemStatus")
+                        .WithMany()
+                        .HasForeignKey("StockAllocateItemStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Kayord.Pos.Entities.Stock", "Stock")
+                        .WithMany()
+                        .HasForeignKey("StockId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Division");
+
+                    b.Navigation("Stock");
+
+                    b.Navigation("StockAllocateItemStatus");
+                });
+
+            modelBuilder.Entity("Kayord.Pos.Entities.StockItem", b =>
+                {
+                    b.HasOne("Kayord.Pos.Entities.Division", "Division")
+                        .WithMany()
+                        .HasForeignKey("DivisionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Kayord.Pos.Entities.Stock", "Stock")
+                        .WithMany("StockItems")
+                        .HasForeignKey("StockId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Division");
+
+                    b.Navigation("Stock");
+                });
+
+            modelBuilder.Entity("Kayord.Pos.Entities.StockItemAudit", b =>
+                {
+                    b.HasOne("Kayord.Pos.Entities.StockItemAuditType", "StockItemAuditType")
+                        .WithMany()
+                        .HasForeignKey("StockItemAuditTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("StockItemAuditType");
+                });
+
+            modelBuilder.Entity("Kayord.Pos.Entities.StockOrder", b =>
+                {
+                    b.HasOne("Kayord.Pos.Entities.Division", "Division")
+                        .WithMany()
+                        .HasForeignKey("DivisionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Kayord.Pos.Entities.StockOrderStatus", "StockOrderStatus")
+                        .WithMany()
+                        .HasForeignKey("StockOrderStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Kayord.Pos.Entities.Supplier", "Supplier")
+                        .WithMany()
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Division");
+
+                    b.Navigation("StockOrderStatus");
+
+                    b.Navigation("Supplier");
+                });
+
+            modelBuilder.Entity("Kayord.Pos.Entities.StockOrderItem", b =>
+                {
+                    b.HasOne("Kayord.Pos.Entities.Stock", "Stock")
+                        .WithMany()
+                        .HasForeignKey("StockId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Kayord.Pos.Entities.StockOrder", "StockOrder")
+                        .WithMany("StockOrderItems")
+                        .HasForeignKey("StockOrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Kayord.Pos.Entities.StockOrderItemStatus", "StockOrderItemStatus")
+                        .WithMany()
+                        .HasForeignKey("StockOrderItemStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Stock");
+
+                    b.Navigation("StockOrder");
+
+                    b.Navigation("StockOrderItemStatus");
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.Table", b =>
@@ -2662,6 +2952,21 @@ namespace Kayord.Pos.Data.Migrations
             modelBuilder.Entity("Kayord.Pos.Entities.Section", b =>
                 {
                     b.Navigation("Tables");
+                });
+
+            modelBuilder.Entity("Kayord.Pos.Entities.Stock", b =>
+                {
+                    b.Navigation("StockItems");
+                });
+
+            modelBuilder.Entity("Kayord.Pos.Entities.StockAllocate", b =>
+                {
+                    b.Navigation("StockAllocateItems");
+                });
+
+            modelBuilder.Entity("Kayord.Pos.Entities.StockOrder", b =>
+                {
+                    b.Navigation("StockOrderItems");
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.Table", b =>

@@ -14,6 +14,7 @@ public static class Bill
         };
         decimal TotalPayments = 0m;
         var tableBooking = await _dbContext.TableBooking
+            .AsNoTracking()
             .Include(x => x.Adjustments!)
                 .ThenInclude(x => x.AdjustmentType)
             .Include(x => x.Table)
@@ -27,7 +28,7 @@ public static class Bill
             response.Adjustments = tableBooking.Adjustments;
         }
 
-        var paymentStatusIds = _dbContext.OrderItemStatus.Where(x => x.isBillable).Select(rd => rd.OrderItemStatusId).ToList();
+        var paymentStatusIds = _dbContext.OrderItemStatus.AsNoTracking().Where(x => x.isBillable).Select(rd => rd.OrderItemStatusId).ToList();
         if (tableBooking == null)
         {
             throw new Exception("Table not found");
@@ -40,11 +41,13 @@ public static class Bill
         response.BillDate = tableBooking.CloseDate ?? tableBooking.BookingDate;
 
         response.OrderItems = await _dbContext.OrderItem
+        .AsNoTracking()
         .Where(x => paymentStatusIds.Contains(x.OrderItemStatusId) && x.TableBookingId == req.TableBookingId)
         .ProjectToDto()
         .ToListAsync();
 
         response.PaymentsReceived = await _dbContext.Payment
+            .AsNoTracking()
             .Where(x => x.TableBookingId == req.TableBookingId)
             .Include(x => x.PaymentType)
             .ToListAsync();
@@ -81,6 +84,7 @@ public static class Bill
         decimal totalPayments = 0;
 
         var tableBooking = await _dbContext.TableBooking
+            .AsNoTracking()
             .Include(x => x.Adjustments!)
                 .ThenInclude(x => x.AdjustmentType)
             .FirstOrDefaultAsync(x => x.Id == tableBookingId);
@@ -92,11 +96,13 @@ public static class Bill
         }
 
         var orderItems = await _dbContext.OrderItem
+            .AsNoTracking()
             .Where(x => paymentStatusIds.Contains(x.OrderItemStatusId) && x.TableBookingId == tableBookingId)
             .ProjectToDto()
             .ToListAsync();
 
         var payments = await _dbContext.Payment
+            .AsNoTracking()
             .Where(x => x.TableBookingId == tableBookingId)
             .Include(x => x.PaymentType)
             .ToListAsync();

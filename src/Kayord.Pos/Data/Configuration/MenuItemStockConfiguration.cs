@@ -9,6 +9,6 @@ public class MenuItemStockConfiguration : IEntityTypeConfiguration<MenuItemStock
     public void Configure(EntityTypeBuilder<MenuItemStock> builder)
     {
         builder
-            .HasKey(k => new { k.MenuItemId, k.StockId });
+            .HasKey(k => new { k.MenuItemId, k.StockItemId });
     }
 }

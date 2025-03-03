@@ -47,7 +47,7 @@ public class Endpoint : Endpoint<Request, Response>
                 await _halo.GetStatus(haloRequest.HaloRef, _cu.UserId, outletId);
                 response.Checked = response.Checked + 1;
                 checkedHalo.Add(haloRequest.HaloRef);
-                await Task.Delay(600);
+                await Task.Delay(600, ct);
             }
         }
 

@@ -3,5 +3,5 @@ namespace Kayord.Pos.Features.Manager.OrderView;
 public class DivisionDTO
 {
     public int DivisionId { get; set; }
-    public string Name { get; set; } = string.Empty;
+    public string DivisionName { get; set; } = string.Empty;
 }

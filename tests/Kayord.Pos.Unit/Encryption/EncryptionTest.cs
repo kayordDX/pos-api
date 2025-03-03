@@ -8,8 +8,7 @@ public class Tests(App app) : TestBase<App>
     [Fact]
     public void Sample_Test()
     {
-        // app.CreateClient()
-        (1 + 1).Should().Be(2);
+        Assert.Equivalent(1 + 1, 2);
     }
 
     [Theory]
@@ -20,17 +19,17 @@ public class Tests(App app) : TestBase<App>
     public void Encrypt_Test(string plainText)
     {
         var encryptionService = app.Services.GetRequiredService<EncryptionService>();
-        encryptionService.Should().NotBeNull();
+        Assert.NotNull(encryptionService);
         if (encryptionService == null)
         {
             return;
         }
         var iv = encryptionService.GenerateIV();
-        iv.Should().NotBeNull();
+        Assert.NotNull(iv);
 
         var encryptedValue = encryptionService.Encrypt(plainText, iv);
         var decryptedValue = encryptionService.Decrypt(encryptedValue, iv);
-        decryptedValue.Should().Be(plainText);
+        Assert.Equivalent(decryptedValue, plainText);
     }
 
     [Fact]
@@ -38,7 +37,7 @@ public class Tests(App app) : TestBase<App>
     {
         string plainText = "test";
         var encryptionService = app.Services.GetRequiredService<EncryptionService>();
-        encryptionService.Should().NotBeNull();
+        Assert.NotNull(encryptionService);
         if (encryptionService == null)
         {
             return;
@@ -46,14 +45,14 @@ public class Tests(App app) : TestBase<App>
         // Create static byte array for IV generation
         var iv = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
         // var iv = encryptionService.GenerateIV();
-        iv.Should().NotBeNull();
+        Assert.NotNull(iv);
 
         var encryptedValue = encryptionService.Encrypt(plainText, iv);
         // var decryptedValue = encryptionService.Decrypt(encryptedValue, iv);
-        encryptedValue.Should().Be("QYpcRVMidIJlZXT10sQd8Q==");
+        Assert.Equivalent(encryptedValue, "QYpcRVMidIJlZXT10sQd8Q==");
 
         var decryptedValue = encryptionService.Decrypt(encryptedValue, iv);
-        decryptedValue.Should().Be(plainText);
+        Assert.Equivalent(decryptedValue, plainText);
     }
 
     [Fact]
@@ -61,7 +60,7 @@ public class Tests(App app) : TestBase<App>
     {
         string plainText = "KzI3ODQyNTAyMzExLmVhYzNhNTg3LTQ4NTUtNGY5YS1hNmMxLTNkMDA1NjM3OWVlYg==";
         var encryptionService = app.Services.GetRequiredService<EncryptionService>();
-        encryptionService.Should().NotBeNull();
+        Assert.NotNull(encryptionService);
         if (encryptionService == null)
         {
             return;
@@ -69,13 +68,13 @@ public class Tests(App app) : TestBase<App>
         // Create static byte array for IV generation
         var iv = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
         // var iv = encryptionService.GenerateIV();
-        iv.Should().NotBeNull();
+        Assert.NotNull(iv);
 
         var encryptedValue = encryptionService.Encrypt(plainText, iv);
         // var decryptedValue = encryptionService.Decrypt(encryptedValue, iv);
-        encryptedValue.Should().Be("oOldcF9k8xU1ccDMBmbK/+1ds4VD3wvr7Q32mtsCWAp5neQJJ38EBSXxxHwb2urgOHh8/qlzkxrYqLWRgPqhUAs7yaJShxGj0/ELCrRnT1Y=");
+        Assert.Equivalent(encryptedValue, "oOldcF9k8xU1ccDMBmbK/+1ds4VD3wvr7Q32mtsCWAp5neQJJ38EBSXxxHwb2urgOHh8/qlzkxrYqLWRgPqhUAs7yaJShxGj0/ELCrRnT1Y=");
 
         var decryptedValue = encryptionService.Decrypt(encryptedValue, iv);
-        decryptedValue.Should().Be(plainText);
+        Assert.Equivalent(decryptedValue, plainText);
     }
 }

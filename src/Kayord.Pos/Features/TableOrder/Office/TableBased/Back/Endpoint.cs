@@ -3,6 +3,7 @@ using Kayord.Pos.Services;
 using Kayord.Pos.Entities;
 
 using Microsoft.EntityFrameworkCore;
+using Kayord.Pos.Features.Role;
 
 namespace Kayord.Pos.Features.TableOrder.BackOffice;
 
@@ -32,35 +33,7 @@ public class Endpoint : Endpoint<Request, Response>
             return;
         }
 
-        var roles = await _dbContext.UserRoleOutlet
-            .Where(x => x.OutletId == userOutlet.OutletId && x.UserId == _cu.UserId)
-            .Select(x => x.RoleId)
-            .ToListAsync();
-
-        List<int> divisionIds = req.DivisionIds?.Split(",")
-            .Select(item =>
-            {
-                int value;
-                bool parsed = int.TryParse(item, out value);
-                return new
-                {
-                    parsed = parsed,
-                    value = value
-                };
-            })
-            .Where(item => item.parsed)
-            .Select(item => item.value)
-            .ToList() ?? new List<int>();
-
-        if (divisionIds.Count == 0)
-        {
-            divisionIds = await _dbContext.RoleDivision
-                .Where(x => roles.Contains(x.RoleId))
-                .Select(x => x.DivisionId)
-                .Where(id => id.HasValue)
-                .Select(id => id!.Value)
-                .ToListAsync();
-        }
+        List<int> divisionIds = await RoleHelper.GetDivisionsForRoles(req.RoleIds, _dbContext, userOutlet.OutletId, _cu.UserId);
 
         var statusIds = _dbContext.OrderItemStatus
             .Where(x => x.isBackOffice && x.isComplete != true && x.isCancelled != true)

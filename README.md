@@ -65,3 +65,70 @@ curl --request GET \
   --url https://whatsapp.kayord.com/session/qr/kayord/image \
   --header 'x-api-key: apiKey'  
 ```
+
+## TODO:
+
+- [x] MenuItemStock
+  - [x] Delete all items
+  - [x] Should have StockItemId
+  - [x] Quantity should become Amount
+- [x] StockLocation
+  - [x] Remove table completely
+  - [x] Fix all references and replace with division
+- [x] StockOrderItem
+  - [x] Should have StockId instead of StockItemId
+  - [ ] StockOrderItemStatus
+  - [ ] StockerOrderItem Add Ordered amount and keep actual. Also Add status.
+- [ ] StockItemAudit Table
+  - [ ] Table should show who changed it
+  - [ ] Date
+  - [ ] Old Value and New Value
+- [ ] StockAllocate
+- [ ] StockAllocateItem
+- [ ] StockAllocateStatus
+  
+## On Deployment
+  
+- [ ] Division Now has outlet
+- [ ] RoleDivision Division was nullable
+
+```sql
+TRUNCATE TABLE "MenuItemStock"
+DELETE FROM "Supplier"
+DELETE FROM "SupplierPlatform"
+DELETE FROM "Stock"
+
+UPDATE "MenuItem" SET "DivisionId" = 1 WHERE "DivisionId" = 5
+DELETE FROM "Division" WHERE "DivisionId" = 5
+
+
+INSERT INTO "Division" ("DivisionName", "DivisionTypeId","OutletId")
+SELECT 'Kitchen' "DivisionName", 1 "DivisionTypeId", "Id" "OutletId" FROM "Outlet"
+
+INSERT INTO "Division" ("DivisionName", "DivisionTypeId","OutletId")
+SELECT 'Bar' "DivisionName", 1 "DivisionTypeId", "Id" "OutletId" FROM "Outlet"
+
+
+UPDATE "MenuItem" b
+	SET "DivisionId" = a."DivisionId"
+FROM (
+  SELECT 
+  	mi."MenuItemId",
+  	mi."DivisionId" "OldDivisionId",
+  	d."DivisionId"
+  FROM "MenuItem" mi
+  JOIN "MenuSection" ms
+  ON mi."MenuSectionId" = ms."MenuSectionId"
+  JOIN "Menu" m
+  ON m."Id" = ms."MenuId"
+  JOIN "Division" d
+  ON "d"."OutletId" = m."OutletId"
+) a
+WHERE a."MenuItemId" = b."MenuItemId"
+AND b."DivisionId" = a."OldDivisionId"
+
+
+DELETE FROM "Division" WHERE "DivisionId" = 1
+DELETE FROM "Division" WHERE "DivisionId" = 2
+
+```

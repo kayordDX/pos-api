@@ -31,7 +31,7 @@ public class AIService
                 }
             }
         };
-        var request = await _httpClient.PostAsJsonAsync($"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={_appConfig.GeminiKey}", generateRequest);
+        var request = await _httpClient.PostAsJsonAsync($"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite-preview:generateContent?key={_appConfig.GeminiKey}", generateRequest);
         if (request.IsSuccessStatusCode)
         {
             var response = await request.Content.ReadFromJsonAsync<GenerateResponse>();

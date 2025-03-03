@@ -30,7 +30,7 @@ public class PayLinkReceivedHandler : IEventHandler<PayLinkReceivedEvent>
                 throw new TimeoutException("Timeout");
             }
             i++;
-            await Task.Delay(10000);
+            await Task.Delay(10000, ct);
         }
     }
 }
