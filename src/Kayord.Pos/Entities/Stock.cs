@@ -10,4 +10,5 @@ public class Stock : AuditableEntity
     public int StockCategoryId { get; set; }
     public StockCategory StockCategory { get; set; } = default!;
     public List<StockItem>? StockItems { get; set; }
+    public bool HasVat { get; set; }
 }

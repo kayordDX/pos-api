@@ -9,4 +9,5 @@ public class StockDTO
     public UnitDTO Unit { get; set; } = default!;
     public int StockCategoryId { get; set; }
     public List<StockItemDTO>? StockItems { get; set; }
+    public bool HasVat { get; set; }
 }

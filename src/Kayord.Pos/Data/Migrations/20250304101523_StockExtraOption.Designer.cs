@@ -3,6 +3,7 @@ using System;
 using Kayord.Pos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using NpgsqlTypes;
@@ -12,9 +13,11 @@ using NpgsqlTypes;
 namespace Kayord.Pos.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250304101523_StockExtraOption")]
+    partial class StockExtraOption
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -973,15 +976,15 @@ namespace Kayord.Pos.Data.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("menu_item_id");
 
-                    b.Property<int>("StockId")
+                    b.Property<int>("StockItemId")
                         .HasColumnType("integer")
-                        .HasColumnName("stock_id");
+                        .HasColumnName("stock_item_id");
 
-                    b.HasKey("MenuItemId", "StockId")
+                    b.HasKey("MenuItemId", "StockItemId")
                         .HasName("pk_menu_item_stock");
 
-                    b.HasIndex("StockId")
-                        .HasDatabaseName("ix_menu_item_stock_stock_id");
+                    b.HasIndex("StockItemId")
+                        .HasDatabaseName("ix_menu_item_stock_stock_item_id");
 
                     b.ToTable("menu_item_stock", (string)null);
                 });
@@ -2935,16 +2938,16 @@ namespace Kayord.Pos.Data.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_menu_item_stock_menu_item_menu_item_id");
 
-                    b.HasOne("Kayord.Pos.Entities.Stock", "Stock")
+                    b.HasOne("Kayord.Pos.Entities.StockItem", "StockItem")
                         .WithMany()
-                        .HasForeignKey("StockId")
+                        .HasForeignKey("StockItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_menu_item_stock_stock_stock_id");
+                        .HasConstraintName("fk_menu_item_stock_stock_item_stock_item_id");
 
                     b.Navigation("MenuItem");
 
-                    b.Navigation("Stock");
+                    b.Navigation("StockItem");
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.MenuSection", b =>

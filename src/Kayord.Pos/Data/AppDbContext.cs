@@ -33,6 +33,7 @@ public class AppDbContext : DbContext
     public DbSet<DivisionType> DivisionType => Set<DivisionType>();
     public DbSet<EmailLog> EmailLog => Set<EmailLog>();
     public DbSet<Extra> Extra => Set<Extra>();
+    public DbSet<ExtraStock> ExtraStock => Set<ExtraStock>();
     public DbSet<ExtraGroup> ExtraGroup => Set<ExtraGroup>();
     public DbSet<HaloConfig> HaloConfig => Set<HaloConfig>();
     public DbSet<HaloLog> HaloLog => Set<HaloLog>();
@@ -46,6 +47,7 @@ public class AppDbContext : DbContext
     public DbSet<NotificationLog> NotificationLog => Set<NotificationLog>();
     public DbSet<NotificationUser> NotificationUser => Set<NotificationUser>();
     public DbSet<Option> Option => Set<Option>();
+    public DbSet<OptionStock> OptionStock => Set<OptionStock>();
     public DbSet<OptionGroup> OptionGroup => Set<OptionGroup>();
     public DbSet<OrderGroup> OrderGroup => Set<OrderGroup>();
     public DbSet<OrderItem> OrderItem => Set<OrderItem>();
