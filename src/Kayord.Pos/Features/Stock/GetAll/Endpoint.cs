@@ -29,7 +29,8 @@ namespace Kayord.Pos.Features.Stock.GetAll
                     s."unit_id",
                     u."name" "unit_name",
                     s."stock_category_id",
-                    coalesce(sum(i."actual"),0) "total_actual"
+                    coalesce(sum(i."actual"),0) "total_actual",
+                    s.has_vat
                 from "stock" s
                 left join "stock_item" i
                     on s."id" = i."stock_id"

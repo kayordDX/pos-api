@@ -9,4 +9,5 @@ public class Response
     public string UnitName { get; set; } = default!;
     public int StockCategoryId { get; set; }
     public decimal TotalActual { get; set; }
+    public bool HasVat { get; set; }
 }

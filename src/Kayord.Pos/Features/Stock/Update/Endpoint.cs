@@ -27,6 +27,7 @@ public class Endpoint : Endpoint<Request>
 
         entity.Name = req.Name;
         entity.UnitId = req.UnitId;
+        entity.HasVat = req.HasVat;
 
         await _dbContext.SaveChangesAsync();
         await SendNoContentAsync();
