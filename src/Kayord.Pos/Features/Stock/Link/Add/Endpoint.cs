@@ -23,7 +23,8 @@ namespace Kayord.Pos.Features.Stock.Link.Add
                 await _dbContext.MenuItemStock.AddAsync(new MenuItemStock
                 {
                     MenuItemId = req.Id,
-                    StockId = req.StockId
+                    StockId = req.StockId,
+                    Quantity = req.Quantity,
                 }, ct);
             }
             else if (req.LinkType == 1)
@@ -31,7 +32,8 @@ namespace Kayord.Pos.Features.Stock.Link.Add
                 await _dbContext.ExtraStock.AddAsync(new ExtraStock
                 {
                     ExtraId = req.Id,
-                    StockId = req.StockId
+                    StockId = req.StockId,
+                    Quantity = req.Quantity,
                 }, ct);
             }
             else if (req.LinkType == 2)
@@ -39,7 +41,8 @@ namespace Kayord.Pos.Features.Stock.Link.Add
                 await _dbContext.OptionStock.AddAsync(new OptionStock
                 {
                     OptionId = req.Id,
-                    StockId = req.StockId
+                    StockId = req.StockId,
+                    Quantity = req.Quantity,
                 }, ct);
             }
             await _dbContext.SaveChangesAsync();

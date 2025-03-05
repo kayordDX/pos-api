@@ -22,12 +22,13 @@ namespace Kayord.Pos.Features.Stock.Link.GetAll
             if (req.LinkType == 0)
             {
                 query = _dbContext.Database.SqlQuery<Response>($"""
-                    select 
+                    select
                         i.menu_item_id id, 
-                        i.stock_id, 
+                        i.stock_id,
                         s.name, 
                         s.unit_id, 
-                        u.name unit_name
+                        u.name unit_name,
+                        i.quantity
                     from menu_item_stock i
                     join stock s
                     on i.stock_id = s.id
@@ -44,7 +45,8 @@ namespace Kayord.Pos.Features.Stock.Link.GetAll
                         i.stock_id, 
                         s.name, 
                         s.unit_id, 
-                        u.name unit_name
+                        u.name unit_name,
+                        i.quantity
                     from extra_stock i
                     join stock s
                     on i.stock_id = s.id
@@ -61,7 +63,8 @@ namespace Kayord.Pos.Features.Stock.Link.GetAll
                         i.stock_id, 
                         s.name, 
                         s.unit_id, 
-                        u.name unit_name
+                        u.name unit_name,
+                        i.quantity
                     from option_stock i
                     join stock s
                     on i.stock_id = s.id
