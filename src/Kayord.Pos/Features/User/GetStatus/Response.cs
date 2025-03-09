@@ -6,5 +6,12 @@ public class Response
     public bool ClockedIn { get; set; }
     public int SalesPeriodId { get; set; }
     public SalesPeriod? SalesPeriod { get; set; }
-    public List<string> Roles { get; set; } = new List<string>();
+    public List<RoleDTO> Roles { get; set; } = new List<RoleDTO>();
+}
+
+public class RoleDTO
+{
+    public int Id { get; set; }
+    public string RoleName { get; set; } = string.Empty;
+    public string AppRoleName { get; set; } = string.Empty;
 }

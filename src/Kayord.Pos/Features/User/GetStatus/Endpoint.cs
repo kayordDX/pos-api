@@ -1,4 +1,5 @@
 using Kayord.Pos.Data;
+using Kayord.Pos.Features.Role;
 using Kayord.Pos.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -40,7 +41,12 @@ public class Endpoint : EndpointWithoutRequest<Response>
         var userRoles = await _dbContext.UserRoleOutlet
             .Include(ur => ur.Role)
             .Where(ur => ur.UserId == _cu.UserId && ur.OutletId == userOutlet.OutletId)
-            .Select(ur => ur.Role!.Name)
+            .Select(ur => new RoleDTO
+            {
+                Id = ur.RoleId,
+                RoleName = ur.Role!.Name,
+                AppRoleName = RoleHelper.GetAppRoleFromRole(ur.Role!)
+            })
             .ToListAsync();
 
         resp.Roles = userRoles;
