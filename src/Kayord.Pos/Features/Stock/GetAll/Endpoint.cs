@@ -37,7 +37,15 @@ namespace Kayord.Pos.Features.Stock.GetAll
                 join "unit" u
                     on s."unit_id" = u."id"
                 where s."outlet_id" = {req.OutletId} 
-                group by s."id", u."name"
+                group by 
+                    s."id", 
+                    u."name", 
+                    s."outlet_id", 
+                    s."name", 
+                    s."unit_id", 
+                    u."name", 
+                    s."stock_category_id", 
+                    s.has_vat
             """).GetPagedAsync(req, ct);
 
             await SendAsync(results);
