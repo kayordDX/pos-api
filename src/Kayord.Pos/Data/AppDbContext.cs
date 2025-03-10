@@ -61,6 +61,7 @@ public class AppDbContext : DbContext
     public DbSet<PaymentType> PaymentType => Set<PaymentType>();
     public DbSet<Printer> Printer => Set<Printer>();
     public DbSet<Role> Role => Set<Role>();
+    public DbSet<RoleType> RoleType => Set<RoleType>();
     public DbSet<RoleDivision> RoleDivision => Set<RoleDivision>();
     public DbSet<SalesPeriod> SalesPeriod => Set<SalesPeriod>();
     public DbSet<Section> Section => Set<Section>();

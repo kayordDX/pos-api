@@ -26,26 +26,26 @@ public static class RoleHelper
         return divisionIds;
     }
 
-    public static string GetAppRoleFromRole(Entities.Role role)
-    {
-        if (role.isBackOffice == false && role.isFrontLine == false)
-        {
-            return "guest";
-        }
-        if (role.isBackOffice == true && role.isFrontLine == true)
-        {
-            return "manager";
-        }
-        if (role.isBackOffice == true && role.isFrontLine == false)
-        {
-            return "back";
-        }
-        if (role.isBackOffice == false && role.isFrontLine == true)
-        {
-            return "front";
-        }
-        return "guest";
-    }
+    // public static string GetAppRoleFromRole(Entities.Role role)
+    // {
+    //     if (role.isBackOffice == false && role.isFrontLine == false)
+    //     {
+    //         return "guest";
+    //     }
+    //     if (role.isBackOffice == true && role.isFrontLine == true)
+    //     {
+    //         return "manager";
+    //     }
+    //     if (role.isBackOffice == true && role.isFrontLine == false)
+    //     {
+    //         return "back";
+    //     }
+    //     if (role.isBackOffice == false && role.isFrontLine == true)
+    //     {
+    //         return "front";
+    //     }
+    //     return "guest";
+    // }
 
     public static async Task<List<int>> GetDivisionsForRoles(string? roleIds, AppDbContext _dbContext, string? userId)
     {

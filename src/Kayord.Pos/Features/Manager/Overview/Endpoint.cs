@@ -1,8 +1,8 @@
 using Kayord.Pos.Data;
-using Kayord.Pos.Services;
 using Kayord.Pos.Entities;
-using Microsoft.EntityFrameworkCore;
 using Kayord.Pos.Features.Role;
+using Kayord.Pos.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.Manager.OrderView;
 
@@ -34,7 +34,7 @@ public class Endpoint : Endpoint<Request, List<Response>>
         int roleId = 0;
         List<Response> responses = new();
         UserRoleOutlet? userRole = await _dbContext.UserRoleOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.OutletId == userOutlet.OutletId);
-        Entities.Role? role = await _dbContext.Role.FirstOrDefaultAsync(x => x.RoleId == userRole!.RoleId);
+        Entities.Role? role = await _dbContext.Role.Include(x => x.RoleType).FirstOrDefaultAsync(x => x.RoleId == userRole!.RoleId);
         if (role == null)
             await SendNotFoundAsync();
         else
@@ -59,9 +59,9 @@ public class Endpoint : Endpoint<Request, List<Response>>
                 .ToList();
             });
 
-            if (role!.isBackOffice)
+            if (role!.RoleType.isBackOffice)
                 result = result.Where(x => x.OrderItems!.Any()).Where(x => x.CloseDate == null && x.OrderItems!.Where(y => y.OrderItemStatusId != 1 && y.OrderItemStatusId != 6).Count() > 0).ToList();
-            if (role!.isFrontLine)
+            if (role!.RoleType.isFrontLine)
                 result = result.Where(x => x.OrderItems!.Any())
                         .Where(y => y.User.UserId == _cu.UserId && y.CloseDate == null
             && y.OrderItems!.Where(x => x.OrderItemStatusId != 1 && x.OrderItemStatusId != 6).Count() > 0).ToList();

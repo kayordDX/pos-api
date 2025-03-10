@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.Role.GetAll
 {
-    public class Endpoint : EndpointWithoutRequest<List<Pos.Entities.Role>>
+    public class Endpoint : Endpoint<Request, List<Entities.Role>>
     {
         private readonly AppDbContext _dbContext;
 
@@ -14,12 +14,12 @@ namespace Kayord.Pos.Features.Role.GetAll
 
         public override void Configure()
         {
-            Get("/role");
+            Get("/role/{outletId}");
         }
 
-        public override async Task HandleAsync(CancellationToken ct)
+        public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-            var roles = await _dbContext.Role.ToListAsync();
+            var roles = await _dbContext.Role.Where(x => x.OutletId == req.OutletId).Include(i => i.RoleType).ToListAsync();
             await SendAsync(roles);
         }
     }

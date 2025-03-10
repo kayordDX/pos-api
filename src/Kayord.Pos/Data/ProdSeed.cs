@@ -29,17 +29,6 @@ public static class ProdSeed
             await context.SaveChangesAsync(cancellationToken);
         }
 
-        // Roles
-        if (!context.Role.Any())
-        {
-            await context.Role.AddAsync(new Role { Name = "Guest", Description = "Guest", RoleId = 1 });
-            await context.Role.AddAsync(new Role { Name = "Waiter", Description = "Waiter", RoleId = 2, isFrontLine = true });
-            await context.Role.AddAsync(new Role { Name = "Chef", Description = "Chef", RoleId = 3, isBackOffice = true });
-            await context.Role.AddAsync(new Role { Name = "Manager", Description = "Manager", RoleId = 4, isBackOffice = true, isFrontLine = true });
-            await context.Role.AddAsync(new Role { Name = "Bar", Description = "Bar", RoleId = 5, isBackOffice = true, isFrontLine = false });
-            await context.SaveChangesAsync(cancellationToken);
-        }
-
         // Payment Types
         if (!context.PaymentType.Any())
         {

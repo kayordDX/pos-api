@@ -39,13 +39,13 @@ public class Endpoint : EndpointWithoutRequest<Response>
         }
 
         var userRoles = await _dbContext.UserRoleOutlet
-            .Include(ur => ur.Role)
+            .Include(ur => ur.Role!).ThenInclude(x => x.RoleType)
             .Where(ur => ur.UserId == _cu.UserId && ur.OutletId == userOutlet.OutletId)
             .Select(ur => new RoleDTO
             {
                 Id = ur.RoleId,
                 RoleName = ur.Role!.Name,
-                AppRoleName = RoleHelper.GetAppRoleFromRole(ur.Role!)
+                RoleType = ur.Role.RoleType.Name
             })
             .ToListAsync();
 

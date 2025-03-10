@@ -1,12 +1,12 @@
 namespace Kayord.Pos.Entities;
 
 
-public class Role
+public class Role : AuditableEntity
 {
     public int RoleId { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-    public bool isFrontLine { get; set; } = false;
-    public bool isBackOffice { get; set; } = false;
+    public int RoleTypeId { get; set; }
+    public RoleType RoleType { get; set; } = default!;
     public int? OutletId { get; set; }
 }

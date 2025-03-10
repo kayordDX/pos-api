@@ -13,5 +13,5 @@ public class RoleDTO
 {
     public int Id { get; set; }
     public string RoleName { get; set; } = string.Empty;
-    public string AppRoleName { get; set; } = string.Empty;
+    public string RoleType { get; set; } = string.Empty;
 }
