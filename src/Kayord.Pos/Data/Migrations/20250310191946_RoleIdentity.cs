@@ -38,18 +38,34 @@ namespace Kayord.Pos.Data.Migrations
             """);
 
             migrationBuilder.Sql("""
-                update user_role_outlet
+                UPDATE user_role_outlet
                 SET role_id = rr.role_id
-                FROM user_role_outlet uro
-                join role r
-                on uro.role_id = r.role_id
-                join role rr
-                on r.name = rr.name
-                and rr.outlet_id = uro.outlet_id
+                FROM role r, role rr
+                WHERE user_role_outlet.role_id = r.role_id
+                AND r.name = rr.name
+                AND rr.outlet_id = user_role_outlet.outlet_id;
             """);
 
             migrationBuilder.Sql("""
-                delete from role where outlet_id IS NULL
+                update role_division
+                set role_id = a.role_id
+                from (
+                    select rd.id, rd.role_id old_role_id, rr.role_id
+                    from role_division rd
+                    join division d
+                    on rd.division_id = d.division_id
+                    join role r
+                    on r.role_id = rd.role_id
+                    join role rr
+                    on d.outlet_id = rr.outlet_id
+                    and rr.name = r.name
+                ) a  
+                where role_division.role_id = a.old_role_id
+                and role_division.id = a.id;
+            """);
+
+            migrationBuilder.Sql("""
+                delete from role where outlet_id IS NULL;
             """);
         }
 

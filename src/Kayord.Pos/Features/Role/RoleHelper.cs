@@ -77,6 +77,7 @@ public static class RoleHelper
             divisionIds = await _dbContext.RoleDivision
                 .Where(x => roles.Contains(x.RoleId))
                 .Select(x => x.DivisionId)
+                .Distinct()
                 .ToListAsync();
         }
         return divisionIds;
