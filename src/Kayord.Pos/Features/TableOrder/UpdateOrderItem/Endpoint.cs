@@ -27,8 +27,12 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
             string tUserId = "";
             var Status = "";
             OrderItemStatus? oIS = await _dbContext.OrderItemStatus.FirstOrDefaultAsync(x => x.OrderItemStatusId == req.OrderItemStatusId);
+            if (oIS == null)
+            {
+                throw new Exception("Status not found");
+            }
             OrderGroup order = new();
-            if (oIS != null && oIS.AssignGroup)
+            if (oIS.AssignGroup)
             {
                 await _dbContext.OrderGroup.AddAsync(order);
             }
@@ -47,7 +51,7 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
                     .Include(x => x.MenuItem)
                     .FirstOrDefaultAsync(x => x.OrderItemId == r);
 
-                if (entity != null && oIS != null)
+                if (entity != null)
                 {
 
                     // If send to kitchen add extra validation
@@ -61,7 +65,7 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
 
                     Status = oIS.Status;
                     entity.OrderItemStatusId = req.OrderItemStatusId;
-                    if (oIS != null && oIS.AssignGroup)
+                    if (oIS.AssignGroup)
                     {
                         entity.OrderGroup = order;
                     }
@@ -96,6 +100,15 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
                     await SendAsync(new Response() { IsSuccess = false });
                 }
             }
+
+            // Stock
+            if (oIS?.IsUpdateStock ?? false)
+            {
+                // stock event publish
+                await PublishAsync(new StockEvent() { OrderItemIds = req.OrderItemIds }, Mode.WaitForNone);
+            }
+
+
             if (Notification != "")
             {
                 await PublishAsync(new NotificationEvent()
