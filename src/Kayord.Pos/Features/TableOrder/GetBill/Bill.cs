@@ -28,7 +28,7 @@ public static class Bill
             response.Adjustments = tableBooking.Adjustments;
         }
 
-        var paymentStatusIds = _dbContext.OrderItemStatus.AsNoTracking().Where(x => x.isBillable).Select(rd => rd.OrderItemStatusId).ToList();
+        var paymentStatusIds = _dbContext.OrderItemStatus.AsNoTracking().Where(x => x.IsBillable).Select(rd => rd.OrderItemStatusId).ToList();
         if (tableBooking == null)
         {
             throw new Exception("Table not found");
@@ -89,7 +89,7 @@ public static class Bill
                 .ThenInclude(x => x.AdjustmentType)
             .FirstOrDefaultAsync(x => x.Id == tableBookingId);
 
-        var paymentStatusIds = _dbContext.OrderItemStatus.Where(x => x.isBillable).Select(rd => rd.OrderItemStatusId).ToList();
+        var paymentStatusIds = _dbContext.OrderItemStatus.Where(x => x.IsBillable).Select(rd => rd.OrderItemStatusId).ToList();
         if (tableBooking == null)
         {
             throw new Exception("Table not found");

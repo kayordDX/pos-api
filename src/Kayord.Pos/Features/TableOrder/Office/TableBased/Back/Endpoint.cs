@@ -1,9 +1,8 @@
 using Kayord.Pos.Data;
-using Kayord.Pos.Services;
 using Kayord.Pos.Entities;
-
-using Microsoft.EntityFrameworkCore;
 using Kayord.Pos.Features.Role;
+using Kayord.Pos.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.TableOrder.BackOffice;
 
@@ -36,7 +35,7 @@ public class Endpoint : Endpoint<Request, Response>
         List<int> divisionIds = await RoleHelper.GetDivisionsForRoles(req.RoleIds, _dbContext, userOutlet.OutletId, _cu.UserId);
 
         var statusIds = _dbContext.OrderItemStatus
-            .Where(x => x.isBackOffice && x.isComplete != true && x.isCancelled != true)
+            .Where(x => x.IsBackOffice && x.IsComplete != true && x.IsCancelled != true)
             .Select(rd => rd.OrderItemStatusId)
             .ToList();
 

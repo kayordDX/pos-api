@@ -28,7 +28,7 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
             var Status = "";
             OrderItemStatus? oIS = await _dbContext.OrderItemStatus.FirstOrDefaultAsync(x => x.OrderItemStatusId == req.OrderItemStatusId);
             OrderGroup order = new();
-            if (oIS != null && oIS.assignGroup)
+            if (oIS != null && oIS.AssignGroup)
             {
                 await _dbContext.OrderGroup.AddAsync(order);
             }
@@ -61,14 +61,14 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
 
                     Status = oIS.Status;
                     entity.OrderItemStatusId = req.OrderItemStatusId;
-                    if (oIS != null && oIS.assignGroup)
+                    if (oIS != null && oIS.AssignGroup)
                     {
                         entity.OrderGroup = order;
                     }
                     entity.OrderUpdated = DateTime.UtcNow;
-                    if (oIS?.isComplete ?? false)
+                    if (oIS?.IsComplete ?? false)
                         entity.OrderCompleted = DateTime.Now;
-                    if (oIS?.Notify ?? false)
+                    if (oIS?.IsNotify ?? false)
                     {
                         Entities.MenuItem? i = await _dbContext.MenuItem.FirstOrDefaultAsync(x => x.MenuItemId == entity.MenuItemId);
                         if (i != null)
@@ -80,7 +80,7 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
                         }
                     }
 
-                    if (oIS?.isBackOffice ?? false)
+                    if (oIS?.IsBackOffice ?? false)
                     {
                         outletId = entity.TableBooking.SalesPeriod.OutletId;
                         var divisionId = entity.MenuItem.DivisionId ?? 0;

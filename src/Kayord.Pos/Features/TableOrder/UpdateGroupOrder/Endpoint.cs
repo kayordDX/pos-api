@@ -40,7 +40,7 @@ namespace Kayord.Pos.Features.TableOrder.UpdateGroupOrder
                 .Where(x => divisionIds.Contains(x.MenuItem.DivisionId ?? 0))
                 .ToListAsync(ct);
 
-            bool notify = orderItemStatus?.Notify ?? false;
+            bool notify = orderItemStatus?.IsNotify ?? false;
             NotificationEvent notification = new();
             foreach (var item in orderItems)
             {

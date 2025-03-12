@@ -44,7 +44,7 @@ public class Endpoint : Endpoint<Request, List<Response>>
 
         foreach (int divisionId in divisionIds)
         {
-            var statusIds = _dbContext.OrderItemStatus.Where(x => x.isBackOffice && x.isComplete != true && x.isCancelled != true).Select(rd => rd.OrderItemStatusId).ToList();
+            var statusIds = _dbContext.OrderItemStatus.Where(x => x.IsBackOffice && x.IsComplete != true && x.IsCancelled != true).Select(rd => rd.OrderItemStatusId).ToList();
             Entities.Division division = await _dbContext.Division.FirstOrDefaultAsync(x => x.DivisionId == divisionId) ?? new();
 
             var result = await _dbContext.TableBooking

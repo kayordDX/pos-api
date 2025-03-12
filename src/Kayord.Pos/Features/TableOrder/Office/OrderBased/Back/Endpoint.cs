@@ -1,9 +1,8 @@
 using Kayord.Pos.Data;
-using Kayord.Pos.Services;
 using Kayord.Pos.Entities;
-
-using Microsoft.EntityFrameworkCore;
 using Kayord.Pos.Features.Role;
+using Kayord.Pos.Services;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace Kayord.Pos.Features.TableOrder.Office.OrderBased.Back;
@@ -39,10 +38,9 @@ public class Endpoint : Endpoint<Request, Response>
         var orderItems = _dbContext.OrderItem
             .Where(x => x.TableBooking.Table.Section.OutletId == userOutlet.OutletId)
             .Where(x => x.OrderGroupId != null)
-            .Where(x => x.OrderItemStatus.isBackOffice == !req.Complete)
-            // .Where(x => x.OrderItemStatus.isComplete == req.Complete)
-            .Where(x => x.OrderItemStatus.isCancelled != true)
-            .Where(x => x.OrderItemStatus.isHistory == req.Complete)
+            .Where(x => x.OrderItemStatus.IsBackOffice == !req.Complete)
+            .Where(x => x.OrderItemStatus.IsCancelled != true)
+            .Where(x => x.OrderItemStatus.IsHistory == req.Complete)
             .Where(x => divisionIds.Contains(x.MenuItem.DivisionId ?? 0));
         if (req.Complete)
         {

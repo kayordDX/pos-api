@@ -23,7 +23,7 @@ namespace Kayord.Pos.Features.TableOrder.UpdateTableOrder
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-            var updateableStatus = await _dbContext.OrderItemStatus.Where(x => x.isBillable == true && x.isComplete == false).Select(rd => rd.OrderItemStatusId).ToListAsync();
+            var updateableStatus = await _dbContext.OrderItemStatus.Where(x => x.IsBillable == true && x.IsComplete == false).Select(rd => rd.OrderItemStatusId).ToListAsync();
             var ois = await _dbContext.OrderItemStatus.FirstOrDefaultAsync(x => x.OrderItemStatusId == req.OrderItemStatusId);
             Entities.Table table = new();
             bool notify = true;
@@ -38,9 +38,9 @@ namespace Kayord.Pos.Features.TableOrder.UpdateTableOrder
                     oi.OrderUpdated = DateTime.UtcNow;
                     if (table.TableId != i.TableBooking.TableId)
                         table = await _dbContext.Table.FindAsync(i.TableBooking.TableId) ?? new();
-                    if (ois.isComplete)
+                    if (ois.IsComplete)
                         i.OrderCompleted = DateTime.Now;
-                    if (ois.Notify && table.TableId == i.TableBooking.TableId && notify)
+                    if (ois.IsNotify && table.TableId == i.TableBooking.TableId && notify)
                     {
                         notification.UserId = i.TableBooking.UserId;
                         notification.Title = "Order Update";

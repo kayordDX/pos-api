@@ -1,9 +1,8 @@
-using Kayord.Pos.Data;
-using Kayord.Pos.Services;
-using Kayord.Pos.DTO;
-
-using Microsoft.EntityFrameworkCore;
 using System.Globalization;
+using Kayord.Pos.Data;
+using Kayord.Pos.DTO;
+using Kayord.Pos.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.SalesPeriod.CashUp;
 
@@ -54,7 +53,7 @@ public class Endpoint : Endpoint<Request, CashUp>
             tableCashUp.Total = 0;
 
 
-            var paymentStatusIds = _dbContext.OrderItemStatus.Where(x => x.isBillable == true).Select(rd => rd.OrderItemStatusId).ToList();
+            var paymentStatusIds = _dbContext.OrderItemStatus.Where(x => x.IsBillable == true).Select(rd => rd.OrderItemStatusId).ToList();
             tableCashUp.UserId = tb.UserId;
 
             tableCashUp.OrderItems = await _dbContext.OrderItem

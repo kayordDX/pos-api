@@ -106,12 +106,12 @@ public static class AppDbSeed
             await context.MenuItemOptionGroup.AddAsync(new MenuItemOptionGroup { MenuItemId = 4, OptionGroupId = 2 });
             await context.MenuItemOptionGroup.AddAsync(new MenuItemOptionGroup { MenuItemId = 5, OptionGroupId = 1 });
             await context.MenuItemOptionGroup.AddAsync(new MenuItemOptionGroup { MenuItemId = 5, OptionGroupId = 2 });
-            await context.OrderItemStatus.AddAsync(new OrderItemStatus { OrderItemStatusId = 1, isBillable = false, Status = "Basket", isBackOffice = false, isFrontLine = true, isCancelled = false, isComplete = false, Notify = false });
-            await context.OrderItemStatus.AddAsync(new OrderItemStatus { OrderItemStatusId = 2, Status = "Sent to Kitchen", isBackOffice = true, isFrontLine = true, isCancelled = false, isComplete = false, Notify = false });
-            await context.OrderItemStatus.AddAsync(new OrderItemStatus { OrderItemStatusId = 3, Status = "Being Prepared", isBackOffice = true, isFrontLine = true, isComplete = false, Notify = false });
-            await context.OrderItemStatus.AddAsync(new OrderItemStatus { OrderItemStatusId = 4, isBillable = false, Status = "Kitchen Cancelled", isBackOffice = false, isFrontLine = true, isComplete = false, Notify = true });
-            await context.OrderItemStatus.AddAsync(new OrderItemStatus { OrderItemStatusId = 5, Status = "Ready for Collection", isBackOffice = false, isFrontLine = true, isComplete = false, Notify = true });
-            await context.OrderItemStatus.AddAsync(new OrderItemStatus { OrderItemStatusId = 6, Status = "Complete", isBackOffice = false, isComplete = true, isFrontLine = false, Notify = false });
+            await context.OrderItemStatus.AddAsync(new OrderItemStatus { OrderItemStatusId = 1, IsBillable = false, Status = "Basket", IsBackOffice = false, IsFrontLine = true, IsCancelled = false, IsComplete = false, IsNotify = false });
+            await context.OrderItemStatus.AddAsync(new OrderItemStatus { OrderItemStatusId = 2, Status = "Sent to Kitchen", IsBackOffice = true, IsFrontLine = true, IsCancelled = false, IsComplete = false, IsNotify = false });
+            await context.OrderItemStatus.AddAsync(new OrderItemStatus { OrderItemStatusId = 3, Status = "Being Prepared", IsBackOffice = true, IsFrontLine = true, IsComplete = false, IsNotify = false });
+            await context.OrderItemStatus.AddAsync(new OrderItemStatus { OrderItemStatusId = 4, IsBillable = false, Status = "Kitchen Cancelled", IsBackOffice = false, IsFrontLine = true, IsComplete = false, IsNotify = true });
+            await context.OrderItemStatus.AddAsync(new OrderItemStatus { OrderItemStatusId = 5, Status = "Ready for Collection", IsBackOffice = false, IsFrontLine = true, IsComplete = false, IsNotify = true });
+            await context.OrderItemStatus.AddAsync(new OrderItemStatus { OrderItemStatusId = 6, Status = "Complete", IsBackOffice = false, IsComplete = true, IsFrontLine = false, IsNotify = false });
 
             await context.SaveChangesAsync(cancellationToken);
             await context.TableBooking.AddAsync(new TableBooking { TableId = 1, SalesPeriodId = 1, BookingName = "Seeded Booking", UserId = "103301258912011927884" });

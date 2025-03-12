@@ -1,9 +1,8 @@
 using Kayord.Pos.Data;
-using Kayord.Pos.Services;
 using Kayord.Pos.Entities;
-
-using Microsoft.EntityFrameworkCore;
 using Kayord.Pos.Features.Role;
+using Kayord.Pos.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.TableOrder.FrontOffice;
 
@@ -34,7 +33,7 @@ public class Endpoint : Endpoint<Request, Response>
 
         List<int> divisionIds = await RoleHelper.GetDivisionsForRoles(req.RoleIds, _dbContext, userOutlet.OutletId, _cu.UserId);
 
-        var statusIds = _dbContext.OrderItemStatus.Where(x => x.isFrontLine && x.isComplete != true && x.isCancelled != true).Select(rd => rd.OrderItemStatusId).ToList();
+        var statusIds = _dbContext.OrderItemStatus.Where(x => x.IsFrontLine && x.IsComplete != true && x.IsCancelled != true).Select(rd => rd.OrderItemStatusId).ToList();
 
         var result = await _dbContext.TableBooking
             .Where(x => x.SalesPeriod.OutletId == userOutlet.OutletId && x.CloseDate == null)
