@@ -1,13 +1,21 @@
 
+using System.Diagnostics;
 using Kayord.Pos.Data;
 using Kayord.Pos.Features.Bill.EmailBill;
+using Kayord.Pos.Features.Stock;
 using Kayord.Pos.Services;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Asn1.Cms;
 using QuestPDF.Fluent;
 
 namespace Kayord.Pos.Features.Test;
 
-public class StockTest : EndpointWithoutRequest<bool>
+public class Result
+{
+    public TimeSpan Time { get; set; }
+}
+
+public class StockTest : EndpointWithoutRequest<Result>
 {
     private readonly AppDbContext _dbContext;
 
@@ -24,59 +32,18 @@ public class StockTest : EndpointWithoutRequest<bool>
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        List<int> orderItemIds = [304943];
+        List<int> orderItemIds = [304943, 304942, 304941];
 
-        foreach (var item in orderItemIds)
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
+        await StockManager.StockUpdate(orderItemIds, _dbContext, "test", ct);
+        stopwatch.Stop();
+
+        Result result = new()
         {
-            await _dbContext.Database.ExecuteSqlAsync($"""
-                update stock_item
-                    set actual = si.actual - mis.quantity
-                from order_item oi
-                join menu_item mi
-                    on oi.menu_item_id = mi.menu_item_id
-                join menu_item_stock mis
-                    on mis.menu_item_id = mi.menu_item_id
-                join stock_item si
-                    on si.stock_id = mis.stock_id
-                and si.division_id = mi.division_id
-                where stock_item.id = si.id
-                and oi.order_item_id = {item};
-            """);
+            Time = stopwatch.Elapsed,
+        };
 
-            await _dbContext.Database.ExecuteSqlAsync($"""
-                update stock_item
-                    set actual = si.actual - es.quantity
-                from order_item oi
-                join menu_item mi
-                    on oi.menu_item_id = mi.menu_item_id
-                join order_item_extra oie
-                    on oie.order_item_id = oi.order_item_id
-                join extra_stock es
-                    on es.extra_id = oie.extra_id
-                join stock_item si
-                    on si.stock_id = es.stock_id
-                and si.division_id = mi.division_id
-                where stock_item.id = si.id
-                and oi.order_item_id = {item};
-            """);
-
-            await _dbContext.Database.ExecuteSqlAsync($"""
-                update stock_item
-                    set actual = si.actual - os.quantity
-                from order_item oi
-                join menu_item mi
-                    on oi.menu_item_id = mi.menu_item_id
-                join order_item_option oio
-                    on oio.order_item_id = oi.order_item_id
-                join option_stock os
-                    on os.option_id = oio.option_id
-                join stock_item si
-                    on si.stock_id = os.stock_id
-                and si.division_id = mi.division_id
-                where stock_item.id = si.id
-                and oi.order_item_id = {item};
-            """);
-        }
-        await SendAsync(true);
+        await SendAsync(result);
     }
 }
