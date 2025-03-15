@@ -13,7 +13,7 @@ public static class GeneralExtensions
 
         services.AddHostedService<MigratorHostedService>();
         services.AddSingleton<CurrentUserService>();
-        services.AddScoped<UserService>();
+        services.AddHttpClient<UserService>();
         services.AddTransient<IEmailSender, EmailService>();
         services.AddSingleton<IUserIdProvider, UserProvider>();
         services.AddSingleton<EncryptionService>();
