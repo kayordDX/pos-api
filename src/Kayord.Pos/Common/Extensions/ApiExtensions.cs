@@ -54,9 +54,11 @@ public static class ApiExtensions
         if (app.Environment.IsDevelopment())
         {
             app.UseOpenApi(c => c.Path = "/openapi/{documentName}.json");
-            app.MapScalarApiReference(string.Empty);
+            app.MapScalarApiReference(string.Empty, options =>
+            {
+                options.TagSorter = TagSorter.Alpha;
+            });
         }
         return app;
-
     }
 }
