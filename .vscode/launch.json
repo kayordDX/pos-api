@@ -6,14 +6,10 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/src/Kayord.Pos/bin/Debug/net8.0/Kayord.Pos.dll",
+            "program": "${workspaceFolder}/src/Kayord.Pos/bin/Debug/net9.0/Kayord.Pos.dll",
             "args": [],
             "cwd": "${workspaceFolder}/src/Kayord.Pos",
             "stopAtEntry": false,
-            // "serverReadyAction": {
-            //     "action": "openExternally",
-            //     "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
-            // },
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "Development"
             },
@@ -25,15 +21,6 @@
             "name": ".NET Core Attach",
             "type": "coreclr",
             "request": "attach"
-        },
-        {
-            "name": "Docker .NET Launch",
-            "type": "docker",
-            "request": "launch",
-            "preLaunchTask": "docker-run: debug",
-            "netCore": {
-                "appProject": "${workspaceFolder}/src/Kayord.Pos/Kayord.Pos.csproj"
-            }
         }
     ]
 }

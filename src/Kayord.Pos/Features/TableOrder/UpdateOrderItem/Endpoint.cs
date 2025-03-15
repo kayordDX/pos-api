@@ -21,11 +21,11 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-            var Notification = "";
-            var TableName = "";
+            var notification = "";
+            var tableName = "";
             var nC = 0;
             string tUserId = "";
-            var Status = "";
+            var status = "";
             OrderItemStatus? oIS = await _dbContext.OrderItemStatus.FirstOrDefaultAsync(x => x.OrderItemStatusId == req.OrderItemStatusId);
             if (oIS == null)
             {
@@ -63,9 +63,9 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
                         }
                     }
 
-                    Status = oIS.Status;
+                    status = oIS?.Status;
                     entity.OrderItemStatusId = req.OrderItemStatusId;
-                    if (oIS.AssignGroup)
+                    if (oIS?.AssignGroup ?? false)
                     {
                         entity.OrderGroup = order;
                     }
@@ -78,8 +78,8 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
                         if (i != null)
                         {
                             nC++;
-                            TableName = entity.TableBooking.Table.Name;
-                            Notification = Notification == "" ? i.Name : Notification + ", " + i.Name;
+                            tableName = entity.TableBooking.Table.Name;
+                            notification = notification == "" ? i.Name : notification + ", " + i.Name;
                             tUserId = entity.TableBooking.UserId;
                         }
                     }
@@ -109,13 +109,13 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
             }
 
 
-            if (Notification != "")
+            if (notification != "")
             {
                 await PublishAsync(new NotificationEvent()
                 {
                     UserId = tUserId,
                     Title = "Item Status",
-                    Body = TableName + " - " + Notification + " - " + Status,
+                    Body = tableName + " - " + notification + " - " + status,
                 }, Mode.WaitForNone);
             }
 
