@@ -68,7 +68,18 @@ public static class Bill
         response.Total = response.Total < 0 ? 0m : response.Total;
         response.Balance = response.Total - TotalPayments;
         response.TipAmount = (response.Total - TotalPayments) * -1;
-        response.TotalExVAT = Math.Round(response.Total / 1.15m, 2);
+
+        var vatRateEntity = await _dbContext.VATRate
+            .AsNoTracking()
+            .Where(x => tableBooking.BookingDate >= x.StartDate && tableBooking.BookingDate <= x.EndDate)
+            .FirstOrDefaultAsync();
+        if (vatRateEntity == null)
+        {
+            throw new Exception("Vat rate not found");
+        }
+        decimal vatRate = 1 + vatRateEntity.Value;
+
+        response.TotalExVAT = Math.Round(response.Total / vatRate, 2);
         response.VAT = response.Total - response.TotalExVAT;
         response.Balance = response.Balance < 0 ? 0m : response.Balance;
         response.VAT = response.VAT < 0 ? 0m : response.VAT;

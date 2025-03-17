@@ -11,4 +11,7 @@ public class StockItemAudit
     public int StockItemAuditTypeId { get; set; }
     public StockItemAuditType StockItemAuditType { get; set; } = default!;
     public int? OrderItemId { get; set; }
+    public int? StockAllocateId { get; set; }
+    public int? StockOrderId { get; set; }
+    public int? StockId { get; set; }
 }

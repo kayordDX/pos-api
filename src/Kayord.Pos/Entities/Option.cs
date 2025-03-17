@@ -9,4 +9,5 @@ public class Option
     public OptionGroup OptionGroup { get; set; } = default!;
     public List<OrderItemOption>? OrderItemOptions { get; set; }
     public int OutletId { get; set; }
+    public bool IsAvailable { get; set; }
 }

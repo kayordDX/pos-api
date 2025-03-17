@@ -1,14 +1,18 @@
 using Kayord.Pos.Data;
+using Kayord.Pos.Entities;
+using Kayord.Pos.Services;
 
 namespace Kayord.Pos.Features.Stock.Items.Update;
 
 public class Endpoint : Endpoint<Request>
 {
     private readonly AppDbContext _dbContext;
+    private readonly CurrentUserService _currentUserService;
 
-    public Endpoint(AppDbContext dbContext)
+    public Endpoint(AppDbContext dbContext, CurrentUserService currentUserService)
     {
         _dbContext = dbContext;
+        _currentUserService = currentUserService;
     }
 
     public override void Configure()
@@ -19,9 +23,10 @@ public class Endpoint : Endpoint<Request>
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
         var entity = await _dbContext.StockItem.FindAsync(req.Id);
+
         if (entity == null)
         {
-            entity = new Entities.StockItem()
+            entity = new StockItem()
             {
                 DivisionId = req.DivisionId,
                 StockId = req.StockId,
@@ -29,7 +34,18 @@ public class Endpoint : Endpoint<Request>
                 Threshold = req.Threshold
             };
             await _dbContext.AddAsync(entity);
+            await _dbContext.SaveChangesAsync();
         }
+
+        await _dbContext.StockItemAudit.AddAsync(new StockItemAudit()
+        {
+            FromActual = entity.Actual,
+            ToActual = req.Actual,
+            StockItemAuditTypeId = 6,
+            StockItemId = entity.Id,
+            UserId = _currentUserService.UserId ?? "",
+            Updated = DateTime.Now,
+        });
 
         entity.Actual = req.Actual;
         entity.Threshold = req.Threshold;

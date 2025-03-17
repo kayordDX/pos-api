@@ -1,6 +1,5 @@
 using Kayord.Pos.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Kayord.Pos.Features.Stock.OrderItem.UpdateBulk;
 

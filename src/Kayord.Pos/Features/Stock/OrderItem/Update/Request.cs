@@ -8,5 +8,4 @@ public class Request
     public decimal Actual { get; set; }
     public decimal Price { get; set; }
     public int StockOrderItemStatusId { get; set; }
-
 }

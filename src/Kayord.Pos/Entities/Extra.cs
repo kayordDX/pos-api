@@ -10,4 +10,5 @@ public class Extra
     public ExtraGroup ExtraGroup { get; set; } = default!;
     public List<OrderItemExtra>? OrderItemExtras { get; set; }
     public int OutletId { get; set; }
+    public bool IsAvailable { get; set; }
 }
