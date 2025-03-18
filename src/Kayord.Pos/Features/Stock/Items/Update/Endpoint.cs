@@ -37,15 +37,18 @@ public class Endpoint : Endpoint<Request>
             await _dbContext.SaveChangesAsync();
         }
 
-        await _dbContext.StockItemAudit.AddAsync(new StockItemAudit()
+        if (entity.Actual != req.Actual)
         {
-            FromActual = entity.Actual,
-            ToActual = req.Actual,
-            StockItemAuditTypeId = 6,
-            StockItemId = entity.Id,
-            UserId = _currentUserService.UserId ?? "",
-            Updated = DateTime.Now,
-        });
+            await _dbContext.StockItemAudit.AddAsync(new StockItemAudit()
+            {
+                FromActual = entity.Actual,
+                ToActual = req.Actual,
+                StockItemAuditTypeId = 6,
+                StockItemId = entity.Id,
+                UserId = _currentUserService.UserId ?? "",
+                Updated = DateTime.Now,
+            });
+        }
 
         entity.Actual = req.Actual;
         entity.Threshold = req.Threshold;

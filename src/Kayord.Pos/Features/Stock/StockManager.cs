@@ -69,16 +69,20 @@ public static class StockManager
                 bool isBulk = m.Type == 4;
                 int bulk = isBulk ? -1 : 1;
 
-                await _dbContext.StockItemAudit.AddAsync(new Entities.StockItemAudit()
+                decimal toActual = stockItem.Actual - m.Quantity * bulk;
+                if (stockItem.Actual != toActual)
                 {
-                    OrderItemId = r,
-                    FromActual = stockItem.Actual,
-                    ToActual = stockItem.Actual - m.Quantity * bulk,
-                    StockItemAuditTypeId = m.Type,
-                    StockItemId = stockItem.Id,
-                    UserId = userId,
-                    Updated = DateTime.Now,
-                });
+                    await _dbContext.StockItemAudit.AddAsync(new Entities.StockItemAudit()
+                    {
+                        OrderItemId = r,
+                        FromActual = stockItem.Actual,
+                        ToActual = toActual,
+                        StockItemAuditTypeId = m.Type,
+                        StockItemId = stockItem.Id,
+                        UserId = userId,
+                        Updated = DateTime.Now,
+                    });
+                }
 
                 stockItem.Actual -= m.Quantity * bulk;
             }

@@ -34,15 +34,7 @@ public class Endpoint : Endpoint<Request, StockOrderItem>
             return;
         }
 
-        var request = new OrderItem.Request()
-        {
-            Actual = req.Actual,
-            StockId = req.StockId,
-            StockOrderId = req.StockOrderId,
-            StockOrderItemStatusId = req.StockOrderItemStatusId
-        };
-
-        await OrderItemUpdate.UpdateOrderItem(entity, request, _dbContext, _currentUserService, ct);
+        await OrderItemUpdate.StockCount(req.StockOrderId, entity.Actual, entity.StockOrder.DivisionId, entity.StockId, req.Actual, _dbContext, _currentUserService, ct);
 
         entity.OrderAmount = req.OrderAmount;
         entity.Actual = req.Actual;
@@ -50,6 +42,8 @@ public class Endpoint : Endpoint<Request, StockOrderItem>
         entity.StockOrderItemStatusId = req.StockOrderItemStatusId;
 
         await _dbContext.SaveChangesAsync();
+
+        await OrderItemUpdate.StockOrderStatus(req.StockOrderId, _dbContext, ct);
         await SendAsync(entity);
     }
 }

@@ -7,11 +7,11 @@ namespace Kayord.Pos.Features.Stock.OrderItem;
 
 public static class OrderItemUpdate
 {
-    public static async Task<StockOrderItem> UpdateOrderItem(StockOrderItem entity, Request req, AppDbContext dbContext, CurrentUserService currentUserService, CancellationToken ct)
+    public static async Task StockCount(int stockOrderId, decimal fromActual, int divisionId, int stockId, decimal actual, AppDbContext dbContext, CurrentUserService currentUserService, CancellationToken ct)
     {
         // Update Stock Item Count 
         var item = await dbContext.StockItem
-            .Where(x => x.StockId == req.StockId && x.DivisionId == entity.StockOrder.DivisionId)
+            .Where(x => x.StockId == stockId && x.DivisionId == divisionId)
             .FirstOrDefaultAsync(ct);
 
         bool isNew = false;
@@ -19,14 +19,14 @@ public static class OrderItemUpdate
         {
             item = new StockItem()
             {
-                StockId = req.StockId,
-                DivisionId = entity.StockOrder.DivisionId,
-                Actual = req.Actual,
+                StockId = stockId,
+                DivisionId = divisionId,
+                Actual = actual,
                 Threshold = 0,
             };
             isNew = true;
             await dbContext.AddAsync(item);
-            await dbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync(ct);
         }
 
         decimal previousActual = item?.Actual ?? 0;
@@ -34,35 +34,57 @@ public static class OrderItemUpdate
         {
             if (!isNew)
             {
-                item.Actual -= entity.Actual;
+                item.Actual -= fromActual;
             }
-            item.Actual += req.Actual;
+            item.Actual += actual;
 
-            await dbContext.StockItemAudit.AddAsync(new StockItemAudit()
+            if (previousActual != item.Actual)
             {
-                FromActual = previousActual,
-                ToActual = item.Actual,
-                StockItemAuditTypeId = 5,
-                StockItemId = item.Id,
-                UserId = currentUserService.UserId ?? "",
-                Updated = DateTime.Now,
-                StockId = req.StockId,
-                StockOrderId = req.StockOrderId,
-            });
+                await dbContext.StockItemAudit.AddAsync(new StockItemAudit()
+                {
+                    FromActual = previousActual,
+                    ToActual = item.Actual,
+                    StockItemAuditTypeId = 5,
+                    StockItemId = item.Id,
+                    UserId = currentUserService.UserId ?? "",
+                    Updated = DateTime.Now,
+                    StockId = stockId,
+                    StockOrderId = stockOrderId,
+                });
+            }
+        }
+    }
+
+    public static async Task StockOrderStatus(int stockOrderId, AppDbContext dbContext, CancellationToken ct)
+    {
+        var orderItems = await dbContext.StockOrderItem
+            .AsNoTracking()
+            .Where(x => x.StockOrderId == stockOrderId)
+            .ToListAsync(ct);
+
+        int orderStatusId = 1;
+        if (orderItems.All(x => x.StockOrderItemStatusId > 1))
+        {
+            orderStatusId = 3;
+        }
+        else if (orderItems.Any(x => x.StockOrderItemStatusId > 1))
+        {
+            orderStatusId = 2;
         }
 
-        // Check Order Items
-        // If all closed close order
+        var order = await dbContext.StockOrder
+            .Where(x => x.Id == stockOrderId)
+            .FirstOrDefaultAsync(ct);
 
-        await dbContext.SaveChangesAsync();
-        return entity;
+        if (order == null)
+        {
+            return;
+        }
+
+        if (order.StockOrderStatusId != orderStatusId)
+        {
+            order.StockOrderStatusId = orderStatusId;
+            await dbContext.SaveChangesAsync(ct);
+        }
     }
-}
-
-public class Request
-{
-    public int StockOrderId { get; set; }
-    public int StockId { get; set; }
-    public decimal Actual { get; set; }
-    public int StockOrderItemStatusId { get; set; }
 }
