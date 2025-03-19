@@ -10,4 +10,5 @@ public class PrinterDTO
     public int Port { get; set; } = 9100;
     public int LineCharacters { get; set; } = 64;
     public bool IsEnabled { get; set; }
+    public bool IsConnected { get; set; }
 }

@@ -21,7 +21,7 @@ public class RedisClient
         return await ConnectionMultiplexer.ConnectAsync(connectionString);
     }
 
-    private async Task<IDatabase> GetDatabaseAsync()
+    public async Task<IDatabase> GetDatabaseAsync()
     {
         var connection = await lazyConnection.Value;
         return connection.GetDatabase();
