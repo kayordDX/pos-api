@@ -23,13 +23,6 @@ namespace Kayord.Pos.Features.Printer.List
 
         public override async Task HandleAsync(Request r, CancellationToken ct)
         {
-            // Get subscribed printers for outlet
-            var db = await _redisClient.GetDatabaseAsync();
-            var subscribedPrinters = await db.ExecuteAsync("PUBSUB", "CHANNELS", $"print:{r.OutletId}:*");
-            List<int> connectedDevices = ((StackExchange.Redis.RedisValue[]?)subscribedPrinters)?
-                .Select(x => int.Parse(x.ToString().Replace($"print:{r.OutletId}:", "") ?? "0"))?
-                .ToList() ?? [];
-
             var result = await _dbContext.Printer
                 .Where(x => x.OutletId == r.OutletId)
                 .OrderByDescending(x => x.IsEnabled)
@@ -37,7 +30,40 @@ namespace Kayord.Pos.Features.Printer.List
                 .ProjectToDto()
                 .ToListAsync();
 
-            result.ForEach(x => x.IsConnected = connectedDevices.Contains(x.DeviceId));
+            if (result.Count > 0)
+            {
+                try
+                {
+                    // Get subscribed printers for outlet
+                    var db = await _redisClient.GetDatabaseAsync();
+                    var subscribedPrinters = await db.ExecuteAsync("PUBSUB", "CHANNELS", $"print:{r.OutletId}:*");
+
+                    List<string> printerChannels = ((StackExchange.Redis.RedisValue[]?)subscribedPrinters)?
+                        .Select(x => x.ToString())?.ToList() ?? [];
+
+                    List<int> onlineDevices = [];
+                    foreach (var channel in printerChannels)
+                    {
+                        var subCount = await db.ExecuteAsync("PUBSUB", "NUMSUB", channel);
+                        var subCountList = ((StackExchange.Redis.RedisValue[]?)subCount)?.Select(x => x.ToString()).ToList() ?? [];
+                        if (subCountList.Count > 1)
+                        {
+                            bool isSubConnected = subCountList[1] == "1";
+                            if (isSubConnected)
+                            {
+                                int deviceId = int.Parse(channel.Replace($"print:{r.OutletId}:", "") ?? "0");
+                                onlineDevices.Add(deviceId);
+                            }
+                        }
+                    }
+                    result.ForEach(x => x.IsConnected = onlineDevices.Contains(x.DeviceId));
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex, ex.Message);
+                }
+            }
+
             await SendAsync(result);
         }
     }
