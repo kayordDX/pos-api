@@ -29,6 +29,14 @@ namespace Kayord.Pos.Features.Stock.Link.Get
                 on ms.menu_section_id = m.menu_section_id
                 where s.stock_id = {req.StockId}
                 union
+                select m.name, ms.name description, 'Bulk' type, s.quantity 
+                from menu_item_bulk_stock s
+                join menu_item m
+                on m.menu_item_id = s.menu_item_id
+                join menu_section ms
+                on ms.menu_section_id = m.menu_section_id
+                where s.stock_id = {req.StockId}
+                union
                 select e.name, eg.name description, 'Extra' type, s.quantity
                 from extra_stock s
                 join extra e

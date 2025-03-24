@@ -73,6 +73,24 @@ namespace Kayord.Pos.Features.Stock.Link.GetAll
                     where i.option_id = {req.Id}
                 """);
             }
+            else if (req.LinkType == 3)
+            {
+                query = _dbContext.Database.SqlQuery<Response>($"""
+                    select
+                        i.menu_item_id id, 
+                        i.stock_id,
+                        s.name, 
+                        s.unit_id, 
+                        u.name unit_name,
+                        i.quantity
+                    from menu_item_bulk_stock i
+                    join stock s
+                    on i.stock_id = s.id
+                    join unit u
+                    on u.id = s.unit_id
+                    where i.menu_item_id = {req.Id}
+                """);
+            }
 
             if (query == null)
             {

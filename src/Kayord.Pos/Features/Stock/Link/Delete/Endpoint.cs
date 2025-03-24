@@ -30,6 +30,10 @@ namespace Kayord.Pos.Features.Stock.Link.Delete
             {
                 await _dbContext.OptionStock.Where(x => x.OptionId == req.Id && x.StockId == req.StockId).ExecuteDeleteAsync(ct);
             }
+            else if (req.LinkType == 3)
+            {
+                await _dbContext.MenuItemBulkStock.Where(x => x.MenuItemId == req.Id && x.StockId == req.StockId).ExecuteDeleteAsync(ct);
+            }
             await SendNoContentAsync();
         }
     }

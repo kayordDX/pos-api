@@ -45,6 +45,15 @@ namespace Kayord.Pos.Features.Stock.Link.Add
                     Quantity = req.Quantity,
                 }, ct);
             }
+            else if (req.LinkType == 3)
+            {
+                await _dbContext.MenuItemBulkStock.AddAsync(new MenuItemBulkStock
+                {
+                    MenuItemId = req.Id,
+                    StockId = req.StockId,
+                    Quantity = req.Quantity,
+                }, ct);
+            }
             await _dbContext.SaveChangesAsync();
             await SendNoContentAsync();
         }
