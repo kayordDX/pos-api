@@ -43,6 +43,7 @@ public class AppDbContext : DbContext
     public DbSet<MenuItemExtraGroup> MenuItemExtraGroup => Set<MenuItemExtraGroup>();
     public DbSet<MenuItemOptionGroup> MenuItemOptionGroup => Set<MenuItemOptionGroup>();
     public DbSet<MenuItemStock> MenuItemStock => Set<MenuItemStock>();
+    public DbSet<MenuItemBulkStock> MenuItemBulkStock => Set<MenuItemBulkStock>();
     public DbSet<MenuSection> MenuSection => Set<MenuSection>();
     public DbSet<NotificationLog> NotificationLog => Set<NotificationLog>();
     public DbSet<NotificationUser> NotificationUser => Set<NotificationUser>();
