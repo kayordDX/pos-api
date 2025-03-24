@@ -21,7 +21,7 @@ public static class StockManager
             // Menu Items
             var menuItemStock = await _dbContext.MenuItemStock
                 .Where(x => x.MenuItemId == orderInfo.MenuItemId)
-                .Select(x => new StockPatch() { StockId = x.StockId, Quantity = x.Quantity, Type = 1 })
+                .Select(x => new StockPatch() { StockId = x.StockId, Quantity = x.Quantity, Type = StockItemAuditType.MenuItem })
                 .ToListAsync(ct);
 
             stockToUpdate.AddRange(menuItemStock);
@@ -56,7 +56,11 @@ public static class StockManager
             stockToUpdate.AddRange(options);
 
             // Bulk Items
-            // Type 4
+            var menuItemBulkStock = await _dbContext.MenuItemBulkStock
+                .Where(x => x.MenuItemId == orderInfo.MenuItemId)
+                .Select(x => new StockPatch() { StockId = x.StockId, Quantity = x.Quantity, Type = StockItemAuditType.Bulk })
+                .ToListAsync(ct);
+            stockToUpdate.AddRange(menuItemBulkStock);
 
             foreach (var m in stockToUpdate)
             {
@@ -66,10 +70,13 @@ public static class StockManager
 
                 if (stockItem == null) continue;
 
-                bool isBulk = m.Type == 4;
+                bool isBulk = m.Type == StockItemAuditType.Bulk;
                 int bulk = isBulk ? -1 : 1;
 
                 decimal toActual = stockItem.Actual - m.Quantity * bulk;
+
+                await StockCountAvailableCheck(stockItem.Id, stockItem.Actual, toActual, _dbContext, ct);
+
                 if (stockItem.Actual != toActual)
                 {
                     await _dbContext.StockItemAudit.AddAsync(new Entities.StockItemAudit()
@@ -77,7 +84,7 @@ public static class StockManager
                         OrderItemId = r,
                         FromActual = stockItem.Actual,
                         ToActual = toActual,
-                        StockItemAuditTypeId = m.Type,
+                        StockItemAuditTypeId = (int)m.Type,
                         StockItemId = stockItem.Id,
                         UserId = userId,
                         Updated = DateTime.Now,
@@ -88,5 +95,55 @@ public static class StockManager
             }
         }
         await _dbContext.SaveChangesAsync(ct);
+    }
+
+    public static async Task StockCountAvailableCheck(int stockId, decimal from, decimal to, AppDbContext dbContext, CancellationToken ct)
+    {
+        if (to < 0) to = 0;
+        if (from < 0) from = 0;
+
+        if (from <= 0 && from != to)
+        {
+            await StockUnavailable(stockId, true, dbContext, ct);
+        }
+        else if (to <= 0 && from != to)
+        {
+            await StockUnavailable(stockId, false, dbContext, ct);
+        }
+    }
+
+    public static async Task StockUnavailable(int stockId, bool isAvailable, AppDbContext dbContext, CancellationToken ct)
+    {
+        await dbContext.Database.ExecuteSqlAsync($"""
+            UPDATE menu_item mi
+            SET is_available = {isAvailable}
+            FROM menu_item_stock mis
+            WHERE mi.menu_item_id = mis.menu_item_id 
+            AND mis.stock_id = {stockId};
+        """);
+
+        await dbContext.Database.ExecuteSqlAsync($"""
+            UPDATE extra i
+            SET is_available = {isAvailable}
+            FROM extra_stock o
+            WHERE i.extra_id = o.extra_id 
+            AND o.stock_id = {stockId};
+        """);
+
+        await dbContext.Database.ExecuteSqlAsync($"""
+            UPDATE option i
+            SET is_available = {isAvailable}
+            FROM option_stock o
+            WHERE i.option_id = o.option_id 
+            AND o.stock_id = {stockId};
+        """);
+
+        await dbContext.Database.ExecuteSqlAsync($"""
+            UPDATE menu_item mi
+            SET is_available = {isAvailable}
+            FROM menu_item_bulk_stock mis
+            WHERE mi.menu_item_id = mis.menu_item_id 
+            AND mis.stock_id = {stockId};
+        """);
     }
 }
