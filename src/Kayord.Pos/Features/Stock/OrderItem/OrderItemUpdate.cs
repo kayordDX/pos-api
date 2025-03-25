@@ -84,6 +84,10 @@ public static class OrderItemUpdate
         if (order.StockOrderStatusId != orderStatusId)
         {
             order.StockOrderStatusId = orderStatusId;
+            if (orderStatusId == 2 && DateTime.Now.AddYears(-1) > order.OrderDate)
+            {
+                order.OrderDate = DateTime.Now;
+            }
             await dbContext.SaveChangesAsync(ct);
         }
     }
