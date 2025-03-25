@@ -76,13 +76,12 @@ public static class StockManager
 
                 decimal toActual = stockItem.Actual - m.Quantity * bulk;
 
-                if (!stockCheck.Contains(stockItem.Id))
-                {
-                    stockCheck.Add(stockItem.Id);
-                }
-
                 if (stockItem.Actual != toActual)
                 {
+                    if (!stockCheck.Contains(stockItem.Id))
+                    {
+                        stockCheck.Add(stockItem.Id);
+                    }
                     await _dbContext.StockItemAudit.AddAsync(new Entities.StockItemAudit()
                     {
                         OrderItemId = r,

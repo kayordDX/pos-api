@@ -37,10 +37,10 @@ public class Endpoint : Endpoint<Request>
             await _dbContext.SaveChangesAsync();
         }
 
-        await StockManager.StockAvailableCheck(entity.Id, _dbContext, ct);
-
+        bool checkStock = false;
         if (entity.Actual != req.Actual)
         {
+            checkStock = true;
             await _dbContext.StockItemAudit.AddAsync(new StockItemAudit()
             {
                 FromActual = entity.Actual,
@@ -56,6 +56,12 @@ public class Endpoint : Endpoint<Request>
         entity.Threshold = req.Threshold;
 
         await _dbContext.SaveChangesAsync();
+
+        if (checkStock)
+        {
+            await StockManager.StockAvailableCheck(entity.StockId, _dbContext, ct);
+        }
+
         await SendNoContentAsync();
     }
 }

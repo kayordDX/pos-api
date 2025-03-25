@@ -28,6 +28,8 @@ public class Endpoint : Endpoint<Request>
             return;
         }
 
+        List<int> stockCheck = [];
+
         foreach (int id in req.StockIds)
         {
             var entity = await _dbContext.StockOrderItem
@@ -48,9 +50,19 @@ public class Endpoint : Endpoint<Request>
             }
             await OrderItemUpdate.StockCount(req.StockOrderId, actual, entity.StockOrder.DivisionId, entity.StockId, entity.Actual, _dbContext, _currentUserService, ct);
             entity.StockOrderItemStatusId = req.StockOrderItemStatusId;
+
+            if (!stockCheck.Contains(entity.StockId))
+            {
+                stockCheck.Add(entity.StockId);
+            }
         }
 
         await _dbContext.SaveChangesAsync();
+
+        foreach (int s in stockCheck)
+        {
+            await StockManager.StockAvailableCheck(s, _dbContext, ct);
+        }
 
         await OrderItemUpdate.StockOrderStatus(req.StockOrderId, _dbContext, ct);
         await SendNoContentAsync();

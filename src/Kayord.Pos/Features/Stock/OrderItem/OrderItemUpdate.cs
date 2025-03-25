@@ -28,7 +28,6 @@ public static class OrderItemUpdate
             await dbContext.AddAsync(item);
             await dbContext.SaveChangesAsync(ct);
         }
-
         decimal previousActual = item?.Actual ?? 0;
         if (item != null)
         {
@@ -38,7 +37,6 @@ public static class OrderItemUpdate
             }
             item.Actual += actual;
 
-            await StockManager.StockAvailableCheck(item.Id, dbContext, ct);
 
             if (previousActual != item.Actual)
             {
