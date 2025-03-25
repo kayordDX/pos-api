@@ -1,4 +1,5 @@
 using Kayord.Pos.Data;
+using Kayord.Pos.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.Stock;
@@ -69,12 +70,27 @@ public static class StockManager
                     .Where(x => x.StockId == m.StockId && x.DivisionId == orderInfo.DivisionId)
                     .FirstOrDefaultAsync(ct);
 
-                if (stockItem == null) continue;
+                if (stockItem == null)
+                {
+                    stockItem = new StockItem()
+                    {
+                        DivisionId = orderInfo.DivisionId ?? 0,
+                        StockId = m.StockId,
+                        Actual = 0,
+                        Threshold = 0
+                    };
+                    await _dbContext.AddAsync(stockItem);
+                    await _dbContext.SaveChangesAsync(ct);
+                }
 
                 bool isBulk = m.Type == StockItemAuditType.Bulk;
                 int bulk = isBulk ? -1 : 1;
 
                 decimal toActual = stockItem.Actual - m.Quantity * bulk;
+                if (toActual < 0)
+                {
+                    toActual = 0;
+                }
 
                 if (stockItem.Actual != toActual)
                 {
@@ -94,7 +110,7 @@ public static class StockManager
                     });
                 }
 
-                stockItem.Actual -= m.Quantity * bulk;
+                stockItem.Actual = toActual;
             }
         }
         await _dbContext.SaveChangesAsync(ct);

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.Stock.OrderItem.LastPrice;
 
-public class Endpoint : Endpoint<Request, decimal>
+public class Endpoint : Endpoint<Request, Response>
 {
     private readonly AppDbContext _dbContext;
 
@@ -19,6 +19,12 @@ public class Endpoint : Endpoint<Request, decimal>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
+        decimal amount = await _dbContext.StockItem
+            .Where(x => x.StockId == req.StockId)
+            .GroupBy(x => x.Actual)
+            .Select(x => x.Sum(t => t.Actual))
+            .FirstOrDefaultAsync(ct);
+
         decimal result = 0;
         var entity = await _dbContext.StockOrderItem
             .AsNoTracking()
@@ -30,11 +36,15 @@ public class Endpoint : Endpoint<Request, decimal>
         {
             if (entity.OrderAmount == 0)
             {
-                await SendAsync(result);
-                return;
+                result = 0;
             }
-            result = entity.Price / entity.OrderAmount;
+            else
+            {
+                result = entity.Price / entity.OrderAmount;
+            }
         }
-        await SendAsync(result);
+
+        Response response = new() { LastPrice = result, TotalAmount = amount };
+        await SendAsync(response);
     }
 }
