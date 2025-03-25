@@ -37,7 +37,7 @@ public class Endpoint : Endpoint<Request>
             await _dbContext.SaveChangesAsync();
         }
 
-        await StockManager.StockCountAvailableCheck(entity.Id, entity.Actual, req.Actual, _dbContext, ct);
+        await StockManager.StockAvailableCheck(entity.Id, _dbContext, ct);
 
         if (entity.Actual != req.Actual)
         {

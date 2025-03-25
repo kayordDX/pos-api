@@ -38,7 +38,7 @@ public static class OrderItemUpdate
             }
             item.Actual += actual;
 
-            await StockManager.StockCountAvailableCheck(item.Id, previousActual, actual, dbContext, ct);
+            await StockManager.StockAvailableCheck(item.Id, dbContext, ct);
 
             if (previousActual != item.Actual)
             {

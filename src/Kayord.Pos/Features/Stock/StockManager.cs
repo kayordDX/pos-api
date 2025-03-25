@@ -7,6 +7,7 @@ public static class StockManager
 {
     public static async Task StockUpdate(List<int> orderItemIds, AppDbContext _dbContext, string userId, CancellationToken ct)
     {
+        List<int> stockCheck = [];
         foreach (int r in orderItemIds)
         {
             var orderInfo = await _dbContext.OrderItem
@@ -75,7 +76,10 @@ public static class StockManager
 
                 decimal toActual = stockItem.Actual - m.Quantity * bulk;
 
-                await StockCountAvailableCheck(stockItem.Id, stockItem.Actual, toActual, _dbContext, ct);
+                if (!stockCheck.Contains(stockItem.Id))
+                {
+                    stockCheck.Add(stockItem.Id);
+                }
 
                 if (stockItem.Actual != toActual)
                 {
@@ -95,55 +99,87 @@ public static class StockManager
             }
         }
         await _dbContext.SaveChangesAsync(ct);
-    }
 
-    public static async Task StockCountAvailableCheck(int stockId, decimal from, decimal to, AppDbContext dbContext, CancellationToken ct)
-    {
-        if (to < 0) to = 0;
-        if (from < 0) from = 0;
-
-        if (from <= 0 && from != to)
+        foreach (int s in stockCheck)
         {
-            await StockUnavailable(stockId, true, dbContext, ct);
-        }
-        else if (to <= 0 && from != to)
-        {
-            await StockUnavailable(stockId, false, dbContext, ct);
+            await StockAvailableCheck(s, _dbContext, ct);
         }
     }
 
-    public static async Task StockUnavailable(int stockId, bool isAvailable, AppDbContext dbContext, CancellationToken ct)
+    public static async Task StockAvailableCheck(int stockId, AppDbContext dbContext, CancellationToken ct)
     {
         await dbContext.Database.ExecuteSqlAsync($"""
-            UPDATE menu_item mi
-            SET is_available = {isAvailable}
-            FROM menu_item_stock mis
-            WHERE mi.menu_item_id = mis.menu_item_id 
-            AND mis.stock_id = {stockId};
+            update menu_item m
+            set is_available = a.is_available
+            from (
+                select 
+                    mi.menu_item_id,
+                    min(((si.actual - mmm.quantity) > 0)::int)::bool is_available
+                from menu_item mi
+                join menu_item_stock mis
+                on mi.menu_item_id = mis.menu_item_id
+                join menu_item_stock mmm
+                on mmm.menu_item_id = mis.menu_item_id
+                join stock_item si
+                on si.stock_id = mmm.stock_id
+                and si.division_id = mi.division_id
+                where mis.stock_id = {stockId}
+                group by mi.menu_item_id
+            ) a
+            WHERE m.menu_item_id = a.menu_item_id
+            AND m.is_available <> a.is_available
         """);
 
         await dbContext.Database.ExecuteSqlAsync($"""
-            UPDATE extra i
-            SET is_available = {isAvailable}
-            FROM extra_stock o
-            WHERE i.extra_id = o.extra_id 
-            AND o.stock_id = {stockId};
+            update extra e
+                set is_available = a.is_available
+            from (
+                select
+                    e.extra_id,
+                    min(((si.actual - ee.quantity) > 0)::int)::bool is_available
+                from extra e
+                join extra_stock es
+                    on es.extra_id = e.extra_id
+                join extra_stock ee
+                    on ee.extra_id = e.extra_id
+                join menu_item_extra_group mep
+                    on mep.extra_group_id = e.extra_group_id
+                join menu_item mi
+                    on mep.menu_item_id = mi.menu_item_id
+                join stock_item si
+                    on si.stock_id = ee.stock_id
+                    and si.division_id = mi.division_id
+                where ee.stock_id = {stockId}
+                group by e.extra_id
+            ) a
+            WHERE e.extra_id = a.extra_id
+            AND e.is_available <> a.is_available
         """);
 
         await dbContext.Database.ExecuteSqlAsync($"""
-            UPDATE option i
-            SET is_available = {isAvailable}
-            FROM option_stock o
-            WHERE i.option_id = o.option_id 
-            AND o.stock_id = {stockId};
-        """);
-
-        await dbContext.Database.ExecuteSqlAsync($"""
-            UPDATE menu_item mi
-            SET is_available = {isAvailable}
-            FROM menu_item_bulk_stock mis
-            WHERE mi.menu_item_id = mis.menu_item_id 
-            AND mis.stock_id = {stockId};
+            update option o
+                set is_available = a.is_available
+            from (
+                select
+                    o.option_id,
+                    min(((si.actual - oo.quantity) > 0)::int)::bool is_available
+                from option o
+                join option_stock os
+                    on os.option_id = o.option_id
+                join option_stock oo
+                    on oo.option_id = o.option_id
+                join menu_item_option_group mop
+                    on mop.option_group_id = o.option_group_id
+                join menu_item mi
+                    on mop.menu_item_id = mi.menu_item_id
+                join stock_item si
+                    on si.stock_id = oo.stock_id
+                    and si.division_id = mi.division_id
+                where oo.stock_id = {stockId}
+                group by o.option_id
+            ) a
+            WHERE o.option_id = a.option_id
+            AND o.is_available <> a.is_available
         """);
     }
 }
