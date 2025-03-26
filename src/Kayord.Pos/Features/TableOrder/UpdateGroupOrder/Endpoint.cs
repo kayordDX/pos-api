@@ -40,6 +40,13 @@ namespace Kayord.Pos.Features.TableOrder.UpdateGroupOrder
                 .Where(x => divisionIds.Contains(x.MenuItem.DivisionId ?? 0))
                 .ToListAsync(ct);
 
+            // Stock
+            if (orderItemStatus?.IsUpdateStock ?? false)
+            {
+                // stock event publish
+                await PublishAsync(new StockEvent() { OrderItemIds = orderItems.Select(x => x.OrderItemId).ToList() }, Mode.WaitForNone);
+            }
+
             bool notify = orderItemStatus?.IsNotify ?? false;
             NotificationEvent notification = new();
             foreach (var item in orderItems)
