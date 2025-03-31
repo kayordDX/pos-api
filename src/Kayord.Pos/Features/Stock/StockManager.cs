@@ -129,7 +129,7 @@ public static class StockManager
             from (
                 select 
                     mi.menu_item_id,
-                    min(((si.actual - mmm.quantity) > 0)::int)::bool is_available
+                    min(((si.actual - mmm.quantity) >= 0)::int)::bool is_available
                 from menu_item mi
                 join menu_item_stock mis
                 on mi.menu_item_id = mis.menu_item_id
@@ -151,7 +151,7 @@ public static class StockManager
             from (
                 select
                     e.extra_id,
-                    min(((si.actual - ee.quantity) > 0)::int)::bool is_available
+                    min(((si.actual - ee.quantity) >= 0)::int)::bool is_available
                 from extra e
                 join extra_stock es
                     on es.extra_id = e.extra_id
@@ -177,7 +177,7 @@ public static class StockManager
             from (
                 select
                     o.option_id,
-                    min(((si.actual - oo.quantity) > 0)::int)::bool is_available
+                    min(((si.actual - oo.quantity) >= 0)::int)::bool is_available
                 from option o
                 join option_stock os
                     on os.option_id = o.option_id
