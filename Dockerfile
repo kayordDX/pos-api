@@ -1,8 +1,8 @@
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 WORKDIR /app
 EXPOSE 5117
-
 ENV ASPNETCORE_URLS=http://+:5117
+RUN apt update && apt install -y curl && rm -rf /var/lib/apt/lists/*
 
 USER app
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:9.0 AS build
