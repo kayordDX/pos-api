@@ -1,22 +1,24 @@
-namespace Kayord.Pos.Entities;
+using Kayord.Pos.Features.Manager.OrderView;
 
-public class StockAllocate
+namespace Kayord.Pos.DTO;
+
+public class StockAllocateDTO
 {
     public int Id { get; set; }
     public int OutletId { get; set; }
     public int ToOutletId { get; set; }
     public string Comment { get; set; } = string.Empty;
     public int StockAllocateStatusId { get; set; }
-    public StockAllocateStatus StockAllocateStatus { get; set; } = default!;
+    public StockAllocateStatusDTO StockAllocateStatus { get; set; } = default!;
     public int FromDivisionId { get; set; }
-    public Division FromDivision { get; set; } = default!;
+    public DivisionDTO FromDivision { get; set; } = default!;
     public int ToDivisionId { get; set; }
-    public Division ToDivision { get; set; } = default!;
+    public DivisionDTO ToDivision { get; set; } = default!;
     public string AssignedUserId { get; set; } = string.Empty;
-    public User? AssignedUser { get; set; }
+    public UserDTO? AssignedUser { get; set; }
     public string FromUserId { get; set; } = string.Empty;
-    public User? FromUser { get; set; }
+    public UserDTO? FromUser { get; set; }
     public DateTime Created { get; set; }
     public DateTime Completed { get; set; }
-    public List<StockAllocateItem>? StockAllocateItems { get; set; }
+    // public List<StockAllocateItemDTO>? StockAllocateItems { get; set; }
 }
