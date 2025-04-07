@@ -4,7 +4,9 @@ public class StockAllocate
 {
     public int Id { get; set; }
     public int OutletId { get; set; }
+    public Outlet Outlet { get; set; } = default!;
     public int ToOutletId { get; set; }
+    public Outlet ToOutlet { get; set; } = default!;
     public string Comment { get; set; } = string.Empty;
     public int StockAllocateStatusId { get; set; }
     public StockAllocateStatus StockAllocateStatus { get; set; } = default!;

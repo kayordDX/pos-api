@@ -3,6 +3,7 @@ using System;
 using Kayord.Pos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using NpgsqlTypes;
@@ -12,9 +13,11 @@ using NpgsqlTypes;
 namespace Kayord.Pos.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250407185007_StockAllocateFields")]
+    partial class StockAllocateFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1972,17 +1975,11 @@ namespace Kayord.Pos.Data.Migrations
                     b.HasIndex("FromUserId")
                         .HasDatabaseName("ix_stock_allocate_from_user_id");
 
-                    b.HasIndex("OutletId")
-                        .HasDatabaseName("ix_stock_allocate_outlet_id");
-
                     b.HasIndex("StockAllocateStatusId")
                         .HasDatabaseName("ix_stock_allocate_stock_allocate_status_id");
 
                     b.HasIndex("ToDivisionId")
                         .HasDatabaseName("ix_stock_allocate_to_division_id");
-
-                    b.HasIndex("ToOutletId")
-                        .HasDatabaseName("ix_stock_allocate_to_outlet_id");
 
                     b.ToTable("stock_allocate", (string)null);
                 });
@@ -3402,13 +3399,6 @@ namespace Kayord.Pos.Data.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_stock_allocate_user_from_user_id");
 
-                    b.HasOne("Kayord.Pos.Entities.Outlet", "Outlet")
-                        .WithMany()
-                        .HasForeignKey("OutletId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_stock_allocate_outlet_outlet_id");
-
                     b.HasOne("Kayord.Pos.Entities.StockAllocateStatus", "StockAllocateStatus")
                         .WithMany()
                         .HasForeignKey("StockAllocateStatusId")
@@ -3423,26 +3413,15 @@ namespace Kayord.Pos.Data.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_stock_allocate_division_to_division_id");
 
-                    b.HasOne("Kayord.Pos.Entities.Outlet", "ToOutlet")
-                        .WithMany()
-                        .HasForeignKey("ToOutletId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_stock_allocate_outlet_to_outlet_id");
-
                     b.Navigation("AssignedUser");
 
                     b.Navigation("FromDivision");
 
                     b.Navigation("FromUser");
 
-                    b.Navigation("Outlet");
-
                     b.Navigation("StockAllocateStatus");
 
                     b.Navigation("ToDivision");
-
-                    b.Navigation("ToOutlet");
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.StockAllocateItem", b =>

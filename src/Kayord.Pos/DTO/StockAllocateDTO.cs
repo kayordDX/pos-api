@@ -6,7 +6,9 @@ public class StockAllocateDTO
 {
     public int Id { get; set; }
     public int OutletId { get; set; }
+    public OutletDTOBasic Outlet { get; set; } = default!;
     public int ToOutletId { get; set; }
+    public OutletDTOBasic ToOutlet { get; set; } = default!;
     public string Comment { get; set; } = string.Empty;
     public int StockAllocateStatusId { get; set; }
     public StockAllocateStatusDTO StockAllocateStatus { get; set; } = default!;
