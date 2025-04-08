@@ -4,7 +4,7 @@ using Kayord.Pos.Data;
 using Kayord.Pos.DTO;
 namespace Kayord.Pos.Features.Stock.Allocate.GetAll
 {
-    public class Endpoint : Endpoint<Request, PaginatedList<StockAllocateDTO>>
+    public class Endpoint : Endpoint<Request, PaginatedList<StockAllocateDTOBasic>>
     {
         private readonly AppDbContext _dbContext;
 
@@ -22,7 +22,7 @@ namespace Kayord.Pos.Features.Stock.Allocate.GetAll
         {
             var results = await _dbContext.StockAllocate
                 .Where(x => x.OutletId == req.OutletId)
-                .ProjectToDto()
+                .ProjectToDtoBasic()
                 .GetPagedAsync(req, ct);
             await SendAsync(results);
         }

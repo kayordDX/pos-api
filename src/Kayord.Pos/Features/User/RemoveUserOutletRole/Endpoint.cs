@@ -28,7 +28,9 @@ namespace Kayord.Pos.Features.User.RemoveUserOutletRole
                 throw new Exception("Could not find outlet for user");
             }
 
-            var role = await _dbContext.Role.FirstOrDefaultAsync(x => x.Name == req.Role);
+            var role = await _dbContext.Role
+                .Where(x => x.OutletId == userOutlet.OutletId)
+                .FirstOrDefaultAsync(x => x.Name == req.Role);
             if (role == null)
             {
                 throw new Exception("Could not find role");
