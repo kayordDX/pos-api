@@ -14,4 +14,6 @@ public class StockAllocateItemDTO
     public int StockAllocateItemStatusId { get; set; }
     public StockAllocateItemStatusDTO StockAllocateItemStatus { get; set; } = default!;
     public DateTime Completed { get; set; }
+    public string AssignedUserId { get; set; } = string.Empty;
+    public UserDTO? AssignedUser { get; set; }
 }

@@ -10,5 +10,7 @@ public class StockAllocateItem : AuditableEntity
     public StockAllocateItemStatus StockAllocateItemStatus { get; set; } = default!;
     public DateTime Completed { get; set; }
     public int StockAllocateId { get; set; }
+    public string AssignedUserId { get; set; } = string.Empty;
+    public User? AssignedUser { get; set; }
     public StockAllocate StockAllocate { get; set; } = default!;
 }

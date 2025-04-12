@@ -7,6 +7,7 @@ public class Response
     public int SalesPeriodId { get; set; }
     public SalesPeriod? SalesPeriod { get; set; }
     public List<RoleDTO> Roles { get; set; } = new List<RoleDTO>();
+    public bool hasNotification { get; set; }
 }
 
 public class RoleDTO

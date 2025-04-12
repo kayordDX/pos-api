@@ -34,6 +34,17 @@ public class Endpoint : Endpoint<Request>
         }
 
         entity.StockAllocateStatusId = req.StockAllocateStatusId;
+
+        // If status is in progress make all child items waiting
+        if (entity.StockAllocateStatusId == 2)
+        {
+            var items = await _dbContext.StockAllocateItem.Where(x => x.StockAllocateId == entity.Id).ToListAsync(ct);
+            foreach (var item in items)
+            {
+                item.StockAllocateItemStatusId = 2;
+            }
+        }
+
         await _dbContext.SaveChangesAsync();
     }
 }

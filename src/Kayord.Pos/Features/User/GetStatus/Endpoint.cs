@@ -68,6 +68,12 @@ public class Endpoint : EndpointWithoutRequest<Response>
         var clockInStatus = await _dbContext.Clock
             .FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.OutletId == userOutlet.OutletId && x.EndDate == null);
         resp.ClockedIn = clockInStatus != null;
+
+        // Check if user has notification. TODO: Make this more generic
+        // Get all waiting items for user
+        bool hasNotification = await _dbContext.StockAllocateItem.AnyAsync(x => x.StockAllocateItemStatusId == 2 && x.AssignedUserId == _cu.UserId, ct);
+        resp.hasNotification = hasNotification;
+
         await SendAsync(resp);
     }
 }
