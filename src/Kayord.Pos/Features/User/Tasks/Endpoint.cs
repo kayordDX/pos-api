@@ -40,11 +40,13 @@ public class Endpoint : Endpoint<Request, PaginatedList<Response>>
                     Image = x.AssignedUser.Image,
                     IsActive = x.AssignedUser.IsActive
                 },
-                Name = $"{x.Stock.Name} ({x.Actual} {x.Stock.Unit.Name})",
+                Name = x.Stock.Name + " " + "(" + x.Actual + " " + x.Stock.Unit.Name + ")",
                 Status = x.StockAllocateItemStatus.Name,
                 Type = "Stock Allocation",
-                Description = $"{((x.StockAllocate.ToOutletId == x.StockAllocate.OutletId) ? "" : $"{x.StockAllocate.Outlet.Name} - {x.StockAllocate.ToOutlet.Name}: ")} {x.StockAllocate.FromDivision.DivisionName} to {x.StockAllocate.ToDivision.DivisionName}",
+                Description = ((x.StockAllocate.ToOutletId == x.StockAllocate.OutletId) ? "" : x.StockAllocate.Outlet.Name + " -> " + x.StockAllocate.ToOutlet.Name + "-> ") + x.StockAllocate.FromDivision.DivisionName + " to " + x.StockAllocate.ToDivision.DivisionName,
+                LastModified = x.LastModified ?? x.Created
             })
+            .OrderBy(x => x.LastModified)
             .AsNoTracking()
             .GetPagedAsync(r, ct);
 

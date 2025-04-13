@@ -1,10 +1,9 @@
 namespace Kayord.Pos.Features.User.Tasks;
 
 using Kayord.Pos.DTO;
-using Kayord.Pos.Entities;
+
 public class Response
 {
-
     public int Id { get; set; }
     public int OutletId { get; set; }
     public OutletDTOBasic Outlet { get; set; } = default!;
@@ -14,4 +13,5 @@ public class Response
     public string Description { get; set; } = string.Empty;
     public string AssignedUserId { get; set; } = string.Empty;
     public UserDTO? AssignedUser { get; set; }
+    public DateTime LastModified { get; set; }
 }
