@@ -26,6 +26,21 @@ public class Endpoint : Endpoint<Request, Entities.StockOrder>
             return;
         }
 
+        var stockItem = await _dbContext.StockItem
+            .Where(x => x.StockId == req.StockId && x.DivisionId == stockAllocate.FromDivisionId)
+            .FirstOrDefaultAsync(ct);
+
+        if (stockItem == null)
+        {
+            await SendNotFoundAsync(ct);
+            return;
+        }
+
+        if (req.Actual > stockItem.Actual)
+        {
+            throw new Exception("Not enough stock to allocate");
+        }
+
         var entity = new Entities.StockAllocateItem
         {
             StockAllocateId = req.StockAllocateId,

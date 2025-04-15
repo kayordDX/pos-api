@@ -28,6 +28,3 @@ namespace Kayord.Pos.Features.Stock.Allocate.GetAll
         }
     }
 }
-
-
-

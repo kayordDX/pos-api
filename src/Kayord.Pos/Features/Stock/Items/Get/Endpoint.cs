@@ -28,7 +28,8 @@ namespace Kayord.Pos.Features.Stock.Items.Get
                     s.unit_id,
                     u.name unit_name,
                     i.division_id,
-                    d.division_name threshold,
+                    d.division_name,
+                    threshold,
                     actual
                 FROM
                     stock_item i
