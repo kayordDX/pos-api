@@ -50,6 +50,7 @@ public class Endpoint : Endpoint<Request, StockAllocateItem>
                 throw new Exception("Not enough stock to allocate");
             }
             entity.StockAllocateItemStatusId = req.StockAllocateItemStatusId;
+            entity.Completed = DateTime.Now;
         }
 
         await _dbContext.SaveChangesAsync();

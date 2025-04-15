@@ -38,6 +38,7 @@ public class Endpoint : Endpoint<Request, StockAllocateItem>
         if (entity.StockAllocateItemStatusId == 1 || entity.StockAllocateItemStatusId == 2)
         {
             entity.StockAllocateItemStatusId = 3;
+            entity.Completed = DateTime.Now;
         }
 
         await _dbContext.SaveChangesAsync();
