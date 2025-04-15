@@ -30,7 +30,7 @@ public class Endpoint : Endpoint<Request, List<Response>>
                 JOIN division d ON d.division_id = rd.division_id
                 JOIN "user" u ON u.user_id = uro.user_id
             WHERE
-                d.division_id = 17
+                d.division_id = {req.DivisionId}
                 AND u.is_active = TRUE
             GROUP BY
                 u.user_id
