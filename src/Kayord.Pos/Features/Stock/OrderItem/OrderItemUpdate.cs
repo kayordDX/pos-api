@@ -21,7 +21,7 @@ public static class OrderItemUpdate
             {
                 StockId = stockId,
                 DivisionId = divisionId,
-                Actual = actual,
+                Actual = 0,
                 Threshold = 0,
             };
             isNew = true;

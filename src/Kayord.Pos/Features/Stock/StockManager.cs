@@ -98,7 +98,7 @@ public static class StockManager
                     {
                         stockCheck.Add(stockItem.Id);
                     }
-                    await _dbContext.StockItemAudit.AddAsync(new Entities.StockItemAudit()
+                    await _dbContext.StockItemAudit.AddAsync(new StockItemAudit()
                     {
                         OrderItemId = r,
                         FromActual = stockItem.Actual,
