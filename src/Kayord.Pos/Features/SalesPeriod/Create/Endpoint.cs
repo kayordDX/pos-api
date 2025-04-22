@@ -1,4 +1,5 @@
 using Kayord.Pos.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.SalesPeriod.Create;
 
@@ -14,12 +15,20 @@ public class Endpoint : Endpoint<Request, Pos.Entities.SalesPeriod>
     public override void Configure()
     {
         Post("/salesPeriod");
-        AllowAnonymous();
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        Pos.Entities.SalesPeriod entity = new Pos.Entities.SalesPeriod()
+        var exists = await _dbContext.SalesPeriod
+            .Where(x => x.EndDate == null && x.OutletId == req.OutletId)
+            .FirstOrDefaultAsync(ct);
+
+        if (exists != null)
+        {
+            throw new Exception("Sales Period already exists");
+        }
+
+        Entities.SalesPeriod entity = new Entities.SalesPeriod()
         {
             Name = req.Name,
             OutletId = req.OutletId,
