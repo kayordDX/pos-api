@@ -1,6 +1,7 @@
 using Kayord.Pos.Data;
 using Kayord.Pos.Entities;
 using Kayord.Pos.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.Stock.Items.Update;
 
@@ -22,7 +23,9 @@ public class Endpoint : Endpoint<Request>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var entity = await _dbContext.StockItem.FindAsync(req.Id);
+        var entity = await _dbContext.StockItem
+            .Where(x => x.DivisionId == req.DivisionId && x.StockId == req.StockId)
+            .FirstOrDefaultAsync(ct);
 
         if (entity == null)
         {
