@@ -105,7 +105,7 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
             if (oIS?.IsUpdateStock ?? false)
             {
                 // stock event publish
-                await PublishAsync(new StockEvent() { OrderItemIds = req.OrderItemIds }, Mode.WaitForNone);
+                await PublishAsync(new StockEvent() { OrderItemIds = req.OrderItemIds, IsReverse = oIS?.IsUpdateStockReverse ?? false }, Mode.WaitForNone);
             }
 
 

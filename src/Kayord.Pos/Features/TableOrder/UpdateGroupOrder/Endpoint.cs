@@ -44,7 +44,7 @@ namespace Kayord.Pos.Features.TableOrder.UpdateGroupOrder
             if (orderItemStatus?.IsUpdateStock ?? false)
             {
                 // stock event publish
-                await PublishAsync(new StockEvent() { OrderItemIds = orderItems.Select(x => x.OrderItemId).ToList() }, Mode.WaitForNone);
+                await PublishAsync(new StockEvent() { OrderItemIds = orderItems.Select(x => x.OrderItemId).ToList(), IsReverse = false }, Mode.WaitForNone);
             }
 
             bool notify = orderItemStatus?.IsNotify ?? false;

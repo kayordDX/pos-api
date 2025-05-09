@@ -25,6 +25,6 @@ public class StockHandler : IEventHandler<StockEvent>
             throw new Exception("Dependency injection failed");
         }
 
-        await StockManager.StockUpdate(eventModel.OrderItemIds, _dbContext, _currentUserService.UserId ?? "", ct);
+        await StockManager.StockUpdate(eventModel.OrderItemIds, _dbContext, _currentUserService.UserId ?? "", eventModel.IsReverse, ct);
     }
 }

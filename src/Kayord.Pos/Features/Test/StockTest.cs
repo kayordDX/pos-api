@@ -36,7 +36,7 @@ public class StockTest : EndpointWithoutRequest<Result>
 
         Stopwatch stopwatch = new Stopwatch();
         stopwatch.Start();
-        await StockManager.StockUpdate(orderItemIds, _dbContext, "test", ct);
+        await StockManager.StockUpdate(orderItemIds, _dbContext, "test", false, ct);
         stopwatch.Stop();
 
         Result result = new()

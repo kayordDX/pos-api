@@ -6,7 +6,7 @@ namespace Kayord.Pos.Features.Stock;
 
 public static class StockManager
 {
-    public static async Task StockUpdate(List<int> orderItemIds, AppDbContext _dbContext, string userId, CancellationToken ct)
+    public static async Task StockUpdate(List<int> orderItemIds, AppDbContext _dbContext, string userId, bool isReverse, CancellationToken ct)
     {
         List<int> stockCheck = [];
         foreach (int r in orderItemIds)
@@ -84,9 +84,9 @@ public static class StockManager
                 }
 
                 bool isBulk = m.Type == StockItemAuditType.Bulk;
-                int bulk = isBulk ? -1 : 1;
+                int isReverseValue = isBulk || isReverse ? -1 : 1;
 
-                decimal toActual = stockItem.Actual - m.Quantity * bulk;
+                decimal toActual = stockItem.Actual - m.Quantity * isReverseValue;
                 if (toActual < 0)
                 {
                     toActual = 0;

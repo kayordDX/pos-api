@@ -13,4 +13,5 @@ public class OrderItemStatus
     public bool IsNotify { get; set; }
     public int Priority { get; set; }
     public bool IsUpdateStock { get; set; }
+    public bool IsUpdateStockReverse { get; set; }
 }
