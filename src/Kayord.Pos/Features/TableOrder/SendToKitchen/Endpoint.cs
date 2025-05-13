@@ -52,19 +52,38 @@ namespace Kayord.Pos.Features.TableOrder.SendToKitchen
             List<int>? divisions = new();
             int outletId = tableBooking?.SalesPeriod.OutletId ?? 0;
 
+            bool isSuccess = true;
+            string message = "";
+
+
             foreach (var orderItem in orderItemsToUpdate)
             {
-                orderItem.OrderItemStatusId = 2;
-                orderItem.OrderUpdated = DateTime.UtcNow;
-                orderItem.OrderGroup = order;
-                var divisionId = orderItem.MenuItem.DivisionId ?? 0;
-                if (!divisions.Contains(divisionId))
-                {
-                    divisions.Add(divisionId);
-                }
+                // Check if item has stock
+                var availableMenuItem = await _dbContext.MenuItem
+                    .Where(x => x.MenuItemId == orderItem.MenuItemId && x.IsAvailable == true)
+                    .FirstOrDefaultAsync(ct);
 
+                if (availableMenuItem != null)
+                {
+                    orderItem.OrderItemStatusId = 2;
+                    orderItem.OrderUpdated = DateTime.UtcNow;
+                    orderItem.OrderGroup = order;
+                    var divisionId = orderItem.MenuItem.DivisionId ?? 0;
+                    if (!divisions.Contains(divisionId))
+                    {
+                        divisions.Add(divisionId);
+                    }
+                    await _dbContext.SaveChangesAsync();
+                    await PublishAsync(new StockEvent() { OrderItemIds = [orderItem.OrderItemId], IsReverse = false }, Mode.WaitForAll);
+                }
+                else
+                {
+                    // Error message
+                    isSuccess = false;
+                    message = "Remaining item(s) out of stock";
+                }
             }
-            await PublishAsync(new StockEvent() { OrderItemIds = orderItemsToUpdate.Select(x => x.OrderItemId).ToList(), IsReverse = false }, Mode.WaitForNone);
+            // await PublishAsync(new StockEvent() { OrderItemIds = orderItemsToUpdate.Select(x => x.OrderItemId).ToList(), IsReverse = false }, Mode.WaitForNone);
 
             var roleIds = _dbContext.RoleDivision.Where(x => divisions.Contains(x.DivisionId)).Select(x => x.RoleId).ToList();
 
@@ -72,7 +91,7 @@ namespace Kayord.Pos.Features.TableOrder.SendToKitchen
 
             await PublishAsync(new SoundEvent() { OutletId = outletId, RoleIds = roleIds });
 
-            await SendAsync(new Response { IsSuccess = true });
+            await SendAsync(new Response { IsSuccess = isSuccess, Message = message });
         }
     }
 }

@@ -21,6 +21,9 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
+            bool isSuccess = true;
+            string message = "";
+
             var notification = "";
             var tableName = "";
             var nC = 0;
@@ -63,15 +66,50 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
                         }
                     }
 
-                    status = oIS?.Status;
-                    entity.OrderItemStatusId = req.OrderItemStatusId;
-                    if (oIS?.AssignGroup ?? false)
+                    if (req.OrderItemStatusId != 2)
                     {
-                        entity.OrderGroup = order;
+                        entity.OrderItemStatusId = req.OrderItemStatusId;
+                        if (oIS?.AssignGroup ?? false)
+                        {
+                            entity.OrderGroup = order;
+                        }
+                        entity.OrderUpdated = DateTime.UtcNow;
+                        if (oIS?.IsComplete ?? false)
+                            entity.OrderCompleted = DateTime.Now;
                     }
-                    entity.OrderUpdated = DateTime.UtcNow;
-                    if (oIS?.IsComplete ?? false)
-                        entity.OrderCompleted = DateTime.Now;
+
+                    status = oIS?.Status;
+
+
+                    if (req.OrderItemStatusId == 2)
+                    {
+                        // Check if item has stock
+                        var availableMenuItem = await _dbContext.MenuItem
+                            .Where(x => x.MenuItemId == entity.MenuItemId && x.IsAvailable == true)
+                            .FirstOrDefaultAsync(ct);
+
+                        if (availableMenuItem != null)
+                        {
+                            entity.OrderItemStatusId = req.OrderItemStatusId;
+                            if (oIS?.AssignGroup ?? false)
+                            {
+                                entity.OrderGroup = order;
+                            }
+                            entity.OrderUpdated = DateTime.UtcNow;
+                            if (oIS?.IsComplete ?? false)
+                                entity.OrderCompleted = DateTime.Now;
+                            await _dbContext.SaveChangesAsync();
+                            await PublishAsync(new StockEvent() { OrderItemIds = [entity.OrderItemId], IsReverse = false }, Mode.WaitForAll);
+                        }
+                        else
+                        {
+                            isSuccess = false;
+                            message = "Selected item(s) out of stock";
+                            continue;
+                        }
+                    }
+
+
                     if (oIS?.IsNotify ?? false)
                     {
                         Entities.MenuItem? i = await _dbContext.MenuItem.FirstOrDefaultAsync(x => x.MenuItemId == entity.MenuItemId);
@@ -97,12 +135,12 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
                 }
                 else
                 {
-                    await SendAsync(new Response() { IsSuccess = false });
+                    await SendAsync(new Response() { IsSuccess = false, Message = "Order not found" });
                 }
             }
 
             // Stock
-            if (oIS?.IsUpdateStock ?? false)
+            if ((oIS?.IsUpdateStock ?? false) && req.OrderItemStatusId != 2)
             {
                 // stock event publish
                 await PublishAsync(new StockEvent() { OrderItemIds = req.OrderItemIds, IsReverse = oIS?.IsUpdateStockReverse ?? false }, Mode.WaitForNone);
@@ -126,7 +164,7 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
             }
 
             await _dbContext.SaveChangesAsync();
-            await SendAsync(new Response() { IsSuccess = true });
+            await SendAsync(new Response() { IsSuccess = isSuccess, Message = message });
         }
     }
 }
