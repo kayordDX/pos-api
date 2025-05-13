@@ -62,7 +62,9 @@ namespace Kayord.Pos.Features.TableOrder.SendToKitchen
                 {
                     divisions.Add(divisionId);
                 }
+
             }
+            await PublishAsync(new StockEvent() { OrderItemIds = orderItemsToUpdate.Select(x => x.OrderItemId).ToList(), IsReverse = false }, Mode.WaitForNone);
 
             var roleIds = _dbContext.RoleDivision.Where(x => divisions.Contains(x.DivisionId)).Select(x => x.RoleId).ToList();
 
