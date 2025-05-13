@@ -92,11 +92,11 @@ public static class StockManager
                     toActual = 0;
                 }
 
-                if (stockItem.Actual != toActual)
+                if (stockItem.Actual != toActual || toActual == 0)
                 {
-                    if (!stockCheck.Contains(stockItem.Id))
+                    if (!stockCheck.Contains(stockItem.StockId))
                     {
-                        stockCheck.Add(stockItem.Id);
+                        stockCheck.Add(stockItem.StockId);
                     }
                     await _dbContext.StockItemAudit.AddAsync(new StockItemAudit()
                     {
