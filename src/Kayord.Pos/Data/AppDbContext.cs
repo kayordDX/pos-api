@@ -67,6 +67,7 @@ public class AppDbContext : DbContext
     public DbSet<SalesPeriod> SalesPeriod => Set<SalesPeriod>();
     public DbSet<Section> Section => Set<Section>();
     public DbSet<Stock> Stock => Set<Stock>();
+    public DbSet<StockCategory> StockCategory => Set<StockCategory>();
     public DbSet<StockItem> StockItem => Set<StockItem>();
     public DbSet<StockItemAudit> StockItemAudit => Set<StockItemAudit>();
     public DbSet<StockItemAuditType> StockItemAuditType => Set<StockItemAuditType>();
