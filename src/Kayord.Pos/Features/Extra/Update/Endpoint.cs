@@ -44,6 +44,7 @@ public class Endpoint : Endpoint<Request>
         extraEntity.PositionId = req.PositionId;
         extraEntity.ExtraGroupId = req.ExtraGroupId;
         extraEntity.OutletId = req.OutletId;
+        extraEntity.IsAvailable = req.IsAvailable;
 
         await _dbContext.SaveChangesAsync();
         await SendNoContentAsync();

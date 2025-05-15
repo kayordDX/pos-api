@@ -1,6 +1,7 @@
 using Kayord.Pos.Data;
 using Kayord.Pos.Entities;
 using Kayord.Pos.Events;
+using Kayord.Pos.Features.Stock;
 using Kayord.Pos.Services;
 using Microsoft.EntityFrameworkCore;
 using YamlDotNet.Core.Tokens;
@@ -43,6 +44,10 @@ namespace Kayord.Pos.Features.TableOrder.SendToKitchen
 
             var orderItemsToUpdate = await _dbContext.OrderItem
                 .Include(x => x.MenuItem)
+                .Include(x => x.OrderItemExtras)!
+                    .ThenInclude(x => x.Extra)
+                .Include(x => x.OrderItemOptions)!
+                    .ThenInclude(x => x.Option)
                 .Where(oi => oi.OrderItemStatusId == 1 && oi.TableBookingId == req.TableBookingId)
                 .ToListAsync();
 
@@ -59,11 +64,11 @@ namespace Kayord.Pos.Features.TableOrder.SendToKitchen
             foreach (var orderItem in orderItemsToUpdate)
             {
                 // Check if item has stock
-                var availableMenuItem = await _dbContext.MenuItem
-                    .Where(x => x.MenuItemId == orderItem.MenuItemId && x.IsAvailable == true)
-                    .FirstOrDefaultAsync(ct);
+                bool isMenuItemAvailable = await StockManager.IsMenuItemAvailable(orderItem.MenuItemId, _dbContext, ct);
+                bool isExtrasAvailable = await StockManager.IsExtrasAvailable(orderItem.OrderItemExtras?.Select(x => x.ExtraId).ToList() ?? [], _dbContext, ct);
+                bool isOptionsAvailable = await StockManager.IsOptionsAvailable(orderItem.OrderItemOptions?.Select(x => x.OptionId).ToList() ?? [], _dbContext, ct);
 
-                if (availableMenuItem != null)
+                if (isMenuItemAvailable && isExtrasAvailable && isOptionsAvailable)
                 {
                     orderItem.OrderItemStatusId = 2;
                     orderItem.OrderUpdated = DateTime.UtcNow;

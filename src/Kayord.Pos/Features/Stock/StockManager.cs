@@ -30,8 +30,8 @@ public static class StockManager
 
             // Extras
             var extras = await _dbContext.Database.SqlQuery<StockPatch>($"""
-                    select 
-                        e.stock_id, 
+                    select
+                        e.stock_id,
                         e.quantity,
                         2 type
                     from order_item_extra o
@@ -196,5 +196,29 @@ public static class StockManager
             WHERE o.option_id = a.option_id
             AND o.is_available <> a.is_available
         """);
+    }
+
+    public static async Task<bool> IsMenuItemAvailable(int menuItemId, AppDbContext dbContext, CancellationToken ct)
+    {
+        var isAvailable = await dbContext.MenuItem
+            .Where(x => x.MenuItemId == menuItemId && x.IsAvailable == false)
+            .FirstOrDefaultAsync(ct);
+        return isAvailable == null; ;
+    }
+
+    public static async Task<bool> IsExtrasAvailable(List<int> extras, AppDbContext dbContext, CancellationToken ct)
+    {
+        var notAvailable = await dbContext.Extra
+            .Where(x => extras.Contains(x.ExtraId) && x.IsAvailable == false)
+            .ToListAsync(ct);
+        return notAvailable.Count == 0;
+    }
+
+    public static async Task<bool> IsOptionsAvailable(List<int> options, AppDbContext dbContext, CancellationToken ct)
+    {
+        var notAvailable = await dbContext.Option
+            .Where(x => options.Contains(x.OptionId) && x.IsAvailable == false)
+            .ToListAsync(ct);
+        return notAvailable.Count == 0;
     }
 }

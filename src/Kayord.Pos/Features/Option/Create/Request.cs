@@ -7,4 +7,5 @@ public class Request
     public decimal Price { get; set; }
     public int OptionGroupId { get; set; }
     public int OutletId { get; set; }
+    public bool IsAvailable { get; set; }
 }
