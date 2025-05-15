@@ -203,7 +203,7 @@ public static class StockManager
         var isAvailable = await dbContext.MenuItem
             .Where(x => x.MenuItemId == menuItemId && x.IsAvailable == false)
             .FirstOrDefaultAsync(ct);
-        return isAvailable == null; ;
+        return isAvailable == null;
     }
 
     public static async Task<bool> IsExtrasAvailable(List<int> extras, AppDbContext dbContext, CancellationToken ct)
