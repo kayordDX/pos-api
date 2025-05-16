@@ -4,12 +4,13 @@ namespace Kayord.Pos.Features.Bill;
 
 public class Response
 {
-    public List<BillOrderItemDTO> OrderItems { get; set; } = new List<BillOrderItemDTO>();
+    public List<BillOrderItemDTO> OrderItems { get; set; } = [];
+    // public List<BillItem> BillItems { get; set; } = [];
     public decimal Total { get; set; } = 0;
     public decimal TotalExVAT { get; set; } = 0;
     public decimal VAT { get; set; } = 0;
 
-    public List<Payment> PaymentsReceived { get; set; } = new List<Payment>();
+    public List<Payment> PaymentsReceived { get; set; } = [];
     public decimal Balance { get; set; } = 0;
     public decimal TipAmount { get; set; } = 0;
     public DateTime BillDate { get; set; }
