@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.Clock.ClockIn;
 
-public class Endpoint : Endpoint<Request, Pos.Entities.Clock>
+public class Endpoint : Endpoint<Request>
 {
     private readonly AppDbContext _dbContext;
     private readonly CurrentUserService _user;
@@ -45,14 +45,7 @@ public class Endpoint : Endpoint<Request, Pos.Entities.Clock>
             };
             await _dbContext.Clock.AddAsync(entity);
             await _dbContext.SaveChangesAsync();
-
-            var result = await _dbContext.Clock.FindAsync(entity.Id);
-            if (result == null)
-            {
-                await SendNotFoundAsync();
-                return;
-            }
-            await SendAsync(result);
+            await SendNoContentAsync();
         }
 
     }

@@ -20,7 +20,10 @@ public class Endpoint : Endpoint<Request, OrderItem>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var tableBooking = await _dbContext.TableBooking.FirstOrDefaultAsync(x => x.Id == req.TableBookingId);
+        var tableBooking = await _dbContext.TableBooking
+            .Include(x => x.SalesPeriod)
+            .FirstOrDefaultAsync(x => x.Id == req.TableBookingId);
+
         if (tableBooking == null)
         {
             throw new Exception("No booking found");
@@ -33,17 +36,31 @@ public class Endpoint : Endpoint<Request, OrderItem>
             }
         }
 
+        int tableBookingOutletId = tableBooking.SalesPeriod.OutletId;
+
         OrderItem orderItem = new();
         foreach (Order order in req.Orders)
         {
             for (int q = 1; q <= order.Quantity; q++)
             {
-                var menuItem = await _dbContext.MenuItem.FindAsync(order.MenuItemId);
+                var menuItem = await _dbContext.MenuItem
+                    .Include(x => x.MenuSection)!
+                        .ThenInclude(x => x.Menu)
+                    .FirstOrDefaultAsync(x => x.MenuItemId == order.MenuItemId, ct);
+
                 if (menuItem == null)
                 {
                     await SendNotFoundAsync();
                     return;
                 }
+
+                int menuOutletId = menuItem.MenuSection.Menu.OutletId;
+
+                if (tableBookingOutletId != menuOutletId)
+                {
+                    throw new Exception("Outlet mismatch");
+                }
+
                 List<Entities.Option> Options = new List<Entities.Option>();
 
                 orderItem = new OrderItem()

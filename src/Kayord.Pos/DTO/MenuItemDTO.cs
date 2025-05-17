@@ -1,4 +1,5 @@
 namespace Kayord.Pos.DTO;
+
 using Kayord.Pos.Entities;
 
 public class MenuItemDTO
@@ -13,6 +14,5 @@ public class MenuItemDTO
     public int DivisionId { get; set; }
     public List<MenuItemOptionGroupDTO> MenuItemOptionGroups { get; set; } = default!;
     public List<MenuItemExtraGroupDTO> MenuItemExtraGroups { get; set; } = default!;
-
 }
 
