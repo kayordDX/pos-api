@@ -1,5 +1,7 @@
 using FastEndpoints.Swagger;
 using Kayord.Pos.Common.Extensions.Swagger;
+using Kayord.Pos.Features.Auth;
+using Microsoft.AspNetCore.Authorization;
 using Scalar.AspNetCore;
 
 namespace Kayord.Pos.Common.Extensions;
@@ -8,8 +10,15 @@ public static class ApiExtensions
 {
     public static void ConfigureApi(this IServiceCollection services)
     {
-        services.AddFastEndpoints()
-        .SwaggerDocument(o =>
+        services.AddTransient<IAuthorizationHandler, RoleTypeHandler>();
+        services.AddFastEndpoints();
+
+        services.AddAuthorization(o =>
+        {
+            o.AddPolicy(Constants.Policy.Manager, b => b.AddRequirements(new RoleTypeRequirement(Constants.Policy.Manager)).Build());
+        });
+
+        services.SwaggerDocument(o =>
         {
             o.DocumentSettings = s =>
             {

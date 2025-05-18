@@ -23,16 +23,18 @@ public class UserService
         return await _dbContext.Database
         .SqlQuery<string>(
         $"""
-        SELECT 
-            r.name
-        FROM user_outlet u
-        JOIN user_role_outlet ur
-            ON u.outlet_id = ur.outlet_id
-        AND u.user_id = ur.user_id
-        JOIN role r
-            ON r.role_id = ur.role_id
-        WHERE u.user_id = {_cu.UserId}
-        AND u.is_current = true  
+            SELECT 
+                DISTINCT rt.name
+            FROM user_outlet u
+            JOIN user_role_outlet ur
+                ON u.outlet_id = ur.outlet_id
+                AND u.user_id = ur.user_id
+            JOIN role r
+                ON r.role_id = ur.role_id
+            JOIN role_type rt
+                ON rt.id = r.role_type_id
+            WHERE u.user_id = {_cu.UserId}
+            AND u.is_current = true
         """
         )
         .ToListAsync();
