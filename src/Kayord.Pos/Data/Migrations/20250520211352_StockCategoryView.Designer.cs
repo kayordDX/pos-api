@@ -3,6 +3,7 @@ using System;
 using Kayord.Pos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using NpgsqlTypes;
@@ -12,9 +13,11 @@ using NpgsqlTypes;
 namespace Kayord.Pos.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250520211352_StockCategoryView")]
+    partial class StockCategoryView
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2783,9 +2786,6 @@ namespace Kayord.Pos.Data.Migrations
                     b.HasKey("Id")
                         .HasName("pk_user_outlet");
 
-                    b.HasIndex("OutletId")
-                        .HasDatabaseName("ix_user_outlet_outlet_id");
-
                     b.ToTable("user_outlet", (string)null);
                 });
 
@@ -3699,18 +3699,6 @@ namespace Kayord.Pos.Data.Migrations
                         .WithMany("Tags")
                         .HasForeignKey("MenuItemId")
                         .HasConstraintName("fk_tag_menu_item_menu_item_id");
-                });
-
-            modelBuilder.Entity("Kayord.Pos.Entities.UserOutlet", b =>
-                {
-                    b.HasOne("Kayord.Pos.Entities.Outlet", "Outlet")
-                        .WithMany()
-                        .HasForeignKey("OutletId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_user_outlet_outlet_outlet_id");
-
-                    b.Navigation("Outlet");
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.UserRoleOutlet", b =>

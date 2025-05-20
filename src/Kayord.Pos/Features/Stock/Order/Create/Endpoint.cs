@@ -26,7 +26,7 @@ public class Endpoint : Endpoint<Request, Entities.StockOrder>
             OrderNumber = req.OrderNumber,
             DivisionId = req.DivisionId,
             SupplierId = req.SupplierId,
-            StockOrderStatusId = 1,
+            StockOrderStatusId = 1
         };
 
         await _dbContext.StockOrder.AddAsync(entity);

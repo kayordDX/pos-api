@@ -23,6 +23,7 @@ public class AppDbContext : DbContext
     public DbSet<AdjustmentType> AdjustmentType => Set<AdjustmentType>();
     public DbSet<AdjustmentTypeOutlet> AdjustmentTypeOutlet => Set<AdjustmentTypeOutlet>();
     public DbSet<Business> Business => Set<Business>();
+    public DbSet<BulkUploadConfig> BulkUploadConfig => Set<BulkUploadConfig>();
     public DbSet<CashUp> CashUp => Set<CashUp>();
     public DbSet<CashUpConfig> CashUpConfig => Set<CashUpConfig>();
     public DbSet<CashUpUser> CashUpUser => Set<CashUpUser>();

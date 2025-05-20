@@ -8,6 +8,7 @@ public class Response
     public int UnitId { get; set; }
     public string UnitName { get; set; } = default!;
     public int StockCategoryId { get; set; }
+    public string? CategoryDisplayName { get; set; }
     public decimal TotalActual { get; set; }
     public bool HasVat { get; set; }
 }

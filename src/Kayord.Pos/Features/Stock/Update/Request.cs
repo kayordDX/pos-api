@@ -6,4 +6,5 @@ public class Request
     public string Name { get; set; } = string.Empty;
     public int UnitId { get; set; }
     public bool HasVat { get; set; }
+    public int StockCategoryId { get; set; }
 }

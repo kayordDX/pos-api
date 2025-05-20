@@ -31,7 +31,10 @@ public class Endpoint : EndpointWithoutRequest<Response>
             ClockedIn = false,
         };
 
-        var userOutlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.IsCurrent);
+        var userOutlet = await _dbContext.UserOutlet
+            .Include(x => x.Outlet)
+            .FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.IsCurrent);
+
         if (userOutlet == null)
         {
             await SendAsync(resp);
@@ -52,6 +55,7 @@ public class Endpoint : EndpointWithoutRequest<Response>
         resp.Roles = userRoles;
 
         resp.OutletId = userOutlet.OutletId;
+        resp.OutletName = userOutlet.Outlet.Name;
         var salesPeriod = await _dbContext.SalesPeriod.FirstOrDefaultAsync(x => x.OutletId == userOutlet.OutletId && x.StartDate != null && x.EndDate == null);
         if (salesPeriod == null)
         {

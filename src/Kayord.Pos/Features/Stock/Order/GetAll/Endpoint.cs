@@ -1,10 +1,11 @@
 using Kayord.Pos.Common.Extensions;
 using Kayord.Pos.Common.Models;
 using Kayord.Pos.Data;
+using Kayord.Pos.DTO;
 using Microsoft.EntityFrameworkCore;
 namespace Kayord.Pos.Features.Stock.Order.GetAll
 {
-    public class Endpoint : Endpoint<Request, PaginatedList<Entities.StockOrder>>
+    public class Endpoint : Endpoint<Request, PaginatedList<StockOrderResponseDTO>>
     {
         private readonly AppDbContext _dbContext;
 
@@ -23,9 +24,21 @@ namespace Kayord.Pos.Features.Stock.Order.GetAll
         {
             var results = await _dbContext.StockOrder
                 .Where(x => x.OutletId == req.OutletId)
-                .Include(x => x.Division)
-                .Include(x => x.Supplier)
-                .Include(x => x.StockOrderStatus)
+                .Select(x => new StockOrderResponseDTO()
+                {
+                    Id = x.Id,
+                    DivisionId = x.DivisionId,
+                    DivisionName = x.Division.DivisionName,
+                    SupplierId = x.SupplierId,
+                    SupplierName = x.Supplier.Name,
+                    StockOrderStatusId = x.StockOrderStatusId,
+                    StockOrderStatusName = x.StockOrderStatus.Name,
+                    OrderDate = x.OrderDate,
+                    OrderNumber = x.OrderNumber,
+                    OutletId = x.OutletId,
+                    Total = x.StockOrderItems!.Sum(x => x.Price),
+                    Created = x.Created
+                })
                 .GetPagedAsync(req, ct);
             await SendAsync(results);
         }

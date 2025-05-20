@@ -23,8 +23,8 @@ public class Endpoint : Endpoint<Request, Entities.StockOrder>
             OutletId = req.OutletId,
             Name = req.Name,
             UnitId = req.UnitId,
-            StockCategoryId = 1,
-            HasVat = req.HasVat
+            StockCategoryId = req.StockCategoryId,
+            HasVat = req.HasVat,
         };
 
         await _dbContext.Stock.AddAsync(entity);
