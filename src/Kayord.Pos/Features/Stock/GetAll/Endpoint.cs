@@ -42,14 +42,15 @@ namespace Kayord.Pos.Features.Stock.GetAll
                 where s."outlet_id" = {req.OutletId} 
                 group by 
                     s."id", 
+                    s."outlet_id",
+                    s."name",
+                    s."unit_id",
+                    u."name",
                     u."name", 
-                    s."outlet_id", 
-                    s."name", 
-                    s."unit_id", 
-                    u."name", 
-                    s."stock_category_id", 
+                    s."stock_category_id",
                     s.has_vat,
                     c.display_name
+                order by id
             """).GetPagedAsync(req, ct);
 
             await SendAsync(results);
