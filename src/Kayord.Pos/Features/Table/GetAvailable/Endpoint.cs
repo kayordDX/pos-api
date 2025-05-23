@@ -27,7 +27,7 @@ namespace Kayord.Pos.Features.Table.GetAvailable
                   .ToListAsync();
 
             var results = await _dbContext.Table
-                .Where(table => table.Section.OutletId == req.OutletId && !bookedTableIds.Contains(table.TableId))
+                .Where(table => table.Section.OutletId == req.OutletId && !bookedTableIds.Contains(table.TableId) && table.isDeleted != true)
                 .OrderBy(x => x.Position)
                 .ProjectToDto()
                 .ToListAsync();

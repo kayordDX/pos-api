@@ -8,6 +8,8 @@ namespace Kayord.Pos.Features.Table.Update
         public string Name { get; set; } = string.Empty;
         public int SectionId { get; set; }
         public int Capacity { get; set; }
+        public int Position { get; set; }
+
     }
 
     public class Validator : Validator<Request>

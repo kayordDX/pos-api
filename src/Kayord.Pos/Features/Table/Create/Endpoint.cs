@@ -23,7 +23,8 @@ namespace Kayord.Pos.Features.Table.Create
             {
                 Name = req.Name,
                 SectionId = req.SectionId,
-                Capacity = req.Capacity
+                Capacity = req.Capacity,
+                Position = req.Position
             };
             await _dbContext.Table.AddAsync(entity);
             await _dbContext.SaveChangesAsync();

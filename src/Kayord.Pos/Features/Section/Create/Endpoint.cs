@@ -19,22 +19,16 @@ namespace Kayord.Pos.Features.Section.Create
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-            Pos.Entities.Section entity = new Pos.Entities.Section()
+            var entity = new Pos.Entities.Section
             {
                 Name = req.Name,
                 OutletId = req.OutletId
             };
+
             await _dbContext.Section.AddAsync(entity);
-            await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync(ct);
 
-            var result = await _dbContext.Section.FindAsync(entity.Id);
-            if (result == null)
-            {
-                await SendNotFoundAsync();
-                return;
-            }
-
-            await SendAsync(result);
+            await SendAsync(entity);
         }
     }
 }

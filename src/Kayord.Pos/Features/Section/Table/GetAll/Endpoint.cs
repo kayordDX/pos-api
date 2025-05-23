@@ -1,9 +1,9 @@
 using Kayord.Pos.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace Kayord.Pos.Features.Section.List
+namespace Kayord.Pos.Features.Section.Table.GetAll
 {
-    public class Endpoint : Endpoint<Request, List<Pos.Entities.Section>>
+    public class Endpoint : Endpoint<Request, List<Pos.Entities.Table>>
     {
         private readonly AppDbContext _dbContext;
 
@@ -14,18 +14,17 @@ namespace Kayord.Pos.Features.Section.List
 
         public override void Configure()
         {
-            Get("/section");
-            AllowAnonymous();
+            Get("/section/tables");
         }
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-            var sections = await _dbContext.Section
-                .Where(s => s.OutletId == req.OutletId)
+            var tables = await _dbContext.Table
+                .Where(s => s.SectionId == req.SectionId && s.isDeleted != true)
                 .OrderBy(x => x.Name)
                 .ToListAsync();
 
-            await SendAsync(sections);
+            await SendAsync(tables);
         }
     }
 }

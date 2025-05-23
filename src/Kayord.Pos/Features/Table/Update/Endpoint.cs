@@ -29,7 +29,7 @@ namespace Kayord.Pos.Features.Table.Update
             entity.Name = req.Name;
             entity.SectionId = req.SectionId;
             entity.Capacity = req.Capacity;
-            
+            entity.Position = req.Position;
 
             await _dbContext.SaveChangesAsync();
             await SendAsync(entity);
