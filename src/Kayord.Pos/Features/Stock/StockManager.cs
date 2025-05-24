@@ -108,6 +108,14 @@ public static class StockManager
                         UserId = userId,
                         Updated = DateTime.Now,
                     });
+                    if (toActual == 0)
+                    {
+                        Entities.MenuItem? menuItemUnavailable = await _dbContext.MenuItem.FirstOrDefaultAsync(x => x.MenuItemId == orderInfo.MenuItemId);
+                        if (menuItemUnavailable != null)
+                        {
+                            menuItemUnavailable.IsAvailable = false;
+                        }
+                    }
                 }
 
                 stockItem.Actual = toActual;
