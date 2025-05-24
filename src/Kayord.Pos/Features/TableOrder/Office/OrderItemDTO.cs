@@ -2,6 +2,7 @@ using Humanizer;
 using Kayord.Pos.DTO;
 
 namespace Kayord.Pos.Features.TableOrder.Office;
+
 public class OrderItemDTO
 {
     public int OrderItemId { get; set; }
