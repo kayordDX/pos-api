@@ -1,14 +1,12 @@
+namespace Kayord.Pos.Features.Extra.GetAllMenu;
 
-namespace Kayord.Pos.Entities;
-
-public class Extra
+public class SpecialExtrasDTO
 {
     public int ExtraId { get; set; }
     public string Name { get; set; } = string.Empty;
     public int PositionId { get; set; }
     public decimal Price { get; set; }
     public int ExtraGroupId { get; set; }
-    public ExtraGroup ExtraGroup { get; set; } = default!;
-    public List<OrderItemExtra>? OrderItemExtras { get; set; }
-    public int OutletId { get; set; }
+    public string ExtraGroupName { get; set; } = string.Empty;
+    public bool IsAvailable { get; set; }
 }

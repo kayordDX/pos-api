@@ -90,8 +90,8 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
                     {
                         // Check if item has stock
                         bool isMenuItemAvailable = await StockManager.IsMenuItemAvailable(entity.MenuItemId, _dbContext, ct);
-                        bool isExtrasAvailable = await StockManager.IsExtrasAvailable(entity.OrderItemExtras?.Select(x => x.ExtraId).ToList() ?? [], _dbContext, ct);
-                        bool isOptionsAvailable = await StockManager.IsOptionsAvailable(entity.OrderItemOptions?.Select(x => x.OptionId).ToList() ?? [], _dbContext, ct);
+                        bool isExtrasAvailable = await StockManager.IsExtrasAvailable(entity.OrderItemExtras?.Select(x => x.ExtraId).ToList() ?? [], entity.MenuItem.DivisionId, _dbContext, ct);
+                        bool isOptionsAvailable = await StockManager.IsOptionsAvailable(entity.OrderItemOptions?.Select(x => x.OptionId).ToList() ?? [], entity.MenuItem.DivisionId, _dbContext, ct);
 
                         if (isMenuItemAvailable && isExtrasAvailable && isOptionsAvailable)
                         {

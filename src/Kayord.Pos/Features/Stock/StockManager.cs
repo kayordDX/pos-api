@@ -214,19 +214,59 @@ public static class StockManager
         return isAvailable == null;
     }
 
-    public static async Task<bool> IsExtrasAvailable(List<int> extras, AppDbContext dbContext, CancellationToken ct)
+    public static async Task<bool> IsExtrasAvailable(List<int> extras, int? divisionId, AppDbContext dbContext, CancellationToken ct)
     {
-        var notAvailable = await dbContext.Extra
-            .Where(x => extras.Contains(x.ExtraId) && x.IsAvailable == false)
-            .ToListAsync(ct);
-        return notAvailable.Count == 0;
+        if (divisionId == null)
+        {
+            return false;
+        }
+
+        var isAvailable = await dbContext.Database.SqlQuery<bool>($"""
+            select
+                min(((si.actual - es.quantity) >= 0)::int)::bool is_available
+            from
+                extra e
+            join extra_stock es
+                on e.extra_id = es.extra_id
+            join menu_item_extra_group mop
+                on mop.extra_group_id = e.extra_group_id
+            join menu_item mi
+            on mop.menu_item_id = mi.menu_item_id
+            join stock_item si
+                on si.stock_id = es.stock_id
+                and si.division_id = mi.division_id
+            where e.extra_id in ({extras})
+            and mi.division_id = {divisionId}
+        """).FirstOrDefaultAsync(ct);
+
+        return isAvailable;
     }
 
-    public static async Task<bool> IsOptionsAvailable(List<int> options, AppDbContext dbContext, CancellationToken ct)
+    public static async Task<bool> IsOptionsAvailable(List<int> options, int? divisionId, AppDbContext dbContext, CancellationToken ct)
     {
-        var notAvailable = await dbContext.Option
-            .Where(x => options.Contains(x.OptionId) && x.IsAvailable == false)
-            .ToListAsync(ct);
-        return notAvailable.Count == 0;
+        if (divisionId == null)
+        {
+            return false;
+        }
+
+        var isAvailable = await dbContext.Database.SqlQuery<bool>($"""
+            select
+                min(((si.actual - os.quantity) >= 0)::int)::bool is_available
+            from
+                option o
+            join option_stock os
+                on o.option_id = os.option_id
+            join menu_item_option_group mop
+                on mop.option_group_id = o.option_group_id
+            join menu_item mi
+            on mop.menu_item_id = mi.menu_item_id
+            join stock_item si
+                on si.stock_id = os.stock_id
+                and si.division_id = mi.division_id
+            where o.option_id in ({options})
+            and mi.division_id = {divisionId}
+        """).FirstOrDefaultAsync(ct);
+
+        return isAvailable;
     }
 }

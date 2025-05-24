@@ -29,7 +29,6 @@ public class Endpoint : Endpoint<Request>
         optionEntity.Price = req.Price;
         optionEntity.PositionId = req.PositionId;
         optionEntity.OptionGroupId = req.OptionGroupId;
-        optionEntity.IsAvailable = req.IsAvailable;
 
         await _dbContext.SaveChangesAsync();
         await SendNoContentAsync();

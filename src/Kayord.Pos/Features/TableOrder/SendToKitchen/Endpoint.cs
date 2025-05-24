@@ -65,8 +65,8 @@ namespace Kayord.Pos.Features.TableOrder.SendToKitchen
             {
                 // Check if item has stock
                 bool isMenuItemAvailable = await StockManager.IsMenuItemAvailable(orderItem.MenuItemId, _dbContext, ct);
-                bool isExtrasAvailable = await StockManager.IsExtrasAvailable(orderItem.OrderItemExtras?.Select(x => x.ExtraId).ToList() ?? [], _dbContext, ct);
-                bool isOptionsAvailable = await StockManager.IsOptionsAvailable(orderItem.OrderItemOptions?.Select(x => x.OptionId).ToList() ?? [], _dbContext, ct);
+                bool isExtrasAvailable = await StockManager.IsExtrasAvailable(orderItem.OrderItemExtras?.Select(x => x.ExtraId).ToList() ?? [], orderItem.MenuItem.DivisionId, _dbContext, ct);
+                bool isOptionsAvailable = await StockManager.IsOptionsAvailable(orderItem.OrderItemOptions?.Select(x => x.OptionId).ToList() ?? [], orderItem.MenuItem.DivisionId, _dbContext, ct);
 
                 if (isMenuItemAvailable && isExtrasAvailable && isOptionsAvailable)
                 {

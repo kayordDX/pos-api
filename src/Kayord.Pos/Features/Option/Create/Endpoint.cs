@@ -36,7 +36,6 @@ public class Endpoint : Endpoint<Request>
             Price = req.Price,
             OptionGroupId = req.OptionGroupId,
             OutletId = req.OutletId,
-            IsAvailable = req.IsAvailable
         };
 
         await _dbContext.Option.AddAsync(option);
