@@ -9,14 +9,10 @@ namespace Kayord.Pos.Features.Menu.GetItems
     public class GetMenuItemsEndpoint : Endpoint<Request, List<MenuItemDTOBasic>>
     {
         private readonly AppDbContext _dbContext;
-        private readonly ILogger<GetMenuItemsEndpoint> _logger;
-        private readonly RedisClient _redisClient;
 
-        public GetMenuItemsEndpoint(AppDbContext dbContext, ILogger<GetMenuItemsEndpoint> logger, RedisClient redisClient)
+        public GetMenuItemsEndpoint(AppDbContext dbContext)
         {
             _dbContext = dbContext;
-            _logger = logger;
-            _redisClient = redisClient;
         }
 
         public override void Configure()
@@ -26,14 +22,6 @@ namespace Kayord.Pos.Features.Menu.GetItems
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-            // string cacheKey = $"menu:items:{req.MenuId}:{req.SectionId}:{HttpUtility.UrlEncode(req.Search)}";
-            // var cachedResponse = await _redisClient.GetObjectAsync<List<MenuItemDTOBasic>>(cacheKey);
-            // if (cachedResponse != null)
-            // {
-            //     await SendAsync(cachedResponse);
-            //     return;
-            // }
-
             IQueryable<Entities.MenuItem>? items;
             if (req.SectionId == 0)
             {
@@ -63,7 +51,6 @@ namespace Kayord.Pos.Features.Menu.GetItems
                 .ProjectToBasicDto()
                 .ToListAsync();
 
-            // _ = _redisClient.SetObjectAsync(cacheKey, response);
             await SendAsync(response);
         }
 
