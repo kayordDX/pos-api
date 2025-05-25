@@ -152,58 +152,6 @@ public static class StockManager
             WHERE m.menu_item_id = a.menu_item_id
             AND m.is_available <> a.is_available
         """);
-
-        // await dbContext.Database.ExecuteSqlAsync($"""
-        //     update extra e
-        //         set is_available = a.is_available
-        //     from (
-        //         select
-        //             e.extra_id,
-        //             min(((si.actual - ee.quantity) >= 0)::int)::bool is_available
-        //         from extra e
-        //         join extra_stock es
-        //             on es.extra_id = e.extra_id
-        //         join extra_stock ee
-        //             on ee.extra_id = e.extra_id
-        //         join menu_item_extra_group mep
-        //             on mep.extra_group_id = e.extra_group_id
-        //         join menu_item mi
-        //             on mep.menu_item_id = mi.menu_item_id
-        //         join stock_item si
-        //             on si.stock_id = ee.stock_id
-        //             and si.division_id = mi.division_id
-        //         where ee.stock_id = {stockId}
-        //         group by e.extra_id
-        //     ) a
-        //     WHERE e.extra_id = a.extra_id
-        //     AND e.is_available <> a.is_available
-        // """);
-
-        // await dbContext.Database.ExecuteSqlAsync($"""
-        //     update option o
-        //         set is_available = a.is_available
-        //     from (
-        //         select
-        //             o.option_id,
-        //             min(((si.actual - oo.quantity) >= 0)::int)::bool is_available
-        //         from option o
-        //         join option_stock os
-        //             on os.option_id = o.option_id
-        //         join option_stock oo
-        //             on oo.option_id = o.option_id
-        //         join menu_item_option_group mop
-        //             on mop.option_group_id = o.option_group_id
-        //         join menu_item mi
-        //             on mop.menu_item_id = mi.menu_item_id
-        //         join stock_item si
-        //             on si.stock_id = oo.stock_id
-        //             and si.division_id = mi.division_id
-        //         where oo.stock_id = {stockId}
-        //         group by o.option_id
-        //     ) a
-        //     WHERE o.option_id = a.option_id
-        //     AND o.is_available <> a.is_available
-        // """);
     }
 
     public static async Task<bool> IsMenuItemAvailable(int menuItemId, AppDbContext dbContext, CancellationToken ct)
