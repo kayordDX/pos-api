@@ -90,8 +90,8 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
                     {
                         // Check if item has stock
                         bool isMenuItemAvailable = await StockManager.IsMenuItemAvailable(entity.MenuItemId, _dbContext, ct);
-                        bool isExtrasAvailable = await StockManager.IsExtrasAvailable(entity.OrderItemExtras?.Select(x => x.ExtraId).ToList() ?? [], entity.MenuItem.DivisionId, _dbContext, ct);
-                        bool isOptionsAvailable = await StockManager.IsOptionsAvailable(entity.OrderItemOptions?.Select(x => x.OptionId).ToList() ?? [], entity.MenuItem.DivisionId, _dbContext, ct);
+                        bool isExtrasAvailable = await StockManager.IsExtrasAvailable(entity.OrderItemId, entity.MenuItem.DivisionId, _dbContext, ct);
+                        bool isOptionsAvailable = await StockManager.IsOptionsAvailable(entity.OrderItemId, entity.MenuItem.DivisionId, _dbContext, ct);
 
                         if (isMenuItemAvailable && isExtrasAvailable && isOptionsAvailable)
                         {
@@ -108,8 +108,22 @@ namespace Kayord.Pos.Features.TableOrder.UpdateOrderItem
                         }
                         else
                         {
+                            List<string> unavailableComponents = new();
+                            if (!isMenuItemAvailable)
+                            {
+                                unavailableComponents.Add("Menu Item");
+                            }
+                            if (!isExtrasAvailable)
+                            {
+                                unavailableComponents.Add("Extras");
+                            }
+                            if (!isOptionsAvailable)
+                            {
+                                unavailableComponents.Add("Options");
+                            }
+
                             isSuccess = false;
-                            message = "Selected item(s) out of stock";
+                            message = $"Selected items(s) out of stock - {string.Join(", ", unavailableComponents)}";
                             continue;
                         }
                     }
