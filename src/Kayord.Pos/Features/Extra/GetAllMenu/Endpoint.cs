@@ -27,7 +27,7 @@ public class Endpoint : Endpoint<Request, List<SpecialExtrasDTO>>
                 o.price,
                 eg.extra_group_id,
                 eg.name "extra_group_name",
-                min(((si.actual - oo.quantity) >= 0)::int)::bool is_available
+                coalesce(min(((si.actual - oo.quantity) >= 0)::int)::bool, true) is_available
             from extra o
             left join extra_stock oo
                 on oo.extra_id = o.extra_id
