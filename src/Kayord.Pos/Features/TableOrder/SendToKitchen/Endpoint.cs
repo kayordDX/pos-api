@@ -65,8 +65,8 @@ namespace Kayord.Pos.Features.TableOrder.SendToKitchen
             {
                 // Check if item has stock
                 bool isMenuItemAvailable = await StockManager.IsMenuItemAvailable(orderItem.MenuItemId, _dbContext, ct);
-                bool isExtrasAvailable = await StockManager.IsExtrasAvailable(orderItem.OrderItemExtras?.Select(x => x.ExtraId).ToList() ?? [], _dbContext, ct);
-                bool isOptionsAvailable = await StockManager.IsOptionsAvailable(orderItem.OrderItemOptions?.Select(x => x.OptionId).ToList() ?? [], _dbContext, ct);
+                bool isExtrasAvailable = await StockManager.IsExtrasAvailable(orderItem.OrderItemId, orderItem.MenuItem.DivisionId, _dbContext, ct);
+                bool isOptionsAvailable = await StockManager.IsOptionsAvailable(orderItem.OrderItemId, orderItem.MenuItem.DivisionId, _dbContext, ct);
 
                 if (isMenuItemAvailable && isExtrasAvailable && isOptionsAvailable)
                 {
@@ -83,9 +83,22 @@ namespace Kayord.Pos.Features.TableOrder.SendToKitchen
                 }
                 else
                 {
+                    List<string> unavailableComponents = new();
+                    if (!isMenuItemAvailable)
+                    {
+                        unavailableComponents.Add("Menu Item");
+                    }
+                    if (!isExtrasAvailable)
+                    {
+                        unavailableComponents.Add("Extras");
+                    }
+                    if (!isOptionsAvailable)
+                    {
+                        unavailableComponents.Add("Options");
+                    }
                     // Error message
                     isSuccess = false;
-                    message = "Remaining item(s) out of stock";
+                    message = $"Remaining items(s) out of stock - {string.Join(", ", unavailableComponents)}";
                 }
             }
             // await PublishAsync(new StockEvent() { OrderItemIds = orderItemsToUpdate.Select(x => x.OrderItemId).ToList(), IsReverse = false }, Mode.WaitForNone);

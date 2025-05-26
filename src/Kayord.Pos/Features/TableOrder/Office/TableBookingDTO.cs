@@ -2,6 +2,7 @@ using Humanizer;
 using Kayord.Pos.DTO;
 
 namespace Kayord.Pos.Features.TableOrder.Office;
+
 public class TableBookingDTO
 {
     public int Id { get; set; }
@@ -12,4 +13,5 @@ public class TableBookingDTO
     public DateTime BookingDate { get; set; } = DateTime.UtcNow;
     public DateTime? CloseDate { get; set; }
     public UserDTO User { get; set; } = default!;
+    public SalesPeriodDTO SalesPeriod { get; set; } = default!;
 }

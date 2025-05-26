@@ -38,7 +38,6 @@ public class Endpoint : Endpoint<Request>
             Price = req.Price,
             ExtraGroupId = req.ExtraGroupId,
             OutletId = req.OutletId,
-            IsAvailable = req.IsAvailable
         };
 
         await _dbContext.Extra.AddAsync(extra);

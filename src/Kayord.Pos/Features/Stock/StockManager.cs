@@ -152,58 +152,6 @@ public static class StockManager
             WHERE m.menu_item_id = a.menu_item_id
             AND m.is_available <> a.is_available
         """);
-
-        // await dbContext.Database.ExecuteSqlAsync($"""
-        //     update extra e
-        //         set is_available = a.is_available
-        //     from (
-        //         select
-        //             e.extra_id,
-        //             min(((si.actual - ee.quantity) >= 0)::int)::bool is_available
-        //         from extra e
-        //         join extra_stock es
-        //             on es.extra_id = e.extra_id
-        //         join extra_stock ee
-        //             on ee.extra_id = e.extra_id
-        //         join menu_item_extra_group mep
-        //             on mep.extra_group_id = e.extra_group_id
-        //         join menu_item mi
-        //             on mep.menu_item_id = mi.menu_item_id
-        //         join stock_item si
-        //             on si.stock_id = ee.stock_id
-        //             and si.division_id = mi.division_id
-        //         where ee.stock_id = {stockId}
-        //         group by e.extra_id
-        //     ) a
-        //     WHERE e.extra_id = a.extra_id
-        //     AND e.is_available <> a.is_available
-        // """);
-
-        // await dbContext.Database.ExecuteSqlAsync($"""
-        //     update option o
-        //         set is_available = a.is_available
-        //     from (
-        //         select
-        //             o.option_id,
-        //             min(((si.actual - oo.quantity) >= 0)::int)::bool is_available
-        //         from option o
-        //         join option_stock os
-        //             on os.option_id = o.option_id
-        //         join option_stock oo
-        //             on oo.option_id = o.option_id
-        //         join menu_item_option_group mop
-        //             on mop.option_group_id = o.option_group_id
-        //         join menu_item mi
-        //             on mop.menu_item_id = mi.menu_item_id
-        //         join stock_item si
-        //             on si.stock_id = oo.stock_id
-        //             and si.division_id = mi.division_id
-        //         where oo.stock_id = {stockId}
-        //         group by o.option_id
-        //     ) a
-        //     WHERE o.option_id = a.option_id
-        //     AND o.is_available <> a.is_available
-        // """);
     }
 
     public static async Task<bool> IsMenuItemAvailable(int menuItemId, AppDbContext dbContext, CancellationToken ct)
@@ -214,19 +162,62 @@ public static class StockManager
         return isAvailable == null;
     }
 
-    public static async Task<bool> IsExtrasAvailable(List<int> extras, AppDbContext dbContext, CancellationToken ct)
+    public class StockCheck
     {
-        var notAvailable = await dbContext.Extra
-            .Where(x => extras.Contains(x.ExtraId) && x.IsAvailable == false)
-            .ToListAsync(ct);
-        return notAvailable.Count == 0;
+        public bool IsAvailable { get; set; }
     }
 
-    public static async Task<bool> IsOptionsAvailable(List<int> options, AppDbContext dbContext, CancellationToken ct)
+    public static async Task<bool> IsExtrasAvailable(int orderItemId, int? divisionId, AppDbContext dbContext, CancellationToken ct)
     {
-        var notAvailable = await dbContext.Option
-            .Where(x => options.Contains(x.OptionId) && x.IsAvailable == false)
-            .ToListAsync(ct);
-        return notAvailable.Count == 0;
+        if (divisionId == null)
+        {
+            return false;
+        }
+
+        var stockCheck = await dbContext.Database.SqlQuery<StockCheck>($"""
+            select
+                coalesce(min(((si.actual - es.quantity) >= 0)::int)::bool, true) is_available
+            from order_item oi
+            left join order_item_extra oie
+                on oi.order_item_id = oie.order_item_id
+            left join extra e
+                on e.extra_id = oie.extra_id
+            left join extra_stock es
+                on es.extra_id = e.extra_id
+            left join stock_item si
+                on si.stock_id = es.stock_id
+                and division_id = {divisionId}
+            where oi.order_item_id = {orderItemId}
+            group by oi.order_item_id
+        """)
+        .FirstOrDefaultAsync(ct);
+
+        return stockCheck?.IsAvailable ?? false;
+    }
+
+    public static async Task<bool> IsOptionsAvailable(int orderItemId, int? divisionId, AppDbContext dbContext, CancellationToken ct)
+    {
+        if (divisionId == null)
+        {
+            return false;
+        }
+
+        var stockCheck = await dbContext.Database.SqlQuery<StockCheck>($"""
+            select
+                coalesce(min(((si.actual - os.quantity) >= 0)::int)::bool, true) is_available
+            from order_item oi
+            left join order_item_option oio
+                on oi.order_item_id = oio.order_item_id
+            left join option o
+                on o.option_id = oio.option_id
+            left join option_stock os
+                on os.option_id = o.option_id
+            left join stock_item si
+                on si.stock_id = os.stock_id
+                and division_id = {divisionId}
+            where oi.order_item_id = {orderItemId}
+        """).FirstOrDefaultAsync(ct);
+
+        return stockCheck?.IsAvailable ?? false;
     }
 }

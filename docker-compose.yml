@@ -10,30 +10,40 @@ services:
       POSTGRES_PASSWORD: bbHRro5Ju2L9cw
     volumes:
       - pgdata:/var/lib/postgresql/data
-    deploy:
-      resources:
-        limits:
-          cpus: "0.2"
-          memory: 256M
+    command: |
+      postgres
+      -c shared_preload_libraries=pg_stat_statements
+      -c wal_level=replica
+      -c hot_standby=on
+      -c shared_buffers=512MB
+      -c maintenance_work_mem=128MB
+      -c effective_io_concurrency=2
+      -c min_wal_size=1GB
+      -c max_wal_size=3GB
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: "0.2"
+    #       memory: 256M
 
-  # redis:
-  #   container_name: redis
-  #   image: redis
-  #   restart: unless-stopped
-  #   environment:
-  #     REDIS_PASSWORD: 4qWF6jAcW6e9PCeW
-  #   ports:
-  #     - "6379:6379"
-
-  garnet:
-    container_name: garnet
-    image: ghcr.io/microsoft/garnet
+  redis:
+    container_name: redis
+    image: docker.io/bitnami/redis
     restart: unless-stopped
-    ulimits:
-      memlock: -1
+    environment:
+      REDIS_PASSWORD: 4qWF6jAcW6e9PCeW
     ports:
       - "6379:6379"
-    command: --auth Password --password 4qWF6jAcW6e9PCeW
+
+  # garnet:
+  #   container_name: garnet
+  #   image: ghcr.io/microsoft/garnet
+  #   restart: unless-stopped
+  #   ulimits:
+  #     memlock: -1
+  #   ports:
+  #     - "6379:6379"
+  #   command: --auth Password --password 4qWF6jAcW6e9PCeW
 
   # pgbackweb:
   #   image: eduardolat/pgbackweb:latest

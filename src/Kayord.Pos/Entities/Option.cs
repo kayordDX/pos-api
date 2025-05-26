@@ -1,4 +1,5 @@
 namespace Kayord.Pos.Entities;
+
 public class Option
 {
     public int OptionId { get; set; }
@@ -9,5 +10,4 @@ public class Option
     public OptionGroup OptionGroup { get; set; } = default!;
     public List<OrderItemOption>? OrderItemOptions { get; set; }
     public int OutletId { get; set; }
-    public bool IsAvailable { get; set; }
 }
