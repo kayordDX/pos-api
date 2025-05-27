@@ -5,6 +5,8 @@ namespace Kayord.Pos.Features.TableOrder.GetBill;
 public class Response
 {
     public List<BillOrderItemDTO> OrderItems { get; set; } = new List<BillOrderItemDTO>();
+    public List<BillOrderItemDTO> SummaryOrderItems { get; set; } = new List<BillOrderItemDTO>();
+
     public decimal Total { get; set; } = 0;
     public decimal TotalExVAT { get; set; } = 0;
     public decimal VAT { get; set; } = 0;

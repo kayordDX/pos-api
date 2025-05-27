@@ -86,6 +86,43 @@ public static class Bill
         response.TipAmount = response.TipAmount < 0 ? 0m : response.TipAmount;
         response.TotalExVAT = response.TotalExVAT < 0 ? 0m : response.TotalExVAT;
 
+        response.SummaryOrderItems = new();
+
+        foreach (var x in response.OrderItems)
+        {
+            var match = response.SummaryOrderItems.FirstOrDefault(y => AreEntitiesEqual(x, y));
+
+            decimal menuItemPrice = x.MenuItem.Price;
+            decimal optionsPerItem = x.OrderItemOptions?.Sum(o => o.Option.Price) ?? 0;
+            decimal extrasPerItem = x.OrderItemExtras?.Sum(e => e.Extra.Price) ?? 0;
+
+            decimal totalPerItem = menuItemPrice + optionsPerItem + extrasPerItem;
+
+            if (match != null)
+            {
+                match.Quantity += 1;
+                match.Total += totalPerItem;
+                match.OptionsTotal += optionsPerItem;
+                match.ExtrasTotal += extrasPerItem;
+            }
+            else
+            {
+                var newItem = new BillOrderItemDTO
+                {
+                    MenuItemId = x.MenuItemId,
+                    MenuItem = x.MenuItem,
+                    OrderItemOptions = x.OrderItemOptions?.ToList() ?? new(),
+                    OrderItemExtras = x.OrderItemExtras?.ToList() ?? new(),
+                    Quantity = 1,
+                    Total = totalPerItem,
+                    OptionsTotal = optionsPerItem,
+                    ExtrasTotal = extrasPerItem
+                };
+
+                response.SummaryOrderItems.Add(newItem);
+            }
+        }
+
         return response;
     }
 
@@ -141,4 +178,19 @@ public static class Bill
 
         return tableTotal;
     }
+    static bool AreEntitiesEqual(BillOrderItemDTO a, BillOrderItemDTO b)
+    {
+        if (a.MenuItemId != b.MenuItemId)
+            return false;
+
+        var aOptionIds = a.OrderItemOptions?.Select(o => o.OptionId).OrderBy(id => id).ToList() ?? new();
+        var bOptionIds = b.OrderItemOptions?.Select(o => o.OptionId).OrderBy(id => id).ToList() ?? new();
+
+        var aExtraIds = a.OrderItemExtras?.Select(e => e.ExtraId).OrderBy(id => id).ToList() ?? new();
+        var bExtraIds = b.OrderItemExtras?.Select(e => e.ExtraId).OrderBy(id => id).ToList() ?? new();
+
+        return aOptionIds.SequenceEqual(bOptionIds) && aExtraIds.SequenceEqual(bExtraIds);
+    }
+
+
 }

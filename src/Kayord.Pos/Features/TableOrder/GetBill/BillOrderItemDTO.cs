@@ -12,5 +12,9 @@ public class BillOrderItemDTO
     public List<OrderItemOptionDTO>? OrderItemOptions { get; set; }
     public List<OrderItemExtraDTO>? OrderItemExtras { get; set; }
     public DateTime OrderReceived { get; set; }
+    public int Quantity { get; set; }
+    public decimal Total { get; set; }
+    public decimal OptionsTotal { get; set; }
+    public decimal ExtrasTotal { get; set; }
     public string? Note { get; set; }
 }
