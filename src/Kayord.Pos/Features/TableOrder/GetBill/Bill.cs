@@ -1,5 +1,4 @@
 using Kayord.Pos.Data;
-using Kayord.Pos.Data.Migrations;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.TableOrder.GetBill;
@@ -42,11 +41,10 @@ public static class Bill
         response.BillDate = tableBooking.CloseDate ?? tableBooking.BookingDate;
 
         response.OrderItems = await _dbContext.OrderItem
-        .Include(x => x.MenuItem)
-        .AsNoTracking()
-        .Where(x => paymentStatusIds.Contains(x.OrderItemStatusId) && x.TableBookingId == req.TableBookingId)
-        .ProjectToDto()
-        .ToListAsync();
+            .AsNoTracking()
+            .Where(x => paymentStatusIds.Contains(x.OrderItemStatusId) && x.TableBookingId == req.TableBookingId)
+            .ProjectToDto()
+            .ToListAsync();
 
         response.PaymentsReceived = await _dbContext.Payment
             .AsNoTracking()
@@ -115,8 +113,8 @@ public static class Bill
                 {
                     MenuItemId = x.MenuItemId,
                     MenuItem = x.MenuItem,
-                    OrderItemOptions = x.OrderItemOptions?.ToList() ?? new(),
-                    OrderItemExtras = x.OrderItemExtras?.ToList() ?? new(),
+                    OrderItemOptions = x.OrderItemOptions?.Where(x => x.Option.Price > 0).ToList() ?? [],
+                    OrderItemExtras = x.OrderItemExtras?.Where(x => x.Extra.Price > 0).ToList() ?? [],
                     Quantity = 1,
                     Total = totalPerItem,
                     OptionsTotal = optionsPerItem,
@@ -201,14 +199,12 @@ public static class Bill
         if (a.MenuItemId != b.MenuItemId)
             return false;
 
-        var aOptionIds = a.OrderItemOptions?.Select(o => o.OptionId).OrderBy(id => id).ToList() ?? new();
-        var bOptionIds = b.OrderItemOptions?.Select(o => o.OptionId).OrderBy(id => id).ToList() ?? new();
+        var aOptionIds = a.OrderItemOptions?.Where(x => x.Option.Price > 0).Select(o => o.OptionId).OrderBy(id => id).ToList() ?? new();
+        var bOptionIds = b.OrderItemOptions?.Where(x => x.Option.Price > 0).Select(o => o.OptionId).OrderBy(id => id).ToList() ?? new();
 
-        var aExtraIds = a.OrderItemExtras?.Select(e => e.ExtraId).OrderBy(id => id).ToList() ?? new();
-        var bExtraIds = b.OrderItemExtras?.Select(e => e.ExtraId).OrderBy(id => id).ToList() ?? new();
+        var aExtraIds = a.OrderItemExtras?.Where(x => x.Extra.Price > 0).Select(e => e.ExtraId).OrderBy(id => id).ToList() ?? new();
+        var bExtraIds = b.OrderItemExtras?.Where(x => x.Extra.Price > 0).Select(e => e.ExtraId).OrderBy(id => id).ToList() ?? new();
 
         return aOptionIds.SequenceEqual(bOptionIds) && aExtraIds.SequenceEqual(bExtraIds);
     }
-
-
 }
