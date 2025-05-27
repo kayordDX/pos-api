@@ -6,7 +6,7 @@ public class Response
 {
     public List<BillOrderItemDTO> OrderItems { get; set; } = new List<BillOrderItemDTO>();
     public List<BillOrderItemDTO> SummaryOrderItems { get; set; } = new List<BillOrderItemDTO>();
-
+    public List<DivisionDTO> Divisions { get; set; } = new List<DivisionDTO>();
     public decimal Total { get; set; } = 0;
     public decimal TotalExVAT { get; set; } = 0;
     public decimal VAT { get; set; } = 0;

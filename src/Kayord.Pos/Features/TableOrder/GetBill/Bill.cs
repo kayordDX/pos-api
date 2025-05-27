@@ -1,4 +1,5 @@
 using Kayord.Pos.Data;
+using Kayord.Pos.Data.Migrations;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.TableOrder.GetBill;
@@ -41,6 +42,7 @@ public static class Bill
         response.BillDate = tableBooking.CloseDate ?? tableBooking.BookingDate;
 
         response.OrderItems = await _dbContext.OrderItem
+        .Include(x => x.MenuItem)
         .AsNoTracking()
         .Where(x => paymentStatusIds.Contains(x.OrderItemStatusId) && x.TableBookingId == req.TableBookingId)
         .ProjectToDto()
@@ -51,14 +53,16 @@ public static class Bill
             .Where(x => x.TableBookingId == req.TableBookingId)
             .Include(x => x.PaymentType)
             .ToListAsync();
+        decimal menuItemPrice = response.OrderItems.Sum(item => item.MenuItem.Price);
+        response.Total += menuItemPrice;
 
-        response.Total += response.OrderItems.Sum(item => item.MenuItem.Price);
-
-        response.Total += response.OrderItems.Where(item => item.OrderItemOptions != null)
+        decimal optionPrice = response.OrderItems.Where(item => item.OrderItemOptions != null)
             .Sum(item => item.OrderItemOptions!.Sum(option => option.Option.Price));
+        response.Total += optionPrice;
 
-        response.Total += response.OrderItems.Where(item => item.OrderItemExtras != null)
+        decimal extrasPrice = response.OrderItems.Where(item => item.OrderItemExtras != null)
             .Sum(item => item.OrderItemExtras!.Sum(extra => extra.Extra.Price));
+        response.Total += extrasPrice;
 
         response.Total += response.Adjustments!.Sum(x => x.Amount);
 
@@ -92,11 +96,11 @@ public static class Bill
         {
             var match = response.SummaryOrderItems.FirstOrDefault(y => AreEntitiesEqual(x, y));
 
-            decimal menuItemPrice = x.MenuItem.Price;
+            decimal ItemPrice = x.MenuItem.Price;
             decimal optionsPerItem = x.OrderItemOptions?.Sum(o => o.Option.Price) ?? 0;
             decimal extrasPerItem = x.OrderItemExtras?.Sum(e => e.Extra.Price) ?? 0;
 
-            decimal totalPerItem = menuItemPrice + optionsPerItem + extrasPerItem;
+            decimal totalPerItem = ItemPrice + optionsPerItem + extrasPerItem;
 
             if (match != null)
             {
@@ -120,6 +124,20 @@ public static class Bill
                 };
 
                 response.SummaryOrderItems.Add(newItem);
+            }
+            var existingDivision = response.Divisions.FirstOrDefault(d => d.DivisionId == x.MenuItem.DivisionId);
+            if (existingDivision != null)
+            {
+                existingDivision.Total += totalPerItem;
+            }
+            else
+            {
+                response.Divisions.Add(new DivisionDTO
+                {
+                    DivisionId = x.MenuItem.DivisionId,
+                    FriendlyName = x.MenuItem.Division?.FriendlyName ?? "Unknown",
+                    Total = totalPerItem
+                });
             }
         }
 
