@@ -10,6 +10,10 @@ public static class ApiExtensions
 {
     public static void ConfigureApi(this IServiceCollection services)
     {
+        services.AddResponseCompression(o =>
+        {
+            o.EnableForHttps = true;
+        });
         services.AddTransient<IAuthorizationHandler, RoleTypeHandler>();
         services.AddFastEndpoints();
 
@@ -33,6 +37,7 @@ public static class ApiExtensions
 
     public static IApplicationBuilder UseApi(this WebApplication app)
     {
+        app.UseResponseCompression();
         app.UseDefaultExceptionHandler()
             .UseFastEndpoints(c =>
             {
