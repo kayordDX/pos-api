@@ -137,19 +137,19 @@ public static class BillHelper
             var bill = await TableOrder.GetBill.Bill.Get(request, _dbContext);
 
             List<Item> items = new();
-            foreach (var order in bill.OrderItems)
+            foreach (var order in bill.SummaryOrderItems)
             {
                 List<SubItem> subItems = new();
 
                 foreach (var extra in order.OrderItemExtras ?? [])
                 {
-                    subItems.Add(new SubItem { Name = $"+ {extra.Extra.Name}", Price = extra.Extra.Price });
+                    subItems.Add(new SubItem { Name = $"+ {extra.Extra.Name}", Price = extra.Extra.Price, TotalPrice = order.ExtrasTotal });
                 }
                 foreach (var option in order.OrderItemOptions ?? [])
                 {
-                    subItems.Add(new SubItem { Name = $"> {option.Option.Name}", Price = option.Option.Price });
+                    subItems.Add(new SubItem { Name = $"> {option.Option.Name}", Price = option.Option.Price, TotalPrice = order.OptionsTotal });
                 }
-                items.Add(new Item { Name = order.MenuItem.Name, Price = order.MenuItem.Price, Items = subItems });
+                items.Add(new Item { Name = order.MenuItem.Name, Price = order.MenuItem.Price, Items = subItems, Count = order.Quantity, TotalPrice = order.Total });
             }
             foreach (var adjustment in bill.Adjustments ?? [])
             {
@@ -194,7 +194,8 @@ public static class BillHelper
                 Registration = outlet.Registration,
                 IsClosed = bill.IsClosed,
                 TableName = bill.TableName,
-                Waiter = bill.Waiter
+                Waiter = bill.Waiter,
+                Divisions = bill.Divisions,
             };
             return pdfRequest;
         }

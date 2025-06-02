@@ -1,4 +1,7 @@
+using Kayord.Pos.Features.TableOrder.GetBill;
+
 namespace Kayord.Pos.Features.Bill.EmailBill;
+
 
 public class PdfRequest
 {
@@ -20,12 +23,15 @@ public class PdfRequest
     public string? TableName { get; set; }
     public string? Waiter { get; set; }
     public bool IsClosed { get; set; }
+    public List<DivisionDTO> Divisions { get; set; } = new List<DivisionDTO>();
 }
 
 public class Item
 {
+    public int Count { get; set; }
     public string Name { get; set; } = string.Empty;
     public decimal Price { get; set; }
+    public decimal TotalPrice { get; set; }
     public List<SubItem>? Items { get; set; }
 }
 
@@ -33,4 +39,5 @@ public class SubItem
 {
     public string Name { get; set; } = string.Empty;
     public decimal Price { get; set; }
+    public decimal TotalPrice { get; set; }
 }

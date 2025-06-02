@@ -29,9 +29,13 @@ public class BillPdf
                     .PaddingVertical(10, Unit.Point)
                     .Column(x =>
                     {
-                        x.Spacing(20);
+                        x.Item()
+                            .PaddingVertical(10)
+                            .LineHorizontal(1)
+                            .LineColor(Colors.Black);
 
                         x.Item().Element(ComposeTable);
+                        x.Item().Element(ComposeTableSummary);
                     });
 
                 page.Footer()
@@ -48,72 +52,105 @@ public class BillPdf
 
     void ComposeTable(IContainer container)
     {
-        var headerStyle = TextStyle.Default.SemiBold();
-        static IContainer HeaderStyle(IContainer container) => container.Background(Colors.Grey.Lighten3).PaddingVertical(5).PaddingHorizontal(2);
-        static IContainer CellStyle(IContainer container) => container.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(5).PaddingHorizontal(2);
         static IContainer CellStylePlain(IContainer container) => container.PaddingVertical(5).PaddingHorizontal(2);
-        static IContainer CellStyleSub(IContainer container) => container.BorderColor(Colors.Grey.Lighten2).PaddingHorizontal(2);
-        static IContainer CellStyleLastSub(IContainer container) => container.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingBottom(5).PaddingHorizontal(2);
+        static IContainer CellStylePlainCenter(IContainer container) => container.AlignCenter().PaddingVertical(5).PaddingHorizontal(2);
+        static IContainer CellStyleSub(IContainer container) => container.PaddingHorizontal(2);
 
-        container.PaddingTop(10).Table(table =>
+        container.PaddingTop(10).PaddingBottom(0).Table(table =>
         {
             table.ColumnsDefinition(columns =>
             {
+                columns.ConstantColumn(20);
                 columns.RelativeColumn();
                 columns.RelativeColumn();
-            });
-
-            table.Header(header =>
-            {
-                header.Cell().Element(HeaderStyle).Text("Item");
-                header.Cell().Element(HeaderStyle).AlignRight().Text("Price").Style(headerStyle);
+                columns.RelativeColumn();
             });
 
             foreach (var item in _pdfRequest.Items)
             {
-                if (item.Items?.Count > 0)
-                {
-                    table.Cell().Element(CellStylePlain).Text(item.Name);
-                    table.Cell().Element(CellStylePlain).AlignRight().Text($"{item.Price:C}");
-                }
-                else
-                {
-                    table.Cell().Element(CellStyle).Text(item.Name);
-                    table.Cell().Element(CellStyle).AlignRight().Text($"{item.Price:C}");
-                }
+                table.Cell().Element(CellStylePlainCenter).Text(item.Count.ToString());
+                table.Cell().Element(CellStylePlain).Text(item.Name);
+                table.Cell().Element(CellStylePlain).AlignRight().Text($"{item.Price:C}").Style(TextStyle.Default.Light());
+                table.Cell().Element(CellStylePlain).AlignRight().Text($"{item.TotalPrice:C}");
 
                 foreach (var subItem in item.Items ?? [])
                 {
-                    if (item.Items?.Last() != subItem)
-                    {
-                        table.Cell().Element(CellStyleSub).Text(subItem.Name);
-                        table.Cell().Element(CellStyleSub).AlignRight().Text($"{subItem.Price:C}");
-                    }
-                    else
-                    {
-                        table.Cell().Element(CellStyleLastSub).Text(subItem.Name);
-                        table.Cell().Element(CellStyleLastSub).AlignRight().Text($"{subItem.Price:C}");
-                    }
+                    table.Cell().Element(CellStyleSub).Text("");
+                    table.Cell().Element(CellStyleSub).Text(subItem.Name);
+                    table.Cell().Element(CellStyleSub).AlignRight().Text($"{subItem.Price:C}").Style(TextStyle.Default.Light());
+                    table.Cell().Element(CellStyleSub).AlignRight().Text("");
                 }
             }
-
-            static IContainer TotalStyle(IContainer container) => container.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(5);
-
-            table.Cell().Element(TotalStyle).Text("Total").Style(TextStyle.Default.Bold());
-            table.Cell().Element(TotalStyle).AlignRight().Text($"{_pdfRequest.Total:C}").Style(TextStyle.Default.Bold());
-
-            table.Cell().Element(TotalStyle).Text("Total Excluding VAT");
-            table.Cell().Element(TotalStyle).AlignRight().Text($"{_pdfRequest.TotalExVAT:C}");
-
-            table.Cell().Element(TotalStyle).Text("VAT");
-            table.Cell().Element(TotalStyle).AlignRight().Text($"{_pdfRequest.VAT:C}");
-
-            table.Cell().Element(TotalStyle).Text("Payment Received");
-            table.Cell().Element(TotalStyle).AlignRight().Text($"{_pdfRequest.PaymentReceived:C}");
-
-            table.Cell().Element(TotalStyle).Text("TIP");
-            table.Cell().Element(TotalStyle).AlignRight().Text($"{_pdfRequest.TipAmount:C}");
         });
+    }
+
+    void ComposeTableSummary(IContainer container)
+    {
+        static IContainer CellStylePlain(IContainer container) => container.PaddingVertical(5).PaddingHorizontal(2);
+
+        container.Column(c =>
+        {
+            if (_pdfRequest.Divisions.Count > 0)
+            {
+                c.Item()
+                    .PaddingVertical(10)
+                    .LineHorizontal(1)
+                    .LineColor(Colors.Black);
+
+                c.Item().Table(table =>
+                {
+                    table.ColumnsDefinition(columns =>
+                    {
+                        columns.RelativeColumn();
+                        columns.RelativeColumn();
+                    });
+
+                    foreach (var division in _pdfRequest.Divisions)
+                    {
+                        table.Cell().Element(CellStylePlain).Text(division.FriendlyName);
+                        table.Cell().Element(CellStylePlain).AlignRight().Text($"{division.Total:C}");
+                    }
+                });
+                c.Item()
+                    .PaddingVertical(10)
+                    .LineHorizontal(1)
+                    .LineColor(Colors.Black);
+            }
+            else
+            {
+                c.Item()
+                    .PaddingVertical(10);
+            }
+
+            c.Item().Table(table =>
+            {
+                table.ColumnsDefinition(columns =>
+                {
+                    columns.RelativeColumn();
+                    columns.RelativeColumn();
+                });
+
+                table.Header(header =>
+                {
+                    table.Cell().Element(CellStylePlain).Text("Total").Style(TextStyle.Default.Bold());
+                    table.Cell().Element(CellStylePlain).AlignRight().Text($"{_pdfRequest.Total:C}").Style(TextStyle.Default.Bold());
+                });
+
+                table.Cell().Element(CellStylePlain).Text("Total Excluding VAT");
+                table.Cell().Element(CellStylePlain).AlignRight().Text($"{_pdfRequest.TotalExVAT:C}");
+
+                table.Cell().Element(CellStylePlain).Text("VAT");
+                table.Cell().Element(CellStylePlain).AlignRight().Text($"{_pdfRequest.VAT:C}");
+
+                table.Cell().Element(CellStylePlain).Text("Payment Received");
+                table.Cell().Element(CellStylePlain).AlignRight().Text($"{_pdfRequest.PaymentReceived:C}");
+
+                table.Cell().Element(CellStylePlain).Text("TIP");
+                table.Cell().Element(CellStylePlain).AlignRight().Text($"{_pdfRequest.TipAmount:C}");
+            });
+        });
+
+
     }
 
     private void ComposeHeader(IContainer container)

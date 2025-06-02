@@ -1,11 +1,6 @@
-using FluentValidation;
+namespace Kayord.Pos.Features.TableOrder.GetBill;
 
-namespace Kayord.Pos.Features.TableOrder.GetBill
+public class Request
 {
-    public class Request
-    {
-        public int TableBookingId { get; set; } = default!;
-    }
-
-
+    public int TableBookingId { get; set; }
 }
