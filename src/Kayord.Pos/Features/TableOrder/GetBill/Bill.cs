@@ -133,7 +133,7 @@ public static class Bill
                 response.Divisions.Add(new DivisionDTO
                 {
                     DivisionId = x.MenuItem.DivisionId,
-                    FriendlyName = x.MenuItem.Division?.FriendlyName ?? "Unknown",
+                    FriendlyName = x.MenuItem.Division?.FriendlyName ?? "Other",
                     Total = totalPerItem
                 });
             }

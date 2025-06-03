@@ -186,7 +186,7 @@ public static class BillHelper
                 Total = bill.Total,
                 BillDate = bill.BillDate,
                 Items = items,
-                OutletName = $"{outlet.Business.Name} {outlet.Name}",
+                OutletName = $"{outlet.DisplayName}",
                 VATNumber = outlet.VATNumber,
                 Logo = outlet.Logo,
                 Address = outlet.Address,
