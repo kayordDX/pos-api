@@ -66,17 +66,31 @@ public static class BillPrint
     private static List<byte[]> Footer(PdfRequest request, int lineCharacters)
     {
         int boldLineChars = lineCharacters - (lineCharacters / 4);
+
+        List<byte[]> divisions = [];
+        foreach (var division in request.Divisions.Where(x => x.FriendlyName != null))
+        {
+            divisions.Add(PrintColumnLine(division.FriendlyName!, $"{division.Total:0.00}", lineCharacters));
+        }
+
+        byte[] tip = request.IsClosed ? PrintColumnLine("Tip", $"{request.TipAmount:0.00}", boldLineChars) : [];
+
         List<byte[]> footer = [
             PrintCharLine('-', lineCharacters),
+            ..divisions,
             e.SetStyles(PrintStyle.Bold),
             PrintColumnLine("Total", $"{request.Total:0.00}", boldLineChars),
             e.SetStyles(PrintStyle.None),
             PrintColumnLine("Total Excluding VAT", $"{request.TotalExVAT:0.00}", boldLineChars),
             PrintColumnLine("VAT", $"{request.VAT:0.00}", boldLineChars),
             PrintColumnLine("Payment Received", $"{request.PaymentReceived:0.00}", boldLineChars),
-            PrintColumnLine("Tip", $"{request.TipAmount:0.00}", boldLineChars),
+            tip,
             e.SetStyles(PrintStyle.FontB),
             PrintCharLine('-', lineCharacters),
+            e.PrintLine(""),
+            PrintColumnLine("Tip: ", "______________________________", lineCharacters),
+            e.PrintLine(""),
+            PrintColumnLine("Total: ", "______________________________", lineCharacters),
             e.FeedLines(5),
             e.FullCut()
         ];
