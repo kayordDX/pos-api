@@ -18,6 +18,7 @@ namespace Kayord.Pos.Features.User.AddUserOutletRole
         public override void Configure()
         {
             Post("/user/role");
+            // Maybe used with apply to new outlet??  Policies(Constants.Policy.Manager);
         }
 
         public override async Task HandleAsync(Request req, CancellationToken c)

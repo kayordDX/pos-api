@@ -14,6 +14,7 @@ namespace Kayord.Pos.Features.Stock.Link.GetAll
         public override void Configure()
         {
             Get("/stock/link/all");
+            Policies(Constants.Policy.Manager);
         }
 
         public override async Task HandleAsync(Request req, CancellationToken ct)

@@ -17,6 +17,7 @@ public class Endpoint : Endpoint<Request, Detail.Response>
     public override void Configure()
     {
         Post("/cashUp/close");
+        Policies(Constants.Policy.Manager);
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)

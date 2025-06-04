@@ -14,6 +14,7 @@ namespace Kayord.Pos.Features.Stock.Link.Delete
         public override void Configure()
         {
             Delete("/stock/link/{id}/{stockId}/{linkType}");
+            Policies(Constants.Policy.Manager);
         }
 
         public override async Task HandleAsync(Request req, CancellationToken ct)

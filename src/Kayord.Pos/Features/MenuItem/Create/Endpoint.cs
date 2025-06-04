@@ -19,6 +19,7 @@ public class Endpoint : Endpoint<Request, Pos.Entities.MenuItem>
     public override void Configure()
     {
         Post("/menuItem");
+        Policies(Constants.Policy.Manager);
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)

@@ -16,6 +16,7 @@ public class Endpoint : Endpoint<Request, Entities.AdjustmentTypeOutlet>
     public override void Configure()
     {
         Post("/remove");
+        Policies(Constants.Policy.Manager);
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)

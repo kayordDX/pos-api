@@ -15,6 +15,7 @@ public class Endpoint : Endpoint<Request>
     public override void Configure()
     {
         Delete("/stock/orderItem/{stockId}/{stockOrderId}");
+        Policies(Constants.Policy.Manager);
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)

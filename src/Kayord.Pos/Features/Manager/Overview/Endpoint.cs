@@ -20,6 +20,7 @@ public class Endpoint : Endpoint<Request, List<Response>>
     public override void Configure()
     {
         Get("/manager/viewOrders");
+        Policies(Constants.Policy.Manager);
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)

@@ -16,6 +16,7 @@ namespace Kayord.Pos.Features.Stock.Items.GetAll
         public override void Configure()
         {
             Get("/stock/items");
+            Policies(Constants.Policy.Manager);
         }
 
         public override async Task HandleAsync(Request req, CancellationToken ct)

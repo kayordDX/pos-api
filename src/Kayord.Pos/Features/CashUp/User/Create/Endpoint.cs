@@ -20,6 +20,7 @@ public class Endpoint : Endpoint<Request, CashUpUserItem>
     public override void Configure()
     {
         Post("/cashUp/user");
+        Policies(Constants.Policy.Manager);
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)

@@ -19,6 +19,7 @@ public class Endpoint : Endpoint<Request>
     public override void Configure()
     {
         Put("/stock/items");
+        Policies(Constants.Policy.Manager);
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)

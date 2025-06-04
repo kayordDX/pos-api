@@ -18,6 +18,7 @@ public class Endpoint : Endpoint<Request, Pos.Entities.Menu>
     public override void Configure()
     {
         Post("/adjustmentType");
+        Policies(Constants.Policy.Manager);
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)

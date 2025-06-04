@@ -18,6 +18,7 @@ namespace Kayord.Pos.Features.User.RemoveUserOutlet
         public override void Configure()
         {
             Delete("/user/outlet/{userId}");
+            Policies(Constants.Policy.Manager);
         }
 
         public override async Task HandleAsync(Request req, CancellationToken c)

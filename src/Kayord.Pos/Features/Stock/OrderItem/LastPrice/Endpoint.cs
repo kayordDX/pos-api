@@ -15,6 +15,7 @@ public class Endpoint : Endpoint<Request, Response>
     public override void Configure()
     {
         Get("/stock/orderItem/lastPrice");
+        Policies(Constants.Policy.Manager);
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
