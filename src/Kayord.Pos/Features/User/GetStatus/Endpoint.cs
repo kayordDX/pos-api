@@ -29,6 +29,7 @@ public class Endpoint : EndpointWithoutRequest<Response>
             OutletId = 0,
             SalesPeriodId = 0,
             ClockedIn = false,
+            StatusId = 0,
         };
 
         var userOutlet = await _dbContext.UserOutlet
@@ -37,9 +38,17 @@ public class Endpoint : EndpointWithoutRequest<Response>
 
         if (userOutlet == null)
         {
+            var userOutlets = await _dbContext.UserOutlet.AnyAsync(x => x.UserId == _cu.UserId, ct);
+            if (userOutlets == true)
+            {
+                var userRole = await _dbContext.UserRoleOutlet.AnyAsync(x => x.UserId == _cu.UserId, ct);
+                resp.StatusId = (userRole == true) ? 2 : 1;
+            }
             await SendAsync(resp);
             return;
         }
+
+        resp.StatusId = 3;
 
         var userRoles = await _dbContext.UserRoleOutlet
             .Include(ur => ur.Role!).ThenInclude(x => x.RoleType)
