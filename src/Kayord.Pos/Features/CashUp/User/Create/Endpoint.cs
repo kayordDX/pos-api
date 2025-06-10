@@ -9,22 +9,27 @@ namespace Kayord.Pos.Features.CashUp.User.Create;
 public class Endpoint : Endpoint<Request, CashUpUserItem>
 {
     private readonly AppDbContext _dbContext;
-    private readonly CurrentUserService _user;
+    private readonly UserService _userService;
 
-    public Endpoint(AppDbContext dbContext, CurrentUserService user)
+    public Endpoint(AppDbContext dbContext, UserService userService)
     {
         _dbContext = dbContext;
-        _user = user;
+        _userService = userService;
     }
 
     public override void Configure()
     {
         Post("/cashUp/user");
-        Policies(Constants.Policy.Manager);
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
+        if (!await _userService.IsManager(req.OutletId))
+        {
+            await SendForbiddenAsync();
+            return;
+        }
+
         CashUpUserItem ci = new();
         ci.CashUpUserItemTypeId = req.CashUpUserItemTypeId;
         ci.CashUpUserId = req.CashUpUserId;

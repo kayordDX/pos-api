@@ -15,7 +15,6 @@ namespace Kayord.Pos.Features.Section.List
         public override void Configure()
         {
             Get("/section");
-            Policies(Constants.Policy.Manager);
         }
 
         public override async Task HandleAsync(Request req, CancellationToken ct)

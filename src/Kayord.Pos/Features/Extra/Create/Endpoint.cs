@@ -8,22 +8,26 @@ namespace Kayord.Pos.Features.Extra.Create;
 public class Endpoint : Endpoint<Request>
 {
     private readonly AppDbContext _dbContext;
-    private readonly RedisClient _redisClient;
+    private readonly UserService _userService;
 
-    public Endpoint(AppDbContext dbContext, RedisClient redisClient)
+    public Endpoint(AppDbContext dbContext, UserService userService)
     {
         _dbContext = dbContext;
-        _redisClient = redisClient;
+        _userService = userService;
     }
 
     public override void Configure()
     {
         Post("/extra");
-        Policies(Constants.Policy.Manager);
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
+        if (!await _userService.IsManager(req.OutletId))
+        {
+            await SendForbiddenAsync();
+            return;
+        }
 
         Entities.ExtraGroup? extraGroup = await _dbContext.ExtraGroup.FirstOrDefaultAsync(x => x.ExtraGroupId == req.ExtraGroupId);
 
@@ -44,7 +48,6 @@ public class Endpoint : Endpoint<Request>
         await _dbContext.Extra.AddAsync(extra);
         await _dbContext.SaveChangesAsync();
 
-        // await Helper.ClearCacheOutlet(_dbContext, _redisClient, req.OutletId);
         await SendNoContentAsync();
     }
 }

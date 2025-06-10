@@ -6,29 +6,34 @@ namespace Kayord.Pos.Features.CashUp.User.Close;
 public class Endpoint : Endpoint<Request, Detail.Response>
 {
     private readonly AppDbContext _dbContext;
-    private readonly CurrentUserService _user;
+    private readonly UserService _userService;
 
-    public Endpoint(AppDbContext dbContext, CurrentUserService user)
+    public Endpoint(AppDbContext dbContext, UserService userService)
     {
         _dbContext = dbContext;
-        _user = user;
+        _userService = userService;
     }
 
     public override void Configure()
     {
         Post("/cashUp/close");
-        Policies(Constants.Policy.Manager);
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        if (_user.UserId == null)
+        if (!await _userService.IsManager(req.OutletId))
         {
             await SendForbiddenAsync();
             return;
         }
 
-        var response = await Detail.CashUp.CashUpProcess(req.OutletId, req.UserId, _dbContext, _user, true);
+        if (_userService.GetCurrentUserService().UserId == null)
+        {
+            await SendForbiddenAsync();
+            return;
+        }
+
+        var response = await Detail.CashUp.CashUpProcess(req.OutletId, req.UserId, _dbContext, _userService.GetCurrentUserService(), true);
 
         await SendAsync(response);
     }

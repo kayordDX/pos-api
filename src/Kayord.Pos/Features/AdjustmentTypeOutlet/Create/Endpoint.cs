@@ -8,21 +8,29 @@ public class Endpoint : Endpoint<Request, Pos.Entities.Menu>
 {
     private readonly AppDbContext _dbContext;
     private readonly RedisClient _redisClient;
+    private readonly UserService _userService;
 
-    public Endpoint(AppDbContext dbContext, RedisClient redisClient)
+
+    public Endpoint(AppDbContext dbContext, RedisClient redisClient, UserService userService)
     {
         _dbContext = dbContext;
         _redisClient = redisClient;
+        _userService = userService;
     }
 
     public override void Configure()
     {
         Post("/adjustmentType");
-        Policies(Constants.Policy.Manager);
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
+        if (!await _userService.IsManager(req.OutletId))
+        {
+            await SendForbiddenAsync();
+            return;
+        }
+
         var adjustmentTypeEntity = new Entities.AdjustmentType
         {
             Name = req.Name,

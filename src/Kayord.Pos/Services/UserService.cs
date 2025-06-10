@@ -18,6 +18,11 @@ public class UserService
         _httpClient = httpClient;
     }
 
+    public CurrentUserService GetCurrentUserService()
+    {
+        return _cu;
+    }
+
     public async Task<List<string>> GetUserRoles()
     {
         return await _dbContext.Database
@@ -38,6 +43,16 @@ public class UserService
         """
         )
         .ToListAsync();
+    }
+
+    public async Task<bool> IsManager(int outletId)
+    {
+        var result = await _dbContext.UserRoleOutlet
+            .Select(x => new { x.Id, x.UserId, x.OutletId, x.Role!.RoleTypeId })
+            .Where(x => x.UserId == _cu.UserId && x.OutletId == outletId && x.RoleTypeId == 4)
+            .FirstOrDefaultAsync();
+
+        return result != null;
     }
 
     public async Task<string> GetCustomToken(string userId)

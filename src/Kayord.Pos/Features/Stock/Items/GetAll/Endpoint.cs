@@ -1,5 +1,3 @@
-using Kayord.Pos.Common.Extensions;
-using Kayord.Pos.Common.Models;
 using Kayord.Pos.Data;
 using Microsoft.EntityFrameworkCore;
 namespace Kayord.Pos.Features.Stock.Items.GetAll
