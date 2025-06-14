@@ -21,9 +21,8 @@ public class Endpoint : Endpoint<Request, bool>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        await _hub.Clients.User("100308736810173424324").ReceiveMessage("Hardcoded");
         await _hub.Clients.User(req.UserId).ReceiveMessage(req.Message);
-        // await _hub.Clients.Group("monkeys").ReceiveMessage(req.Message);
+        await _hub.Clients.Group("outlet:1").ReceiveMessage(req.Message);
         await SendAsync(true);
     }
 }

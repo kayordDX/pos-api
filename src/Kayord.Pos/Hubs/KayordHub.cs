@@ -10,6 +10,7 @@ public interface IKayordHub
     Task PayMessage(Result<Features.Pay.Dto.StatusResultDto> request);
     Task Notification(SignalEvent notification);
     Task PlaySound(SoundEvent sound);
+    Task RefreshOutlet(int outletId);
 }
 
 public class KayordHub : Hub<IKayordHub>
@@ -21,6 +22,6 @@ public class KayordHub : Hub<IKayordHub>
 
     public async Task LeaveGroup(string group)
     {
-        await Groups.AddToGroupAsync(Context.ConnectionId, group);
+        await Groups.RemoveFromGroupAsync(Context.ConnectionId, group);
     }
 }
