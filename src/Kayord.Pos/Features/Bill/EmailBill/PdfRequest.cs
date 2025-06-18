@@ -23,7 +23,7 @@ public class PdfRequest
     public string? TableName { get; set; }
     public string? Waiter { get; set; }
     public bool IsClosed { get; set; }
-    public List<DivisionDTO> Divisions { get; set; } = new List<DivisionDTO>();
+    public List<BillCategoryDTO> BillCategories { get; set; } = new List<BillCategoryDTO>();
 }
 
 public class Item

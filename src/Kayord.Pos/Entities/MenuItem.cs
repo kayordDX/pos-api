@@ -9,6 +9,8 @@ public class MenuItem : AuditableEntity
     public int MenuSectionId { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
+    public int? BillCategoryId { get; set; }
+    public BillCategory? BillCategory { get; set; }
     public decimal Price { get; set; }
     public NpgsqlTsVector SearchVector { get; set; } = default!;
     public int Position { get; set; }

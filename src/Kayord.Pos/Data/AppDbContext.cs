@@ -88,6 +88,7 @@ public class AppDbContext : DbContext
     public DbSet<UserOutlet> UserOutlet => Set<UserOutlet>();
     public DbSet<UserRoleOutlet> UserRoleOutlet => Set<UserRoleOutlet>();
     public DbSet<VATRate> VATRate => Set<VATRate>();
+    public DbSet<BillCategory> BillCategory => Set<BillCategory>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

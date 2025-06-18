@@ -123,17 +123,17 @@ public static class Bill
 
                 response.SummaryOrderItems.Add(newItem);
             }
-            var existingDivision = response.Divisions.FirstOrDefault(d => d.DivisionId == x.MenuItem.DivisionId);
+            var existingDivision = response.BillCategories.FirstOrDefault(d => d.BilLCategoryId == x.MenuItem.BillCategoryId);
             if (existingDivision != null)
             {
                 existingDivision.Total += totalPerItem;
             }
             else
             {
-                response.Divisions.Add(new DivisionDTO
+                response.BillCategories.Add(new BillCategoryDTO
                 {
-                    DivisionId = x.MenuItem.DivisionId,
-                    FriendlyName = x.MenuItem.Division?.FriendlyName ?? "Other",
+                    BilLCategoryId = x.MenuItem.BillCategoryId,
+                    Name = x.MenuItem.BillCategory?.Name ?? "Other",
                     Total = totalPerItem
                 });
             }

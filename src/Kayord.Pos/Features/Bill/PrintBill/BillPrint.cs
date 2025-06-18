@@ -68,9 +68,9 @@ public static class BillPrint
         int boldLineChars = lineCharacters - (lineCharacters / 4);
 
         List<byte[]> divisions = [];
-        foreach (var division in request.Divisions.Where(x => x.FriendlyName != null))
+        foreach (var cat in request.BillCategories.Where(x => x.Name != null))
         {
-            divisions.Add(PrintColumnLine(division.FriendlyName!, $"{division.Total:0.00}", lineCharacters));
+            divisions.Add(PrintColumnLine(cat.Name!, $"{cat.Total:0.00}", lineCharacters));
         }
 
         byte[] tip = request.IsClosed ? PrintColumnLine("Tip", $"{request.TipAmount:0.00}", boldLineChars) : [];

@@ -90,7 +90,7 @@ public class BillPdf
 
         container.Column(c =>
         {
-            if (_pdfRequest.Divisions.Count > 0)
+            if (_pdfRequest.BillCategories.Count > 0)
             {
                 c.Item()
                     .PaddingVertical(10)
@@ -105,10 +105,10 @@ public class BillPdf
                         columns.RelativeColumn();
                     });
 
-                    foreach (var division in _pdfRequest.Divisions)
+                    foreach (var cat in _pdfRequest.BillCategories)
                     {
-                        table.Cell().Element(CellStylePlain).Text(division.FriendlyName);
-                        table.Cell().Element(CellStylePlain).AlignRight().Text($"{division.Total:C}");
+                        table.Cell().Element(CellStylePlain).Text(cat.Name);
+                        table.Cell().Element(CellStylePlain).AlignRight().Text($"{cat.Total:C}");
                     }
                 });
                 c.Item()

@@ -195,7 +195,7 @@ public static class BillHelper
                 IsClosed = bill.IsClosed,
                 TableName = bill.TableName,
                 Waiter = bill.Waiter,
-                Divisions = bill.Divisions,
+                BillCategories = bill.BillCategories,
             };
             return pdfRequest;
         }

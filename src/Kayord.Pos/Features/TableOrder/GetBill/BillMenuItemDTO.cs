@@ -6,7 +6,7 @@ public class BillMenuItemDTO
     public string Name { get; set; } = string.Empty;
     public decimal Price { get; set; }
 
-    public int DivisionId { get; set; }
-    public DivisionDTO? Division { get; set; }
+    public int BillCategoryId { get; set; }
+    public BillCategoryDTO? BillCategory { get; set; }
 
 }
