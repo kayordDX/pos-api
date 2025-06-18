@@ -101,13 +101,9 @@ namespace Kayord.Pos.Features.TableOrder.SendToKitchen
                     message = $"Remaining items(s) out of stock - {string.Join(", ", unavailableComponents)}";
                 }
             }
-            // await PublishAsync(new StockEvent() { OrderItemIds = orderItemsToUpdate.Select(x => x.OrderItemId).ToList(), IsReverse = false }, Mode.WaitForNone);
-
-            var roleIds = _dbContext.RoleDivision.Where(x => divisions.Contains(x.DivisionId)).Select(x => x.RoleId).ToList();
-
             await _dbContext.SaveChangesAsync();
 
-            await PublishAsync(new SoundEvent() { OutletId = outletId, RoleIds = roleIds });
+            await PublishAsync(new SoundEvent() { OutletId = outletId, DivisionIds = divisions });
 
             await SendAsync(new Response { IsSuccess = isSuccess, Message = message });
         }

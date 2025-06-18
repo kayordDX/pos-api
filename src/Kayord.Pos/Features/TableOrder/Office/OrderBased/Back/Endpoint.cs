@@ -32,8 +32,7 @@ public class Endpoint : Endpoint<Request, Response>
             await SendNotFoundAsync();
             return;
         }
-
-        List<int> divisionIds = await RoleHelper.GetDivisionsForRoles(req.RoleIds, _dbContext, userOutlet.OutletId, _cu.UserId);
+        List<int> divisionIds = req.DivisionIds != null ? req.DivisionIds.Split(",").Select(int.Parse).ToList() : [];
 
         var orderItems = _dbContext.OrderItem
             .Where(x => x.TableBooking.Table.Section.OutletId == userOutlet.OutletId)
@@ -51,7 +50,6 @@ public class Endpoint : Endpoint<Request, Response>
             await SendNotFoundAsync();
             return;
         }
-
 
         var orderItemDTOs = await orderItems.ProjectToDto().ToListAsync();
         var orderGroupQuery = orderItemDTOs

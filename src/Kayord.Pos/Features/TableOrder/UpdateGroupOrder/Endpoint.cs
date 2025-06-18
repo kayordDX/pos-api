@@ -1,8 +1,6 @@
 using Kayord.Pos.Data;
-using Kayord.Pos.DTO;
 using Kayord.Pos.Entities;
 using Kayord.Pos.Events;
-using Kayord.Pos.Features.Role;
 using Kayord.Pos.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,7 +27,7 @@ namespace Kayord.Pos.Features.TableOrder.UpdateGroupOrder
         {
             OrderItemStatus? orderItemStatus = await _dbContext.OrderItemStatus.FirstOrDefaultAsync(x => x.OrderItemStatusId == req.OrderItemStatusId);
 
-            List<int> divisionIds = await RoleHelper.GetDivisionsForRolesOnly(req.RoleIds, _dbContext, _cu.UserId);
+            List<int> divisionIds = req.DivisionIds != null ? req.DivisionIds.Split(",").Select(int.Parse).ToList() : [];
 
             var orderItems = await _dbContext.OrderItem
                 .Include(x => x.TableBooking)
@@ -43,7 +41,6 @@ namespace Kayord.Pos.Features.TableOrder.UpdateGroupOrder
             // Stock
             if (orderItemStatus?.IsUpdateStock ?? false)
             {
-                // stock event publish
                 await PublishAsync(new StockEvent() { OrderItemIds = orderItems.Select(x => x.OrderItemId).ToList(), IsReverse = false }, Mode.WaitForNone);
             }
 
