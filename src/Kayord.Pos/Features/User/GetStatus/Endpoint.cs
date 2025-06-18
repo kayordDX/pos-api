@@ -86,8 +86,9 @@ public class Endpoint : EndpointWithoutRequest<Response>
 
 
         var salesPeriod = await _dbContext.SalesPeriod
+            .Where(x => x.OutletId == userOutlet.OutletId && x.StartDate != null && x.EndDate == null)
             .Select(x => new SalesPeriodDTO() { Id = x.Id, Name = x.Name, EndDate = x.EndDate, StartDate = x.StartDate })
-            .FirstOrDefaultAsync(x => x.OutletId == userOutlet.OutletId && x.StartDate != null && x.EndDate == null);
+            .FirstOrDefaultAsync(ct);
 
         if (salesPeriod == null)
         {
