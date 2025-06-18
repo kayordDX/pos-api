@@ -35,26 +35,5 @@ services:
     ports:
       - "6379:6379"
 
-  # garnet:
-  #   container_name: garnet
-  #   image: ghcr.io/microsoft/garnet
-  #   restart: unless-stopped
-  #   ulimits:
-  #     memlock: -1
-  #   ports:
-  #     - "6379:6379"
-  #   command: --auth Password --password 4qWF6jAcW6e9PCeW
-
-  # pgbackweb:
-  #   image: eduardolat/pgbackweb:latest
-  #   ports:
-  #     - "8085:8085"
-  #   volumes:
-  #     - ./backups:/backups
-  #   environment:
-  #     PBW_ENCRYPTION_KEY: "my_secret_key"
-  #     PBW_POSTGRES_CONN_STRING: "postgresql://kayord:bbHRro5Ju2L9cw@postgres:5432/pgbackweb?sslmode=disable"
-  #     TZ: "Africa/Johannesburg"
-
 volumes:
   pgdata:
