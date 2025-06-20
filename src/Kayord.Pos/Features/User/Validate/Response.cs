@@ -1,8 +1,7 @@
-using FluentValidation;
-namespace Kayord.Pos.Features.User.Validate
+
+namespace Kayord.Pos.Features.User.Validate;
+
+public class Response
 {
-    public class Response
-    {
-        public string UserId { get; set; } = string.Empty;
-    }
+    public string UserId { get; set; } = string.Empty;
 }
