@@ -13,6 +13,8 @@ public class MenuItemAdminDTO
     public decimal Price { get; set; }
     public int Position { get; set; }
     public int DivisionId { get; set; }
+    public int? BillCategoryId { get; set; }
+
     public List<MenuItemOptionGroupDTO> MenuItemOptionGroups { get; set; } = default!;
     public List<MenuItemExtraGroupDTO> MenuItemExtraGroups { get; set; } = default!;
     public bool IsAvailable { get; set; }

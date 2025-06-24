@@ -13,6 +13,7 @@ public class Request
     public int? DivisionId { get; set; }
     public bool IsAvailable { get; set; }
     public bool IsEnabled { get; set; } = true;
+    public int? BillCategoryId { get; set; }
     public List<int>? ExtraGroupIds { get; set; }
     public List<int>? OptionGroupIds { get; set; }
 }

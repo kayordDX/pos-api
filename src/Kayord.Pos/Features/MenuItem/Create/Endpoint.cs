@@ -39,7 +39,8 @@ public class Endpoint : Endpoint<Request, Pos.Entities.MenuItem>
                 Position = req.PositionId,
                 DivisionId = req.DivisionId,
                 IsAvailable = req.IsAvailable,
-                IsEnabled = req.IsEnabled
+                IsEnabled = req.IsEnabled,
+                BillCategoryId = req.BillCategoryId
             };
             await _dbContext.MenuItem.AddAsync(menuItem);
             await _dbContext.SaveChangesAsync();

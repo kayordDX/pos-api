@@ -38,7 +38,7 @@ public class Endpoint : Endpoint<Request, Pos.Entities.MenuItem>
             menuItem.DivisionId = req.DivisionId;
             menuItem.IsAvailable = req.IsAvailable;
             menuItem.IsEnabled = req.IsEnabled;
-
+            menuItem.BillCategoryId = req.BillCategoryId;
 
             if (req.ExtraGroupIds != null)
             {
