@@ -6,4 +6,6 @@ public class StockCategory : AuditableEntity
     public int? ParentId { get; set; }
     public int OutletId { get; set; }
     public string Name { get; set; } = string.Empty;
+    public bool IsDeleted { get; set; }
+
 }
