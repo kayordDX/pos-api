@@ -23,7 +23,7 @@ public static class CashUp
             var savedBalance = (savedCashUpUser?.OpeningBalance ?? 0) - (savedCashUpUser?.ClosingBalance ?? 0);
 
             response.CashUpUserId = cashUpUserId;
-            var items = _dbContext.CashUpUserItem.Where(x => x.CashUpUserId == cashUpUserId).ProjectToDto();
+            var items = _dbContext.CashUpUserItem.Where(x => x.CashUpUserId == cashUpUserId).Where(x => x.Value != 0m).ProjectToDto();
             response.CashUpUserItems.AddRange(items);
 
             response.GrossBalance = Math.Round(response.OpeningBalance + response.CashUpUserItems.Where(x => x.CashUpUserItemType!.AffectsGrossBalance || x.CashUpUserItemType.IsAuto == false).Sum(x => x.Value), 2);
@@ -370,7 +370,7 @@ public static class CashUp
             }
         }
 
-        response.CashUpUserItems = response.CashUpUserItems.OrderBy(x => x.CashUpUserItemType!.Position).ToList();
+        response.CashUpUserItems = response.CashUpUserItems.OrderBy(x => x.CashUpUserItemType!.Position).Where(x => x.Value != 0m).ToList();
         return response;
     }
 }

@@ -1,4 +1,5 @@
 using Kayord.Pos.Data;
+using Kayord.Pos.Entities;
 using Kayord.Pos.Services;
 
 
@@ -47,6 +48,19 @@ public class Endpoint : Endpoint<Request, Pos.Entities.Menu>
         };
         await _dbContext.AdjustmentTypeOutlet.AddAsync(adjustmentTypeOutlet);
 
+
+        await _dbContext.SaveChangesAsync();
+        CashUpUserItemType cashUpUserItemType = new()
+        {
+            AdjustmentTypeId = adjustmentTypeEntity.AdjustmentTypeId,
+            CashUpUserItemRule = Common.Enums.CashUpUserItemRule.Adjustment,
+            AffectsGrossBalance = false,
+            Position = 99,
+            IsAuto = true,
+            ItemType = adjustmentTypeEntity.Name
+        };
+
+        await _dbContext.CashUpUserItemType.AddAsync(cashUpUserItemType);
         await _dbContext.SaveChangesAsync();
 
         await Helper.ClearCacheOutlet(_dbContext, _redisClient, req.OutletId);

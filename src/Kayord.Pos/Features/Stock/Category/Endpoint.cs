@@ -13,7 +13,7 @@ namespace Kayord.Pos.Features.Stock.Category
 
         public override void Configure()
         {
-            Get("/stock/category");
+            Get("/stock/category/{OutletId}");
         }
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
@@ -28,7 +28,7 @@ namespace Kayord.Pos.Features.Stock.Category
                     display_name 
                 from 
                     vw_stock_category 
-                where outlet_id = {req.OutletId}
+                where outlet_id = {req.OutletId} and parent_name is not null 
             """).ToListAsync(ct);
             await SendAsync(results);
         }
