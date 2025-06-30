@@ -38,6 +38,10 @@ public class AppDbContext : DbContext
     public DbSet<ExtraGroup> ExtraGroup => Set<ExtraGroup>();
     public DbSet<HaloConfig> HaloConfig => Set<HaloConfig>();
     public DbSet<HaloLog> HaloLog => Set<HaloLog>();
+    public DbSet<Feature> Feature => Set<Feature>();
+    public DbSet<OutletFeature> OutletFeature => Set<OutletFeature>();
+    public DbSet<Audit> Audit => Set<Audit>();
+    public DbSet<AuditType> AuditType => Set<AuditType>();
     public DbSet<HaloReference> HaloReference => Set<HaloReference>();
     public DbSet<Menu> Menu => Set<Menu>();
     public DbSet<MenuItem> MenuItem => Set<MenuItem>();

@@ -3,6 +3,7 @@ using System;
 using Kayord.Pos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using NpgsqlTypes;
@@ -12,9 +13,11 @@ using NpgsqlTypes;
 namespace Kayord.Pos.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250630200713_FeatureAndAudit")]
+    partial class FeatureAndAudit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -165,60 +168,6 @@ namespace Kayord.Pos.Data.Migrations
                         .HasDatabaseName("ix_adjustment_type_outlet_outlet_id");
 
                     b.ToTable("adjustment_type_outlet", (string)null);
-                });
-
-            modelBuilder.Entity("Kayord.Pos.Entities.Audit", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AuditTypeId")
-                        .HasColumnType("integer")
-                        .HasColumnName("audit_type_id");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_date");
-
-                    b.Property<string>("Detail")
-                        .HasColumnType("text")
-                        .HasColumnName("detail");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("text")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("Id")
-                        .HasName("pk_audit");
-
-                    b.HasIndex("AuditTypeId")
-                        .HasDatabaseName("ix_audit_audit_type_id");
-
-                    b.ToTable("audit", (string)null);
-                });
-
-            modelBuilder.Entity("Kayord.Pos.Entities.AuditType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("name");
-
-                    b.HasKey("Id")
-                        .HasName("pk_audit_type");
-
-                    b.ToTable("audit_type", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.BillCategory", b =>
@@ -3099,18 +3048,6 @@ namespace Kayord.Pos.Data.Migrations
                     b.Navigation("AdjustmentType");
 
                     b.Navigation("Outlet");
-                });
-
-            modelBuilder.Entity("Kayord.Pos.Entities.Audit", b =>
-                {
-                    b.HasOne("Kayord.Pos.Entities.AuditType", "AuditType")
-                        .WithMany()
-                        .HasForeignKey("AuditTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_audit_audit_type_audit_type_id");
-
-                    b.Navigation("AuditType");
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.CashUp", b =>
