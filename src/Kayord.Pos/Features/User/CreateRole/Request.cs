@@ -1,4 +1,4 @@
-namespace Kayord.Pos.Features.Role.Create
+namespace Kayord.Pos.Features.User.CreateRole
 {
     public class Request
     {

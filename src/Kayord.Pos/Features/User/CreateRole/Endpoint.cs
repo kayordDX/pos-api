@@ -1,6 +1,6 @@
 using Kayord.Pos.Data;
 
-namespace Kayord.Pos.Features.Role.Create
+namespace Kayord.Pos.Features.User.CreateRole
 {
     public class Endpoint : Endpoint<Request>
     {
@@ -14,7 +14,6 @@ namespace Kayord.Pos.Features.Role.Create
         public override void Configure()
         {
             Post("/role/createRole");
-            AllowAnonymous();
         }
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
