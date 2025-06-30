@@ -3,7 +3,7 @@ namespace Kayord.Pos.Entities;
 public class Audit
 {
     public int Id { get; set; }
-    public DateTime CreatedDate { get; set; }
+    public DateTime CreatedDate { get; set; } = DateTime.Now;
     public int AuditTypeId { get; set; }
     public AuditType AuditType { get; set; } = default!;
     public string? UserId { get; set; }
