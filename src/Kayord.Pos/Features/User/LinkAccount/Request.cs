@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace Kayord.Pos.Features.User.VerifyOTP;
+namespace Kayord.Pos.Features.User.LinkAccount;
 
 public class Request
 {
