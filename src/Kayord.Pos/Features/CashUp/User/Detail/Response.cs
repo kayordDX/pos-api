@@ -12,6 +12,9 @@ public class Response
     public decimal GrossBalance { get; set; }
     public decimal NetBalance { get; set; }
     public bool IsCashedUp { get; set; }
+    public bool IsError { get; set; }
+
+    public string Message { get; set; } = string.Empty;
 }
 
 public class PaymentTotal

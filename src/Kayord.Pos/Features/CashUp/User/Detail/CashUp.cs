@@ -10,12 +10,30 @@ public static class CashUp
 {
     public static async Task<Response> CashUpProcess(int OutletId, string UserId, AppDbContext _dbContext, CurrentUserService _cu, bool close, int cashUpUserId = 0)
     {
+
         Response response = new()
         {
             CashUpUserItems = new(),
-            IsCashedUp = false
+            IsCashedUp = false,
+            IsError = false
         };
-
+        var salesPeriod = await _dbContext.SalesPeriod.FirstOrDefaultAsync(x => x.OutletId == OutletId && x.EndDate == null);
+        if (salesPeriod == null)
+        {
+            response.IsError = true;
+            response.Message = "Sales period not found";
+            return response;
+        }
+        if (close)
+        {
+            bool hasOpenTables = await _dbContext.TableBooking.AnyAsync(x => x.SalesPeriodId == salesPeriod.Id && x.UserId == UserId && (x.CloseDate == null || x.Total == null));
+            if (hasOpenTables)
+            {
+                response.IsError = true;
+                response.Message = "User has open tables";
+                return response;
+            }
+        }
         if (cashUpUserId > 0)
         {
             var savedCashUpUser = await _dbContext.CashUpUser.ProjectToDto().FirstOrDefaultAsync(x => x.Id == cashUpUserId);
@@ -42,10 +60,11 @@ public static class CashUp
         CashUpUserDTO? cashUpUser = await _dbContext.CashUpUser.ProjectToDto().OrderByDescending(x => x.Id).FirstOrDefaultAsync(x => x.UserId == UserId && x.ClosingBalance == null && x.OutletId == OutletId);
         int userCashUpId = 0;
 
-        var salesPeriod = await _dbContext.SalesPeriod.FirstOrDefaultAsync(x => x.OutletId == OutletId && x.EndDate == null);
         if (salesPeriod == null)
         {
-            throw new Exception("Sales period not found");
+            response.IsError = true;
+            response.Message = "User has open tables";
+            return response;
         }
 
         if (cashUpUser != null)
