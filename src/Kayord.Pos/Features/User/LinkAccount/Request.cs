@@ -11,6 +11,6 @@ public class Validator : Validator<Request>
 {
     public Validator()
     {
-        RuleFor(v => v.OTP).Length(8).WithMessage("OTP Must have length of 8");
+        RuleFor(v => v.OTP).Length(6).WithMessage("OTP Must have length of 6");
     }
 }

@@ -7,10 +7,11 @@ public class Response
     public bool ClockedIn { get; set; }
     public int SalesPeriodId { get; set; }
     public SalesPeriodDTO? SalesPeriod { get; set; }
-    public List<RoleDTO> Roles { get; set; } = new List<RoleDTO>();
-    public List<DivisionDTO> Divisions { get; set; } = new List<DivisionDTO>();
+    public List<RoleDTO> Roles { get; set; } = [];
+    public List<DivisionDTO> Divisions { get; set; } = [];
     public bool hasNotification { get; set; }
     public int StatusId { get; set; }
+    public List<Entities.Feature> Features { get; set; } = [];
 }
 
 public class SalesPeriodDTO
