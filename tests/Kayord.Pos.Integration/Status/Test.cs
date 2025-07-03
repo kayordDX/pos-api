@@ -1,6 +1,6 @@
-namespace Kayord.Pos.Integration.Test;
+namespace Kayord.Pos.Integration.Status;
 
-public class Test(App app) : TestBase<App>
+public class StatusTests(App app) : TestBase<App>
 {
     [Fact]
     public async Task TestGetStatus()

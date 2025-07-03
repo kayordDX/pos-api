@@ -27,7 +27,7 @@ public class MigratorHostedService : IHostedService
             }
 
             // Development Seed
-            if (_env.IsDevelopment())
+            if (_env.IsDevelopment() || _env.IsEnvironment("Testing"))
             {
                 await AppDbSeed.SeedData(context, cancellationToken);
             }
