@@ -11,26 +11,61 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{70ABFD81
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kayord.Pos.Unit", "tests\Kayord.Pos.Unit\Kayord.Pos.Unit.csproj", "{54CE4C34-C085-4122-841C-75465F5AFEDF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kayord.Pos.Integration", "tests\Kayord.Pos.Integration\Kayord.Pos.Integration.csproj", "{FA828155-6368-4896-B4E0-B93297C884C0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{000111D1-9B12-446C-B3C0-84B217CF7BA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{000111D1-9B12-446C-B3C0-84B217CF7BA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{000111D1-9B12-446C-B3C0-84B217CF7BA9}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{000111D1-9B12-446C-B3C0-84B217CF7BA9}.Debug|x64.Build.0 = Debug|Any CPU
+		{000111D1-9B12-446C-B3C0-84B217CF7BA9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{000111D1-9B12-446C-B3C0-84B217CF7BA9}.Debug|x86.Build.0 = Debug|Any CPU
 		{000111D1-9B12-446C-B3C0-84B217CF7BA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{000111D1-9B12-446C-B3C0-84B217CF7BA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{000111D1-9B12-446C-B3C0-84B217CF7BA9}.Release|x64.ActiveCfg = Release|Any CPU
+		{000111D1-9B12-446C-B3C0-84B217CF7BA9}.Release|x64.Build.0 = Release|Any CPU
+		{000111D1-9B12-446C-B3C0-84B217CF7BA9}.Release|x86.ActiveCfg = Release|Any CPU
+		{000111D1-9B12-446C-B3C0-84B217CF7BA9}.Release|x86.Build.0 = Release|Any CPU
 		{54CE4C34-C085-4122-841C-75465F5AFEDF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{54CE4C34-C085-4122-841C-75465F5AFEDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54CE4C34-C085-4122-841C-75465F5AFEDF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{54CE4C34-C085-4122-841C-75465F5AFEDF}.Debug|x64.Build.0 = Debug|Any CPU
+		{54CE4C34-C085-4122-841C-75465F5AFEDF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{54CE4C34-C085-4122-841C-75465F5AFEDF}.Debug|x86.Build.0 = Debug|Any CPU
 		{54CE4C34-C085-4122-841C-75465F5AFEDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{54CE4C34-C085-4122-841C-75465F5AFEDF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54CE4C34-C085-4122-841C-75465F5AFEDF}.Release|x64.ActiveCfg = Release|Any CPU
+		{54CE4C34-C085-4122-841C-75465F5AFEDF}.Release|x64.Build.0 = Release|Any CPU
+		{54CE4C34-C085-4122-841C-75465F5AFEDF}.Release|x86.ActiveCfg = Release|Any CPU
+		{54CE4C34-C085-4122-841C-75465F5AFEDF}.Release|x86.Build.0 = Release|Any CPU
+		{FA828155-6368-4896-B4E0-B93297C884C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA828155-6368-4896-B4E0-B93297C884C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA828155-6368-4896-B4E0-B93297C884C0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FA828155-6368-4896-B4E0-B93297C884C0}.Debug|x64.Build.0 = Debug|Any CPU
+		{FA828155-6368-4896-B4E0-B93297C884C0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FA828155-6368-4896-B4E0-B93297C884C0}.Debug|x86.Build.0 = Debug|Any CPU
+		{FA828155-6368-4896-B4E0-B93297C884C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA828155-6368-4896-B4E0-B93297C884C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA828155-6368-4896-B4E0-B93297C884C0}.Release|x64.ActiveCfg = Release|Any CPU
+		{FA828155-6368-4896-B4E0-B93297C884C0}.Release|x64.Build.0 = Release|Any CPU
+		{FA828155-6368-4896-B4E0-B93297C884C0}.Release|x86.ActiveCfg = Release|Any CPU
+		{FA828155-6368-4896-B4E0-B93297C884C0}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{000111D1-9B12-446C-B3C0-84B217CF7BA9} = {FADDA9C3-588D-4CED-97DC-B32136BDB1B1}
 		{54CE4C34-C085-4122-841C-75465F5AFEDF} = {70ABFD81-FEF2-42A1-B75D-7EFF52418557}
+		{FA828155-6368-4896-B4E0-B93297C884C0} = {70ABFD81-FEF2-42A1-B75D-7EFF52418557}
 	EndGlobalSection
 EndGlobal
