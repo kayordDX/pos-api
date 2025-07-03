@@ -1,3 +1,5 @@
+using Kayord.Pos.Services;
+using Microsoft.Extensions.DependencyInjection;
 using Testcontainers.PostgreSql;
 
 namespace Kayord.Pos.Integration;
@@ -5,6 +7,7 @@ namespace Kayord.Pos.Integration;
 public class App : AppFixture<Program>
 {
     private PostgreSqlContainer? postgreSqlContainer;
+    public HttpClient ClientAuth = new HttpClient();
 
     protected override async ValueTask PreSetupAsync()
     {
@@ -18,10 +21,16 @@ public class App : AppFixture<Program>
         await postgreSqlContainer.StartAsync();
     }
 
-    // protected override Task SetupAsync()
-    // {
-    //     // place one-time setup code here
-    // }
+    protected override async ValueTask SetupAsync()
+    {
+        var userService = Services.GetRequiredService<UserService>();
+        var apiKey = await userService.GetIdToken("92jlIC3p9uUavQOw5Pf5bX61ck13");
+        var adminClient = CreateClient(c =>
+        {
+            c.DefaultRequestHeaders.Authorization = new("Bearer", apiKey.IdToken);
+        });
+        ClientAuth = adminClient;
+    }
 
     // protected override void ConfigureApp(IWebHostBuilder a)
     // {
@@ -33,8 +42,9 @@ public class App : AppFixture<Program>
     //     // do test service registration here
     // }
 
-    // protected override Task TearDownAsync()
-    // {
-    //     // do cleanups here
-    // }
+    protected override ValueTask TearDownAsync()
+    {
+        ClientAuth.Dispose();
+        return ValueTask.CompletedTask;
+    }
 }
