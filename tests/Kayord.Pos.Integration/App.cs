@@ -1,3 +1,4 @@
+using DotNet.Testcontainers.Builders;
 using Kayord.Pos.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Testcontainers.PostgreSql;
@@ -16,9 +17,18 @@ public class App : AppFixture<Program>
             .WithDatabase("db")
             .WithUsername("db")
             .WithPassword("db")
+            .WithPortBinding(15432, 5432)
             .Build();
 
+        var redis = new ContainerBuilder()
+        .WithImage("docker.io/bitnami/redis:latest")
+        .WithPortBinding(16379, 6379)
+        .WithEnvironment("REDIS_PASSWORD", "4qWF6jAcW6e9PCeW")
+        .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(6379))
+        .Build();
+
         await postgreSqlContainer.StartAsync();
+        await redis.StartAsync();
     }
 
     protected override async ValueTask SetupAsync()
