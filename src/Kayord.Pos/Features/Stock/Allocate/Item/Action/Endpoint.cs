@@ -34,6 +34,11 @@ public class Endpoint : Endpoint<Request, StockAllocateItem>
             return;
         }
 
+        if (entity.Completed != null)
+        {
+            throw new Exception("Already completed");
+        }
+
         // Set status to cancelled
         if (entity.StockAllocateItemStatusId == 1 || entity.StockAllocateItemStatusId == 2)
         {

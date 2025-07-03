@@ -8,7 +8,7 @@ public class StockAllocateItem : AuditableEntity
     public decimal Actual { get; set; }
     public int StockAllocateItemStatusId { get; set; }
     public StockAllocateItemStatus StockAllocateItemStatus { get; set; } = default!;
-    public DateTime Completed { get; set; }
+    public DateTime? Completed { get; set; }
     public int StockAllocateId { get; set; }
     public string AssignedUserId { get; set; } = string.Empty;
     public User? AssignedUser { get; set; }
