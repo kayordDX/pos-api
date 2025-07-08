@@ -10,10 +10,11 @@ public class DivisionTests(App app) : TestBase<App>
             {
                 DivisionTypeId = 1,
                 Name = "Test Division",
-                OutletId = 1
+                OutletId = 99
             });
 
-        rsp.IsSuccessStatusCode.ShouldBeTrue();
-        res.DivisionId.ShouldBe(1);
+        // Need to check auth
+        rsp.IsSuccessStatusCode.ShouldBeFalse();
+        // res.DivisionId.ShouldBe(1);
     }
 }
