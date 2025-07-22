@@ -22,8 +22,7 @@ public class Endpoint : Endpoint<Request, List<Response>>
     }
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-
-        var results = (await _dbContext.Database.SqlQuery<Response>($"""
+        var results = await _dbContext.Database.SqlQuery<Response>($"""
                 SELECT
                     u.user_id,
                     u.name,
@@ -38,11 +37,13 @@ public class Endpoint : Endpoint<Request, List<Response>>
                     AND u.is_active = TRUE
                 GROUP BY
                     u.user_id 
-                """).ToListAsync(ct));
-        if (req.excludeSelf)
+                """).ToListAsync(ct);
+
+        if (req.ExcludeSelf == true)
         {
             results = results.Where(x => x.UserId != _cu.UserId).ToList();
         }
+
         if (results.Count > 0)
         {
             await SendAsync(results);
