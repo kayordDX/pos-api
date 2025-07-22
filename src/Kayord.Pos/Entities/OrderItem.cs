@@ -1,4 +1,5 @@
 namespace Kayord.Pos.Entities;
+
 public class OrderItem
 {
     public int OrderItemId { get; set; }
@@ -16,4 +17,5 @@ public class OrderItem
     public List<OrderItemOption>? OrderItemOptions { get; set; }
     public List<OrderItemExtra>? OrderItemExtras { get; set; }
     public string? Note { get; set; }
+    public string? UserId { get; set; }
 }

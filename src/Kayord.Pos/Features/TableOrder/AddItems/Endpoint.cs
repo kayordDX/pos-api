@@ -1,5 +1,6 @@
 using Kayord.Pos.Data;
 using Kayord.Pos.Entities;
+using Kayord.Pos.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.Order.AddItems;
@@ -7,10 +8,12 @@ namespace Kayord.Pos.Features.Order.AddItems;
 public class Endpoint : Endpoint<Request, OrderItem>
 {
     private readonly AppDbContext _dbContext;
+    private readonly CurrentUserService _cu;
 
-    public Endpoint(AppDbContext dbContext)
+    public Endpoint(AppDbContext dbContext, CurrentUserService cu)
     {
         _dbContext = dbContext;
+        _cu = cu;
     }
 
     public override void Configure()
@@ -68,7 +71,8 @@ public class Endpoint : Endpoint<Request, OrderItem>
                     TableBookingId = req.TableBookingId,
                     MenuItemId = order.MenuItemId,
                     OrderItemStatusId = 1,
-                    Note = order.Note
+                    Note = order.Note,
+                    UserId = _cu.UserId
                 };
 
                 if (order.OptionIds != null)

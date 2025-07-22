@@ -3,6 +3,7 @@ using System;
 using Kayord.Pos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using NpgsqlTypes;
@@ -12,9 +13,11 @@ using NpgsqlTypes;
 namespace Kayord.Pos.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250722192211_OrderItemUser")]
+    partial class OrderItemUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2828,35 +2831,6 @@ namespace Kayord.Pos.Data.Migrations
                         .HasDatabaseName("ix_table_booking_user_id");
 
                     b.ToTable("table_booking", (string)null);
-                });
-
-            modelBuilder.Entity("Kayord.Pos.Entities.TableBookingTransfer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("FromUserId")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("from_user_id");
-
-                    b.Property<string>("ToUserId")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("to_user_id");
-
-                    b.Property<DateTime?>("TransferDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("transfer_date");
-
-                    b.HasKey("Id")
-                        .HasName("pk_table_booking_transfer");
-
-                    b.ToTable("table_booking_transfer", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.Tag", b =>
