@@ -33,7 +33,7 @@ public class Endpoint : Endpoint<Request, List<Response>>
             SELECT 
                 a.payment_type,
                 a.amount,
-                b.amount::integer average_amount
+                AVG(b.amount) average_amount
             FROM (
                 SELECT 
                     pt.payment_type_name payment_type,
@@ -51,20 +51,24 @@ public class Endpoint : Endpoint<Request, List<Response>>
             ) a
             JOIN (
                 SELECT 
-                    pt.payment_type_name payment_type,
-                    AVG(p.amount) amount
+                pt.payment_type_name payment_type,
+                    sp.id,
+                    SUM(p.amount) amount
                 FROM payment p
                 JOIN payment_type pt 
                     ON p.payment_type_id = pt.payment_type_id
                 JOIN table_booking tb 
-                ON tb.id = p.table_booking_id
+                    ON tb.id = p.table_booking_id
                 JOIN sales_period sp 
-                ON tb.sales_period_id = sp.id
+                    ON tb.sales_period_id = sp.id
                 WHERE tb.sales_period_id IN (select id from sales_period where outlet_id = {userOutlet.OutletId} order by id desc limit 5)
-                AND sp.outlet_id = {userOutlet.OutletId}
-                GROUP BY pt.payment_type_name
+                    AND sp.outlet_id = {userOutlet.OutletId}
+                GROUP BY pt.payment_type_name, sp.id
             ) b
             ON a.payment_type = b.payment_type
+            GROUP BY
+                a.payment_type,
+                a.amount
             """).ToListAsync(ct);
 
         await SendAsync(results);
