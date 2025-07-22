@@ -22,6 +22,11 @@ public class Endpoint : Endpoint<Request, Entities.StockOrder>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
+        if (req.AssignedUserId == _cu.UserId)
+        {
+            throw new Exception("Cannot assign to yourself");
+        }
+
         var entity = new Entities.StockAllocate
         {
             OutletId = req.OutletId,
