@@ -40,7 +40,7 @@ public class Endpoint : Endpoint<Request, Entities.TableBooking>
         var existing = await _dbContext.TableBooking.FirstOrDefaultAsync(x => x.TableId == req.TableId && x.SalesPeriodId == req.SalesPeriodId && x.CloseDate == null, ct);
         if (existing != null)
         {
-            ValidationContext.Instance.ThrowError("Test");
+            ValidationContext.Instance.ThrowError("This table is already booked");
         }
 
         Entities.TableBooking entity = new()
