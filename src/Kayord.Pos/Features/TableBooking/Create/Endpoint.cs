@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.TableBooking.Create;
 
-public class Endpoint : Endpoint<Request, Pos.Entities.TableBooking>
+public class Endpoint : Endpoint<Request, Entities.TableBooking>
 {
     private readonly AppDbContext _dbContext;
     private readonly CurrentUserService _user;
@@ -18,7 +18,6 @@ public class Endpoint : Endpoint<Request, Pos.Entities.TableBooking>
     public override void Configure()
     {
         Post("/tableBooking");
-        AllowAnonymous();
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
@@ -36,6 +35,14 @@ public class Endpoint : Endpoint<Request, Pos.Entities.TableBooking>
             await SendNotFoundAsync();
             return;
         }
+
+        // Check if already open booking for this table.
+        var existing = await _dbContext.TableBooking.FirstOrDefaultAsync(x => x.TableId == req.TableId && x.SalesPeriodId == req.SalesPeriodId && x.CloseDate == null, ct);
+        if (existing != null)
+        {
+            ValidationContext.Instance.ThrowError("Test");
+        }
+
         Entities.TableBooking entity = new()
         {
             TableId = req.TableId,
@@ -44,18 +51,8 @@ public class Endpoint : Endpoint<Request, Pos.Entities.TableBooking>
             UserId = _user.UserId
         };
 
-
-
-        await _dbContext.TableBooking.AddAsync(entity);
-        await _dbContext.SaveChangesAsync();
-
-        var result = await _dbContext.TableBooking.FindAsync(entity.Id);
-        if (result == null)
-        {
-            await SendNotFoundAsync();
-            return;
-        }
-
-        await SendAsync(result);
+        await _dbContext.TableBooking.AddAsync(entity, ct);
+        await _dbContext.SaveChangesAsync(ct);
+        await SendAsync(entity);
     }
 }

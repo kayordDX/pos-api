@@ -29,7 +29,7 @@ public class Endpoint : Endpoint<Request, Pos.Entities.StockCategory>
             var dependant = _dbContext.StockCategory.FirstOrDefault(x => x.ParentId == req.Id && x.IsDeleted == false);
             if (dependant != null)
             {
-                throw new Exception("Can not delete category with dependant");
+                ValidationContext.Instance.ThrowError("Can not delete category with dependant");
             }
 
             entity.IsDeleted = true;
