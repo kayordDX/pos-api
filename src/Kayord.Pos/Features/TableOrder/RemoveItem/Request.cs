@@ -1,7 +1,6 @@
-namespace Kayord.Pos.Features.TableOrder.RemoveItem
+namespace Kayord.Pos.Features.TableOrder.RemoveItem;
+
+public class Request
 {
-    public class Request
-    {
-        public int OrderItemId { get; set; } = default!;
-    }
+    public int OrderItemId { get; set; } = default!;
 }

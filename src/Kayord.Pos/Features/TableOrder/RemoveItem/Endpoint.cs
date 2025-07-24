@@ -1,35 +1,34 @@
 using Kayord.Pos.Data;
 using Kayord.Pos.Entities;
 
-namespace Kayord.Pos.Features.TableOrder.RemoveItem
+namespace Kayord.Pos.Features.TableOrder.RemoveItem;
+
+public class Endpoint : Endpoint<Request, Response>
 {
-    public class Endpoint : Endpoint<Request, Response>
+    private readonly AppDbContext _dbContext;
+
+    public Endpoint(AppDbContext dbContext)
     {
-        private readonly AppDbContext _dbContext;
+        _dbContext = dbContext;
+    }
 
-        public Endpoint(AppDbContext dbContext)
+    public override void Configure()
+    {
+        Post("/order/removeItem");
+    }
+
+    public override async Task HandleAsync(Request req, CancellationToken ct)
+    {
+        OrderItem? entity = await _dbContext.OrderItem.FindAsync(req.OrderItemId);
+        if (entity != null)
         {
-            _dbContext = dbContext;
+            _dbContext.Remove(entity);
+            await _dbContext.SaveChangesAsync();
+            await SendAsync(new Response() { IsSuccess = true });
         }
-
-        public override void Configure()
+        else
         {
-            Post("/order/removeItem");
-        }
-
-        public override async Task HandleAsync(Request req, CancellationToken ct)
-        {
-            OrderItem? entity = await _dbContext.OrderItem.FindAsync(req.OrderItemId);
-            if (entity != null)
-            {
-                _dbContext.Remove(entity);
-                await _dbContext.SaveChangesAsync();
-                await SendAsync(new Response() { IsSuccess = true });
-            }
-            else
-            {
-                await SendAsync(new Response() { IsSuccess = false });
-            }
+            await SendAsync(new Response() { IsSuccess = false });
         }
     }
 }

@@ -1,7 +1,6 @@
-namespace Kayord.Pos.Features.Menu.GetOutletMenu
+namespace Kayord.Pos.Features.Menu.GetOutletMenu;
+
+public class Request
 {
-    public class Request
-    {
-        public int OutletId { get; set; }
-    }
+    public int OutletId { get; set; }
 }

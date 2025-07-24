@@ -1,25 +1,24 @@
-namespace Kayord.Pos.Entities
+namespace Kayord.Pos.Entities;
+
+public class Promotion
 {
-    public class Promotion
+    public int PromotionId { get; set; }
+    public string Description { get; set; } = string.Empty;
+    public int RequiredQuantity { get; set; }
+    public int FreeQuantity { get; set; }
+    public bool IsActive { get; set; }
+
+    public bool IsApplicable(int purchasedQuantity)
     {
-        public int PromotionId { get; set; }
-        public string Description { get; set; } = string.Empty;
-        public int RequiredQuantity { get; set; }
-        public int FreeQuantity { get; set; }
-        public bool IsActive { get; set; }
+        return IsActive && purchasedQuantity >= RequiredQuantity;
+    }
 
-        public bool IsApplicable(int purchasedQuantity)
+    public int GetFreeItems(int purchasedQuantity)
+    {
+        if (IsApplicable(purchasedQuantity))
         {
-            return IsActive && purchasedQuantity >= RequiredQuantity;
+            return (purchasedQuantity / RequiredQuantity) * FreeQuantity;
         }
-
-        public int GetFreeItems(int purchasedQuantity)
-        {
-            if (IsApplicable(purchasedQuantity))
-            {
-                return (purchasedQuantity / RequiredQuantity) * FreeQuantity;
-            }
-            return 0;
-        }
+        return 0;
     }
 }

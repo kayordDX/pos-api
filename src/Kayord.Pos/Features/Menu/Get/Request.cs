@@ -1,7 +1,6 @@
-namespace Kayord.Pos.Features.Menu.Get
+namespace Kayord.Pos.Features.Menu.Get;
+
+public class Request
 {
-    public class Request
-    {
-        public int MenuId { get; set; }
-    }
+    public int MenuId { get; set; }
 }

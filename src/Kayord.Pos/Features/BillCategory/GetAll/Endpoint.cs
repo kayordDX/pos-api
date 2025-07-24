@@ -1,26 +1,25 @@
 using Kayord.Pos.Data;
 using Microsoft.EntityFrameworkCore;
-namespace Kayord.Pos.Features.BillCategory.GetAll
+namespace Kayord.Pos.Features.BillCategory.GetAll;
+
+public class Endpoint : Endpoint<Request, List<Entities.BillCategory>>
 {
-    public class Endpoint : Endpoint<Request, List<Entities.BillCategory>>
+    private readonly AppDbContext _dbContext;
+
+    public Endpoint(AppDbContext dbContext)
     {
-        private readonly AppDbContext _dbContext;
+        _dbContext = dbContext;
+    }
 
-        public Endpoint(AppDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
+    public override void Configure()
+    {
+        Get("/BillCategory");
+    }
 
-        public override void Configure()
-        {
-            Get("/BillCategory");
-        }
-
-        public override async Task HandleAsync(Request req, CancellationToken ct)
-        {
-            var results = await _dbContext.BillCategory.Where(x => x.OutletId == req.OutletId).ToListAsync(ct);
-            await SendAsync(results);
-        }
+    public override async Task HandleAsync(Request req, CancellationToken ct)
+    {
+        var results = await _dbContext.BillCategory.Where(x => x.OutletId == req.OutletId).ToListAsync(ct);
+        await SendAsync(results);
     }
 }
 

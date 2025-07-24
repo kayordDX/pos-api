@@ -1,34 +1,33 @@
 using Kayord.Pos.Data;
 
-namespace Kayord.Pos.Features.Section.Create
+namespace Kayord.Pos.Features.Section.Create;
+
+public class Endpoint : Endpoint<Request, Pos.Entities.Section>
 {
-    public class Endpoint : Endpoint<Request, Pos.Entities.Section>
+    private readonly AppDbContext _dbContext;
+
+    public Endpoint(AppDbContext dbContext)
     {
-        private readonly AppDbContext _dbContext;
+        _dbContext = dbContext;
+    }
 
-        public Endpoint(AppDbContext dbContext)
+    public override void Configure()
+    {
+        Post("/section");
+        AllowAnonymous();
+    }
+
+    public override async Task HandleAsync(Request req, CancellationToken ct)
+    {
+        var entity = new Pos.Entities.Section
         {
-            _dbContext = dbContext;
-        }
+            Name = req.Name,
+            OutletId = req.OutletId
+        };
 
-        public override void Configure()
-        {
-            Post("/section");
-            AllowAnonymous();
-        }
+        await _dbContext.Section.AddAsync(entity);
+        await _dbContext.SaveChangesAsync(ct);
 
-        public override async Task HandleAsync(Request req, CancellationToken ct)
-        {
-            var entity = new Pos.Entities.Section
-            {
-                Name = req.Name,
-                OutletId = req.OutletId
-            };
-
-            await _dbContext.Section.AddAsync(entity);
-            await _dbContext.SaveChangesAsync(ct);
-
-            await SendAsync(entity);
-        }
+        await SendAsync(entity);
     }
 }

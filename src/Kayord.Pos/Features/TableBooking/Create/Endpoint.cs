@@ -2,61 +2,60 @@ using Kayord.Pos.Data;
 using Kayord.Pos.Services;
 using Microsoft.EntityFrameworkCore;
 
-namespace Kayord.Pos.Features.TableBooking.Create
+namespace Kayord.Pos.Features.TableBooking.Create;
+
+public class Endpoint : Endpoint<Request, Pos.Entities.TableBooking>
 {
-    public class Endpoint : Endpoint<Request, Pos.Entities.TableBooking>
+    private readonly AppDbContext _dbContext;
+    private readonly CurrentUserService _user;
+
+    public Endpoint(AppDbContext dbContext, CurrentUserService user)
     {
-        private readonly AppDbContext _dbContext;
-        private readonly CurrentUserService _user;
+        _dbContext = dbContext;
+        _user = user;
+    }
 
-        public Endpoint(AppDbContext dbContext, CurrentUserService user)
+    public override void Configure()
+    {
+        Post("/tableBooking");
+        AllowAnonymous();
+    }
+
+    public override async Task HandleAsync(Request req, CancellationToken ct)
+    {
+        if (_user.UserId == null)
         {
-            _dbContext = dbContext;
-            _user = user;
+            await SendForbiddenAsync();
+            return;
         }
 
-        public override void Configure()
+        Entities.SalesPeriod? salesPeriod = await _dbContext.SalesPeriod.FirstOrDefaultAsync(x => x.Id == req.SalesPeriodId);
+
+        if (salesPeriod!.EndDate != null)
         {
-            Post("/tableBooking");
-            AllowAnonymous();
+            await SendNotFoundAsync();
+            return;
+        }
+        Entities.TableBooking entity = new()
+        {
+            TableId = req.TableId,
+            BookingName = req.BookingName,
+            SalesPeriodId = req.SalesPeriodId,
+            UserId = _user.UserId
+        };
+
+
+
+        await _dbContext.TableBooking.AddAsync(entity);
+        await _dbContext.SaveChangesAsync();
+
+        var result = await _dbContext.TableBooking.FindAsync(entity.Id);
+        if (result == null)
+        {
+            await SendNotFoundAsync();
+            return;
         }
 
-        public override async Task HandleAsync(Request req, CancellationToken ct)
-        {
-            if (_user.UserId == null)
-            {
-                await SendForbiddenAsync();
-                return;
-            }
-
-            Entities.SalesPeriod? salesPeriod = await _dbContext.SalesPeriod.FirstOrDefaultAsync(x=>x.Id == req.SalesPeriodId);
-
-            if(salesPeriod!.EndDate != null)
-            {
-                await SendNotFoundAsync();
-                return;
-            }
-            Entities.TableBooking entity = new()
-            {
-                TableId = req.TableId,
-                BookingName = req.BookingName,
-                SalesPeriodId = req.SalesPeriodId,
-                UserId = _user.UserId
-            };
-
-
-
-            await _dbContext.TableBooking.AddAsync(entity);
-            await _dbContext.SaveChangesAsync();
-
-            var result = await _dbContext.TableBooking.FindAsync(entity.Id);
-            if (result == null)
-            {
-                await SendNotFoundAsync();
-                return;
-            }
-
-            await SendAsync(result);
-        }
+        await SendAsync(result);
     }
 }

@@ -1,10 +1,9 @@
 
 
-namespace Kayord.Pos.Features.Bill.PrintBill
+namespace Kayord.Pos.Features.Bill.PrintBill;
+
+public class Request
 {
-    public class Request
-    {
-        public int TableBookingId { get; set; }
-        public int PrinterId { get; set; }
-    }
+    public int TableBookingId { get; set; }
+    public int PrinterId { get; set; }
 }

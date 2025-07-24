@@ -1,31 +1,30 @@
 using Kayord.Pos.Data;
 
-namespace Kayord.Pos.Features.Menu.Get
+namespace Kayord.Pos.Features.Menu.Get;
+
+public class Endpoint : Endpoint<Request, Pos.Entities.Menu>
 {
-    public class Endpoint : Endpoint<Request, Pos.Entities.Menu>
+    private readonly AppDbContext _dbContext;
+
+    public Endpoint(AppDbContext dbContext)
     {
-        private readonly AppDbContext _dbContext;
+        _dbContext = dbContext;
+    }
 
-        public Endpoint(AppDbContext dbContext)
+    public override void Configure()
+    {
+        Get("/menu/{menuId}");
+    }
+
+    public override async Task HandleAsync(Request req, CancellationToken ct)
+    {
+        var menu = await _dbContext.Menu.FindAsync(req.MenuId);
+        if (menu == null)
         {
-            _dbContext = dbContext;
+            await SendNotFoundAsync();
+            return;
         }
 
-        public override void Configure()
-        {
-            Get("/menu/{menuId}");
-        }
-
-        public override async Task HandleAsync(Request req, CancellationToken ct)
-        {
-            var menu = await _dbContext.Menu.FindAsync(req.MenuId);
-            if (menu == null)
-            {
-                await SendNotFoundAsync();
-                return;
-            }
-
-            await SendAsync(menu);
-        }
+        await SendAsync(menu);
     }
 }

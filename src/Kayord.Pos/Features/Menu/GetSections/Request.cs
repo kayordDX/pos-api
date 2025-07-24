@@ -1,8 +1,7 @@
-namespace Kayord.Pos.Features.Menu.GetSections
+namespace Kayord.Pos.Features.Menu.GetSections;
+
+public class Request
 {
-    public class Request
-    {
-        public int MenuId { get; set; }
-        public int SectionId { get; set; }
-    }
+    public int MenuId { get; set; }
+    public int SectionId { get; set; }
 }

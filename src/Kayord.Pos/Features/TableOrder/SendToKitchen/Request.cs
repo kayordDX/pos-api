@@ -1,8 +1,7 @@
 
-namespace Kayord.Pos.Features.TableOrder.SendToKitchen
+namespace Kayord.Pos.Features.TableOrder.SendToKitchen;
+
+public class Request
 {
-    public class Request
-    {
-        public int TableBookingId { get; set; } = default!;
-    }
+    public int TableBookingId { get; set; } = default!;
 }

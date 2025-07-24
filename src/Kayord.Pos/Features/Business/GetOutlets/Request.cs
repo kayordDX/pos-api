@@ -1,7 +1,6 @@
-namespace Kayord.Pos.Features.Business.GetOutlets
+namespace Kayord.Pos.Features.Business.GetOutlets;
+
+public class Request
 {
-    public class Request
-    {
-        public int OutletId { get; set; }
-    }
+    public int OutletId { get; set; }
 }

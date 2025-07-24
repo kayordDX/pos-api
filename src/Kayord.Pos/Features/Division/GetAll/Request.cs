@@ -1,7 +1,6 @@
-namespace Kayord.Pos.Features.Division.GetAll
+namespace Kayord.Pos.Features.Division.GetAll;
+
+public class Request
 {
-    public class Request
-    {
-        public int OutletId { get; set; }
-    }
+    public int OutletId { get; set; }
 }

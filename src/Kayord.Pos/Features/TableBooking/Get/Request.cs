@@ -1,17 +1,16 @@
 using FluentValidation;
 
-namespace Kayord.Pos.Features.TableBooking.Get
-{
-    public class Request
-    {
-        public int Id { get; set; }
-    }
+namespace Kayord.Pos.Features.TableBooking.Get;
 
-    public class Validator : Validator<Request>
+public class Request
+{
+    public int Id { get; set; }
+}
+
+public class Validator : Validator<Request>
+{
+    public Validator()
     {
-        public Validator()
-        {
-            RuleFor(v => v.Id).GreaterThan(0).WithMessage("Id must be greater than 0");
-        }
+        RuleFor(v => v.Id).GreaterThan(0).WithMessage("Id must be greater than 0");
     }
 }

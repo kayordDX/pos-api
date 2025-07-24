@@ -1,8 +1,7 @@
-namespace Kayord.Pos.Features.User.AddUserOutletRole
+namespace Kayord.Pos.Features.User.AddUserOutletRole;
+
+public class Request
 {
-    public class Request
-    {
-        public string UserId { get; set; } = string.Empty;
-        public int RoleId { get; set; }
-    }
+    public string UserId { get; set; } = string.Empty;
+    public int RoleId { get; set; }
 }

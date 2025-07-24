@@ -1,38 +1,37 @@
 using Kayord.Pos.Data;
 using Microsoft.EntityFrameworkCore;
 using Kayord.Pos.DTO;
-namespace Kayord.Pos.Features.Stock.Order.Get
+namespace Kayord.Pos.Features.Stock.Order.Get;
+
+public class Endpoint : Endpoint<Request, StockOrderDTO>
 {
-    public class Endpoint : Endpoint<Request, StockOrderDTO>
+    private readonly AppDbContext _dbContext;
+
+    public Endpoint(AppDbContext dbContext)
     {
-        private readonly AppDbContext _dbContext;
+        _dbContext = dbContext;
+    }
 
-        public Endpoint(AppDbContext dbContext)
+    public override void Configure()
+    {
+        Get("/stock/order/{Id}");
+        Policies(Constants.Policy.Manager);
+    }
+
+    public override async Task HandleAsync(Request req, CancellationToken ct)
+    {
+        var results = await _dbContext.StockOrder
+            .Where(x => x.Id == req.Id)
+            .ProjectToDto()
+            .FirstOrDefaultAsync(ct);
+
+        if (results == null)
         {
-            _dbContext = dbContext;
+            await SendNotFoundAsync();
+            return;
         }
 
-        public override void Configure()
-        {
-            Get("/stock/order/{Id}");
-            Policies(Constants.Policy.Manager);
-        }
-
-        public override async Task HandleAsync(Request req, CancellationToken ct)
-        {
-            var results = await _dbContext.StockOrder
-                .Where(x => x.Id == req.Id)
-                .ProjectToDto()
-                .FirstOrDefaultAsync(ct);
-
-            if (results == null)
-            {
-                await SendNotFoundAsync();
-                return;
-            }
-
-            await SendAsync(results);
-        }
+        await SendAsync(results);
     }
 }
 

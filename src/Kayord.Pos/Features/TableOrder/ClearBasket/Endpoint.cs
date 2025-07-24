@@ -1,35 +1,34 @@
 using Kayord.Pos.Data;
 using Kayord.Pos.Entities;
 
-namespace Kayord.Pos.Features.Order.ClearBasket
+namespace Kayord.Pos.Features.Order.ClearBasket;
+
+public class Endpoint : Endpoint<Request, Pos.Entities.OrderItem>
 {
-    public class Endpoint : Endpoint<Request, Pos.Entities.OrderItem>
+    private readonly AppDbContext _dbContext;
+
+    public Endpoint(AppDbContext dbContext)
     {
-        private readonly AppDbContext _dbContext;
+        _dbContext = dbContext;
+    }
 
-        public Endpoint(AppDbContext dbContext)
+    public override void Configure()
+    {
+        Delete("/order/clearBasket");
+    }
+
+    public override async Task HandleAsync(Request req, CancellationToken ct)
+    {
+        List<OrderItem>? entities = _dbContext.OrderItem.Where(x => x.TableBookingId == req.TableBookingId && x.OrderItemStatusId == 1).ToList();
+        if (entities != null)
         {
-            _dbContext = dbContext;
+            _dbContext.RemoveRange(entities);
+            await _dbContext.SaveChangesAsync();
+            await SendOkAsync();
         }
-
-        public override void Configure()
+        else
         {
-            Delete("/order/clearBasket");
-        }
-
-        public override async Task HandleAsync(Request req, CancellationToken ct)
-        {
-            List<OrderItem>? entities = _dbContext.OrderItem.Where(x => x.TableBookingId == req.TableBookingId && x.OrderItemStatusId == 1).ToList();
-            if (entities != null)
-            {
-                _dbContext.RemoveRange(entities);
-                await _dbContext.SaveChangesAsync();
-                await SendOkAsync();
-            }
-            else
-            {
-                await SendNotFoundAsync();
-            }
+            await SendNotFoundAsync();
         }
     }
 }

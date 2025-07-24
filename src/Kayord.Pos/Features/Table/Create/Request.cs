@@ -1,21 +1,20 @@
 using FluentValidation;
 
-namespace Kayord.Pos.Features.Table.Create
+namespace Kayord.Pos.Features.Table.Create;
+
+public class Request
 {
-    public class Request
-    {
-        public string Name { get; set; } = string.Empty;
-        public int SectionId { get; set; }
-        public int Capacity { get; set; }
-        public int Position { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public int SectionId { get; set; }
+    public int Capacity { get; set; }
+    public int Position { get; set; }
 
-    }
+}
 
-    public class Validator : Validator<Request>
+public class Validator : Validator<Request>
+{
+    public Validator()
     {
-        public Validator()
-        {
-            RuleFor(v => v.Name).NotEmpty().WithMessage("TableName is required");
-        }
+        RuleFor(v => v.Name).NotEmpty().WithMessage("TableName is required");
     }
 }

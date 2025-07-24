@@ -1,30 +1,29 @@
 using Kayord.Pos.Data;
 
-namespace Kayord.Pos.Features.BillCategory.Create
+namespace Kayord.Pos.Features.BillCategory.Create;
+
+public class Endpoint : Endpoint<Request, Entities.BillCategory>
 {
-    public class Endpoint : Endpoint<Request, Entities.BillCategory>
+    private readonly AppDbContext _dbContext;
+
+    public Endpoint(AppDbContext dbContext)
     {
-        private readonly AppDbContext _dbContext;
+        _dbContext = dbContext;
+    }
 
-        public Endpoint(AppDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
+    public override void Configure()
+    {
+        Post("/billCategory");
+    }
 
-        public override void Configure()
+    public override async Task HandleAsync(Request req, CancellationToken ct)
+    {
+        Pos.Entities.BillCategory entity = new Pos.Entities.BillCategory()
         {
-            Post("/billCategory");
-        }
-
-        public override async Task HandleAsync(Request req, CancellationToken ct)
-        {
-            Pos.Entities.BillCategory entity = new Pos.Entities.BillCategory()
-            {
-                Name = req.Name,
-                OutletId = req.OutletId
-            };
-            await _dbContext.BillCategory.AddAsync(entity);
-            await _dbContext.SaveChangesAsync();
-        }
+            Name = req.Name,
+            OutletId = req.OutletId
+        };
+        await _dbContext.BillCategory.AddAsync(entity);
+        await _dbContext.SaveChangesAsync();
     }
 }
