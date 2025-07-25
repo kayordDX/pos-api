@@ -39,7 +39,7 @@ public class Endpoint : Endpoint<Request, PaginatedList<UserResponse>>
                 u.email,
                 u.image,
                 u.name,
-            STRING_AGG(r.name, ',') roles
+                STRING_AGG(r.name, ',') roles
             FROM user_outlet uo
             JOIN "user" u
                 ON u.user_id = uo.user_id
