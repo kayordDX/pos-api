@@ -135,12 +135,12 @@ public class Endpoint : Endpoint<Request, List<Response>>
 
         if (query == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
 
         var results = await query.ToListAsync(ct);
-        await SendAsync(results);
+        await Send.OkAsync(results);
     }
 }
 

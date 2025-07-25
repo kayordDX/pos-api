@@ -34,6 +34,6 @@ public class Endpoint : Endpoint<Request, Entities.Payment>
         await _dbContext.Payment.AddAsync(entity);
 
         await _dbContext.SaveChangesAsync();
-        await SendAsync(entity);
+        await Send.OkAsync(entity);
     }
 }

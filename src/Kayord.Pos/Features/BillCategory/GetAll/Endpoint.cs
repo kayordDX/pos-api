@@ -19,7 +19,7 @@ public class Endpoint : Endpoint<Request, List<Entities.BillCategory>>
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
         var results = await _dbContext.BillCategory.Where(x => x.OutletId == req.OutletId).ToListAsync(ct);
-        await SendAsync(results);
+        await Send.OkAsync(results);
     }
 }
 

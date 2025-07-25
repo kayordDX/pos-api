@@ -28,6 +28,6 @@ public class Endpoint : Endpoint<Request, Entities.Role>
         };
         await _dbContext.Role.AddAsync(newRole);
         await _dbContext.SaveChangesAsync();
-        await SendAsync(newRole);
+        await Send.OkAsync(newRole);
     }
 }

@@ -44,6 +44,6 @@ public class StockTest : EndpointWithoutRequest<Result>
             Time = stopwatch.Elapsed,
         };
 
-        await SendAsync(result);
+        await Send.OkAsync(result);
     }
 }

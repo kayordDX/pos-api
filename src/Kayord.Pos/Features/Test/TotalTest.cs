@@ -20,6 +20,6 @@ public class TotalTest : EndpointWithoutRequest<TableTotal?>
     public override async Task HandleAsync(CancellationToken ct)
     {
         var billTotal = await BillHelper.GetTotal(7376, _dbContext);
-        await SendAsync(billTotal);
+        await Send.OkAsync(billTotal);
     }
 }

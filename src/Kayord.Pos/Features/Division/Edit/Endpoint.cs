@@ -21,7 +21,7 @@ public class Endpoint : Endpoint<Request>
         Entities.Division? division = await _dbContext.Division.FindAsync(req.Id);
         if (division == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
         division.DivisionName = req.Name;
@@ -32,6 +32,6 @@ public class Endpoint : Endpoint<Request>
 
         await _dbContext.SaveChangesAsync();
 
-        await SendNoContentAsync();
+        await Send.NoContentAsync();
     }
 }

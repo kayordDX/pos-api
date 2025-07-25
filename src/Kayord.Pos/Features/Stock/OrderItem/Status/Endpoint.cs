@@ -21,6 +21,6 @@ public class Endpoint : EndpointWithoutRequest<List<StockOrderItemStatusDTO>>
     public override async Task HandleAsync(CancellationToken ct)
     {
         var results = await _dbContext.StockOrderItemStatus.ProjectToDto().ToListAsync();
-        await SendAsync(results);
+        await Send.OkAsync(results);
     }
 }

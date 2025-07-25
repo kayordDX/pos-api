@@ -23,11 +23,11 @@ public class Endpoint : Endpoint<Request, Response>
     {
         if (_user.UserId == null)
         {
-            await SendForbiddenAsync();
+            await Send.ForbiddenAsync();
             return;
         }
 
         Response response = await CashUp.CashUpProcess(req.OutletId, req.UserId, _dbContext, _user, false, req.CashUpUserId);
-        await SendAsync(response);
+        await Send.OkAsync(response);
     }
 }

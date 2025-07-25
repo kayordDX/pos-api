@@ -23,6 +23,6 @@ public class Endpoint : EndpointWithoutRequest<List<Response>>
         List<Response> response = new();
         response.Add(terminateResponse);
         response.Add(startResponse);
-        await SendAsync(response);
+        await Send.OkAsync(response);
     }
 }

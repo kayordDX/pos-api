@@ -24,7 +24,7 @@ public class Endpoint : Endpoint<Request>
     {
         if (_cu.UserId == null)
         {
-            await SendForbiddenAsync();
+            await Send.ForbiddenAsync();
             return;
         }
         var hasApplied = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.OutletId == req.OutletId);
@@ -42,6 +42,6 @@ public class Endpoint : Endpoint<Request>
         }
 
         await _dbContext.SaveChangesAsync();
-        await SendNoContentAsync();
+        await Send.NoContentAsync();
     }
 }

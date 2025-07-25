@@ -24,7 +24,7 @@ public class Endpoint : Endpoint<Request>
         var entity = await _dbContext.StockOrder.FindAsync(req.Id);
         if (entity == null)
         {
-            await SendNotFoundAsync(ct);
+            await Send.NotFoundAsync(ct);
             return;
         }
 
@@ -37,6 +37,6 @@ public class Endpoint : Endpoint<Request>
         entity.StockOrderStatusId = 3;
 
         await _dbContext.SaveChangesAsync(ct);
-        await SendNoContentAsync(ct);
+        await Send.NoContentAsync(ct);
     }
 }

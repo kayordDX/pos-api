@@ -46,6 +46,6 @@ public class Endpoint : Endpoint<Request>
 
         _dbContext.UserRoleOutlet.Add(roleEntity);
         await _dbContext.SaveChangesAsync();
-        await SendNoContentAsync();
+        await Send.NoContentAsync();
     }
 }

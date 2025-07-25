@@ -25,7 +25,7 @@ public class Endpoint : Endpoint<Request, List<UserResponse>>
         var userOutlet = await _dbContext.UserOutlet.Where(x => x.UserId == _cu.UserId && x.IsCurrent == true).FirstOrDefaultAsync(c);
         if (userOutlet == null)
         {
-            await SendNotFoundAsync(c);
+            await Send.NotFoundAsync(c);
             return;
         }
 
@@ -62,6 +62,6 @@ public class Endpoint : Endpoint<Request, List<UserResponse>>
             """
             ).ToListAsync(c);
 
-        await SendAsync(results);
+        await Send.OkAsync(results);
     }
 }

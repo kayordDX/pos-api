@@ -28,7 +28,7 @@ public class Endpoint : Endpoint<Request, List<Response>>
         UserOutlet? userOutlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.IsCurrent == true);
         if (userOutlet == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
 
@@ -37,7 +37,7 @@ public class Endpoint : Endpoint<Request, List<Response>>
         UserRoleOutlet? userRole = await _dbContext.UserRoleOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.OutletId == userOutlet.OutletId);
         Entities.Role? role = await _dbContext.Role.Include(x => x.RoleType).FirstOrDefaultAsync(x => x.RoleId == userRole!.RoleId);
         if (role == null)
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
         else
             roleId = role.RoleId;
 
@@ -77,6 +77,6 @@ public class Endpoint : Endpoint<Request, List<Response>>
             };
             responses.Add(response);
         }
-        await SendAsync(responses);
+        await Send.OkAsync(responses);
     }
 }

@@ -22,7 +22,7 @@ public class Endpoint : Endpoint<Request, Entities.StockOrder>
         var stockAllocate = await _dbContext.StockAllocate.Where(x => x.Id == req.StockAllocateId).FirstOrDefaultAsync(ct);
         if (stockAllocate == null)
         {
-            await SendNotFoundAsync(ct);
+            await Send.NotFoundAsync(ct);
             return;
         }
 
@@ -32,7 +32,7 @@ public class Endpoint : Endpoint<Request, Entities.StockOrder>
 
         if (stockItem == null)
         {
-            await SendNotFoundAsync(ct);
+            await Send.NotFoundAsync(ct);
             return;
         }
 

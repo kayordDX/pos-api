@@ -23,10 +23,10 @@ public class Endpoint : Endpoint<Request, List<Entities.Outlet>>
         var outlet = await _dbContext.Outlet.Where(x => x.Id == req.OutletId).FirstOrDefaultAsync();
         if (outlet == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
         var results = await _dbContext.Outlet.Where(x => x.BusinessId == outlet.BusinessId).ToListAsync(ct);
-        await SendAsync(results);
+        await Send.OkAsync(results);
     }
 }

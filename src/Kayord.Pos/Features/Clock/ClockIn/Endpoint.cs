@@ -24,14 +24,14 @@ public class Endpoint : Endpoint<Request>
     {
         if (_user.UserId == null)
         {
-            await SendForbiddenAsync();
+            await Send.ForbiddenAsync();
             return;
         }
 
         var exists = await _dbContext.Clock.FirstOrDefaultAsync(x => x.UserId == _user.UserId && x.OutletId == req.OutletId && x.EndDate == null);
         if (exists != null)
         {
-            await SendForbiddenAsync();
+            await Send.ForbiddenAsync();
             return;
         }
         else
@@ -45,7 +45,7 @@ public class Endpoint : Endpoint<Request>
             };
             await _dbContext.Clock.AddAsync(entity);
             await _dbContext.SaveChangesAsync();
-            await SendNoContentAsync();
+            await Send.NoContentAsync();
         }
 
     }

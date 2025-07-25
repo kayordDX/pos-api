@@ -75,6 +75,6 @@ public class Endpoint : Endpoint<Request, bool>
                 Filename = $"Invoice-{pdfRequest.TableBookingId}.pdf"
             }
         });
-        await SendAsync(true);
+        await Send.OkAsync(true);
     }
 }

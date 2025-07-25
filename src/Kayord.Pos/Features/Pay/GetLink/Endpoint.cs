@@ -29,13 +29,13 @@ public class Endpoint : Endpoint<Request, Result<Response>>
     {
         if (string.IsNullOrEmpty(_cu.UserId))
         {
-            await SendUnauthorizedAsync();
+            await Send.UnauthorizedAsync();
             return;
         }
         var userOutlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.IsCurrent);
         if (userOutlet == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
 
@@ -50,6 +50,6 @@ public class Endpoint : Endpoint<Request, Result<Response>>
                 OutletId = userOutlet.OutletId
             }, Mode.WaitForNone);
         }
-        await SendAsync(results);
+        await Send.OkAsync(results);
     }
 }

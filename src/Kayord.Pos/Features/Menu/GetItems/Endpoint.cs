@@ -51,7 +51,7 @@ public class GetMenuItemsEndpoint : Endpoint<Request, List<MenuItemDTOBasic>>
             .ProjectToBasicDto()
             .ToListAsync();
 
-        await SendAsync(response);
+        await Send.OkAsync(response);
     }
 
     public static string CreateTsQuery(string searchString)

@@ -47,6 +47,6 @@ public class GetOutletMenusEndpoint : Endpoint<Request, List<Kayord.Pos.Entities
                     .ThenInclude(ss => ss.MenuItems)
              .ToListAsync();
 
-        await SendAsync(menus);
+        await Send.OkAsync(menus);
     }
 }

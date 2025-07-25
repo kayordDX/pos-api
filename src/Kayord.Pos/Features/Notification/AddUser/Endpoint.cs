@@ -24,16 +24,16 @@ public class Endpoint : Endpoint<Request, bool>
         {
             if (_user.UserId is null)
             {
-                await SendAsync(false);
+                await Send.OkAsync(false);
                 return;
             }
 
             await _notificationService.SaveUserToken(_user.UserId, req.Token);
-            await SendAsync(true);
+            await Send.OkAsync(true);
         }
         catch (Exception)
         {
-            await SendAsync(false);
+            await Send.OkAsync(false);
         }
     }
 }

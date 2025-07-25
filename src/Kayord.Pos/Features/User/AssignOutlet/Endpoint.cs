@@ -28,7 +28,7 @@ public class Endpoint : Endpoint<Request, Entities.UserOutlet>
         Entities.UserOutlet outlet = new();
         if (_cu.UserId == null)
         {
-            await SendForbiddenAsync();
+            await Send.ForbiddenAsync();
             return;
         }
         var UserOutlets = _dbContext.UserOutlet.Where(x => x.UserId == _cu.UserId);
@@ -60,6 +60,6 @@ public class Endpoint : Endpoint<Request, Entities.UserOutlet>
 
         await _dbContext.SaveChangesAsync();
         await _hub.Clients.User(_cu.UserId).RefreshOutlet(req.OutletId);
-        await SendAsync(outlet);
+        await Send.OkAsync(outlet);
     }
 }

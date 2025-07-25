@@ -28,6 +28,6 @@ public class Endpoint : Endpoint<Request, Pos.Entities.DivisionType>
         };
         await _dbContext.DivisionType.AddAsync(entity);
         await _dbContext.SaveChangesAsync();
-        await SendAsync(entity);
+        await Send.OkAsync(entity);
     }
 }

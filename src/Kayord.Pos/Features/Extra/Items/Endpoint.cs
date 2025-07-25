@@ -32,6 +32,6 @@ public class Endpoint : Endpoint<Request, List<ExtraDTO>>
             .ProjectToDto()
             .ToListAsync(ct);
 
-        await SendAsync(results);
+        await Send.OkAsync(results);
     }
 }

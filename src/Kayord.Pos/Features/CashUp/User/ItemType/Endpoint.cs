@@ -20,6 +20,6 @@ public class Endpoint : Endpoint<Request, List<Entities.CashUpUserItemType>>
     public override async Task HandleAsync(Request r, CancellationToken ct)
     {
         var result = await _dbContext.CashUpUserItemType.Where(x => x.IsAuto == r.IsAuto).ToListAsync();
-        await SendAsync(result);
+        await Send.OkAsync(result);
     }
 }

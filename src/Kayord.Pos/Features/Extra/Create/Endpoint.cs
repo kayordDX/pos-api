@@ -25,7 +25,7 @@ public class Endpoint : Endpoint<Request>
     {
         if (!await _userService.IsManager(req.OutletId))
         {
-            await SendForbiddenAsync();
+            await Send.ForbiddenAsync();
             return;
         }
 
@@ -48,6 +48,6 @@ public class Endpoint : Endpoint<Request>
         await _dbContext.Extra.AddAsync(extra);
         await _dbContext.SaveChangesAsync();
 
-        await SendNoContentAsync();
+        await Send.NoContentAsync();
     }
 }

@@ -46,7 +46,7 @@ public class Endpoint : Endpoint<Request>
             await _dbContext.OutletExtraGroup.AddAsync(outletExtraGroup);
         }
         await _dbContext.SaveChangesAsync();
-        await SendNoContentAsync();
+        await Send.NoContentAsync();
         // await Helper.ClearCacheOutlet(_dbContext, _redisClient, req.OutletId);
 
     }

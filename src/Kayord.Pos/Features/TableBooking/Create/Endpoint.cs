@@ -24,7 +24,7 @@ public class Endpoint : Endpoint<Request, Entities.TableBooking>
     {
         if (_user.UserId == null)
         {
-            await SendForbiddenAsync();
+            await Send.ForbiddenAsync();
             return;
         }
 
@@ -32,7 +32,7 @@ public class Endpoint : Endpoint<Request, Entities.TableBooking>
 
         if (salesPeriod!.EndDate != null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
 
@@ -53,6 +53,6 @@ public class Endpoint : Endpoint<Request, Entities.TableBooking>
 
         await _dbContext.TableBooking.AddAsync(entity, ct);
         await _dbContext.SaveChangesAsync(ct);
-        await SendAsync(entity);
+        await Send.OkAsync(entity);
     }
 }

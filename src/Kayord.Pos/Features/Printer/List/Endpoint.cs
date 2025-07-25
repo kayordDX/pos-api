@@ -64,6 +64,6 @@ public class Endpoint : Endpoint<Request, List<PrinterDTO>>
             }
         }
 
-        await SendAsync(result);
+        await Send.OkAsync(result);
     }
 }

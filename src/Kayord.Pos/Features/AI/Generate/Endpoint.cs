@@ -19,6 +19,6 @@ public class Endpoint : Endpoint<Request, GenerateResponse>
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
         var result = await _aiService.Generate(req.Prompt);
-        await SendAsync(result);
+        await Send.OkAsync(result);
     }
 }

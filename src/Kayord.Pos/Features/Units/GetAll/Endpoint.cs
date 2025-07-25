@@ -20,7 +20,7 @@ public class Endpoint : EndpointWithoutRequest<List<Unit>>
     public override async Task HandleAsync(CancellationToken ct)
     {
         var results = await _dbContext.Unit.ToListAsync(ct);
-        await SendAsync(results);
+        await Send.OkAsync(results);
     }
 }
 

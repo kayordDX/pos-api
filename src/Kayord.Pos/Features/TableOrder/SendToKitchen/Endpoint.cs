@@ -105,6 +105,6 @@ public class Endpoint : Endpoint<Request, Response>
 
         await PublishAsync(new SoundEvent() { OutletId = outletId, DivisionIds = divisions });
 
-        await SendAsync(new Response { IsSuccess = isSuccess, Message = message });
+        await Send.OkAsync(new Response { IsSuccess = isSuccess, Message = message });
     }
 }

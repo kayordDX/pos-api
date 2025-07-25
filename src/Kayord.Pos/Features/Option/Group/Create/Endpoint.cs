@@ -28,6 +28,6 @@ public class Endpoint : Endpoint<Request>
 
         await _dbContext.OptionGroup.AddAsync(optionGroup);
         await _dbContext.SaveChangesAsync();
-        await SendNoContentAsync();
+        await Send.NoContentAsync();
     }
 }

@@ -25,7 +25,7 @@ public class Endpoint : Endpoint<Request>
             var entity = await _dbContext.MenuItemStock.Where(x => x.MenuItemId == req.Id && x.StockId == req.StockId).FirstOrDefaultAsync(ct);
             if (entity == null)
             {
-                await SendNotFoundAsync();
+                await Send.NotFoundAsync();
                 return;
             }
             entity.Quantity = req.Quantity;
@@ -35,7 +35,7 @@ public class Endpoint : Endpoint<Request>
             var entity = await _dbContext.ExtraStock.Where(x => x.ExtraId == req.Id && x.StockId == req.StockId).FirstOrDefaultAsync(ct);
             if (entity == null)
             {
-                await SendNotFoundAsync();
+                await Send.NotFoundAsync();
                 return;
             }
             entity.Quantity = req.Quantity;
@@ -45,7 +45,7 @@ public class Endpoint : Endpoint<Request>
             var entity = await _dbContext.OptionStock.Where(x => x.OptionId == req.Id && x.StockId == req.StockId).FirstOrDefaultAsync(ct);
             if (entity == null)
             {
-                await SendNotFoundAsync();
+                await Send.NotFoundAsync();
                 return;
             }
             entity.Quantity = req.Quantity;
@@ -55,13 +55,13 @@ public class Endpoint : Endpoint<Request>
             var entity = await _dbContext.MenuItemBulkStock.Where(x => x.MenuItemId == req.Id && x.StockId == req.StockId).FirstOrDefaultAsync(ct);
             if (entity == null)
             {
-                await SendNotFoundAsync();
+                await Send.NotFoundAsync();
                 return;
             }
             entity.Quantity = req.Quantity;
         }
         await _dbContext.SaveChangesAsync();
-        await SendNoContentAsync();
+        await Send.NoContentAsync();
     }
 }
 

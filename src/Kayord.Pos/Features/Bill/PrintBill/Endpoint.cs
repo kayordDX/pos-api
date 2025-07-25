@@ -27,7 +27,7 @@ public class Endpoint : Endpoint<Request, bool>
         var printer = await _dbContext.Printer.Where(x => x.Id == req.PrinterId).AsNoTracking().FirstOrDefaultAsync();
         if (printer == null)
         {
-            await SendAsync(false);
+            await Send.OkAsync(false);
             return;
         }
 
@@ -42,6 +42,6 @@ public class Endpoint : Endpoint<Request, bool>
             PrintInstructions = printInstructions
         };
         await _printService.Print(printer.OutletId, printer.DeviceId, printMessage);
-        await SendAsync(true);
+        await Send.OkAsync(true);
     }
 }

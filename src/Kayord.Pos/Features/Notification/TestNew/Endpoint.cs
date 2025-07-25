@@ -26,6 +26,6 @@ public class Endpoint : Endpoint<Request, bool>
             Title = req.Title,
             Body = req.Body
         }, Mode.WaitForNone);
-        await SendAsync(true);
+        await Send.OkAsync(true);
     }
 }

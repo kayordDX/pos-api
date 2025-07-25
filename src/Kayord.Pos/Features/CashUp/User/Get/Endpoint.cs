@@ -26,7 +26,7 @@ public class Endpoint : Endpoint<Request, Response>
     {
         if (_user.UserId == null)
         {
-            await SendForbiddenAsync();
+            await Send.ForbiddenAsync();
             return;
         }
 
@@ -62,7 +62,7 @@ public class Endpoint : Endpoint<Request, Response>
         responses.TotalSales = responses.Items.Sum(x => x.Sales);
 
 
-        await SendAsync(responses);
+        await Send.OkAsync(responses);
 
     }
 

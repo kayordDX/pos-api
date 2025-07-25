@@ -25,7 +25,7 @@ public class Endpoint : Endpoint<Request, List<Response>>
         var userOutlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _user.UserId && x.IsCurrent);
         if (userOutlet == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
         var result = await _dbContext.SalesPeriod
@@ -42,9 +42,9 @@ public class Endpoint : Endpoint<Request, List<Response>>
 
         if (result == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
-        await SendAsync(result);
+        await Send.OkAsync(result);
     }
 }

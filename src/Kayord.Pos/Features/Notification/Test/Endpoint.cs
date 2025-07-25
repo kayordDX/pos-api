@@ -21,6 +21,6 @@ public class Endpoint : Endpoint<Request, bool>
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
         await _hub.Clients.All.ReceiveMessage(req.Message);
-        await SendAsync(true);
+        await Send.OkAsync(true);
     }
 }

@@ -26,11 +26,11 @@ public class Endpoint : Endpoint<Request, Result<Dto.StatusResultDto>>
     {
         if (string.IsNullOrEmpty(_cu.UserId))
         {
-            await SendUnauthorizedAsync();
+            await Send.UnauthorizedAsync();
             return;
         }
         int outletId = await Helper.GetUserOutlet(_dbContext, _cu.UserId);
         var result = await _halo.GetStatus(r.Reference, _cu.UserId, outletId);
-        await SendAsync(result);
+        await Send.OkAsync(result);
     }
 }

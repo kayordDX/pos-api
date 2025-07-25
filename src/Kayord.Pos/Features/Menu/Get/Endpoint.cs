@@ -21,10 +21,10 @@ public class Endpoint : Endpoint<Request, Pos.Entities.Menu>
         var menu = await _dbContext.Menu.FindAsync(req.MenuId);
         if (menu == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
 
-        await SendAsync(menu);
+        await Send.OkAsync(menu);
     }
 }

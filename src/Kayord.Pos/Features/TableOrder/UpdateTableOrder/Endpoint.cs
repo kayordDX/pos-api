@@ -53,11 +53,11 @@ public class Endpoint : Endpoint<Request, Response>
             {
                 await PublishAsync(notification, Mode.WaitForNone);
             }
-            await SendAsync(new Response() { IsSuccess = true });
+            await Send.OkAsync(new Response() { IsSuccess = true });
         }
         else
         {
-            await SendAsync(new Response() { IsSuccess = false });
+            await Send.OkAsync(new Response() { IsSuccess = false });
         }
     }
 }

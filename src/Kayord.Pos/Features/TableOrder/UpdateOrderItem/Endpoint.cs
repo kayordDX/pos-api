@@ -154,7 +154,7 @@ public class Endpoint : Endpoint<Request, Response>
             }
             else
             {
-                await SendAsync(new Response() { IsSuccess = false, Message = "Order not found" });
+                await Send.OkAsync(new Response() { IsSuccess = false, Message = "Order not found" });
             }
         }
 
@@ -183,6 +183,6 @@ public class Endpoint : Endpoint<Request, Response>
         }
 
         await _dbContext.SaveChangesAsync();
-        await SendAsync(new Response() { IsSuccess = isSuccess, Message = message });
+        await Send.OkAsync(new Response() { IsSuccess = isSuccess, Message = message });
     }
 }

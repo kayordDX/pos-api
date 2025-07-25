@@ -22,11 +22,11 @@ public class Endpoint : Endpoint<Request>
         var entity = await _dbContext.Stock.FirstOrDefaultAsync(x => x.Id == req.Id);
         if (entity == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
         _dbContext.Stock.Remove(entity);
         await _dbContext.SaveChangesAsync();
-        await SendNoContentAsync();
+        await Send.NoContentAsync();
     }
 }

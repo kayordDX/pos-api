@@ -29,7 +29,7 @@ public class Endpoint : Endpoint<Request, Response>
         UserOutlet? userOutlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.IsCurrent == true);
         if (userOutlet == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
         List<int> divisionIds = req.DivisionIds != null ? req.DivisionIds.Split(",").Select(int.Parse).ToList() : [];
@@ -47,7 +47,7 @@ public class Endpoint : Endpoint<Request, Response>
         }
         if (orderItems == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
 
@@ -86,6 +86,6 @@ public class Endpoint : Endpoint<Request, Response>
             PendingOrders = orderGroups.Count()
         };
 
-        await SendAsync(r);
+        await Send.OkAsync(r);
     }
 }

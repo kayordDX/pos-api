@@ -50,7 +50,7 @@ public class Endpoint : Endpoint<Request>
         _dbContext.ExtraGroup.Remove(extraGroup);
 
         await _dbContext.SaveChangesAsync();
-        await SendNoContentAsync();
+        await Send.NoContentAsync();
         // await Helper.ClearCacheOutlet(_dbContext, _redisClient, req.OutletId);
 
     }

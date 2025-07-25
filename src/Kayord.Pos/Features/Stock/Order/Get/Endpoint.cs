@@ -1,6 +1,6 @@
 using Kayord.Pos.Data;
-using Microsoft.EntityFrameworkCore;
 using Kayord.Pos.DTO;
+using Microsoft.EntityFrameworkCore;
 namespace Kayord.Pos.Features.Stock.Order.Get;
 
 public class Endpoint : Endpoint<Request, StockOrderDTO>
@@ -27,11 +27,11 @@ public class Endpoint : Endpoint<Request, StockOrderDTO>
 
         if (results == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
 
-        await SendAsync(results);
+        await Send.OkAsync(results);
     }
 }
 

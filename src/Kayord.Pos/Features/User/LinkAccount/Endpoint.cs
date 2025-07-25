@@ -47,7 +47,7 @@ public class Endpoint : Endpoint<Request, Response>
             audit.Detail = failedResponse.Message;
             await _dbContext.Audit.AddAsync(audit);
             await _dbContext.SaveChangesAsync(ct);
-            await SendAsync(failedResponse);
+            await Send.OkAsync(failedResponse);
             return;
         }
         else
@@ -63,7 +63,7 @@ public class Endpoint : Endpoint<Request, Response>
                 audit.Detail = failedResponse.Message;
                 await _dbContext.Audit.AddAsync(audit);
                 await _dbContext.SaveChangesAsync(ct);
-                await SendAsync(failedResponse);
+                await Send.OkAsync(failedResponse);
                 return;
             }
             var token = await _userService.GetCustomToken(_userService.GetCurrentUserService().UserId!);
@@ -77,7 +77,7 @@ public class Endpoint : Endpoint<Request, Response>
             audit.AuditTypeId = 1;
             await _dbContext.Audit.AddAsync(audit);
             await _dbContext.SaveChangesAsync(ct);
-            await SendAsync(r);
+            await Send.OkAsync(r);
         }
     }
 }

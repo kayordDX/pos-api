@@ -24,11 +24,11 @@ public class Endpoint : Endpoint<Request, Response>
         {
             _dbContext.Remove(entity);
             await _dbContext.SaveChangesAsync();
-            await SendAsync(new Response() { IsSuccess = true });
+            await Send.OkAsync(new Response() { IsSuccess = true });
         }
         else
         {
-            await SendAsync(new Response() { IsSuccess = false });
+            await Send.OkAsync(new Response() { IsSuccess = false });
         }
     }
 }

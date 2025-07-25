@@ -28,7 +28,7 @@ public class Endpoint : Endpoint<Request, Pos.Entities.Menu>
     {
         if (!await _userService.IsManager(req.OutletId))
         {
-            await SendForbiddenAsync();
+            await Send.ForbiddenAsync();
             return;
         }
 

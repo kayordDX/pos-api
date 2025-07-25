@@ -23,7 +23,7 @@ public class Endpoint : Endpoint<Request, PrinterDTO>
         Entities.Printer? entity = await _dbContext.Printer.FirstOrDefaultAsync(x => x.Id == req.Id);
         if (entity == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
 
@@ -35,6 +35,6 @@ public class Endpoint : Endpoint<Request, PrinterDTO>
         entity.DeviceId = req.DeviceId;
 
         await _dbContext.SaveChangesAsync();
-        await SendNoContentAsync();
+        await Send.NoContentAsync();
     }
 }

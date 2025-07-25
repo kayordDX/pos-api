@@ -18,11 +18,11 @@ public class Endpoint : Endpoint<Request, bool>
         try
         {
             var result = await _halo.TestConfig(req.Id);
-            await SendAsync(result);
+            await Send.OkAsync(result);
         }
         catch (Exception)
         {
-            await SendAsync(false);
+            await Send.OkAsync(false);
         }
     }
 }

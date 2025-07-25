@@ -24,7 +24,7 @@ public class Endpoint : Endpoint<Request, Entities.StockOrder>
     {
         if (!await _userService.IsManager(req.OutletId))
         {
-            await SendForbiddenAsync();
+            await Send.ForbiddenAsync();
             return;
         }
 

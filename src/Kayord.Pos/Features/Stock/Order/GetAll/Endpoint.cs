@@ -40,7 +40,7 @@ public class Endpoint : Endpoint<Request, PaginatedList<StockOrderResponseDTO>>
                 Created = x.Created
             })
             .GetPagedAsync(req, ct);
-        await SendAsync(results);
+        await Send.OkAsync(results);
     }
 }
 

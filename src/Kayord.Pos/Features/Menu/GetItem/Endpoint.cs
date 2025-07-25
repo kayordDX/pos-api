@@ -179,9 +179,9 @@ public class GetMenuItemsEndpoint : Endpoint<Request, MenuItemDTO>
 
         if (result == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
-        await SendAsync(result);
+        await Send.OkAsync(result);
     }
 }

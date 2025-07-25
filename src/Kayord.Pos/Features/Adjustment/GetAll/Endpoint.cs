@@ -25,6 +25,6 @@ public class Endpoint : Endpoint<Request, List<Entities.AdjustmentType>>
             .Select(x => x.AdjustmentType)
             .ToListAsync();
 
-        await SendAsync(results);
+        await Send.OkAsync(results);
     }
 }

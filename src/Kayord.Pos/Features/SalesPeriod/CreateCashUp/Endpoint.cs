@@ -1,9 +1,8 @@
-using Kayord.Pos.Data;
-using Kayord.Pos.Services;
-using Kayord.Pos.DTO;
-
-using Microsoft.EntityFrameworkCore;
 using System.Globalization;
+using Kayord.Pos.Data;
+using Kayord.Pos.DTO;
+using Kayord.Pos.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.SalesPeriod.CreateCashUp;
 
@@ -41,6 +40,6 @@ public class Endpoint : Endpoint<Request, Entities.CashUp>
             await _dbContext.SaveChangesAsync();
         }
 
-        await SendAsync(cashUp);
+        await Send.OkAsync(cashUp);
     }
 }

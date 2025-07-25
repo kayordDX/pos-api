@@ -53,7 +53,7 @@ public class Endpoint : Endpoint<Request, PaginatedList<Response>>
             order by id
         """).GetPagedAsync(req, ct);
 
-        await SendAsync(results);
+        await Send.OkAsync(results);
     }
 }
 

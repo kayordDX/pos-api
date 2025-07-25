@@ -1,7 +1,6 @@
 using Kayord.Pos.Data;
-using Kayord.Pos.Services;
 using Kayord.Pos.DTO;
-
+using Kayord.Pos.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.TableOrder.GetBasket;
@@ -31,7 +30,7 @@ public class Endpoint : Endpoint<Request, Response>
         };
         var tableBooking = await _dbContext.TableBooking.FirstOrDefaultAsync(x => x.Id == req.TableBookingId);
         if (tableBooking == null)
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
         response.OrderItems = await _dbContext.OrderItem
             .Where(x => x.TableBookingId == req.TableBookingId && x.OrderItemStatusId == 1)
             .ProjectToDto()
@@ -58,6 +57,6 @@ public class Endpoint : Endpoint<Request, Response>
             }
             item.Quantity = response.OrderItems.Sum(x => x.MenuItemId == item.MenuItemId ? 1 : 0);
         }
-        await SendAsync(response);
+        await Send.OkAsync(response);
     }
 }

@@ -23,7 +23,7 @@ public class Endpoint : Endpoint<Request>
         HaloConfig? entity = await _dbContext.HaloConfig.FirstOrDefaultAsync(x => x.Id == req.Id);
         if (entity == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
 
@@ -34,6 +34,6 @@ public class Endpoint : Endpoint<Request>
 
         _dbContext.HaloConfig.Remove(entity);
         await _dbContext.SaveChangesAsync();
-        await SendNoContentAsync();
+        await Send.NoContentAsync();
     }
 }

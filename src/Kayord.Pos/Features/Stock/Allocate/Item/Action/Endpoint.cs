@@ -30,7 +30,7 @@ public class Endpoint : Endpoint<Request, StockAllocateItem>
 
         if (entity == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
 
@@ -61,6 +61,6 @@ public class Endpoint : Endpoint<Request, StockAllocateItem>
         await _dbContext.SaveChangesAsync();
 
         await AllocateItemUpdate.Status(entity.StockAllocateId, _dbContext, ct);
-        await SendAsync(entity);
+        await Send.OkAsync(entity);
     }
 }

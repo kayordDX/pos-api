@@ -22,10 +22,10 @@ public class Endpoint : Endpoint<Request, List<string>>
 
         if (userRoles == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
-        await SendAsync(userRoles);
+        await Send.OkAsync(userRoles);
         return;
     }
 }

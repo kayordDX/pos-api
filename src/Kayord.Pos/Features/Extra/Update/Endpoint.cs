@@ -46,7 +46,7 @@ public class Endpoint : Endpoint<Request>
         extraEntity.OutletId = req.OutletId;
 
         await _dbContext.SaveChangesAsync();
-        await SendNoContentAsync();
+        await Send.NoContentAsync();
         // await Helper.ClearCacheOutlet(_dbContext, _redisClient, req.OutletId);
 
     }

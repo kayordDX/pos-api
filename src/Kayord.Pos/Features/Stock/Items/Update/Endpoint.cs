@@ -66,6 +66,6 @@ public class Endpoint : Endpoint<Request>
             await StockManager.StockAvailableCheck(entity.StockId, _dbContext, ct);
         }
 
-        await SendNoContentAsync();
+        await Send.NoContentAsync();
     }
 }

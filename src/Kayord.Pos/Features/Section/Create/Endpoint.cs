@@ -28,6 +28,6 @@ public class Endpoint : Endpoint<Request, Pos.Entities.Section>
         await _dbContext.Section.AddAsync(entity);
         await _dbContext.SaveChangesAsync(ct);
 
-        await SendAsync(entity);
+        await Send.OkAsync(entity);
     }
 }

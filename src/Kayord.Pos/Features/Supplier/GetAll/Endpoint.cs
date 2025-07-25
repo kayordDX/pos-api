@@ -22,7 +22,7 @@ public class Endpoint : Endpoint<Request, List<DTO.SupplierDTO>>
             .ProjectToDto()
             .ToListAsync(ct);
 
-        await SendAsync(results);
+        await Send.OkAsync(results);
     }
 }
 

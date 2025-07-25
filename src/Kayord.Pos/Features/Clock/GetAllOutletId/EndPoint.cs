@@ -52,6 +52,6 @@ public class Endpoint : Endpoint<Request, List<Entities.User>>
                 .ToListAsync();
         }
 
-        await SendAsync(staffList);
+        await Send.OkAsync(staffList);
     }
 }

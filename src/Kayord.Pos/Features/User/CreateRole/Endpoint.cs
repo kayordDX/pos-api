@@ -26,6 +26,6 @@ public class Endpoint : Endpoint<Request>
 
         _dbContext.Role.Add(newRole);
         await _dbContext.SaveChangesAsync();
-        await SendNoContentAsync();
+        await Send.NoContentAsync();
     }
 }

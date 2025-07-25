@@ -37,10 +37,10 @@ public class Endpoint : Endpoint<Request, PrinterDTO>
         var result = await _dbContext.Printer.ProjectToDto().FirstOrDefaultAsync(x => x.Id == entity.Id);
         if (result == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
 
-        await SendAsync(result);
+        await Send.OkAsync(result);
     }
 }

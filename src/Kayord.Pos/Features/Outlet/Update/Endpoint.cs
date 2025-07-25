@@ -21,7 +21,7 @@ public class Endpoint : Endpoint<Request, Pos.Entities.Outlet>
         var entity = await _dbContext.Outlet.FindAsync(req.Id);
         if (entity == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
 
@@ -29,6 +29,6 @@ public class Endpoint : Endpoint<Request, Pos.Entities.Outlet>
         entity.BusinessId = req.BusinessId;
 
         await _dbContext.SaveChangesAsync();
-        await SendAsync(entity);
+        await Send.OkAsync(entity);
     }
 }

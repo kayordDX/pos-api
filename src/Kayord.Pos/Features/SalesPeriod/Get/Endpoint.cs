@@ -1,5 +1,5 @@
-using Kayord.Pos.Features.SalesPeriod.Create;
 using Kayord.Pos.Data;
+using Kayord.Pos.Features.SalesPeriod.Create;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.SalesPeriod.Get;
@@ -24,9 +24,9 @@ public class Endpoint : Endpoint<Request, Pos.Entities.SalesPeriod>
         var result = await _dbContext.SalesPeriod.FirstOrDefaultAsync(x => x.OutletId == r.OutletId && x.StartDate != null && x.EndDate == null);
         if (result == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
-        await SendAsync(result);
+        await Send.OkAsync(result);
     }
 }

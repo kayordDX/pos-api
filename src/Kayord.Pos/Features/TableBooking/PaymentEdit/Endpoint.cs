@@ -23,7 +23,7 @@ public class Endpoint : Endpoint<Request, CashUpUserItem>
         var entity = await _dbContext.Payment.Include(x => x.TableBooking).Where(x => x.Id == req.PaymentId).FirstOrDefaultAsync();
         if (entity == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
 
@@ -37,6 +37,6 @@ public class Endpoint : Endpoint<Request, CashUpUserItem>
 
         await _dbContext.SaveChangesAsync();
         await TableBooking.SaveTotal(entity.TableBooking.Id, _dbContext);
-        await SendNoContentAsync();
+        await Send.NoContentAsync();
     }
 }

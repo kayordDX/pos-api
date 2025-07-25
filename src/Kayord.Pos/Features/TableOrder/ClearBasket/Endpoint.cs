@@ -24,11 +24,11 @@ public class Endpoint : Endpoint<Request, Pos.Entities.OrderItem>
         {
             _dbContext.RemoveRange(entities);
             await _dbContext.SaveChangesAsync();
-            await SendOkAsync();
+            await Send.OkAsync();
         }
         else
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
         }
     }
 }

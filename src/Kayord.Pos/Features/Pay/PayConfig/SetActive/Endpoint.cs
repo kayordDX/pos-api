@@ -24,7 +24,7 @@ public class Endpoint : Endpoint<Request>
             var entity = await _dbContext.HaloConfig.FirstOrDefaultAsync(x => x.Id == req.Id);
             if (entity == null)
             {
-                await SendNotFoundAsync();
+                await Send.NotFoundAsync();
                 return;
             }
             entity.IsEnabled = false;
@@ -42,6 +42,6 @@ public class Endpoint : Endpoint<Request>
             }
         }
         await _dbContext.SaveChangesAsync();
-        await SendNoContentAsync();
+        await Send.NoContentAsync();
     }
 }

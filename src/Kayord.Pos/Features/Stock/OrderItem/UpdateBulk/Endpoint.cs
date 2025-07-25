@@ -25,7 +25,7 @@ public class Endpoint : Endpoint<Request>
     {
         if (req.StockIds == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
 
@@ -40,7 +40,7 @@ public class Endpoint : Endpoint<Request>
 
             if (entity == null)
             {
-                await SendNotFoundAsync();
+                await Send.NotFoundAsync();
                 return;
             }
 
@@ -66,6 +66,6 @@ public class Endpoint : Endpoint<Request>
         }
 
         await OrderItemUpdate.StockOrderStatus(req.StockOrderId, _dbContext, ct);
-        await SendNoContentAsync();
+        await Send.NoContentAsync();
     }
 }

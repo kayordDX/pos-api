@@ -36,6 +36,6 @@ public class TokenTest : EndpointWithoutRequest<TokenResult>
         {
             Token = token.IdToken
         };
-        await SendAsync(result);
+        await Send.OkAsync(result);
     }
 }

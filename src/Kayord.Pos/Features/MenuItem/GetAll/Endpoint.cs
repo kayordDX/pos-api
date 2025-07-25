@@ -36,6 +36,6 @@ public class Endpoint : Endpoint<Request, PaginatedList<MenuItemAdminDTO>>
             .ProjectToAdminDto()
             .GetPagedAsync(req, ct);
 
-        await SendAsync(menuItems);
+        await Send.OkAsync(menuItems);
     }
 }

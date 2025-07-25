@@ -24,6 +24,6 @@ public class Endpoint : Endpoint<Request, List<Pos.Entities.Table>>
             .OrderBy(x => x.Name)
             .ToListAsync();
 
-        await SendAsync(tables);
+        await Send.OkAsync(tables);
     }
 }

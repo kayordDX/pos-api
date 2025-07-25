@@ -25,7 +25,7 @@ public class Endpoint : Endpoint<Request, Pos.Entities.TableBooking>
     {
         if (_user.UserId == null)
         {
-            await SendForbiddenAsync();
+            await Send.ForbiddenAsync();
             return;
         }
 
@@ -33,7 +33,7 @@ public class Endpoint : Endpoint<Request, Pos.Entities.TableBooking>
 
         if (entity == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
         var totals = await TableBooking.SaveTotal(req.TableBookingId, _dbContext);
@@ -46,6 +46,6 @@ public class Endpoint : Endpoint<Request, Pos.Entities.TableBooking>
         entity.CloseDate = DateTime.UtcNow;
         await _dbContext.SaveChangesAsync();
 
-        await SendAsync(entity);
+        await Send.OkAsync(entity);
     }
 }

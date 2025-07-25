@@ -53,7 +53,7 @@ public class Endpoint : Endpoint<Request, OrderItem>
 
                 if (menuItem == null)
                 {
-                    await SendNotFoundAsync();
+                    await Send.NotFoundAsync();
                     return;
                 }
 
@@ -104,8 +104,8 @@ public class Endpoint : Endpoint<Request, OrderItem>
         await _dbContext.SaveChangesAsync();
 
         if (orderItem.OrderItemId > 0)
-            await SendNoContentAsync();
+            await Send.NoContentAsync();
         else
-            await SendErrorsAsync(500);
+            await Send.ErrorsAsync(500);
     }
 }

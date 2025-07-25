@@ -21,11 +21,11 @@ public class Endpoint : Endpoint<Request>
         var entity = await _dbContext.DivisionType.FindAsync(req.Id);
         if (entity == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
         entity.DivisionName = req.Name;
         await _dbContext.SaveChangesAsync();
-        await SendNoContentAsync();
+        await Send.NoContentAsync();
     }
 }

@@ -22,6 +22,6 @@ public class Endpoint : Endpoint<Request, List<Entities.HaloConfig>>
             .OrderByDescending(x => x.Created)
             .ToListAsync(ct);
 
-        await SendAsync(result);
+        await Send.OkAsync(result);
     }
 }

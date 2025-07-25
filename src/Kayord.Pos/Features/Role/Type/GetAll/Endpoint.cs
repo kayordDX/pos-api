@@ -22,6 +22,6 @@ public class Endpoint : Endpoint<Request, List<Entities.RoleType>>
         var roles = await _dbContext.RoleType
         .Where(x => x.Name.ToLower() != "manager" && x.Name.ToLower() != "guest")
         .ToListAsync();
-        await SendAsync(roles);
+        await Send.OkAsync(roles);
     }
 }

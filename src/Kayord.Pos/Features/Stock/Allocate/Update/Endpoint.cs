@@ -29,7 +29,7 @@ public class Endpoint : Endpoint<Request>
 
         if (entity == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
 

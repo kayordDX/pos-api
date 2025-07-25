@@ -30,7 +30,7 @@ public class Endpoint : Endpoint<Request, List<Response>>
                 vw_stock_category 
             where outlet_id = {req.OutletId} and parent_name is not null 
         """).ToListAsync(ct);
-        await SendAsync(results);
+        await Send.OkAsync(results);
     }
 }
 

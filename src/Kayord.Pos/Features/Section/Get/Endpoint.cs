@@ -22,10 +22,10 @@ public class Endpoint : Endpoint<Request, Pos.Entities.Section>
         var entity = await _dbContext.Section.FindAsync(req.SectionId);
         if (entity == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
 
-        await SendAsync(entity);
+        await Send.OkAsync(entity);
     }
 }

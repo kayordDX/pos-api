@@ -91,6 +91,6 @@ public class WhatsAppTest : EndpointWithoutRequest<Status?>
         });
 
         var s = await _whatsappService.GetStatus();
-        await SendAsync(s);
+        await Send.OkAsync(s);
     }
 }

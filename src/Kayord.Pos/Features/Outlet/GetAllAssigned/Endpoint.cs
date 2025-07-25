@@ -37,6 +37,6 @@ public class Endpoint : EndpointWithoutRequest<List<OutletDTOBasic>>
             where ur.user_id = {_cu.UserId}
         """).ToListAsync(ct);
 
-        await SendAsync(results);
+        await Send.OkAsync(results);
     }
 }

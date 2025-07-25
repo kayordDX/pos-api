@@ -21,12 +21,12 @@ public class Endpoint : Endpoint<Request, Entities.BillCategory>
         var entity = await _dbContext.BillCategory.FindAsync(req.Id);
         if (entity == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
         entity.Name = req.Name;
         await _dbContext.SaveChangesAsync();
-        await SendAsync(entity);
+        await Send.OkAsync(entity);
     }
 
 }

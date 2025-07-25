@@ -21,7 +21,7 @@ public class Endpoint : Endpoint<Request, Pos.Entities.StockCategory>
         var entity = await _dbContext.StockCategory.FindAsync(req.Id);
         if (entity == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
         if (req.IsDeleted == true)
@@ -34,7 +34,7 @@ public class Endpoint : Endpoint<Request, Pos.Entities.StockCategory>
 
             entity.IsDeleted = true;
             await _dbContext.SaveChangesAsync();
-            await SendAsync(entity);
+            await Send.OkAsync(entity);
             return;
         }
         entity.Name = req.Name;
@@ -42,7 +42,7 @@ public class Endpoint : Endpoint<Request, Pos.Entities.StockCategory>
         entity.IsDeleted = false;
 
         await _dbContext.SaveChangesAsync();
-        await SendAsync(entity);
+        await Send.OkAsync(entity);
     }
 
 }

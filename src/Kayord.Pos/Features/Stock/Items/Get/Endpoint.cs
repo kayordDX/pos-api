@@ -42,11 +42,11 @@ public class Endpoint : Endpoint<Request, Response>
 
         if (results == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
 
-        await SendAsync(results);
+        await Send.OkAsync(results);
     }
 }
 

@@ -31,6 +31,6 @@ public class Endpoint : Endpoint<Request>
         optionEntity.OptionGroupId = req.OptionGroupId;
 
         await _dbContext.SaveChangesAsync();
-        await SendNoContentAsync();
+        await Send.NoContentAsync();
     }
 }

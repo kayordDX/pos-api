@@ -22,7 +22,7 @@ public class Endpoint : Endpoint<Request, Entities.StockOrder>
         var entity = await _dbContext.StockOrder.FindAsync(req.Id);
         if (entity == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
 
@@ -31,6 +31,6 @@ public class Endpoint : Endpoint<Request, Entities.StockOrder>
         entity.SupplierId = req.SupplierId;
 
         await _dbContext.SaveChangesAsync();
-        await SendAsync(entity);
+        await Send.OkAsync(entity);
     }
 }

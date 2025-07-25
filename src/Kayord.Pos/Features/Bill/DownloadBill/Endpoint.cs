@@ -27,7 +27,7 @@ public class Endpoint : Endpoint<Request>
 
         using var stream = new MemoryStream();
         document.GeneratePdf(stream);
-        await SendBytesAsync(stream.ToArray(), "bill.pdf", "application/pdf", cancellation: ct);
+        await Send.BytesAsync(stream.ToArray(), "bill.pdf", "application/pdf", cancellation: ct);
         return;
     }
 }

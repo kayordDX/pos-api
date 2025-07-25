@@ -23,7 +23,7 @@ public class Endpoint : Endpoint<Request, Entities.SalesPeriod>
         var entity = await _dbContext.SalesPeriod.FindAsync(req.SalesPeriodId);
         if (entity == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
         var OpenTableCount = await _dbContext.TableBooking.Where(x => x.SalesPeriodId == req.SalesPeriodId && x.CloseDate == null).CountAsync();
@@ -40,6 +40,6 @@ public class Endpoint : Endpoint<Request, Entities.SalesPeriod>
             .ForEach(x => x.EndDate = DateTime.Now);
 
         await _dbContext.SaveChangesAsync();
-        await SendAsync(entity);
+        await Send.OkAsync(entity);
     }
 }

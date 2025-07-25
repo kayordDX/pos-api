@@ -56,7 +56,7 @@ public class Endpoint : Endpoint<Request>
             }, ct);
         }
         await _dbContext.SaveChangesAsync();
-        await SendNoContentAsync();
+        await Send.NoContentAsync();
     }
 }
 

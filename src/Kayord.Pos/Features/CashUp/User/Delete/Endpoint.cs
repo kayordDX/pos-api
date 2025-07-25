@@ -23,12 +23,12 @@ public class Endpoint : Endpoint<Request, CashUpUserItem>
         CashUpUserItem? entity = await _dbContext.CashUpUserItem.FindAsync(req.Id);
         if (entity == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
 
         _dbContext.CashUpUserItem.Remove(entity);
         await _dbContext.SaveChangesAsync();
-        await SendNoContentAsync();
+        await Send.NoContentAsync();
     }
 }

@@ -30,10 +30,10 @@ public class Endpoint : Endpoint<Request, Pos.Entities.StockCategory>
         var result = await _dbContext.StockCategory.FindAsync(entity.Id);
         if (result == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
 
-        await SendAsync(result);
+        await Send.OkAsync(result);
     }
 }

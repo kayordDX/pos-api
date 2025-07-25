@@ -25,14 +25,14 @@ public class Endpoint : Endpoint<Request>
         var entity = await _dbContext.Clock.FirstOrDefaultAsync(x => x.UserId == _user.UserId && x.OutletId == req.OutletId && x.EndDate == null);
         if (entity == null)
         {
-            await SendForbiddenAsync();
+            await Send.ForbiddenAsync();
             return;
         }
         else
         {
             entity.EndDate = DateTime.Now;
             await _dbContext.SaveChangesAsync();
-            await SendNoContentAsync();
+            await Send.NoContentAsync();
         }
 
     }

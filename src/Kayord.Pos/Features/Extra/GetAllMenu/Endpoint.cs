@@ -46,6 +46,6 @@ public class Endpoint : Endpoint<Request, List<SpecialExtrasDTO>>
                 eg.name
             order by o.name;
         """).ToListAsync(ct);
-        await SendAsync(results);
+        await Send.OkAsync(results);
     }
 }

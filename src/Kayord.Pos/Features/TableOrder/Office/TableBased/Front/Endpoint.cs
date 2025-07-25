@@ -27,7 +27,7 @@ public class Endpoint : Endpoint<Request, Response>
         UserOutlet? userOutlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.IsCurrent == true);
         if (userOutlet == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
 
@@ -60,6 +60,6 @@ public class Endpoint : Endpoint<Request, Response>
             PendingTables = result.Count,
             Tables = result
         };
-        await SendAsync(response);
+        await Send.OkAsync(response);
     }
 }

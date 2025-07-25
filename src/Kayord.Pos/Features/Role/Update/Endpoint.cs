@@ -21,7 +21,7 @@ public class Endpoint : Endpoint<Request, Entities.Role>
         var entity = await _dbContext.Role.FindAsync(req.Id);
         if (entity == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
         entity.Name = req.Name;
@@ -31,6 +31,6 @@ public class Endpoint : Endpoint<Request, Entities.Role>
 
 
         await _dbContext.SaveChangesAsync();
-        await SendAsync(entity);
+        await Send.OkAsync(entity);
     }
 }

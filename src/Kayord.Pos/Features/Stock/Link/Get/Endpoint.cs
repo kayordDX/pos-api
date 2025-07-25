@@ -56,7 +56,7 @@ public class Endpoint : Endpoint<Request, List<Response>>
         )
         """).ToListAsync(ct);
 
-        await SendAsync(results);
+        await Send.OkAsync(results);
     }
 }
 

@@ -29,7 +29,7 @@ public class GetMenusSectionsEndpoint : Endpoint<Request, Response>
         var cachedResponse = await _redisClient.GetObjectAsync<Response>(cacheKey);
         if (cachedResponse != null)
         {
-            await SendAsync(cachedResponse);
+            await Send.OkAsync(cachedResponse);
             return;
         }
 
@@ -53,6 +53,6 @@ public class GetMenusSectionsEndpoint : Endpoint<Request, Response>
 
         Response response = new() { Parents = parents, Sections = sections };
         _ = _redisClient.SetObjectAsync(cacheKey, response);
-        await SendAsync(response);
+        await Send.OkAsync(response);
     }
 }

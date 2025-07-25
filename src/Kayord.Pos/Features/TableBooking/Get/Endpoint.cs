@@ -30,10 +30,10 @@ public class Endpoint : Endpoint<Request, Response>
 
         if (result == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
 
-        await SendAsync(result);
+        await Send.OkAsync(result);
     }
 }

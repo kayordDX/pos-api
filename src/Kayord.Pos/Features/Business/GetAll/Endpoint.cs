@@ -21,6 +21,6 @@ public class Endpoint : EndpointWithoutRequest<List<Pos.Entities.Business>>
     public override async Task HandleAsync(CancellationToken ct)
     {
         var results = await _dbContext.Business.ToListAsync();
-        await SendAsync(results);
+        await Send.OkAsync(results);
     }
 }

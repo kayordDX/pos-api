@@ -35,7 +35,7 @@ public class Endpoint : Endpoint<Request>
         {
             await _dbContext.MenuItemBulkStock.Where(x => x.MenuItemId == req.Id && x.StockId == req.StockId).ExecuteDeleteAsync(ct);
         }
-        await SendNoContentAsync();
+        await Send.NoContentAsync();
     }
 }
 

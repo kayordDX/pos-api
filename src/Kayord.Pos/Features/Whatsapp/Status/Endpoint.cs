@@ -19,6 +19,6 @@ public class Endpoint : EndpointWithoutRequest<Services.Whatsapp.Status>
     public override async Task HandleAsync(CancellationToken ct)
     {
         var status = await _whatsappService.GetStatus();
-        await SendAsync(status);
+        await Send.OkAsync(status);
     }
 }

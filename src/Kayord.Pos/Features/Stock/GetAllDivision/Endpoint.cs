@@ -39,7 +39,7 @@ public class Endpoint : Endpoint<Request, PaginatedList<Response>>
                 division_id = {req.DivisionId}
         """).GetPagedAsync(req, ct);
 
-        await SendAsync(results);
+        await Send.OkAsync(results);
     }
 }
 

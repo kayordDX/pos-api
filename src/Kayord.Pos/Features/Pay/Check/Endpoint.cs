@@ -26,7 +26,7 @@ public class Endpoint : Endpoint<Request, Response>
     {
         if (string.IsNullOrEmpty(_cu.UserId))
         {
-            await SendUnauthorizedAsync();
+            await Send.UnauthorizedAsync();
             return;
         }
 
@@ -51,6 +51,6 @@ public class Endpoint : Endpoint<Request, Response>
             }
         }
 
-        await SendAsync(response);
+        await Send.OkAsync(response);
     }
 }

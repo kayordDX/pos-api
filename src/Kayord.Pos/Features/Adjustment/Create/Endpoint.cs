@@ -31,7 +31,7 @@ public class Endpoint : Endpoint<Request>
 
         if (tableBooking == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
 
@@ -52,6 +52,6 @@ public class Endpoint : Endpoint<Request>
         tableBooking.Total = (await BillHelper.GetTotal(tableBooking.Id, _dbContext)).Total;
 
         await _dbContext.SaveChangesAsync();
-        await SendNoContentAsync();
+        await Send.NoContentAsync();
     }
 }

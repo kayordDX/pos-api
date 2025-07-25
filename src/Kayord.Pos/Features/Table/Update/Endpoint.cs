@@ -22,7 +22,7 @@ public class Endpoint : Endpoint<Request, Pos.Entities.Table>
         var entity = await _dbContext.Table.FindAsync(req.TableId);
         if (entity == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
 
@@ -32,6 +32,6 @@ public class Endpoint : Endpoint<Request, Pos.Entities.Table>
         entity.Position = req.Position;
 
         await _dbContext.SaveChangesAsync();
-        await SendAsync(entity);
+        await Send.OkAsync(entity);
     }
 }

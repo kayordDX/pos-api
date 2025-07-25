@@ -47,6 +47,6 @@ public class Endpoint : Endpoint<Request, Response>
         {
             UserId = req.UserId ?? ""
         };
-        await SendAsync(r);
+        await Send.OkAsync(r);
     }
 }

@@ -60,6 +60,6 @@ public class Endpoint : Endpoint<Request, Response>
         }
 
         await _dbContext.SaveChangesAsync();
-        await SendAsync(new Response() { IsSuccess = true });
+        await Send.OkAsync(new Response() { IsSuccess = true });
     }
 }

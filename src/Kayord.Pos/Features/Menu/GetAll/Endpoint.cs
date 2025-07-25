@@ -27,7 +27,7 @@ public class Endpoint : Endpoint<Request, List<Entities.Menu>>
         var cachedResponse = await _redisClient.GetObjectAsync<List<Entities.Menu>>(cacheKey);
         if (cachedResponse != null)
         {
-            await SendAsync(cachedResponse);
+            await Send.OkAsync(cachedResponse);
             return;
         }
 
@@ -37,6 +37,6 @@ public class Endpoint : Endpoint<Request, List<Entities.Menu>>
             .ToListAsync();
 
         _ = _redisClient.SetObjectAsync(cacheKey, menus);
-        await SendAsync(menus);
+        await Send.OkAsync(menus);
     }
 }

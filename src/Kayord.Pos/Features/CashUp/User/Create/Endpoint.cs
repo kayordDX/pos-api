@@ -26,7 +26,7 @@ public class Endpoint : Endpoint<Request, CashUpUserItem>
     {
         if (!await _userService.IsManager(req.OutletId))
         {
-            await SendForbiddenAsync();
+            await Send.ForbiddenAsync();
             return;
         }
 
@@ -42,9 +42,9 @@ public class Endpoint : Endpoint<Request, CashUpUserItem>
         CashUpUserItem? result = await _dbContext.CashUpUserItem.FindAsync(ci.Id);
         if (result == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
-        await SendAsync(result);
+        await Send.OkAsync(result);
     }
 }

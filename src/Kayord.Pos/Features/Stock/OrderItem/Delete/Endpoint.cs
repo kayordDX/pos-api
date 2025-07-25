@@ -23,11 +23,11 @@ public class Endpoint : Endpoint<Request>
         var entity = await _dbContext.StockOrderItem.FirstOrDefaultAsync(x => x.StockId == req.StockId && x.StockOrderId == req.StockOrderId);
         if (entity == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
         _dbContext.StockOrderItem.Remove(entity);
         await _dbContext.SaveChangesAsync();
-        await SendNoContentAsync();
+        await Send.NoContentAsync();
     }
 }

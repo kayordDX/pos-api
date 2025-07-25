@@ -26,12 +26,12 @@ public class Endpoint : Endpoint<Request>
         var entity = await _dbContext.Table.FirstOrDefaultAsync(x => x.TableId == req.Id);
         if (entity == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
         entity.isDeleted = true;
 
         await _dbContext.SaveChangesAsync();
-        await SendNoContentAsync();
+        await Send.NoContentAsync();
     }
 }

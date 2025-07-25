@@ -42,6 +42,6 @@ public class Endpoint : Endpoint<Request>
 
         await _dbContext.TableBookingTransfer.AddAsync(entity, ct);
         await _dbContext.SaveChangesAsync(ct);
-        await SendNoContentAsync();
+        await Send.NoContentAsync();
     }
 }

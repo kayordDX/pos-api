@@ -29,6 +29,6 @@ public class Endpoint : Endpoint<Request>
         optionGroupEntity.MaxSelections = req.MaxSelections;
 
         await _dbContext.SaveChangesAsync();
-        await SendNoContentAsync();
+        await Send.NoContentAsync();
     }
 }

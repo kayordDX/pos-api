@@ -37,7 +37,7 @@ public class Endpoint : Endpoint<Request, List<Response>>
             where s."id" = {req.Id}
         """).ToListAsync(ct);
 
-        await SendAsync(results);
+        await Send.OkAsync(results);
     }
 }
 

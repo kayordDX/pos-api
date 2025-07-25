@@ -28,7 +28,7 @@ public class Endpoint : Endpoint<Request, Response>
 
         if (orderItem == null)
         {
-            await SendAsync(new Response() { IsSuccess = false });
+            await Send.OkAsync(new Response() { IsSuccess = false });
         }
         else
         {
@@ -48,7 +48,7 @@ public class Endpoint : Endpoint<Request, Response>
             }
             await _dbContext.OrderItem.AddAsync(orderItem);
             await _dbContext.SaveChangesAsync();
-            await SendAsync(new Response() { IsSuccess = true });
+            await Send.OkAsync(new Response() { IsSuccess = true });
         }
     }
 }

@@ -32,6 +32,6 @@ public class Endpoint : EndpointWithoutRequest<List<OptionGroupBasicDTO>>
             .ProjectToBasicDto()
             .ToListAsync(ct);
 
-        await SendAsync(results);
+        await Send.OkAsync(results);
     }
 }

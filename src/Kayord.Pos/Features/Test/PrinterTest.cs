@@ -35,6 +35,6 @@ public class PrinterTest : EndpointWithoutRequest<bool>
 
         await File.WriteAllBytesAsync("test.bin", bytes);
 
-        await SendAsync(true);
+        await Send.OkAsync(true);
     }
 }

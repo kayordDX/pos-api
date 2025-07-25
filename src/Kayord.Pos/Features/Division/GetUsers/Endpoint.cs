@@ -46,11 +46,11 @@ public class Endpoint : Endpoint<Request, List<Response>>
 
         if (results.Count > 0)
         {
-            await SendAsync(results);
+            await Send.OkAsync(results);
         }
         else
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
         }
     }
 }

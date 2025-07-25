@@ -36,10 +36,10 @@ public class Endpoint : Endpoint<Request, Entities.HaloConfig>
         var result = await _dbContext.HaloConfig.FirstOrDefaultAsync(x => x.Id == entity.Id);
         if (result == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
 
-        await SendAsync(result);
+        await Send.OkAsync(result);
     }
 }

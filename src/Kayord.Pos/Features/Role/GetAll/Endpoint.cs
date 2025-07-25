@@ -20,6 +20,6 @@ public class Endpoint : Endpoint<Request, List<Entities.Role>>
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
         var roles = await _dbContext.Role.Where(x => x.OutletId == req.OutletId).Include(i => i.RoleType).ToListAsync();
-        await SendAsync(roles);
+        await Send.OkAsync(roles);
     }
 }

@@ -21,7 +21,7 @@ public class Endpoint : Endpoint<Request>
         var entity = await _dbContext.Supplier.FindAsync(req.Id);
         if (entity == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
 
@@ -31,6 +31,6 @@ public class Endpoint : Endpoint<Request>
         entity.Email = req.Email;
 
         await _dbContext.SaveChangesAsync();
-        await SendNoContentAsync();
+        await Send.NoContentAsync();
     }
 }

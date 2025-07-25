@@ -27,7 +27,7 @@ public class Endpoint : EndpointWithoutRequest<List<Pos.Entities.Extra>>
         var outlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _user.UserId && x.IsCurrent);
         if (outlet == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
         var ExtraGroupIds = await _dbContext.OutletExtraGroup.Where(x => x.OutletId == outlet.OutletId).Select(x => x.ExtraGroupId).ToListAsync(); ;
@@ -35,6 +35,6 @@ public class Endpoint : EndpointWithoutRequest<List<Pos.Entities.Extra>>
         .Where(x => ExtraGroupIds.Contains(x.ExtraGroupId))
         .OrderBy(x => x.Name)
         .ToListAsync();
-        await SendAsync(results);
+        await Send.OkAsync(results);
     }
 }

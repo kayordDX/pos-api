@@ -32,10 +32,10 @@ public class Endpoint : Endpoint<Request, Pos.Entities.Table>
         var result = await _dbContext.Table.FindAsync(entity.TableId);
         if (result == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
 
-        await SendAsync(result);
+        await Send.OkAsync(result);
     }
 }

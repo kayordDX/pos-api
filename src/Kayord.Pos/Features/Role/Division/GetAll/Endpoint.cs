@@ -23,6 +23,6 @@ public class Endpoint : Endpoint<Request, List<Entities.Role>>
 
         var roles = await _dbContext.Role.Where(x => roleids.Contains(x.RoleId)).ToListAsync();
 
-        await SendAsync(roles);
+        await Send.OkAsync(roles);
     }
 }

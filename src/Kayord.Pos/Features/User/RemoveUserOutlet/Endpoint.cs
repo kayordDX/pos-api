@@ -40,6 +40,6 @@ public class Endpoint : Endpoint<Request>
 
         _dbContext.UserOutlet.RemoveRange(roleEntity);
         await _dbContext.SaveChangesAsync();
-        await SendNoContentAsync();
+        await Send.NoContentAsync();
     }
 }

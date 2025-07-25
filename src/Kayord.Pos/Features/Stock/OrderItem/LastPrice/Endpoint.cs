@@ -46,6 +46,6 @@ public class Endpoint : Endpoint<Request, Response>
         }
 
         Response response = new() { LastPrice = result, TotalAmount = amount };
-        await SendAsync(response);
+        await Send.OkAsync(response);
     }
 }

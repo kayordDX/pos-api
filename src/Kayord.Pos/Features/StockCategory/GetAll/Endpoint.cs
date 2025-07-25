@@ -21,13 +21,13 @@ public class Endpoint : Endpoint<Request, List<Entities.StockCategory>>
         if (req.parentId == 0)
         {
             if (req.parentOnly)
-                await SendAsync(await _dbContext.StockCategory.Where(x => x.IsDeleted == false && x.OutletId == req.OutletId && (x.ParentId == null || x.ParentId == 0)).ToListAsync());
+                await Send.OkAsync(await _dbContext.StockCategory.Where(x => x.IsDeleted == false && x.OutletId == req.OutletId && (x.ParentId == null || x.ParentId == 0)).ToListAsync());
             else
-                await SendAsync(await _dbContext.StockCategory.Where(x => x.IsDeleted == false && x.OutletId == req.OutletId && x.ParentId != null).ToListAsync());
+                await Send.OkAsync(await _dbContext.StockCategory.Where(x => x.IsDeleted == false && x.OutletId == req.OutletId && x.ParentId != null).ToListAsync());
         }
         else
         {
-            await SendAsync(await _dbContext.StockCategory.Where(x => x.IsDeleted == false && x.OutletId == req.OutletId && x.ParentId == req.parentId).ToListAsync());
+            await Send.OkAsync(await _dbContext.StockCategory.Where(x => x.IsDeleted == false && x.OutletId == req.OutletId && x.ParentId == req.parentId).ToListAsync());
         }
     }
 }

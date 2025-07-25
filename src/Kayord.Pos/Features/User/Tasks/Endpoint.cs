@@ -50,6 +50,6 @@ public class Endpoint : Endpoint<Request, PaginatedList<Response>>
             .AsNoTracking()
             .GetPagedAsync(r, ct);
 
-        await SendAsync(notification);
+        await Send.OkAsync(notification);
     }
 }

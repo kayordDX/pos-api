@@ -23,18 +23,18 @@ public class Endpoint : Endpoint<Request, Detail.Response>
     {
         if (!await _userService.IsManager(req.OutletId))
         {
-            await SendForbiddenAsync();
+            await Send.ForbiddenAsync();
             return;
         }
 
         if (_userService.GetCurrentUserService().UserId == null)
         {
-            await SendForbiddenAsync();
+            await Send.ForbiddenAsync();
             return;
         }
 
         var response = await Detail.CashUp.CashUpProcess(req.OutletId, req.UserId, _dbContext, _userService.GetCurrentUserService(), true);
 
-        await SendAsync(response);
+        await Send.OkAsync(response);
     }
 }

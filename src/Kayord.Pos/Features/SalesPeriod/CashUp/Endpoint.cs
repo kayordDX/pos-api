@@ -30,7 +30,7 @@ public class Endpoint : Endpoint<Request, CashUp>
         Entities.SalesPeriod? sp = await _dbContext.SalesPeriod.FirstOrDefaultAsync(x => x.Id == req.SalesPeriodId);
         if (sp == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
 
@@ -107,6 +107,6 @@ public class Endpoint : Endpoint<Request, CashUp>
         cashUp.CashUpTotalPayments += cashUp.UserCashUps.Sum(item => item.UserPaymentTotal);
         cashUp.SalesPeriodId = req.SalesPeriodId;
         cashUp.UserId = req.UserId;
-        await SendAsync(cashUp);
+        await Send.OkAsync(cashUp);
     }
 }

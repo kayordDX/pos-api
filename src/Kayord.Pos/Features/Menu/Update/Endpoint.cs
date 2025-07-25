@@ -24,7 +24,7 @@ public class Endpoint : Endpoint<Request, Pos.Entities.Menu>
         var entity = await _dbContext.Menu.FindAsync(req.Id);
         if (entity == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
 
@@ -33,6 +33,6 @@ public class Endpoint : Endpoint<Request, Pos.Entities.Menu>
 
         await _dbContext.SaveChangesAsync();
         await Helper.ClearCacheOutlet(_dbContext, _redisClient, entity.OutletId);
-        await SendAsync(entity);
+        await Send.OkAsync(entity);
     }
 }

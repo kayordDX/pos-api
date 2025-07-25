@@ -24,6 +24,6 @@ public class Endpoint : Endpoint<Request, List<Entities.PaymentType>>
             .OrderBy(x => x.Position)
             .Select(x => x.PaymentType)
             .ToListAsync();
-        await SendAsync(response);
+        await Send.OkAsync(response);
     }
 }

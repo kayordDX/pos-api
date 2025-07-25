@@ -27,7 +27,7 @@ public class Endpoint : Endpoint<Request, PaginatedList<UserResponse>>
         var userOutlet = await _dbContext.UserOutlet.Where(x => x.UserId == _cu.UserId && x.IsCurrent == true).FirstOrDefaultAsync(c);
         if (userOutlet == null)
         {
-            await SendNotFoundAsync(c);
+            await Send.NotFoundAsync(c);
             return;
         }
         var results = await _dbContext.Database
@@ -51,6 +51,6 @@ public class Endpoint : Endpoint<Request, PaginatedList<UserResponse>>
             """
             ).GetPagedAsync(req, c);
 
-        await SendAsync(results);
+        await Send.OkAsync(results);
     }
 }

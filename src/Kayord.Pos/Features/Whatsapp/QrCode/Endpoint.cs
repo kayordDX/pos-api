@@ -20,6 +20,6 @@ public class Endpoint : EndpointWithoutRequest<QrResponse>
     public override async Task HandleAsync(CancellationToken ct)
     {
         var status = await _whatsappService.QrCode();
-        await SendAsync(status);
+        await Send.OkAsync(status);
     }
 }

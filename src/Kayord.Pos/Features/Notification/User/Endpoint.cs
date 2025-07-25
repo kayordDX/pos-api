@@ -23,6 +23,6 @@ public class Endpoint : Endpoint<Request, bool>
     {
         await _hub.Clients.User(req.UserId).ReceiveMessage(req.Message);
         await _hub.Clients.Group("outlet:1").ReceiveMessage(req.Message);
-        await SendAsync(true);
+        await Send.OkAsync(true);
     }
 }

@@ -48,6 +48,6 @@ public class Endpoint : Endpoint<Request, List<Response>>
                 .ProjectToDto()
                 .ToListAsync();
         }
-        await SendAsync(results);
+        await Send.OkAsync(results);
     }
 }

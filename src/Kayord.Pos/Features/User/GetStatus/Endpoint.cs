@@ -43,7 +43,7 @@ public class Endpoint : EndpointWithoutRequest<Response>
                 var userRole = await _dbContext.UserRoleOutlet.AnyAsync(x => x.UserId == _cu.UserId, ct);
                 resp.StatusId = (userRole == true) ? 2 : 1;
             }
-            await SendAsync(resp);
+            await Send.OkAsync(resp);
             return;
         }
 
@@ -96,7 +96,7 @@ public class Endpoint : EndpointWithoutRequest<Response>
 
         if (salesPeriod == null)
         {
-            await SendAsync(resp);
+            await Send.OkAsync(resp);
             return;
         }
         else
@@ -114,6 +114,6 @@ public class Endpoint : EndpointWithoutRequest<Response>
         bool hasNotification = await _dbContext.StockAllocateItem.AnyAsync(x => x.StockAllocateItemStatusId == 2 && x.AssignedUserId == _cu.UserId, ct);
         resp.hasNotification = hasNotification;
 
-        await SendAsync(resp);
+        await Send.OkAsync(resp);
     }
 }

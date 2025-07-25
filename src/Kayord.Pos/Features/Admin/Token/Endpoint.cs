@@ -27,11 +27,11 @@ public class Endpoint : Endpoint<Request, Response>
             {
                 Token = token
             };
-            await SendAsync(result);
+            await Send.OkAsync(result);
         }
         else
         {
-            await SendForbiddenAsync(ct);
+            await Send.ForbiddenAsync(ct);
         }
     }
 }

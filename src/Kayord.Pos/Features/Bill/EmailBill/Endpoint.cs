@@ -52,6 +52,6 @@ public class Endpoint : Endpoint<Request, bool>
         """, attachment);
 
         // Send Email
-        await SendAsync(true);
+        await Send.OkAsync(true);
     }
 }

@@ -41,6 +41,6 @@ public class Endpoint : EndpointWithoutRequest<List<ExtraGroupAdminDTO>>
         {
             result.IsGlobal = shownExtras.Contains(result.ExtraGroupId);
         }
-        await SendAsync(results);
+        await Send.OkAsync(results);
     }
 }

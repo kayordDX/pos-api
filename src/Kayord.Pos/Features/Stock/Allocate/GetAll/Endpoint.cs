@@ -24,6 +24,6 @@ public class Endpoint : Endpoint<Request, PaginatedList<StockAllocateDTOBasic>>
             .Where(x => x.OutletId == req.OutletId)
             .ProjectToDtoBasic()
             .GetPagedAsync(req, ct);
-        await SendAsync(results);
+        await Send.OkAsync(results);
     }
 }

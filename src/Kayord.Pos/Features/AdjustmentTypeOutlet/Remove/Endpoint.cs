@@ -25,19 +25,19 @@ public class Endpoint : Endpoint<Request, Entities.AdjustmentTypeOutlet>
     {
         if (!await _userService.IsManager(req.OutletId))
         {
-            await SendForbiddenAsync();
+            await Send.ForbiddenAsync();
             return;
         }
 
         Entities.AdjustmentTypeOutlet? entity = await _dbContext.AdjustmentTypeOutlet.FirstOrDefaultAsync(x => x.AdjustmentTypeId == req.AdjustmentTypeId && x.OutletId == req.OutletId);
         if (entity == null)
         {
-            await SendNotFoundAsync();
+            await Send.NotFoundAsync();
             return;
         }
 
         _dbContext.AdjustmentTypeOutlet.Remove(entity);
         await _dbContext.SaveChangesAsync();
-        await SendNoContentAsync();
+        await Send.NoContentAsync();
     }
 }
