@@ -52,7 +52,7 @@ public class Endpoint : Endpoint<Request, List<UserResponse>>
                 WHERE 
                     uo.outlet_id = {userOutlet.OutletId}
                     AND rt.is_front_line = {req.IsFrontLine}
-                    AND rt.is_back_office = {req.IsFrontLine}
+                    AND rt.is_back_office = {req.IsBackOffice}
                 GROUP BY 
                     uo.is_current,
                     u.user_id,
