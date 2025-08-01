@@ -1,6 +1,6 @@
 using Microsoft.SemanticKernel.ChatCompletion;
 
-namespace Kayord.Pos.Features.AI.Generate;
+namespace Kayord.Pos.Features.AI.GenerateStream;
 
 public class Endpoint : Endpoint<Request, string?>
 {
@@ -13,12 +13,12 @@ public class Endpoint : Endpoint<Request, string?>
 
     public override void Configure()
     {
-        Post("ai/generate");
+        Get("ai/stream");
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var result = await _chatCompletionService.GetChatMessageContentAsync(req.Prompt, cancellationToken: ct);
-        await Send.OkAsync(result.Content);
+        var aiResponse = _chatCompletionService.GetStreamingChatMessageContentsAsync(req.Prompt, cancellationToken: ct);
+        await Send.EventStreamAsync("generate", aiResponse, ct);
     }
 }
