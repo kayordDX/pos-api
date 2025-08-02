@@ -23,14 +23,18 @@ public class Endpoint : Endpoint<Request, PaginatedList<Response>>
     {
         var results = await _dbContext.Database.SqlQuery<Response>($"""
             SELECT
-                s.id,
+                i.id stock_item_id,
+                s.id stock_id,
                 s.outlet_id,
                 s.name,
                 s.unit_id,
                 u.name unit_name,
                 s.stock_category_id,
-                i.actual total_actual,
-                s.has_vat
+                i.actual actual,
+                i.threshold,
+                s.has_vat,
+                i.updated,
+                division_id
             FROM
                 stock_item i
                 JOIN stock s ON s.id = i.stock_id

@@ -58,6 +58,7 @@ public class Endpoint : Endpoint<Request>
 
         entity.Actual = req.Actual;
         entity.Threshold = req.Threshold;
+        entity.Updated = DateTime.Now;
 
         await _dbContext.SaveChangesAsync();
 
