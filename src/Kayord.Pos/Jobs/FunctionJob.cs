@@ -18,4 +18,10 @@ public class FunctionJob
     {
         await _dbContext.Database.ExecuteSqlAsync($"SELECT update_stock_threshold();", ct);
     }
+
+    [TickerFunction("NotificationLogCleanup")]
+    public async Task NotificationLogCleanup(CancellationToken ct)
+    {
+        await _dbContext.Database.ExecuteSqlAsync($"delete from notification_log where date_inserted < NOW() - INTERVAL '1 months'", ct);
+    }
 }
