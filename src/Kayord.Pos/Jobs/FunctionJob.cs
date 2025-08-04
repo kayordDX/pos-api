@@ -13,7 +13,7 @@ public class FunctionJob
         _dbContext = dbContext;
     }
 
-    [TickerFunction("StockThreshold", "0 1 * * *")]
+    [TickerFunction("StockThreshold")]
     public async Task StockThreshold(CancellationToken ct)
     {
         await _dbContext.Database.ExecuteSqlAsync($"SELECT update_stock_threshold();", ct);

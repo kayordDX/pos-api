@@ -1,6 +1,4 @@
 using Kayord.Pos.Data;
-using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.EntityFrameworkCore.Metadata;
 using TickerQ.Dashboard.DependencyInjection;
 using TickerQ.DependencyInjection;
 using TickerQ.EntityFrameworkCore.DependencyInjection;
@@ -17,7 +15,6 @@ public static class TickerExtensions
             opt.AddOperationalStore<AppDbContext>(o =>
             {
                 o.UseModelCustomizerForMigrations();
-                o.CancelMissedTickersOnApplicationRestart();
             });
             opt.AddDashboard();
             opt.AddDashboardBasicAuth();
