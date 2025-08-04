@@ -34,7 +34,7 @@ builder.Services
 var app = builder.Build();
 
 app.UseCorsKayord();
-// app.UseTickerQ();
+app.UseTickerQ();
 app.UseApi();
 app.UseHealth();
 app.MapHub<KayordHub>("/hub");
