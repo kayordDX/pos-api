@@ -11,6 +11,7 @@ public static class TickerExtensions
     {
         services.AddTickerQ(opt =>
         {
+            opt.SetInstanceIdentifier("Main");
             opt.AddOperationalStore<AppDbContext>(o =>
             {
                 o.UseModelCustomizerForMigrations();
