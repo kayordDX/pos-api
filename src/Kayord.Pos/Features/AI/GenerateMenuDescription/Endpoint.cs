@@ -19,7 +19,7 @@ public class Endpoint : Endpoint<Request, string?>
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
         string prompt = $"""
-            You are a restaurant manager.
+            You are a restaurant manager for a restaurant in South Africa.
 
             Generate a description for a restaurant menu item. 
             The menu it is on is called {req.Menu}.
