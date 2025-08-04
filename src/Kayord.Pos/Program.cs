@@ -34,10 +34,10 @@ builder.Services
 var app = builder.Build();
 
 app.UseCorsKayord();
-app.UseTickerQ();
 app.UseApi();
 app.UseHealth();
 app.MapHub<KayordHub>("/hub");
+app.UseTickerQ();
 app.Run();
 
 public partial class Program { }

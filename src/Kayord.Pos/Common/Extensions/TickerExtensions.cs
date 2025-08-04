@@ -1,4 +1,6 @@
 using Kayord.Pos.Data;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.EntityFrameworkCore.Metadata;
 using TickerQ.Dashboard.DependencyInjection;
 using TickerQ.DependencyInjection;
 using TickerQ.EntityFrameworkCore.DependencyInjection;
@@ -11,7 +13,7 @@ public static class TickerExtensions
     {
         services.AddTickerQ(opt =>
         {
-            opt.SetInstanceIdentifier("Main");
+            opt.SetMaxConcurrency(1);
             opt.AddOperationalStore<AppDbContext>(o =>
             {
                 o.UseModelCustomizerForMigrations();

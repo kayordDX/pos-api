@@ -22,6 +22,6 @@ public class FunctionJob
     [TickerFunction("NotificationLogCleanup")]
     public async Task NotificationLogCleanup(CancellationToken ct)
     {
-        await _dbContext.Database.ExecuteSqlAsync($"delete from notification_log where date_inserted < NOW() - INTERVAL '1 months'", ct);
+        await _dbContext.Database.ExecuteSqlAsync($"delete from notification_log where date_inserted < NOW() - INTERVAL '1 months';", ct);
     }
 }

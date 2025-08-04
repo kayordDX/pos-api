@@ -30,6 +30,7 @@ public class Endpoint : Endpoint<Request, PaginatedList<Response>>
                 s.unit_id,
                 u.name unit_name,
                 s.stock_category_id,
+                st.display_name category_display_name,
                 i.actual actual,
                 i.threshold,
                 s.has_vat,
@@ -39,6 +40,8 @@ public class Endpoint : Endpoint<Request, PaginatedList<Response>>
                 stock_item i
                 JOIN stock s ON s.id = i.stock_id
                 JOIN unit u ON s.unit_id = u.id
+                LEFT JOIN vw_stock_category st
+                	ON st.id = s.stock_category_id
             WHERE
                 division_id = {req.DivisionId}
         """).GetPagedAsync(req, ct);
