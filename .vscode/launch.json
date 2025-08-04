@@ -2,20 +2,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": ".NET Core Launch (web)",
-            "type": "coreclr",
+            "name": "C#: Debug",
+            "type": "dotnet",
             "request": "launch",
-            "preLaunchTask": "build",
-            "program": "${workspaceFolder}/src/Kayord.Pos/bin/Debug/net9.0/Kayord.Pos.dll",
-            "args": [],
-            "cwd": "${workspaceFolder}/src/Kayord.Pos",
-            "stopAtEntry": false,
-            "env": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
-            },
-            "sourceFileMap": {
-                "/Views": "${workspaceFolder}/Views"
-            }
+            "projectPath": "${workspaceFolder}/src/Kayord.Pos/Kayord.Pos.csproj"
         },
         {
             "name": ".NET Core Attach",

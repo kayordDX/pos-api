@@ -8,4 +8,5 @@ public class Response
     public decimal Adjustments { get; set; }
     public decimal Tips { get; set; }
     public decimal TipsPercentage { get; set; }
+    public decimal Payments { get; set; }
 }

@@ -3,6 +3,7 @@ using Kayord.Pos.Entities;
 using Kayord.Pos.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using TickerQ.EntityFrameworkCore.Configurations;
 
 namespace Kayord.Pos.Data;
 
@@ -97,6 +98,8 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        base.OnModelCreating(builder);
+
         var dateTimeConverter = new ValueConverter<DateTime, DateTime>(
             v => v.ToUniversalTime(),
             v => DateTime.SpecifyKind(v, DateTimeKind.Utc)

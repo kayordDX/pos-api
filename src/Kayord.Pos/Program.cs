@@ -3,6 +3,7 @@ using Kayord.Pos.Common.Extensions.Cors;
 using Kayord.Pos.Common.Extensions.Health;
 using Kayord.Pos.Common.Extensions.Host;
 using Kayord.Pos.Hubs;
+using TickerQ.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.AddLoggingConfiguration(builder.Configuration);
@@ -22,6 +23,7 @@ builder.Services.ConfigureCors(corsSection.Get<string[]>() ?? [""]);
 
 builder.Services.ConfigureAuth(builder.Configuration);
 builder.Services.ConfigureEF(builder.Configuration, builder.Environment);
+builder.Services.ConfigureTickerQ();
 
 builder.Services.ConfigureGeneral(builder.Configuration);
 
@@ -32,6 +34,7 @@ builder.Services
 var app = builder.Build();
 
 app.UseCorsKayord();
+// app.UseTickerQ();
 app.UseApi();
 app.UseHealth();
 app.MapHub<KayordHub>("/hub");

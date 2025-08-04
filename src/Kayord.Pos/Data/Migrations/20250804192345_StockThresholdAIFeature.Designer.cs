@@ -3,6 +3,7 @@ using System;
 using Kayord.Pos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using NpgsqlTypes;
@@ -12,9 +13,11 @@ using NpgsqlTypes;
 namespace Kayord.Pos.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250804192345_StockThresholdAIFeature")]
+    partial class StockThresholdAIFeature
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -3109,215 +3112,6 @@ namespace Kayord.Pos.Data.Migrations
                     b.ToTable("order_item_status_audit", (string)null);
                 });
 
-            modelBuilder.Entity("TickerQ.EntityFrameworkCore.Entities.CronTickerEntity", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text")
-                        .HasColumnName("description");
-
-                    b.Property<string>("Expression")
-                        .HasColumnType("text")
-                        .HasColumnName("expression");
-
-                    b.Property<string>("Function")
-                        .HasColumnType("text")
-                        .HasColumnName("function");
-
-                    b.Property<string>("InitIdentifier")
-                        .HasColumnType("text")
-                        .HasColumnName("init_identifier");
-
-                    b.Property<byte[]>("Request")
-                        .HasColumnType("bytea")
-                        .HasColumnName("request");
-
-                    b.Property<int>("Retries")
-                        .HasColumnType("integer")
-                        .HasColumnName("retries");
-
-                    b.PrimitiveCollection<int[]>("RetryIntervals")
-                        .HasColumnType("integer[]")
-                        .HasColumnName("retry_intervals");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
-
-                    b.HasKey("Id")
-                        .HasName("pk_cron_tickers");
-
-                    b.HasIndex("Expression")
-                        .HasDatabaseName("IX_CronTickers_Expression");
-
-                    b.ToTable("CronTickers", "ticker");
-                });
-
-            modelBuilder.Entity("TickerQ.EntityFrameworkCore.Entities.CronTickerOccurrenceEntity<TickerQ.EntityFrameworkCore.Entities.CronTickerEntity>", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<Guid>("CronTickerId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("cron_ticker_id");
-
-                    b.Property<long>("ElapsedTime")
-                        .HasColumnType("bigint")
-                        .HasColumnName("elapsed_time");
-
-                    b.Property<string>("Exception")
-                        .HasColumnType("text")
-                        .HasColumnName("exception");
-
-                    b.Property<DateTime?>("ExecutedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("executed_at");
-
-                    b.Property<DateTime>("ExecutionTime")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("execution_time");
-
-                    b.Property<string>("LockHolder")
-                        .HasColumnType("text")
-                        .HasColumnName("lock_holder");
-
-                    b.Property<DateTime?>("LockedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("locked_at");
-
-                    b.Property<int>("RetryCount")
-                        .HasColumnType("integer")
-                        .HasColumnName("retry_count");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("integer")
-                        .HasColumnName("status");
-
-                    b.HasKey("Id")
-                        .HasName("pk_cron_ticker_occurrences");
-
-                    b.HasIndex("CronTickerId")
-                        .HasDatabaseName("IX_CronTickerOccurrence_CronTickerId");
-
-                    b.HasIndex("ExecutionTime")
-                        .HasDatabaseName("IX_CronTickerOccurrence_ExecutionTime");
-
-                    b.HasIndex("CronTickerId", "ExecutionTime")
-                        .IsUnique()
-                        .HasDatabaseName("UQ_CronTickerId_ExecutionTime");
-
-                    b.HasIndex("Status", "ExecutionTime")
-                        .HasDatabaseName("IX_CronTickerOccurrence_Status_ExecutionTime");
-
-                    b.ToTable("CronTickerOccurrences", "ticker");
-                });
-
-            modelBuilder.Entity("TickerQ.EntityFrameworkCore.Entities.TimeTickerEntity", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<Guid?>("BatchParent")
-                        .HasColumnType("uuid")
-                        .HasColumnName("batch_parent");
-
-                    b.Property<int?>("BatchRunCondition")
-                        .HasColumnType("integer")
-                        .HasColumnName("batch_run_condition");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text")
-                        .HasColumnName("description");
-
-                    b.Property<long>("ElapsedTime")
-                        .HasColumnType("bigint")
-                        .HasColumnName("elapsed_time");
-
-                    b.Property<string>("Exception")
-                        .HasColumnType("text")
-                        .HasColumnName("exception");
-
-                    b.Property<DateTime?>("ExecutedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("executed_at");
-
-                    b.Property<DateTime>("ExecutionTime")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("execution_time");
-
-                    b.Property<string>("Function")
-                        .HasColumnType("text")
-                        .HasColumnName("function");
-
-                    b.Property<string>("InitIdentifier")
-                        .HasColumnType("text")
-                        .HasColumnName("init_identifier");
-
-                    b.Property<string>("LockHolder")
-                        .IsConcurrencyToken()
-                        .HasColumnType("text")
-                        .HasColumnName("lock_holder");
-
-                    b.Property<DateTime?>("LockedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("locked_at");
-
-                    b.Property<byte[]>("Request")
-                        .HasColumnType("bytea")
-                        .HasColumnName("request");
-
-                    b.Property<int>("Retries")
-                        .HasColumnType("integer")
-                        .HasColumnName("retries");
-
-                    b.Property<int>("RetryCount")
-                        .HasColumnType("integer")
-                        .HasColumnName("retry_count");
-
-                    b.PrimitiveCollection<int[]>("RetryIntervals")
-                        .HasColumnType("integer[]")
-                        .HasColumnName("retry_intervals");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("integer")
-                        .HasColumnName("status");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at");
-
-                    b.HasKey("Id")
-                        .HasName("pk_time_tickers");
-
-                    b.HasIndex("BatchParent")
-                        .HasDatabaseName("ix_time_tickers_batch_parent");
-
-                    b.HasIndex("ExecutionTime")
-                        .HasDatabaseName("IX_TimeTicker_ExecutionTime");
-
-                    b.HasIndex("Status", "ExecutionTime")
-                        .HasDatabaseName("IX_TimeTicker_Status_ExecutionTime");
-
-                    b.ToTable("TimeTickers", "ticker");
-                });
-
             modelBuilder.Entity("Kayord.Pos.Entities.Adjustment", b =>
                 {
                     b.HasOne("Kayord.Pos.Entities.AdjustmentType", "AdjustmentType")
@@ -4200,29 +3994,6 @@ namespace Kayord.Pos.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("TickerQ.EntityFrameworkCore.Entities.CronTickerOccurrenceEntity<TickerQ.EntityFrameworkCore.Entities.CronTickerEntity>", b =>
-                {
-                    b.HasOne("TickerQ.EntityFrameworkCore.Entities.CronTickerEntity", "CronTicker")
-                        .WithMany()
-                        .HasForeignKey("CronTickerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_cron_ticker_occurrences_cron_tickers_cron_ticker_id");
-
-                    b.Navigation("CronTicker");
-                });
-
-            modelBuilder.Entity("TickerQ.EntityFrameworkCore.Entities.TimeTickerEntity", b =>
-                {
-                    b.HasOne("TickerQ.EntityFrameworkCore.Entities.TimeTickerEntity", "ParentJob")
-                        .WithMany("ChildJobs")
-                        .HasForeignKey("BatchParent")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("fk_time_tickers_time_tickers_batch_parent");
-
-                    b.Navigation("ParentJob");
-                });
-
             modelBuilder.Entity("Kayord.Pos.Entities.Business", b =>
                 {
                     b.Navigation("Outlets");
@@ -4334,11 +4105,6 @@ namespace Kayord.Pos.Data.Migrations
                     b.Navigation("OrderItems");
 
                     b.Navigation("Payments");
-                });
-
-            modelBuilder.Entity("TickerQ.EntityFrameworkCore.Entities.TimeTickerEntity", b =>
-                {
-                    b.Navigation("ChildJobs");
                 });
 #pragma warning restore 612, 618
         }
