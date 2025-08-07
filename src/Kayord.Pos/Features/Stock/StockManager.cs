@@ -154,6 +154,30 @@ public static class StockManager
         """);
     }
 
+    public static async Task StockAvailableAllCheck(AppDbContext dbContext, CancellationToken ct)
+    {
+        await dbContext.Database.ExecuteSqlAsync($"""
+        update menu_item m
+            set is_available = a.is_available
+        from (
+            select 
+                mi.menu_item_id,
+                min(((si.actual - mmm.quantity) >= 0)::int)::bool is_available
+            from menu_item mi
+            join menu_item_stock mis
+                on mi.menu_item_id = mis.menu_item_id
+            join menu_item_stock mmm
+                on mmm.menu_item_id = mis.menu_item_id
+            join stock_item si
+                on si.stock_id = mmm.stock_id
+                and si.division_id = mi.division_id
+            group by mi.menu_item_id
+        ) a
+        WHERE m.menu_item_id = a.menu_item_id
+        AND m.is_available <> a.is_available
+        """);
+    }
+
     public static async Task<bool> IsMenuItemAvailable(int menuItemId, AppDbContext dbContext, CancellationToken ct)
     {
         var isAvailable = await dbContext.MenuItem

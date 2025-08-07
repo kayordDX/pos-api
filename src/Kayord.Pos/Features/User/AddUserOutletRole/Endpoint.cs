@@ -34,7 +34,7 @@ public class Endpoint : Endpoint<Request>
             .FirstOrDefaultAsync(c);
         if (roleExists != null)
         {
-            throw new Exception("Role already exists");
+            ValidationContext.Instance.ThrowError("Role already exists");
         }
 
         var roleEntity = new Entities.UserRoleOutlet
