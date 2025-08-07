@@ -14,19 +14,19 @@ public class FunctionJob
         _dbContext = dbContext;
     }
 
-    [TickerFunction("Stock Threshold", "0 1 * * *")]
+    [TickerFunction("Stock Threshold")]
     public async Task StockThreshold(CancellationToken ct)
     {
         await _dbContext.Database.ExecuteSqlAsync($"SELECT update_stock_threshold();", ct);
     }
 
-    [TickerFunction("Notification Log Cleanup", "8 0 * * *")]
+    [TickerFunction("Notification Log Cleanup")]
     public async Task NotificationLogCleanup(CancellationToken ct)
     {
         await _dbContext.Database.ExecuteSqlAsync($"delete from notification_log where date_inserted < NOW() - INTERVAL '1 months';", ct);
     }
 
-    [TickerFunction("Stock Available Check All", "15 1 * * *")]
+    [TickerFunction("Stock Available Check All")]
     public async Task StockCheckAll(CancellationToken ct)
     {
         await StockManager.StockAvailableAllCheck(_dbContext, ct);

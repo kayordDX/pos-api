@@ -11,10 +11,10 @@ public static class TickerExtensions
     {
         services.AddTickerQ(opt =>
         {
-            opt.SetMaxConcurrency(1);
             opt.AddOperationalStore<AppDbContext>(o =>
             {
                 o.UseModelCustomizerForMigrations();
+                o.CancelMissedTickersOnApplicationRestart();
             });
             opt.AddDashboard();
             opt.AddDashboardBasicAuth();
