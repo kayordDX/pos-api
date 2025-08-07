@@ -36,7 +36,7 @@ public class Endpoint : Endpoint<Request, StockAllocateItem>
 
         if (entity.Completed != null)
         {
-            throw new Exception("Already completed");
+            ValidationContext.Instance.ThrowError("Already completed");
         }
 
         // Set status to cancelled
@@ -52,7 +52,7 @@ public class Endpoint : Endpoint<Request, StockAllocateItem>
 
             if (!canAllocateStock)
             {
-                throw new Exception("Not enough stock to allocate");
+                ValidationContext.Instance.ThrowError("Not enough stock to allocate");
             }
             entity.StockAllocateItemStatusId = req.StockAllocateItemStatusId;
             entity.Completed = DateTime.Now;
@@ -61,6 +61,7 @@ public class Endpoint : Endpoint<Request, StockAllocateItem>
         await _dbContext.SaveChangesAsync();
 
         await AllocateItemUpdate.Status(entity.StockAllocateId, _dbContext, ct);
+        await StockManager.StockAvailableCheck(entity.StockId, _dbContext, ct);
         await Send.OkAsync(entity);
     }
 }
