@@ -31,11 +31,14 @@ public class NotificationService
 
     public async Task<bool> SendNotificationAsync(string title, string body, string token, string userId)
     {
-        // Do not send notification when not in prod
-        if (!_web.IsProduction())
-        {
-            return true;
-        }
+        // Do not send notification when not in prod. For now still sending
+        // if (!_web.IsProduction())
+        // {
+        //     var notificationSummary = new NotificationDTO { Title = title, Body = body, UserId = userId };
+        //     string? notificationPayload = JsonSerializer.Serialize(notificationSummary);
+        //     await LogNotification(token, true, notificationPayload, userId, "Non prod did not notify");
+        //     return true;
+        // }
 
         bool result;
         try
@@ -85,6 +88,27 @@ public class NotificationService
                 await CheckToken(userId, token);
             }
         }
+        catch (FirebaseMessagingException e)
+        {
+            result = false;
+            if (e.MessagingErrorCode == MessagingErrorCode.Unregistered || e.MessagingErrorCode == MessagingErrorCode.InvalidArgument)
+            {
+                // Delete unregistered user
+                await RemoveUserToken(userId, token);
+            }
+            var message = new Message()
+            {
+                Notification = new Notification
+                {
+                    Title = title,
+                    Body = body,
+                    ImageUrl = "https://pos.kayord.com/logo.svg"
+                },
+                Token = token
+            };
+            string? payload = JsonSerializer.Serialize(message);
+            await LogNotification(token, false, payload, userId, e.Message);
+        }
         catch (Exception ex)
         {
             result = false;
@@ -99,7 +123,6 @@ public class NotificationService
                 Token = token
             };
             string? payload = JsonSerializer.Serialize(message);
-
             await LogNotification(token, false, payload, userId, ex.Message);
         }
         return result;
@@ -135,6 +158,16 @@ public class NotificationService
                 Token = token,
                 UserId = userId
             });
+            await _dbContext.SaveChangesAsync();
+        }
+    }
+
+    public async Task RemoveUserToken(string userId, string token)
+    {
+        var notificationUser = await _dbContext.NotificationUser.FindAsync(userId, token);
+        if (notificationUser != null)
+        {
+            _dbContext.NotificationUser.Remove(notificationUser);
             await _dbContext.SaveChangesAsync();
         }
     }

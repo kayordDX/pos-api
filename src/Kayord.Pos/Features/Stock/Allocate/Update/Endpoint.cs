@@ -1,4 +1,5 @@
 using Kayord.Pos.Data;
+using Kayord.Pos.Events;
 using Kayord.Pos.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,6 +26,9 @@ public class Endpoint : Endpoint<Request>
     {
         var entity = await _dbContext.StockAllocate
             .Where(x => x.Id == req.Id)
+            .Include(x => x.Outlet)
+            .Include(x => x.FromDivision)
+            .Include(x => x.ToDivision)
             .FirstOrDefaultAsync(ct);
 
         if (entity == null)
@@ -39,9 +43,27 @@ public class Endpoint : Endpoint<Request>
         if (entity.StockAllocateStatusId == 2)
         {
             var items = await _dbContext.StockAllocateItem.Where(x => x.StockAllocateId == entity.Id).ToListAsync(ct);
+
             foreach (var item in items)
             {
                 item.StockAllocateItemStatusId = 2;
+            }
+
+            // Notify users about new items
+            var users = items.Select(x => x.AssignedUserId).Distinct().ToList();
+            if (users.Count > 0)
+            {
+                string title = $"New Allocation from {entity.Outlet.Name}";
+                string body = $"You have received a new allocation for {entity.Outlet.Name}\nFrom: {entity.FromDivision.DivisionName}\nTo: {entity.ToDivision.DivisionName}";
+                foreach (var user in users)
+                {
+                    await new NotificationEvent
+                    {
+                        UserId = user,
+                        Title = title,
+                        Body = body
+                    }.PublishAsync(Mode.WaitForNone);
+                }
             }
         }
 
