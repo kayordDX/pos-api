@@ -10,9 +10,11 @@ namespace Kayord.Pos.Services;
 public class NotificationService
 {
     private readonly AppDbContext _dbContext;
-    public NotificationService(AppDbContext dbContext)
+    private readonly IWebHostEnvironment _web;
+    public NotificationService(AppDbContext dbContext, IWebHostEnvironment web)
     {
         _dbContext = dbContext;
+        _web = web;
     }
 
     public async Task SendUserNotificationAsync(string title, string body, string userId)
@@ -29,7 +31,13 @@ public class NotificationService
 
     public async Task<bool> SendNotificationAsync(string title, string body, string token, string userId)
     {
-        bool result = false;
+        // Do not send notification when not in prod
+        if (!_web.IsProduction())
+        {
+            return true;
+        }
+
+        bool result;
         try
         {
             var message = new Message()
