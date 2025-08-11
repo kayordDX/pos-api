@@ -28,7 +28,7 @@ public static class AllocateItemUpdate
         }
     }
 
-    public static async Task<bool> StockCount(StockAllocateItem allocateItem, AppDbContext dbContext, CurrentUserService currentUserService, CancellationToken ct)
+    public static async Task<bool> StockCount(StockAllocateItem allocateItem, AppDbContext dbContext, CurrentUserService currentUserService, CancellationToken ct, int? toStockId)
     {
         // From Stock Item
         var fromItem = await dbContext.StockItem
@@ -63,14 +63,14 @@ public static class AllocateItemUpdate
 
         // To Stock Item
         var toItem = await dbContext.StockItem
-            .Where(x => x.StockId == allocateItem.StockId && x.DivisionId == allocateItem.StockAllocate.ToDivisionId)
+            .Where(x => x.StockId == (toStockId ?? allocateItem.StockId) && x.DivisionId == allocateItem.StockAllocate.ToDivisionId)
             .FirstOrDefaultAsync(ct);
 
         if (toItem == null)
         {
             toItem = new StockItem()
             {
-                StockId = allocateItem.StockId,
+                StockId = toStockId ?? allocateItem.StockId,
                 DivisionId = allocateItem.StockAllocate.ToDivisionId,
                 Actual = 0,
                 Threshold = 0,

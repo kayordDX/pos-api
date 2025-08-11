@@ -14,4 +14,5 @@ public class Response
     public string AssignedUserId { get; set; } = string.Empty;
     public UserDTO? AssignedUser { get; set; }
     public DateTime LastModified { get; set; }
+    public int ToDivisionId { get; set; }
 }

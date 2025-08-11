@@ -43,6 +43,7 @@ public class Endpoint : Endpoint<Request, PaginatedList<Response>>
                 Name = x.Stock.Name + " " + "(" + x.Actual + " " + x.Stock.Unit.Name + ")",
                 Status = x.StockAllocateItemStatus.Name,
                 Type = "Stock Allocation",
+                ToDivisionId = x.StockAllocate.ToDivisionId,
                 Description = ((x.StockAllocate.ToOutletId == x.StockAllocate.OutletId) ? "" : x.StockAllocate.Outlet.Name + " -> " + x.StockAllocate.ToOutlet.Name + "-> ") + x.StockAllocate.FromDivision.DivisionName + " to " + x.StockAllocate.ToDivision.DivisionName,
                 LastModified = x.LastModified ?? x.Created
             })

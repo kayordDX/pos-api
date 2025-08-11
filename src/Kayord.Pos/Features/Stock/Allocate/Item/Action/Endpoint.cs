@@ -47,7 +47,15 @@ public class Endpoint : Endpoint<Request, StockAllocateItem>
             // If Approved update counts and do audit
             if (req.StockAllocateItemStatusId == 4)
             {
-                canAllocateStock = await AllocateItemUpdate.StockCount(entity, _dbContext, _currentUserService, ct);
+                // Check if different outlet with additional checks.
+                if (entity.StockAllocate.OutletId != entity.StockAllocate.ToOutletId)
+                {
+                    if (req.StockId == null)
+                    {
+                        ValidationContext.Instance.ThrowError("Please select stock item");
+                    }
+                }
+                canAllocateStock = await AllocateItemUpdate.StockCount(entity, _dbContext, _currentUserService, ct, req.StockId);
             }
 
             if (!canAllocateStock)

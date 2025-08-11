@@ -4,4 +4,5 @@ public class Request
 {
     public int Id { get; set; }
     public int StockAllocateItemStatusId { get; set; }
+    public int? StockId { get; set; }
 }
