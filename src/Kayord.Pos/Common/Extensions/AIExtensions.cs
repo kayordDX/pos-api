@@ -11,7 +11,7 @@ public static class AIExtensions
 
         services.AddGoogleAIGeminiChatCompletion(
             modelId: appConfig?.GeminiModel ?? "gemini-2.5-flash-lite",
-            apiKey: appConfig?.GeminiKey ?? ""
+            apiKey: appConfig?.GeminiKey ?? "no-key"
         );
 
         services.AddTransient((serviceProvider) =>
