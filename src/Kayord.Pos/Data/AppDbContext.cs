@@ -92,6 +92,7 @@ public class AppDbContext : DbContext
     public DbSet<User> User => Set<User>();
     public DbSet<Unit> Unit => Set<Unit>();
     public DbSet<UserOutlet> UserOutlet => Set<UserOutlet>();
+    public DbSet<UserOutletPin> UserOutletPin => Set<UserOutletPin>();
     public DbSet<UserRoleOutlet> UserRoleOutlet => Set<UserRoleOutlet>();
     public DbSet<VATRate> VATRate => Set<VATRate>();
     public DbSet<BillCategory> BillCategory => Set<BillCategory>();

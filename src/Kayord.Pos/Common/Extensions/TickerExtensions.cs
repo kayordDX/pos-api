@@ -14,10 +14,12 @@ public static class TickerExtensions
             opt.AddOperationalStore<AppDbContext>(o =>
             {
                 o.UseModelCustomizerForMigrations();
-                o.CancelMissedTickersOnApplicationRestart();
+                o.CancelMissedTickersOnAppStart();
             });
-            opt.AddDashboard();
-            opt.AddDashboardBasicAuth();
+            opt.AddDashboard(o =>
+            {
+                o.EnableBasicAuth = true;
+            });
         });
     }
 }
