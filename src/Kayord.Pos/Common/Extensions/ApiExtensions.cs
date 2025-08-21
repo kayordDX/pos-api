@@ -20,6 +20,7 @@ public static class ApiExtensions
         services.AddAuthorization(o =>
         {
             o.AddPolicy(Constants.Policy.Manager, b => b.AddRequirements(new RoleTypeRequirement(Constants.Policy.Manager)).Build());
+            o.AddPolicy(Constants.Policy.Feature, b => b.AddRequirements(new FeatureRequirement(Constants.Policy.Feature)).Build());
         });
 
         services.SwaggerDocument(o =>
