@@ -7,4 +7,6 @@ public class UserOutletPin : AuditableEntity
     public string Pin { get; set; } = string.Empty;
     public bool IsEnabled { get; set; }
     public required byte[] Iv { get; set; }
+    public User User { get; set; } = default!;
+    public Outlet Outlet { get; set; } = default!;
 }
