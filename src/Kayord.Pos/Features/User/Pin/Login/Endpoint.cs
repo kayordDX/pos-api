@@ -33,6 +33,14 @@ public class Endpoint : Endpoint<Request, Response>
             return;
         }
 
+        // Check if Device Has been enabled
+        var hasDevice = await _dbContext.OutletCounter.Where(x => x.Id == r.DeviceId).FirstOrDefaultAsync(ct);
+        if (hasDevice == null)
+        {
+            await Send.ForbiddenAsync(ct);
+            return;
+        }
+
         // Check if User Exists
         var userPin = await _dbContext.UserOutletPin.Where(x => x.UserId == r.UserId && x.OutletId == r.OutletId).FirstOrDefaultAsync(ct);
         if (userPin == null)

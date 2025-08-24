@@ -4,5 +4,6 @@ public class Request
 {
     public string UserId { get; set; } = string.Empty;
     public int OutletId { get; set; }
+    public Guid DeviceId { get; set; }
     public string Pin { get; set; } = string.Empty;
 }
