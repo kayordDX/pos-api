@@ -21,7 +21,6 @@ public class Endpoint : EndpointWithoutRequest<bool>
     public override void Configure()
     {
         Get("/test");
-        AllowAnonymous();
     }
 
     private async Task CreateDocument()

@@ -14,7 +14,6 @@ public class Endpoint : Endpoint<Request, Pos.Entities.Section>
     public override void Configure()
     {
         Put("/section/{sectionId:int}");
-        AllowAnonymous();
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)

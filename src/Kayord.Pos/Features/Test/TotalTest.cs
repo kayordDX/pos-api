@@ -14,7 +14,6 @@ public class TotalTest : EndpointWithoutRequest<TableTotal?>
     public override void Configure()
     {
         Get("/test/total");
-        AllowAnonymous();
     }
 
     public override async Task HandleAsync(CancellationToken ct)

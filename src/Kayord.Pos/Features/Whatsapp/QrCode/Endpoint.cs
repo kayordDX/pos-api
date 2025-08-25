@@ -14,7 +14,6 @@ public class Endpoint : EndpointWithoutRequest<QrResponse>
     public override void Configure()
     {
         Get("/whatsapp/qr");
-        AllowAnonymous();
     }
 
     public override async Task HandleAsync(CancellationToken ct)

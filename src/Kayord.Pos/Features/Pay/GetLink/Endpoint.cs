@@ -22,7 +22,6 @@ public class Endpoint : Endpoint<Request, Result<Response>>
     public override void Configure()
     {
         Get("/pay/getLink");
-        AllowAnonymous();
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)

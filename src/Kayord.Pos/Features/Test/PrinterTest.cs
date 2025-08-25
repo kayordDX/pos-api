@@ -20,7 +20,6 @@ public class PrinterTest : EndpointWithoutRequest<bool>
     public override void Configure()
     {
         Get("/test/print");
-        AllowAnonymous();
     }
 
     private static EPSON e = new();

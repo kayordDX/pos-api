@@ -18,7 +18,6 @@ public class Endpoint : Endpoint<Request, Pos.Entities.TableBooking>
     public override void Configure()
     {
         Post("/tableBooking/close");
-        AllowAnonymous();
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)

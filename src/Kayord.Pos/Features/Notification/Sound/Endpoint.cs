@@ -14,7 +14,6 @@ public class Endpoint : EndpointWithoutRequest<bool>
     public override void Configure()
     {
         Post("/notification/sound");
-        AllowAnonymous();
     }
 
     public override async Task HandleAsync(CancellationToken ct)
