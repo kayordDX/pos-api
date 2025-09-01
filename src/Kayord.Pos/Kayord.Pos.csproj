@@ -31,18 +31,18 @@
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.8" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.8" />
-    <PackageReference Include="QuestPDF" Version="2025.7.0" />
+    <PackageReference Include="QuestPDF" Version="2025.7.1" />
     <PackageReference Include="Riok.Mapperly" Version="4.2.1" />
-    <PackageReference Include="Scalar.AspNetCore" Version="2.7.1" />
+    <PackageReference Include="Scalar.AspNetCore" Version="2.7.2" />
     <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
     <PackageReference Include="Serilog.Exceptions" Version="8.4.0" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="9.0.0" />
     <PackageReference Include="QueryKit" Version="1.9.2" />
-    <PackageReference Include="Microsoft.SemanticKernel" Version="1.63.0" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Google" Version="1.63.0-alpha" />
-    <PackageReference Include="TickerQ" Version="2.5.1" />
-    <PackageReference Include="TickerQ.Dashboard" Version="2.5.1" />
-    <PackageReference Include="TickerQ.EntityFrameworkCore" Version="2.5.1" />    
+    <PackageReference Include="Microsoft.SemanticKernel" Version="1.64.0" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Google" Version="1.64.0-alpha" />
+    <PackageReference Include="TickerQ" Version="2.4.4" />
+    <PackageReference Include="TickerQ.Dashboard" Version="2.4.4" />
+    <PackageReference Include="TickerQ.EntityFrameworkCore" Version="2.4.4" />  
   </ItemGroup>
 
 </Project>
