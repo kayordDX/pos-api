@@ -1,6 +1,6 @@
 namespace Kayord.Pos.Entities;
 
-public class Division
+public class Division : AuditableEntity
 {
     public int DivisionId { get; set; }
     public string DivisionName { get; set; } = string.Empty;

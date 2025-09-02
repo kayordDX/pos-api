@@ -18,7 +18,6 @@ public class Endpoint : Endpoint<Request, List<Response>>
     public override void Configure()
     {
         Get("/table/booked");
-        AllowAnonymous();
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)

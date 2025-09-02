@@ -9,6 +9,18 @@ public static class TickerExtensions
 {
     public static void ConfigureTickerQ(this IServiceCollection services)
     {
+        // services.AddTickerQ(opt =>
+        // {
+        //     opt.AddOperationalStore<AppDbContext>(o =>
+        //     {
+        //         o.UseModelCustomizerForMigrations();
+        //         o.CancelMissedTickersOnAppStart();
+        //     });
+        //     opt.AddDashboard(o =>
+        //     {
+        //         o.EnableBasicAuth = true;
+        //     });
+        // });
         services.AddTickerQ(opt =>
         {
             opt.AddOperationalStore<AppDbContext>(o =>

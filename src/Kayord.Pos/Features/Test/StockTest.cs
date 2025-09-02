@@ -27,7 +27,6 @@ public class StockTest : EndpointWithoutRequest<Result>
     public override void Configure()
     {
         Get("/test/stock");
-        AllowAnonymous();
     }
 
     public override async Task HandleAsync(CancellationToken ct)

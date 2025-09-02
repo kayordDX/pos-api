@@ -20,7 +20,6 @@ public class Endpoint : Endpoint<Request, Response>
     public override void Configure()
     {
         Post("/order/updateOrderGroup");
-        AllowAnonymous();
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)

@@ -15,7 +15,6 @@ public class Endpoint : Endpoint<Request, bool>
     public override void Configure()
     {
         Post("/notification/test");
-        AllowAnonymous();
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)

@@ -15,7 +15,6 @@ public class Endpoint : Endpoint<Request, Entities.SalesPeriod>
     public override void Configure()
     {
         Post("/salesPeriod/close");
-        AllowAnonymous();
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)

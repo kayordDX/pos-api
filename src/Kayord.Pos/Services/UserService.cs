@@ -1,6 +1,7 @@
 using System.Text.Json;
 using FirebaseAdmin.Auth;
 using Kayord.Pos.Data;
+using Kayord.Pos.Features;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Services;
@@ -21,6 +22,11 @@ public class UserService
     public CurrentUserService GetCurrentUserService()
     {
         return _cu;
+    }
+
+    public async Task<int> GetOutletId()
+    {
+        return await Helper.GetUserOutlet(_dbContext, _cu.UserId ?? "");
     }
 
     public async Task<List<string>> GetUserRoles()

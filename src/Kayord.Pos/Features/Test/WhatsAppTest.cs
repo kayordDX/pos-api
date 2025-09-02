@@ -18,7 +18,6 @@ public class WhatsAppTest : EndpointWithoutRequest<Status?>
     public override void Configure()
     {
         Get("/test/whatsapp");
-        AllowAnonymous();
     }
 
     private async Task<string> CreateDocument()

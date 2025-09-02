@@ -16,7 +16,6 @@ public class Endpoint : Endpoint<Request, Pos.Entities.SalesPeriod>
     public override void Configure()
     {
         Get("/salesPeriod/{outletId}");
-        AllowAnonymous();
     }
 
     public override async Task HandleAsync(Request r, CancellationToken ct)

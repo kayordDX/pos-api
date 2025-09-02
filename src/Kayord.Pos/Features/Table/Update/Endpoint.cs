@@ -14,7 +14,6 @@ public class Endpoint : Endpoint<Request, Pos.Entities.Table>
     public override void Configure()
     {
         Put("/table/{tableId:int}");
-        AllowAnonymous();
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)

@@ -18,7 +18,7 @@ namespace Kayord.Pos.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.7")
+                .HasAnnotation("ProductVersion", "9.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -623,6 +623,14 @@ namespace Kayord.Pos.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("DivisionId"));
 
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text")
+                        .HasColumnName("created_by");
+
                     b.Property<string>("DivisionName")
                         .IsRequired()
                         .HasColumnType("text")
@@ -631,6 +639,14 @@ namespace Kayord.Pos.Data.Migrations
                     b.Property<int>("DivisionTypeId")
                         .HasColumnType("integer")
                         .HasColumnName("division_type_id");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_modified");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text")
+                        .HasColumnName("last_modified_by");
 
                     b.Property<int>("OutletId")
                         .HasColumnType("integer")
@@ -1629,6 +1645,47 @@ namespace Kayord.Pos.Data.Migrations
                         .HasDatabaseName("ix_outlet_business_id");
 
                     b.ToTable("outlet", (string)null);
+                });
+
+            modelBuilder.Entity("Kayord.Pos.Entities.OutletCounter", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text")
+                        .HasColumnName("created_by");
+
+                    b.Property<string>("DeviceName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("device_name");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_modified");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text")
+                        .HasColumnName("last_modified_by");
+
+                    b.Property<int>("OutletId")
+                        .HasColumnType("integer")
+                        .HasColumnName("outlet_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_outlet_counter");
+
+                    b.HasIndex("OutletId")
+                        .HasDatabaseName("ix_outlet_counter_outlet_id");
+
+                    b.ToTable("outlet_counter", (string)null);
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.OutletExtraGroup", b =>
@@ -2997,6 +3054,55 @@ namespace Kayord.Pos.Data.Migrations
                     b.ToTable("user_outlet", (string)null);
                 });
 
+            modelBuilder.Entity("Kayord.Pos.Entities.UserOutletPin", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("text")
+                        .HasColumnName("user_id");
+
+                    b.Property<int>("OutletId")
+                        .HasColumnType("integer")
+                        .HasColumnName("outlet_id");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text")
+                        .HasColumnName("created_by");
+
+                    b.Property<bool>("IsEnabled")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_enabled");
+
+                    b.Property<byte[]>("Iv")
+                        .IsRequired()
+                        .HasColumnType("bytea")
+                        .HasColumnName("iv");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_modified");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text")
+                        .HasColumnName("last_modified_by");
+
+                    b.Property<string>("Pin")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("pin");
+
+                    b.HasKey("UserId", "OutletId")
+                        .HasName("pk_user_outlet_pin");
+
+                    b.HasIndex("OutletId")
+                        .HasDatabaseName("ix_user_outlet_pin_outlet_id");
+
+                    b.ToTable("user_outlet_pin", (string)null);
+                });
+
             modelBuilder.Entity("Kayord.Pos.Entities.UserRoleOutlet", b =>
                 {
                     b.Property<int>("Id")
@@ -3189,6 +3295,7 @@ namespace Kayord.Pos.Data.Migrations
                         .HasColumnName("execution_time");
 
                     b.Property<string>("LockHolder")
+                        .IsConcurrencyToken()
                         .HasColumnType("text")
                         .HasColumnName("lock_holder");
 
@@ -3752,6 +3859,18 @@ namespace Kayord.Pos.Data.Migrations
                     b.Navigation("Business");
                 });
 
+            modelBuilder.Entity("Kayord.Pos.Entities.OutletCounter", b =>
+                {
+                    b.HasOne("Kayord.Pos.Entities.Outlet", "Outlet")
+                        .WithMany()
+                        .HasForeignKey("OutletId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_outlet_counter_outlet_outlet_id");
+
+                    b.Navigation("Outlet");
+                });
+
             modelBuilder.Entity("Kayord.Pos.Entities.OutletExtraGroup", b =>
                 {
                     b.HasOne("Kayord.Pos.Entities.ExtraGroup", "ExtraGroup")
@@ -4168,6 +4287,27 @@ namespace Kayord.Pos.Data.Migrations
                         .HasConstraintName("fk_user_outlet_outlet_outlet_id");
 
                     b.Navigation("Outlet");
+                });
+
+            modelBuilder.Entity("Kayord.Pos.Entities.UserOutletPin", b =>
+                {
+                    b.HasOne("Kayord.Pos.Entities.Outlet", "Outlet")
+                        .WithMany()
+                        .HasForeignKey("OutletId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_outlet_pin_outlet_outlet_id");
+
+                    b.HasOne("Kayord.Pos.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_outlet_pin_user_user_id");
+
+                    b.Navigation("Outlet");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.UserRoleOutlet", b =>

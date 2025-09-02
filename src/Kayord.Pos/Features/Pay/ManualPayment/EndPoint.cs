@@ -16,7 +16,6 @@ public class Endpoint : Endpoint<Request, Entities.Payment>
     public override void Configure()
     {
         Post("/pay/manual");
-        AllowAnonymous();
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
