@@ -3,7 +3,6 @@ using Kayord.Pos.Entities;
 using Kayord.Pos.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using TickerQ.EntityFrameworkCore.Configurations;
 
 namespace Kayord.Pos.Data;
 
