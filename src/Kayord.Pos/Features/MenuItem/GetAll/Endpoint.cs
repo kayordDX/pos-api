@@ -29,12 +29,19 @@ public class Endpoint : Endpoint<Request, PaginatedList<MenuItemAdminDTO>>
         int outletId = await Helper.GetUserOutlet(_dbContext, _cu.UserId ?? string.Empty);
 
         // Filter on outlet
-        var menuItems = await _dbContext.MenuItem
+        var query = _dbContext.MenuItem
             .Include(x => x.MenuSection)
                 .ThenInclude(x => x.Menu)
             .Where(x => x.MenuSection.Menu.OutletId == outletId)
-            .ProjectToAdminDto()
-            .GetPagedAsync(req, ct);
+            .ProjectToAdminDto();
+
+        // Apply a default sort when no explicit sorts are provided
+        if (string.IsNullOrWhiteSpace(req.Sorts))
+        {
+            query = query.OrderBy(x => x.MenuItemId);
+        }
+
+        var menuItems = await query.GetPagedAsync(req, ct);
 
         await Send.OkAsync(menuItems);
     }
