@@ -1,21 +1,16 @@
 using Kayord.Pos.Data;
-using Kayord.Pos.Data.Migrations;
 using Kayord.Pos.Services;
-using Microsoft.EntityFrameworkCore;
-
 
 namespace Kayord.Pos.Features.Extra.GroupCreate;
 
 public class Endpoint : Endpoint<Request>
 {
     private readonly AppDbContext _dbContext;
-    private readonly RedisClient _redisClient;
     private readonly CurrentUserService _user;
 
-    public Endpoint(AppDbContext dbContext, RedisClient redisClient, CurrentUserService user)
+    public Endpoint(AppDbContext dbContext, CurrentUserService user)
     {
         _dbContext = dbContext;
-        _redisClient = redisClient;
         _user = user;
     }
 
@@ -26,31 +21,39 @@ public class Endpoint : Endpoint<Request>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var outletId = await Helper.GetUserOutlet(_dbContext, _user.UserId ?? "");
+        int outletId = await Helper.GetUserOutlet(_dbContext, _user.UserId ?? "");
+
+        if (outletId == 0)
+        {
+            await Send.NotFoundAsync();
+            return;
+        }
 
         Entities.ExtraGroup? extraGroup = new()
         {
             Name = req.Name,
-            OutletId = outletId
+            OutletId = outletId,
         };
 
-        await _dbContext.ExtraGroup.AddAsync(extraGroup);
+        await _dbContext.Database.BeginTransactionAsync(ct);
 
-        if (req.isGlobal)
+        await _dbContext.ExtraGroup.AddAsync(extraGroup);
+        await _dbContext.SaveChangesAsync();
+
+        if (req.IsGlobal)
         {
             Entities.OutletExtraGroup outletExtraGroup = new()
             {
                 OutletId = extraGroup.OutletId,
-                ExtraGroupId = extraGroup.ExtraGroupId
+                ExtraGroupId = extraGroup.ExtraGroupId,
+                ExtraGroup = extraGroup
             };
             await _dbContext.OutletExtraGroup.AddAsync(outletExtraGroup);
+            await _dbContext.SaveChangesAsync();
         }
-        await _dbContext.SaveChangesAsync();
+
+        await _dbContext.Database.CommitTransactionAsync(ct);
+
         await Send.NoContentAsync();
-        // await Helper.ClearCacheOutlet(_dbContext, _redisClient, req.OutletId);
-
     }
-
-
 }
-
