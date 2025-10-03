@@ -21,6 +21,9 @@ public class Endpoint : Endpoint<Request, PaginatedList<Response>>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
+        // Default Order
+        req.Sorts = string.IsNullOrWhiteSpace(req.Sorts) ? "StockItemId" : req.Sorts;
+
         var results = await _dbContext.Database.SqlQuery<Response>($"""
             SELECT
                 i.id stock_item_id,

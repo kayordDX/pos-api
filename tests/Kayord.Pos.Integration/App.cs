@@ -24,7 +24,7 @@ public class App : AppFixture<Program>
         .WithImage("docker.io/bitnami/redis:latest")
         .WithPortBinding(16379, 6379)
         .WithEnvironment("REDIS_PASSWORD", "4qWF6jAcW6e9PCeW")
-        .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(6379))
+        .WithWaitStrategy(Wait.ForUnixContainer().UntilInternalTcpPortIsAvailable(6379))
         .Build();
 
         await postgreSqlContainer.StartAsync();
