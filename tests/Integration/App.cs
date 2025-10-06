@@ -3,7 +3,7 @@ using Kayord.Pos.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Testcontainers.PostgreSql;
 
-namespace Kayord.Pos.Integration;
+namespace Integration;
 
 public class App : AppFixture<Program>
 {
