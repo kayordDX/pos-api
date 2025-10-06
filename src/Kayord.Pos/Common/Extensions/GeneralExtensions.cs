@@ -11,7 +11,6 @@ public static class GeneralExtensions
     {
         QuestPDF.Settings.License = LicenseType.Community;
 
-        services.AddHostedService<MigratorHostedService>();
         services.AddSingleton<CurrentUserService>();
         services.AddHttpClient<UserService>();
         services.AddTransient<IEmailSender, EmailService>();

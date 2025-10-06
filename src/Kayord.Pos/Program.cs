@@ -33,6 +33,8 @@ builder.Services
 
 var app = builder.Build();
 
+await app.Services.ApplyMigrations(app.Environment, app.Lifetime.ApplicationStopping);
+
 app.UseCorsKayord();
 app.UseApi();
 app.UseHealth();
