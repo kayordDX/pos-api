@@ -21,26 +21,26 @@
     <PackageReference Include="FirebaseAdmin" Version="3.4.0" />
     <PackageReference Include="FluentValidation" Version="12.0.0" />
     <PackageReference Include="Humanizer.Core" Version="2.14.1" />
-    <PackageReference Include="MailKit" Version="4.14.0" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="9.0.9" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.9" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.9" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.9">
+    <PackageReference Include="MailKit" Version="4.14.1" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="9.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.10">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.9" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.10" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.9" />
-    <PackageReference Include="QuestPDF" Version="2025.7.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.10" />
+    <PackageReference Include="QuestPDF" Version="2025.7.3" />
     <PackageReference Include="Riok.Mapperly" Version="4.2.1" />
-    <PackageReference Include="Scalar.AspNetCore" Version="2.8.10" />
+    <PackageReference Include="Scalar.AspNetCore" Version="2.9.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
     <PackageReference Include="Serilog.Exceptions" Version="8.4.0" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="9.0.0" />
     <PackageReference Include="QueryKit" Version="1.9.7" />
-    <PackageReference Include="Microsoft.SemanticKernel" Version="1.65.0" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Google" Version="1.65.0-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel" Version="1.66.0" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.Google" Version="1.66.0-alpha" />
     <PackageReference Include="TickerQ" Version="2.5.3" />
     <PackageReference Include="TickerQ.Dashboard" Version="2.5.3" />
     <PackageReference Include="TickerQ.EntityFrameworkCore" Version="2.5.3" />  
