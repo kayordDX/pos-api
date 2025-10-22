@@ -1,9 +1,8 @@
 using Kayord.Pos.Data;
-using Microsoft.EntityFrameworkCore;
 
-namespace Kayord.Pos.Features.Table.Delete;
+namespace Kayord.Pos.Features.Role.Delete;
 
-public class Endpoint : Endpoint<Request>
+public class Endpoint : Endpoint<Request, Entities.Role>
 {
     private readonly AppDbContext _dbContext;
 
@@ -14,22 +13,19 @@ public class Endpoint : Endpoint<Request>
 
     public override void Configure()
     {
-        Delete("/table/{id}");
+        Delete("/role/{id}");
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        if (await _dbContext.TableBooking.Where(x => x.TableId == req.Id && x.CloseDate == null).CountAsync() > 0)
-        {
-            throw new Exception("Can not delete table with open booking");
-        }
-        var entity = await _dbContext.Table.FirstOrDefaultAsync(x => x.TableId == req.Id);
+        var entity = await _dbContext.Role.FindAsync(req.Id);
         if (entity == null)
         {
             await Send.NotFoundAsync();
             return;
         }
-        entity.IsDeleted = true;
+
+        _dbContext.Role.Remove(entity);
 
         await _dbContext.SaveChangesAsync();
         await Send.NoContentAsync();

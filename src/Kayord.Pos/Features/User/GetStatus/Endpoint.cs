@@ -75,10 +75,11 @@ public class Endpoint : EndpointWithoutRequest<Response>
             join role_type rt
                 on r.role_type_id = rt.id
             join division d
-            on d.division_id = rd.division_id
+                on d.division_id = rd.division_id
             where uro.outlet_id = {userOutlet.OutletId}
             and uro.user_id = {_cu.UserId}
             and rt.is_back_office = true and rt.is_front_line = false
+            and d.is_deleted = false
         """).ToListAsync(ct);
         resp.Divisions = divisions;
 

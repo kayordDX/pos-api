@@ -2,7 +2,7 @@ using Kayord.Pos.Data;
 
 namespace Kayord.Pos.Features.Section.Get;
 
-public class Endpoint : Endpoint<Request, Pos.Entities.Section>
+public class Endpoint : Endpoint<Request, Entities.Section>
 {
     private readonly AppDbContext _dbContext;
 

@@ -26,7 +26,7 @@ public class Endpoint : Endpoint<Request, List<Response>>
               .ToListAsync();
 
         var results = await _dbContext.Table
-            .Where(table => table.Section.OutletId == req.OutletId && !bookedTableIds.Contains(table.TableId) && table.isDeleted != true)
+            .Where(table => table.Section.OutletId == req.OutletId && !bookedTableIds.Contains(table.TableId) && table.IsDeleted != true)
             .OrderBy(x => x.Position)
             .ProjectToDto()
             .ToListAsync();

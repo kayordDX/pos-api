@@ -9,6 +9,5 @@ public class Table : AuditableEntity
     public int SectionId { get; set; }
     public Section Section { get; set; } = default!;
     public ICollection<Customer> Customers { get; set; } = default!;
-
-    public bool isDeleted { get; set; }
+    public bool IsDeleted { get; set; }
 }

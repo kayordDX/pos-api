@@ -20,7 +20,7 @@ public class Endpoint : Endpoint<Request, List<Pos.Entities.Table>>
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
         var tables = await _dbContext.Table
-            .Where(s => s.SectionId == req.SectionId && s.isDeleted != true)
+            .Where(s => s.SectionId == req.SectionId && s.IsDeleted != true)
             .OrderBy(x => x.Name)
             .ToListAsync();
 

@@ -34,6 +34,7 @@ public class Endpoint : Endpoint<Request, List<Response>>
                     JOIN "user" u ON u.user_id = uro.user_id
                 WHERE
                     d.division_id = {req.DivisionId} 
+                    d.is_deleted = FALSE
                     AND u.is_active = TRUE
                 GROUP BY
                     u.user_id 

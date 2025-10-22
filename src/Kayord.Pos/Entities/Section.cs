@@ -7,4 +7,5 @@ public class Section : AuditableEntity
     public int OutletId { get; set; }
     public Outlet Outlet { get; set; } = default!;
     public ICollection<Table>? Tables { get; set; }
+    public bool IsDeleted { get; set; }
 }

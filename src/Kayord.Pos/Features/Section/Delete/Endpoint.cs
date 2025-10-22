@@ -19,7 +19,7 @@ public class Endpoint : Endpoint<Request>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        if (await _dbContext.Table.Where(x => x.SectionId == req.Id).CountAsync() > 0)
+        if (await _dbContext.Table.Where(x => x.SectionId == req.Id && x.IsDeleted == false).CountAsync() > 0)
         {
             throw new Exception("Can not delete section with tables");
         }
@@ -30,7 +30,8 @@ public class Endpoint : Endpoint<Request>
             return;
         }
 
-        _dbContext.Section.Remove(entity);
+        entity.IsDeleted = true;
+
         await _dbContext.SaveChangesAsync();
         await Send.NoContentAsync();
     }

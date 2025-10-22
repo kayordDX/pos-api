@@ -38,7 +38,7 @@ public class Endpoint : Endpoint<Request, Entities.StockOrder>
 
         if (req.Actual > stockItem.Actual)
         {
-            throw new Exception("Not enough stock to allocate");
+            ValidationContext.Instance.ThrowError("Not enough stock to allocate");
         }
 
         var entity = new Entities.StockAllocateItem

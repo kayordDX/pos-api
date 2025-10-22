@@ -22,12 +22,12 @@ public class Endpoint : Endpoint<Request, List<Response>>
         var results = await _dbContext.Database.SqlQuery<Response>($"""
             select
                 coalesce(i."id", 0) "id",
-            coalesce(s."id", 0) "stock_id",
-            coalesce(s."name", '') "stock_name",
-            d."division_id",
-            d."division_name",
-            coalesce(i."threshold", 0) "threshold",
-            coalesce(i."actual", 0) "actual"
+                coalesce(s."id", 0) "stock_id",
+                coalesce(s."name", '') "stock_name",
+                d."division_id",
+                d."division_name",
+                coalesce(i."threshold", 0) "threshold",
+                coalesce(i."actual", 0) "actual"
             from "stock" s
             left join "division" d
                 on s."outlet_id" = d."outlet_id"
@@ -35,6 +35,7 @@ public class Endpoint : Endpoint<Request, List<Response>>
                 on i."stock_id" = s."id"
             and i."division_id" = d."division_id"
             where s."id" = {req.Id}
+            and d.is_deleted = false
         """).ToListAsync(ct);
 
         await Send.OkAsync(results);

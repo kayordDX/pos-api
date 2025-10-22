@@ -1,7 +1,7 @@
 using Kayord.Pos.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace Kayord.Pos.Features.Table.Delete;
+namespace Kayord.Pos.Features.Division.Delete;
 
 public class Endpoint : Endpoint<Request>
 {
@@ -14,21 +14,29 @@ public class Endpoint : Endpoint<Request>
 
     public override void Configure()
     {
-        Delete("/table/{id}");
+        Delete("/division/{id}");
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        if (await _dbContext.TableBooking.Where(x => x.TableId == req.Id && x.CloseDate == null).CountAsync() > 0)
+        // No Menu Items
+        if (await _dbContext.MenuItem.Where(x => x.DivisionId == req.Id).CountAsync() > 0)
         {
-            throw new Exception("Can not delete table with open booking");
+            ValidationContext.Instance.ThrowError("Can not delete division with menu items");
         }
-        var entity = await _dbContext.Table.FirstOrDefaultAsync(x => x.TableId == req.Id);
+        // No Stock Items
+        if (await _dbContext.StockItem.Where(x => x.DivisionId == req.Id).CountAsync() > 0)
+        {
+            ValidationContext.Instance.ThrowError("Can not delete division with stock items");
+        }
+
+        var entity = await _dbContext.Division.FirstOrDefaultAsync(x => x.DivisionId == req.Id);
         if (entity == null)
         {
             await Send.NotFoundAsync();
             return;
         }
+
         entity.IsDeleted = true;
 
         await _dbContext.SaveChangesAsync();

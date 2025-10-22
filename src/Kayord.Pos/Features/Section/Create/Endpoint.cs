@@ -18,7 +18,7 @@ public class Endpoint : Endpoint<Request, Pos.Entities.Section>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var entity = new Pos.Entities.Section
+        var entity = new Entities.Section
         {
             Name = req.Name,
             OutletId = req.OutletId

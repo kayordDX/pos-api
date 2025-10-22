@@ -38,6 +38,7 @@ public class Endpoint : Endpoint<Request, Response>
             WHERE
                 i.stock_id = {req.StockId}
                 AND i.division_id = {req.DivisionId}
+                AND d.is_deleted = FALSE
         """).FirstOrDefaultAsync(ct);
 
         if (results == null)
