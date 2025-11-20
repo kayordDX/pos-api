@@ -76,6 +76,7 @@ public static class CashUp
             cashUpUser = await _dbContext.CashUpUser.ProjectToDto().OrderByDescending(x => x.Id).LastOrDefaultAsync(x => x.UserId == UserId && x.ClosingBalance != null && x.OutletId == OutletId);
             if (cashUpUser != null)
             {
+                // TODO: Double check with Steff
                 CashUpUser u = new()
                 {
                     OpeningBalance = cashUpUser.ClosingBalance ?? 0,
@@ -89,6 +90,7 @@ public static class CashUp
             }
             else
             {
+                // TODO: Double check with Steff
                 CashUpUser u = new()
                 {
                     OpeningBalance = 0,
@@ -378,6 +380,7 @@ public static class CashUp
                 }
                 cashUpUser.ClosingBalance = response.NetBalance;
                 cashUpUser.CompleterUserId = _cu.UserId ?? "";
+                // TODO: Double check with Steff 
                 CashUpUser c = new()
                 {
                     UserId = UserId,
