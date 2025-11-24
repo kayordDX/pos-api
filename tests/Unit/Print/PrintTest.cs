@@ -1,4 +1,4 @@
-using ESCPOS_NET.Emitters;
+using Kayord.Pos.Common.Printer.Emitters;
 
 namespace Unit.Print;
 
