@@ -20,7 +20,7 @@ public class PrinterTest : EndpointWithoutRequest<bool>
         Get("/test/print");
     }
 
-    private static EPSON e = new();
+    private static readonly EPSON e = new();
 
     public override async Task HandleAsync(CancellationToken ct)
     {

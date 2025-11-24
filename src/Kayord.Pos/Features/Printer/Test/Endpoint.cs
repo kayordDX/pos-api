@@ -20,7 +20,7 @@ public class Endpoint : Endpoint<Request, bool>
     {
         Post("/printer/test");
     }
-    private static EPSON e = new();
+    private static readonly EPSON e = new();
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
