@@ -1,4 +1,4 @@
-using ESCPOS_NET.Emitters;
+using Kayord.Pos.Common.Printer.Emitters;
 using Kayord.Pos.Features.Bill.EmailBill;
 
 namespace Kayord.Pos.Features.Bill.PrintBill;
