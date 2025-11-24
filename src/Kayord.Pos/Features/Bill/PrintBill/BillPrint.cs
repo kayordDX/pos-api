@@ -5,7 +5,7 @@ namespace Kayord.Pos.Features.Bill.PrintBill;
 
 public static class BillPrint
 {
-    private static EPSON e = new();
+    private static readonly EPSON e = new();
     public static List<byte[]> GetBillPrintInstructions(PdfRequest request, int lineCharacters)
     {
         List<byte[]> printInstructions = [
