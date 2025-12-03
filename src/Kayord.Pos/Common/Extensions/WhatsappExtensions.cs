@@ -9,7 +9,7 @@ public static class WhatsappExtensions
         services.AddHttpClient<WhatsappService>(client =>
         {
             client.BaseAddress = new Uri(configuration["Whatsapp:Host"] ?? "http://localhost:3000");
-            client.DefaultRequestHeaders.Add("x-api-key", configuration["Whatsapp:XApiKey"]);
+            client.DefaultRequestHeaders.Add("token", configuration["Whatsapp:XApiKey"]);
         });
         return services;
     }

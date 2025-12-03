@@ -37,18 +37,21 @@ public class Endpoint : Endpoint<Request, bool>
             throw new Exception("No whatsapp client found");
         }
 
-        var numberResponse = await _whatsappService.GetNumberId(req.PhoneNumber, req.CountryCode);
-        if (numberResponse == null || numberResponse.Success != true || numberResponse.Result == null)
+        string phone = _whatsappService.GetNumberWithCountryCode(req.PhoneNumber, req.CountryCode);
+
+        static string ConcatDataUri(string base64)
         {
-            throw new Exception("Could not get number");
+            const string prefix = "data:application/octet-stream;base64,";
+            var buffer = new char[prefix.Length + base64.Length];
+            prefix.AsSpan().CopyTo(buffer);
+            base64.AsSpan().CopyTo(buffer.AsSpan(prefix.Length));
+            return new string(buffer);
         }
 
-        var chatId = numberResponse.Result._serialized;
-
-        await _whatsappService.SendMessage(new()
+        var textResponse = await _whatsappService.SendText(new()
         {
-            ChatId = chatId,
-            Content =
+            Phone = phone,
+            Body =
             $"""
             Dear {req.Name},
 
@@ -64,16 +67,20 @@ public class Endpoint : Endpoint<Request, bool>
             """
         });
 
-        await _whatsappService.SendFile(new()
+        if (textResponse.Success)
         {
-            ChatId = chatId,
-            Content = new()
+            await _whatsappService.SendDocument(new()
             {
-                MimeType = "application/pdf",
-                Data = base64,
-                Filename = $"Invoice-{pdfRequest.TableBookingId}.pdf"
-            }
-        });
+                Phone = phone,
+                FileName = $"Invoice-{pdfRequest.TableBookingId}.pdf",
+                Document = ConcatDataUri(base64)
+            });
+        }
+        else
+        {
+            await Send.OkAsync(false);
+        }
+
         await Send.OkAsync(true);
     }
 }

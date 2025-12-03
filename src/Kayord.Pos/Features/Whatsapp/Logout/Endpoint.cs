@@ -1,8 +1,8 @@
 using Kayord.Pos.Services.Whatsapp;
 
-namespace Kayord.Pos.Features.Whatsapp.QrCode;
+namespace Kayord.Pos.Features.Whatsapp.Logout;
 
-public class Endpoint : EndpointWithoutRequest<WResponse<QrResponse>>
+public class Endpoint : EndpointWithoutRequest<WResponse<SessionLogout>>
 {
     private readonly WhatsappService _whatsappService;
 
@@ -13,12 +13,12 @@ public class Endpoint : EndpointWithoutRequest<WResponse<QrResponse>>
 
     public override void Configure()
     {
-        Get("/whatsapp/qr");
+        Post("/whatsapp/logout");
     }
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var status = await _whatsappService.QrCode();
-        await Send.OkAsync(status);
+        var terminateResponse = await _whatsappService.Logout();
+        await Send.OkAsync(terminateResponse);
     }
 }
