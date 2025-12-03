@@ -2,7 +2,7 @@ using Kayord.Pos.Services.Whatsapp;
 
 namespace Kayord.Pos.Features.Whatsapp.Status;
 
-public class Endpoint : EndpointWithoutRequest<Services.Whatsapp.Status>
+public class Endpoint : EndpointWithoutRequest<WResponse<SessionStatus>>
 {
     private readonly WhatsappService _whatsappService;
 
