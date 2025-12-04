@@ -13,7 +13,7 @@ public class App : AppFixture<Program>
     protected override async ValueTask PreSetupAsync()
     {
         postgreSqlContainer = new PostgreSqlBuilder()
-            .WithImage("postgres:17")
+            .WithImage("postgres:18")
             .WithDatabase("db")
             .WithUsername("db")
             .WithPassword("db")

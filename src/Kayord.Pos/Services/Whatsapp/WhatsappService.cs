@@ -50,6 +50,19 @@ public class WhatsappService
     public string GetNumberWithCountryCode(string number, string? countryCode)
     {
         countryCode ??= "27";
+        if (!string.IsNullOrEmpty(number))
+        {
+            // Remove leading '+' or '0' characters
+            if (number.StartsWith("+"))
+            {
+                number = number[1..];
+            }
+
+            if (number.StartsWith("0"))
+            {
+                number = number.TrimStart('0');
+            }
+        }
         return countryCode + number;
     }
 
