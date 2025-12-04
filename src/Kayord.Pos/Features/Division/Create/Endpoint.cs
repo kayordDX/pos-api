@@ -1,11 +1,9 @@
 using Kayord.Pos.Data;
-using Kayord.Pos.Services;
-using Microsoft.EntityFrameworkCore;
 
 
 namespace Kayord.Pos.Features.Division.Create;
 
-public class Endpoint : Endpoint<Request, Pos.Entities.Division>
+public class Endpoint : Endpoint<Request, Entities.Division>
 {
     private readonly AppDbContext _dbContext;
 

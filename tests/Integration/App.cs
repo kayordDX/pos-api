@@ -5,6 +5,10 @@ using Testcontainers.PostgreSql;
 
 namespace Integration;
 
+// Define a collection that all integration tests belong to - ensures single fixture instance
+[CollectionDefinition(nameof(AppCollection))]
+public class AppCollection : ICollectionFixture<App>;
+
 public class App : AppFixture<Program>
 {
     private PostgreSqlContainer? postgreSqlContainer;
