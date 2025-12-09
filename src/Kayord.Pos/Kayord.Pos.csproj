@@ -1,9 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Kayord.Pos</RootNamespace>
     <UserSecretsId>88161011-c91e-4801-99ad-e21ad7e389f9</UserSecretsId>
   </PropertyGroup>
