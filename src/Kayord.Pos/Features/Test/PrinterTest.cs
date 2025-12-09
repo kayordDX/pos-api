@@ -1,6 +1,4 @@
-
-using System.Diagnostics;
-using ESCPOS_NET.Emitters;
+using Kayord.Pos.Common.Printer.Emitters;
 using Kayord.Pos.Data;
 using Kayord.Pos.Features.Bill;
 using Kayord.Pos.Features.Bill.EmailBill;

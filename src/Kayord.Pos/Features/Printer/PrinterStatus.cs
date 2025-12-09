@@ -1,5 +1,5 @@
-using ESCPOS_NET;
 using Humanizer;
+using Kayord.Pos.Common.Printer;
 
 namespace Kayord.Pos.Features.Printer;
 

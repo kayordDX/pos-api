@@ -18,8 +18,14 @@ public class EncryptionService
     private byte[] CreateKeyFromString()
     {
         byte[] salt = Encoding.UTF8.GetBytes(_appConfig.EncryptionSalt);
-        using Rfc2898DeriveBytes pbkdf2 = new Rfc2898DeriveBytes(_appConfig.EncryptionKey, salt, 10000, HashAlgorithmName.SHA512);
-        return pbkdf2.GetBytes(16);
+        byte[] passwordBytes = Encoding.UTF8.GetBytes(_appConfig.EncryptionKey);
+        return Rfc2898DeriveBytes.Pbkdf2(
+            passwordBytes,
+            salt,
+            10000,
+            HashAlgorithmName.SHA512,
+            16
+        );
     }
 
     public string Encrypt(string plainText, byte[] iv)
