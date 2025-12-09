@@ -23,7 +23,7 @@ builder.Services.ConfigureCors(corsSection.Get<string[]>() ?? [""]);
 
 builder.Services.ConfigureAuth(builder.Configuration);
 builder.Services.ConfigureEF(builder.Configuration, builder.Environment);
-builder.Services.ConfigureTickerQ();
+builder.Services.ConfigureTickerQ(builder.Configuration);
 
 builder.Services.ConfigureGeneral(builder.Configuration);
 

@@ -110,6 +110,8 @@
                 "src/Kayord.Pos",
                 "--startup-project",
                 "src/Kayord.Pos",
+                "--context",
+                "AppDbContext",
                 "-o",
                 "Data/Migrations"
             ],

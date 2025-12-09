@@ -1,14 +1,14 @@
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
 WORKDIR /app
 EXPOSE 5117
 ENV ASPNETCORE_URLS=http://+:5117
 RUN apt update && apt install -y curl && rm -rf /var/lib/apt/lists/*
 
 USER app
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG configuration=Release
 WORKDIR /src
-COPY ["src/Kayord.Pos/Kayord.Pos.csproj", "src/Kayord.Pos/"]
+COPY ["src/Kayord.Pos/Kayord.Pos.csproj", "Directory.Build.props", "Directory.Packages.props", "src/Kayord.Pos/"]
 RUN dotnet restore "src/Kayord.Pos/Kayord.Pos.csproj"
 COPY . .
 WORKDIR "/src/src/Kayord.Pos"

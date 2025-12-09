@@ -68,21 +68,7 @@ curl --request GET \
 
 ## TODO:
 
-- [x] MenuItemStock
-  - [x] Delete all items
-  - [x] Should have StockItemId
-  - [x] Quantity should become Amount
-- [x] StockLocation
-  - [x] Remove table completely
-  - [x] Fix all references and replace with division
-- [x] StockOrderItem
-  - [x] Should have StockId instead of StockItemId
-  - [ ] StockOrderItemStatus
-  - [ ] StockerOrderItem Add Ordered amount and keep actual. Also Add status.
-- [ ] StockItemAudit Table
-  - [ ] Table should show who changed it
-  - [ ] Date
-  - [ ] Old Value and New Value
-- [ ] StockAllocate
-- [ ] StockAllocateItem
-- [ ] StockAllocateStatus
+- [ ] Upgrade to Dotnet 10
+- [ ] Upgrade all packages
+- [ ] Remove sixlaber dependency
+- [ ] Double check TickerQ new breaking changes
