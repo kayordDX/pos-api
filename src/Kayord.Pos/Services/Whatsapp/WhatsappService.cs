@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Kayord.Pos.Data;
 
 namespace Kayord.Pos.Services.Whatsapp;
@@ -14,12 +13,12 @@ public class WhatsappService
         _dbContext = dbContext;
     }
 
-    public async Task<Status> GetStatus()
+    public async Task<WResponse<SessionStatus>> GetStatus()
     {
-        var request = await _httpClient.GetAsync("/session/status/kayord");
+        var request = await _httpClient.GetAsync("/session/status");
         if (request.IsSuccessStatusCode)
         {
-            var status = await request.Content.ReadFromJsonAsync<Status>();
+            var status = await request.Content.ReadFromJsonAsync<WResponse<SessionStatus>>();
             if (status != null)
             {
                 return status;
@@ -28,59 +27,51 @@ public class WhatsappService
         throw new Exception("Could not get status");
     }
 
-    public async Task<ChatsResponse> GetChats()
+    public async Task<CheckResponse> CheckNumbers(List<string> numbers)
     {
-        var request = await _httpClient.GetAsync("/client/getChats/kayord");
-        if (request.IsSuccessStatusCode)
-        {
-            var chats = await request.Content.ReadFromJsonAsync<ChatsResponse>();
-            if (chats != null)
-            {
-                return chats;
-            }
-        }
-        throw new Exception("Could not get chats");
-    }
-
-    public async Task<NumberIdResponse> GetNumberId(string number) => await GetNumberId(number);
-
-    public async Task<NumberIdResponse> GetNumberId(string number, string? countryCode)
-    {
-        if (countryCode == null) countryCode = "27";
-        string finalNumber = countryCode + number;
-        NumberIdRequest request = new() { Number = finalNumber };
-        var resp = await _httpClient.PostAsJsonAsync("/client/getNumberId/kayord", request);
+        CheckRequest request = new() { Phone = numbers };
+        var resp = await _httpClient.PostAsJsonAsync("/user/check", request);
         if (resp.IsSuccessStatusCode)
         {
-            var result = await resp.Content.ReadFromJsonAsync<NumberIdResponse>();
+            var result = await resp.Content.ReadFromJsonAsync<CheckResponse>();
             if (result != null)
             {
                 return result;
             }
         }
-        throw new Exception("Could not get number");
+        throw new Exception("Could not check numbers");
     }
 
-    public async Task<SendMessageResponse> SendMessage(SendMessageRequest request)
+    public async Task<CheckResponse> CheckNumber(string number)
     {
-        var resp = await _httpClient.PostAsJsonAsync("/client/sendMessage/kayord", request);
-        if (resp.IsSuccessStatusCode)
+        return await CheckNumbers(new List<string> { number });
+    }
+
+    public string GetNumberWithCountryCode(string number, string? countryCode)
+    {
+        countryCode ??= "27";
+        if (!string.IsNullOrEmpty(number))
         {
-            var result = await resp.Content.ReadFromJsonAsync<SendMessageResponse>();
-            if (result != null)
+            // Remove leading '+' or '0' characters
+            if (number.StartsWith("+"))
             {
-                return result;
+                number = number[1..];
+            }
+
+            if (number.StartsWith("0"))
+            {
+                number = number.TrimStart('0');
             }
         }
-        throw new Exception("Could not send message");
+        return countryCode + number;
     }
 
-    public async Task<SendMessageResponse> SendFile(SendFileRequest request)
+    public async Task<WResponse<ChatResponse>> SendText(TextRequest request)
     {
-        var resp = await _httpClient.PostAsJsonAsync("/client/sendMessage/kayord", request);
+        var resp = await _httpClient.PostAsJsonAsync("/chat/send/text", request);
         if (resp.IsSuccessStatusCode)
         {
-            var result = await resp.Content.ReadFromJsonAsync<SendMessageResponse>();
+            var result = await resp.Content.ReadFromJsonAsync<WResponse<ChatResponse>>();
             if (result != null)
             {
                 return result;
@@ -89,12 +80,40 @@ public class WhatsappService
         throw new Exception("Could not send message");
     }
 
-    public async Task<QrResponse> QrCode()
+    public async Task<WResponse<ChatResponse>> SendDocument(DocumentRequest request)
     {
-        var request = await _httpClient.GetAsync("/session/qr/kayord");
+        var resp = await _httpClient.PostAsJsonAsync("/chat/send/document", request);
+        if (resp.IsSuccessStatusCode)
+        {
+            var result = await resp.Content.ReadFromJsonAsync<WResponse<ChatResponse>>();
+            if (result != null)
+            {
+                return result;
+            }
+        }
+        throw new Exception("Could not send message");
+    }
+
+    public async Task<WResponse<ChatResponse>> SendImage(ImageRequest request)
+    {
+        var resp = await _httpClient.PostAsJsonAsync("/chat/send/image", request);
+        if (resp.IsSuccessStatusCode)
+        {
+            var result = await resp.Content.ReadFromJsonAsync<WResponse<ChatResponse>>();
+            if (result != null)
+            {
+                return result;
+            }
+        }
+        throw new Exception("Could not send message");
+    }
+
+    public async Task<WResponse<QrResponse>> QrCode()
+    {
+        var request = await _httpClient.GetAsync("/session/qr");
         if (request.IsSuccessStatusCode)
         {
-            var qr = await request.Content.ReadFromJsonAsync<QrResponse>();
+            var qr = await request.Content.ReadFromJsonAsync<WResponse<QrResponse>>();
             if (qr != null)
             {
                 return qr;
@@ -103,12 +122,12 @@ public class WhatsappService
         throw new Exception("Could not get qr code");
     }
 
-    public async Task<Response> Terminate()
+    public async Task<WResponse<SessionLogout>> Logout()
     {
-        var request = await _httpClient.GetAsync("/session/terminate/kayord");
+        var request = await _httpClient.PostAsJsonAsync("/session/logout", new { });
         if (request.IsSuccessStatusCode)
         {
-            var response = await request.Content.ReadFromJsonAsync<Response>();
+            var response = await request.Content.ReadFromJsonAsync<WResponse<SessionLogout>>();
             if (response != null)
             {
                 return response;
@@ -117,12 +136,12 @@ public class WhatsappService
         throw new Exception("Could not terminate session");
     }
 
-    public async Task<Response> Start()
+    public async Task<WResponse<SessionConnectResponse>> Connect()
     {
-        var request = await _httpClient.GetAsync("/session/start/kayord");
+        var request = await _httpClient.PostAsJsonAsync("/session/connect", new SessionConnectRequest());
         if (request.IsSuccessStatusCode)
         {
-            var response = await request.Content.ReadFromJsonAsync<Response>();
+            var response = await request.Content.ReadFromJsonAsync<WResponse<SessionConnectResponse>>();
             if (response != null)
             {
                 return response;

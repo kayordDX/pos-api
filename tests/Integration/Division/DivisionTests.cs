@@ -1,5 +1,6 @@
 namespace Integration.Division;
 
+[Collection(nameof(AppCollection))]
 public class DivisionTests(App app) : TestBase<App>
 {
     [Fact, Priority(1)]
@@ -13,7 +14,7 @@ public class DivisionTests(App app) : TestBase<App>
                 OutletId = 99
             });
 
-        // Need to check auth
+        // This is false because you need to be a manager for this to pass.
         rsp.IsSuccessStatusCode.ShouldBeFalse();
         // res.DivisionId.ShouldBe(1);
     }

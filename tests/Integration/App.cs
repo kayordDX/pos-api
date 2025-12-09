@@ -5,6 +5,10 @@ using Testcontainers.PostgreSql;
 
 namespace Integration;
 
+// Define a collection that all integration tests belong to - ensures single fixture instance
+[CollectionDefinition(nameof(AppCollection))]
+public class AppCollection : ICollectionFixture<App>;
+
 public class App : AppFixture<Program>
 {
     private PostgreSqlContainer? postgreSqlContainer;
@@ -13,7 +17,7 @@ public class App : AppFixture<Program>
     protected override async ValueTask PreSetupAsync()
     {
         postgreSqlContainer = new PostgreSqlBuilder()
-            .WithImage("postgres:17")
+            .WithImage("postgres:18")
             .WithDatabase("db")
             .WithUsername("db")
             .WithPassword("db")

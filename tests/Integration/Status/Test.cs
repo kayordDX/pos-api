@@ -1,5 +1,6 @@
 namespace Integration.Status;
 
+[Collection(nameof(AppCollection))]
 public class StatusTests(App app) : TestBase<App>
 {
     [Fact]
