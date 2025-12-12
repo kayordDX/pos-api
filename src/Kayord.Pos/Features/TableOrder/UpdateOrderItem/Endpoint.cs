@@ -148,13 +148,14 @@ public class Endpoint : Endpoint<Request, Response>
 
                 if (oIS?.IsBackOffice ?? false)
                 {
-                    outletId = entity.TableBooking.SalesPeriod.OutletId;
-                    var divisionId = entity.MenuItem.DivisionId ?? 0;
-                    if (!divisions.Contains(divisionId))
-                    {
-                        divisions.Add(divisionId);
-                    }
                     soundNotify = true;
+                }
+
+                outletId = entity.TableBooking.SalesPeriod.OutletId;
+                var divisionId = entity.MenuItem.DivisionId ?? 0;
+                if (!divisions.Contains(divisionId))
+                {
+                    divisions.Add(divisionId);
                 }
             }
             else
@@ -181,11 +182,7 @@ public class Endpoint : Endpoint<Request, Response>
             }, Mode.WaitForNone);
         }
 
-        if (soundNotify)
-        {
-            // var roleIds = _dbContext.RoleDivision.Where(x => divisions.Contains(x.DivisionId)).Select(x => x.RoleId).ToList();
-            await PublishAsync(new SoundEvent() { OutletId = outletId, DivisionIds = divisions });
-        }
+        await PublishAsync(new SoundEvent() { OutletId = outletId, DivisionIds = divisions, IsSilent = !soundNotify }, Mode.WaitForNone);
 
         await _dbContext.SaveChangesAsync();
         await Send.OkAsync(new Response() { IsSuccess = isSuccess, Message = message });

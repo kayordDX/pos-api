@@ -4,7 +4,6 @@ using Kayord.Pos.Events;
 using Kayord.Pos.Features.Stock;
 using Kayord.Pos.Services;
 using Microsoft.EntityFrameworkCore;
-using YamlDotNet.Core.Tokens;
 
 namespace Kayord.Pos.Features.TableOrder.SendToKitchen;
 
@@ -103,7 +102,7 @@ public class Endpoint : Endpoint<Request, Response>
         }
         await _dbContext.SaveChangesAsync();
 
-        await PublishAsync(new SoundEvent() { OutletId = outletId, DivisionIds = divisions });
+        await PublishAsync(new SoundEvent() { OutletId = outletId, DivisionIds = divisions }, Mode.WaitForNone);
 
         await Send.OkAsync(new Response { IsSuccess = isSuccess, Message = message });
     }
