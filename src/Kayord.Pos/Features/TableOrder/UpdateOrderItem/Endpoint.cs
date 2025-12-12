@@ -33,7 +33,7 @@ public class Endpoint : Endpoint<Request, Response>
         OrderItemStatus? oIS = await _dbContext.OrderItemStatus.FirstOrDefaultAsync(x => x.OrderItemStatusId == req.OrderItemStatusId);
         if (oIS == null)
         {
-            throw new Exception("Status not found");
+            ValidationContext.Instance.ThrowError("Status not found");
         }
         OrderGroup order = new();
         if (oIS.AssignGroup)
@@ -61,13 +61,18 @@ public class Endpoint : Endpoint<Request, Response>
 
             if (entity != null)
             {
+                // Do not update if cancelled or wasted
+                if (entity.OrderItemStatusId == 4 || entity.OrderItemStatusId == 8)
+                {
+                    ValidationContext.Instance.ThrowError("Cannot update cancelled or wasted items");
+                }
 
                 // If send to kitchen add extra validation
                 if (req.OrderItemStatusId == 2)
                 {
                     if (entity.TableBooking.CloseDate != null)
                     {
-                        throw new Exception("Table is closed");
+                        ValidationContext.Instance.ThrowError("Table is closed");
                     }
                 }
 
