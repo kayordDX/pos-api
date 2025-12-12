@@ -25,13 +25,11 @@ public static class TelemetryExtensions
             .WithMetrics(metrics => metrics
                 .AddAspNetCoreInstrumentation()
                 .AddHttpClientInstrumentation()
-                .AddProcessInstrumentation()
-                .AddNpgsqlInstrumentation())
+                .AddProcessInstrumentation())
             .WithTracing(tracing => tracing
                 .AddHttpClientInstrumentation()
                 .AddAspNetCoreInstrumentation()
-                .AddEntityFrameworkCoreInstrumentation()
-                .AddNpgsql())
+                .AddEntityFrameworkCoreInstrumentation())
             .UseOtlpExporter();
     }
 }
