@@ -199,12 +199,15 @@ public static class Bill
         if (a.MenuItemId != b.MenuItemId)
             return false;
 
-        var aOptionIds = a.OrderItemOptions?.Where(x => x.Option.Price > 0).Select(o => o.OptionId).OrderBy(id => id).ToList() ?? new();
-        var bOptionIds = b.OrderItemOptions?.Where(x => x.Option.Price > 0).Select(o => o.OptionId).OrderBy(id => id).ToList() ?? new();
+        var aOptionIds = a.OrderItemOptions?.Where(x => x.Option.Price > 0).Select(o => o.OptionId).OrderBy(id => id) ?? Enumerable.Empty<int>();
+        var bOptionIds = b.OrderItemOptions?.Where(x => x.Option.Price > 0).Select(o => o.OptionId).OrderBy(id => id) ?? Enumerable.Empty<int>();
 
-        var aExtraIds = a.OrderItemExtras?.Where(x => x.Extra.Price > 0).Select(e => e.ExtraId).OrderBy(id => id).ToList() ?? new();
-        var bExtraIds = b.OrderItemExtras?.Where(x => x.Extra.Price > 0).Select(e => e.ExtraId).OrderBy(id => id).ToList() ?? new();
+        if (!aOptionIds.SequenceEqual(bOptionIds))
+            return false;
 
-        return aOptionIds.SequenceEqual(bOptionIds) && aExtraIds.SequenceEqual(bExtraIds);
+        var aExtraIds = a.OrderItemExtras?.Where(x => x.Extra.Price > 0).Select(e => e.ExtraId).OrderBy(id => id) ?? Enumerable.Empty<int>();
+        var bExtraIds = b.OrderItemExtras?.Where(x => x.Extra.Price > 0).Select(e => e.ExtraId).OrderBy(id => id) ?? Enumerable.Empty<int>();
+
+        return aExtraIds.SequenceEqual(bExtraIds);
     }
 }
