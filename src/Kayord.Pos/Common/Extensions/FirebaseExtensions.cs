@@ -1,11 +1,13 @@
+
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
-using Serilog;
+using Microsoft.Extensions.Logging;
+
 namespace Kayord.Pos.Common.Extensions;
 
 public static class FirebaseExtensions
 {
-    public static IServiceCollection ConfigureFirebase(this IServiceCollection services, IWebHostEnvironment env)
+    public static IServiceCollection ConfigureFirebase(this IServiceCollection services, IWebHostEnvironment env, ILogger logger)
     {
         try
         {
@@ -27,7 +29,7 @@ public static class FirebaseExtensions
         }
         catch (Exception ex)
         {
-            Log.Logger.Error(ex.Message);
+            logger.LogError(ex, ex.Message);
         }
         return services;
     }

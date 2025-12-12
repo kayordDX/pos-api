@@ -1,4 +1,5 @@
 using HealthChecks.UI.Client;
+using Kayord.Pos.Data;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 namespace Kayord.Pos.Common.Extensions.Health;
 
@@ -8,7 +9,7 @@ public static class HealthExtensions
     {
         services.AddHealthChecks()
             .AddProcessAllocatedMemoryHealthCheck(2750)
-            .AddNpgSql(configuration.GetConnectionString("DefaultConnection")!)
+            .AddDbContextCheck<AppDbContext>()
             .AddRedis(configuration.GetConnectionString("Redis")!);
     }
 
