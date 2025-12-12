@@ -43,15 +43,22 @@ public class Endpoint : Endpoint<Request, List<Response>>
 
         List<int> divisionIds = await RoleHelper.GetDivisionsForRoles(req.RoleIds, _dbContext, userOutlet.OutletId, _cu.UserId);
 
+        var statusIds = await _dbContext.OrderItemStatus
+            .Where(x => x.IsBackOffice && x.IsComplete != true && x.IsCancelled != true)
+            .Select(rd => rd.OrderItemStatusId)
+            .ToListAsync(ct);
+
         foreach (int divisionId in divisionIds)
         {
-            var statusIds = _dbContext.OrderItemStatus.Where(x => x.IsBackOffice && x.IsComplete != true && x.IsCancelled != true).Select(rd => rd.OrderItemStatusId).ToList();
-            Entities.Division division = await _dbContext.Division.FirstOrDefaultAsync(x => x.DivisionId == divisionId) ?? new();
+            Entities.Division division = await _dbContext.Division
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.DivisionId == divisionId, ct) ?? new();
 
             var result = await _dbContext.TableBooking
+                .AsNoTracking()
                 .Where(x => x.SalesPeriod.OutletId == userOutlet.OutletId && x.CloseDate == null)
                 .ProjectToDto()
-                .ToListAsync();
+                .ToListAsync(ct);
 
             result.ForEach(dto =>
             {

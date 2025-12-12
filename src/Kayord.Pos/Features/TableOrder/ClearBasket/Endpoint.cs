@@ -1,5 +1,6 @@
 using Kayord.Pos.Data;
 using Kayord.Pos.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.Order.ClearBasket;
 
@@ -19,11 +20,11 @@ public class Endpoint : Endpoint<Request, Pos.Entities.OrderItem>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        List<OrderItem>? entities = _dbContext.OrderItem.Where(x => x.TableBookingId == req.TableBookingId && x.OrderItemStatusId == 1).ToList();
+        List<OrderItem>? entities = await _dbContext.OrderItem.Where(x => x.TableBookingId == req.TableBookingId && x.OrderItemStatusId == 1).ToListAsync(ct);
         if (entities != null)
         {
             _dbContext.RemoveRange(entities);
-            await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync(ct);
             await Send.OkAsync();
         }
         else

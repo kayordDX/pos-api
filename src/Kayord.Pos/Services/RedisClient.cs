@@ -98,7 +98,7 @@ public class RedisClient
     public async Task<IEnumerable<string>> GetKeys(string pattern)
     {
         var server = await GetServer();
-        IEnumerable<string> keys = server.Keys(pattern: pattern).Select(x => x.ToString()) ?? [];
+        var keys = server.Keys(pattern: pattern).Select(x => x.ToString()).ToList();
         return keys;
     }
 
@@ -124,11 +124,13 @@ public class RedisClient
 
     public async Task DeletePatternAsync(string pattern)
     {
-        var keys = await GetKeys(pattern);
-        foreach (var key in keys)
-        {
-            await DeleteKeyAsync(key);
-        }
+        var keys = (await GetKeys(pattern)).ToArray();
+        if (keys.Length == 0)
+            return;
+
+        var database = await GetDatabaseAsync();
+        var redisKeys = keys.Select(k => (RedisKey)k).ToArray();
+        await database.KeyDeleteAsync(redisKeys);
     }
 
     public async Task DeleteKeyAsync(string key)
