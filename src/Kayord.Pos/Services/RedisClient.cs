@@ -6,37 +6,65 @@ namespace Kayord.Pos.Services;
 
 public class RedisClient
 {
-    private static readonly TimeSpan defaultExpiry = TimeSpan.FromMinutes(10);
-    private static Lazy<Task<ConnectionMultiplexer>> lazyConnection = new();
+    private readonly TimeSpan defaultExpiry = TimeSpan.FromMinutes(10);
+    private volatile IConnectionMultiplexer? _connection;
+    private readonly SemaphoreSlim _connectionLock = new(1, 1);
     private readonly IConfiguration _config;
+    private readonly string _connectionString;
 
     public RedisClient(IConfiguration config)
     {
         _config = config;
-        lazyConnection = new Lazy<Task<ConnectionMultiplexer>>(() => ConnectAsync(_config.GetConnectionString("Redis") ?? "localhost:6379"));
+        _connectionString = _config.GetConnectionString("Redis") ?? "localhost:6379";
     }
 
-    private static async Task<ConnectionMultiplexer> ConnectAsync(string connectionString)
+    private async Task<IConnectionMultiplexer> GetConnectionAsync()
     {
-        return await ConnectionMultiplexer.ConnectAsync(connectionString);
+        if (_connection?.IsConnected == true)
+            return _connection;
+
+        await _connectionLock.WaitAsync();
+        try
+        {
+            if (_connection?.IsConnected == true)
+                return _connection;
+
+            //Connection disconnected. Disposing connection...
+            _connection?.Dispose();
+
+            //Creating new instance of Redis Connection
+            _connection = await ConnectAsync();
+        }
+        finally
+        {
+            _connectionLock.Release();
+        }
+
+        return _connection;
+    }
+
+    private async Task<IConnectionMultiplexer> ConnectAsync()
+    {
+        IConnectionMultiplexer connection = await ConnectionMultiplexer.ConnectAsync(_connectionString);
+        return connection;
     }
 
     public async Task<IDatabase> GetDatabaseAsync()
     {
-        var connection = await lazyConnection.Value;
+        var connection = await GetConnectionAsync();
         return connection.GetDatabase();
     }
 
     public async Task<IServer> GetServer()
     {
-        var connection = await lazyConnection.Value;
+        var connection = await GetConnectionAsync();
         EndPoint endPoint = connection.GetEndPoints().First();
         return connection.GetServer(endPoint);
     }
 
     public async Task<ISubscriber> GetSubscriber()
     {
-        var connection = await lazyConnection.Value;
+        var connection = await GetConnectionAsync();
         return connection.GetSubscriber();
     }
 
