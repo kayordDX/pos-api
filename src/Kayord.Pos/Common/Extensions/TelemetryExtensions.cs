@@ -1,9 +1,7 @@
-using Npgsql;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using StackExchange.Redis;
 
 namespace Kayord.Pos.Common.Extensions;
 
@@ -24,6 +22,7 @@ public static class TelemetryExtensions
             .ConfigureResource(r => r.AddService("PosApi"))
             .WithMetrics(metrics => metrics
                 .AddAspNetCoreInstrumentation()
+                .AddRuntimeInstrumentation()
                 .AddHttpClientInstrumentation()
                 .AddProcessInstrumentation())
             .WithTracing(tracing => tracing
