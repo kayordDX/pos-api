@@ -17,7 +17,9 @@ public static class CashUp
             IsCashedUp = false,
             IsError = false
         };
-        var salesPeriod = await _dbContext.SalesPeriod.FirstOrDefaultAsync(x => x.OutletId == OutletId && x.EndDate == null);
+        var salesPeriod = await _dbContext.SalesPeriod
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.OutletId == OutletId && x.EndDate == null);
         if (salesPeriod == null)
         {
             response.IsError = true;
@@ -38,7 +40,8 @@ public static class CashUp
         {
             var savedCashUpUser = await _dbContext.CashUpUser.ProjectToDto().FirstOrDefaultAsync(x => x.Id == cashUpUserId);
             response.OpeningBalance = savedCashUpUser?.OpeningBalance ?? 0;
-            var savedBalance = (savedCashUpUser?.OpeningBalance ?? 0) - (savedCashUpUser?.ClosingBalance ?? 0);
+
+            // var savedBalance = (savedCashUpUser?.OpeningBalance ?? 0) - (savedCashUpUser?.ClosingBalance ?? 0);
 
             response.CashUpUserId = cashUpUserId;
             var items = _dbContext.CashUpUserItem.Where(x => x.CashUpUserId == cashUpUserId).Where(x => x.Value != 0m).ProjectToDto();
@@ -111,8 +114,9 @@ public static class CashUp
 
         // Fixed: Filter on current outlet only
         // List<CashUpUserItemTypeDTO> cashUpUserItemTypes = await _dbContext.CashUpUserItemType.ProjectToDto().ToListAsync();
-        List<CashUpUserItemTypeDTO> cashUpUserItemTypesOld = await _dbContext.CashUpUserItemType.ProjectToDto().ToListAsync();
-        List<CashUpUserItemTypeDTO> cashUpUserItemTypes = await _dbContext.CashUpUserItemType.GroupJoin(
+        List<CashUpUserItemTypeDTO> cashUpUserItemTypes = await _dbContext.CashUpUserItemType
+        .AsNoTracking()
+        .GroupJoin(
             _dbContext.AdjustmentTypeOutlet,
             c => c.AdjustmentTypeId,
             a => a.AdjustmentTypeId,
@@ -126,10 +130,18 @@ public static class CashUp
 
         List<PaymentTotal> paymentTotals = new();
 
-        var outletPayTypes = await _dbContext.OutletPaymentType.Where(x => x.OutletId == OutletId).Include(x => x.PaymentType).ToListAsync();
+        var outletPayTypes = await _dbContext.OutletPaymentType
+            .AsNoTracking()
+            .Where(x => x.OutletId == OutletId)
+            .Include(x => x.PaymentType)
+            .ToListAsync();
         var outletPayTypeIds = outletPayTypes.Select(x => x.PaymentTypeId).ToList();
 
-        var payTypes = await _dbContext.PaymentType.Where(x => outletPayTypeIds.Contains(x.PaymentTypeId)).ProjectToDto().ToListAsync();
+        var payTypes = await _dbContext.PaymentType
+            .AsNoTracking()
+            .Where(x => outletPayTypeIds.Contains(x.PaymentTypeId))
+            .ProjectToDto()
+            .ToListAsync();
 
         foreach (var payType in payTypes)
         {
@@ -392,7 +404,12 @@ public static class CashUp
             await _dbContext.SaveChangesAsync();
             response.CashUpUserItems = new List<CashUpUserItemDTO>();
         }
-        List<CashUpUserItemDTO> existing = await _dbContext.CashUpUserItem.Include(x => x.CashUpUserItemType).Where(x => x.CashUpUserId == userCashUpId).ProjectToDto().ToListAsync();
+        List<CashUpUserItemDTO> existing = await _dbContext.CashUpUserItem
+            .AsNoTracking()
+            .Include(x => x.CashUpUserItemType)
+            .Where(x => x.CashUpUserId == userCashUpId)
+            .ProjectToDto()
+            .ToListAsync();
 
         response.UserId = UserId;
         response.User = await _dbContext.User.ProjectToDto().FirstOrDefaultAsync(x => x.UserId == UserId) ?? default!;
