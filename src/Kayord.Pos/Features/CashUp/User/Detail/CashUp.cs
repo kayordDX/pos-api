@@ -63,7 +63,7 @@ public static class CashUp
         if (salesPeriod == null)
         {
             response.IsError = true;
-            response.Message = "User has open tables";
+            response.Message = "No active sales period";
             return response;
         }
 
@@ -108,7 +108,21 @@ public static class CashUp
         {
             response.OpeningBalance = cashUpUser.OpeningBalance;
         }
-        List<CashUpUserItemTypeDTO> cashUpUserItemTypes = await _dbContext.CashUpUserItemType.ProjectToDto().ToListAsync();
+
+        // Fixed: Filter on current outlet only
+        // List<CashUpUserItemTypeDTO> cashUpUserItemTypes = await _dbContext.CashUpUserItemType.ProjectToDto().ToListAsync();
+        List<CashUpUserItemTypeDTO> cashUpUserItemTypesOld = await _dbContext.CashUpUserItemType.ProjectToDto().ToListAsync();
+        List<CashUpUserItemTypeDTO> cashUpUserItemTypes = await _dbContext.CashUpUserItemType.GroupJoin(
+            _dbContext.AdjustmentTypeOutlet,
+            c => c.AdjustmentTypeId,
+            a => a.AdjustmentTypeId,
+            (c, a) => new { c, a }
+        )
+        .SelectMany(x => x.a.DefaultIfEmpty(), (x, a) => new { cut = x.c, a })
+        .Where(x => (x.a != null && x.a.OutletId == OutletId) || x.cut.AdjustmentTypeId == null)
+        .Select(x => x.cut)
+        .ProjectToDto()
+        .ToListAsync();
 
         List<PaymentTotal> paymentTotals = new();
 
@@ -167,62 +181,92 @@ public static class CashUp
         foreach (var item in tableBooking)
         {
             decimal tableTotal = item.Total ?? 0;
-            decimal cashPayments = item.Payments?.Where(x => x.TableBookingId == item.Id && !paymentWithLevyIds.Contains(x.PaymentTypeId ?? 0)).Sum(x => x.Amount) ?? 0;
-            decimal cardPayments = item.Payments?.Where(x => x.TableBookingId == item.Id && paymentWithLevyIds.Contains(x.PaymentTypeId ?? 0)).Sum(x => x.Amount) ?? 0;
+            // decimal cashPayments = item.Payments?.Where(x => x.TableBookingId == item.Id && !paymentWithLevyIds.Contains(x.PaymentTypeId ?? 0)).Sum(x => x.Amount) ?? 0;
+            // decimal cardPayments = item.Payments?.Where(x => x.TableBookingId == item.Id && paymentWithLevyIds.Contains(x.PaymentTypeId ?? 0)).Sum(x => x.Amount) ?? 0;
+            decimal totalPayments = item.Payments?.Where(x => x.TableBookingId == item.Id).Sum(x => x.Amount) ?? 0;
             decimal adjustments = item.Adjustments?.Sum(x => x.Amount) ?? 0;
-            var levyOverage = cardPayments - tableTotal;
-            if (levyOverage > 0)
-            {
 
-                List<Payment>? tablePaymentsWithLevys = item.Payments?.Where(x => x.TableBookingId == item.Id && paymentWithLevyIds.Contains(x.PaymentTypeId ?? 0)).ToList();
-                if (tablePaymentsWithLevys != null)
+            // var totalLevyOverage = (cardPayments + cashPayments) - tableTotal;
+            var totalLevyOverage = totalPayments - tableTotal;
+            if (totalLevyOverage > 0)
+            {
+                List<Payment>? payments = item.Payments?.Where(x => x.TableBookingId == item.Id).ToList();
+                if (payments != null)
                 {
-                    foreach (var tablePaymentsWithLevy in tablePaymentsWithLevys.OrderByDescending(x => x.PaymentType.TipLevyPercentage))
+                    foreach (var tablePayments in payments.OrderBy(x => x.DateReceived))
                     {
-                        tableTotal = tableTotal - tablePaymentsWithLevy.Amount;
+                        tableTotal = tableTotal - tablePayments.Amount;
                         if (tableTotal < 0)
                         {
-                            var payType = paymentTotals.FirstOrDefault(x => x.PaymentTypeId == tablePaymentsWithLevy.PaymentTypeId);
+                            var payType = paymentTotals.FirstOrDefault(x => x.PaymentTypeId == tablePayments.PaymentTypeId);
                             if (payType != null)
                             {
                                 decimal paymentTipOverage = tableTotal * -1;
                                 payType.Tip += paymentTipOverage;
-                                payType.Levy += paymentTipOverage * payType.PaymentType.TipLevyPercentage / 100;
-                            }
-                            tableTotal = 0;
-                        }
 
-
-                    }
-                }
-
-            }
-            var cashTipOverage = cashPayments - tableTotal;
-            if (cashTipOverage > 0)
-            {
-
-                List<Payment>? tablePaymentsWithOutLevys = item.Payments?.Where(x => x.TableBookingId == item.Id && !paymentWithLevyIds.Contains(x.PaymentTypeId ?? 0)).ToList();
-                if (tablePaymentsWithOutLevys != null)
-                {
-                    foreach (var tablePaymentsWithLevy in tablePaymentsWithOutLevys)
-                    {
-                        tableTotal = tableTotal - tablePaymentsWithLevy.Amount;
-                        if (tableTotal < 0)
-                        {
-                            var payType = paymentTotals.FirstOrDefault(x => x.PaymentTypeId == tablePaymentsWithLevy.PaymentTypeId);
-                            if (payType != null)
-                            {
-                                decimal paymentTipOverage = tableTotal * -1;
-                                payType.Tip += paymentTipOverage;
-                                payType.Levy += 0;
+                                bool isLevy = paymentWithLevyIds.Contains(tablePayments.PaymentTypeId ?? 0);
+                                if (isLevy)
+                                {
+                                    payType.Levy += paymentTipOverage * payType.PaymentType.TipLevyPercentage / 100;
+                                }
+                                else
+                                {
+                                    payType.Levy += 0;
+                                }
                             }
                             tableTotal = 0;
                         }
                     }
                 }
-
             }
 
+            // var levyOverage = cardPayments - tableTotal;
+            // if (levyOverage > 0)
+            // {
+
+            //     List<Payment>? tablePaymentsWithLevys = item.Payments?.Where(x => x.TableBookingId == item.Id && paymentWithLevyIds.Contains(x.PaymentTypeId ?? 0)).ToList();
+            //     if (tablePaymentsWithLevys != null)
+            //     {
+            //         foreach (var tablePaymentsWithLevy in tablePaymentsWithLevys.OrderByDescending(x => x.PaymentType.TipLevyPercentage))
+            //         {
+            //             tableTotal = tableTotal - tablePaymentsWithLevy.Amount;
+            //             if (tableTotal < 0)
+            //             {
+            //                 var payType = paymentTotals.FirstOrDefault(x => x.PaymentTypeId == tablePaymentsWithLevy.PaymentTypeId);
+            //                 if (payType != null)
+            //                 {
+            //                     decimal paymentTipOverage = tableTotal * -1;
+            //                     payType.Tip += paymentTipOverage;
+            //                     payType.Levy += paymentTipOverage * payType.PaymentType.TipLevyPercentage / 100;
+            //                 }
+            //                 tableTotal = 0;
+            //             }
+            //         }
+            //     }
+            // }
+            // var cashTipOverage = cashPayments - tableTotal;
+            // if (cashTipOverage > 0)
+            // {
+            //     List<Payment>? tablePaymentsWithOutLevys = item.Payments?.Where(x => x.TableBookingId == item.Id && !paymentWithLevyIds.Contains(x.PaymentTypeId ?? 0)).ToList();
+            //     if (tablePaymentsWithOutLevys != null)
+            //     {
+            //         foreach (var tablePaymentsWithLevy in tablePaymentsWithOutLevys)
+            //         {
+            //             tableTotal = tableTotal - tablePaymentsWithLevy.Amount;
+            //             if (tableTotal < 0)
+            //             {
+            //                 var payType = paymentTotals.FirstOrDefault(x => x.PaymentTypeId == tablePaymentsWithLevy.PaymentTypeId);
+            //                 if (payType != null)
+            //                 {
+            //                     decimal paymentTipOverage = tableTotal * -1;
+            //                     payType.Tip += paymentTipOverage;
+            //                     payType.Levy += 0;
+            //                 }
+            //                 tableTotal = 0;
+            //             }
+            //         }
+            //     }
+            // }
         }
 
         // Create response items for PaymentTip and PaymentLevy

@@ -32,7 +32,7 @@ public class Endpoint : Endpoint<Request, Pos.Entities.Menu>
             return;
         }
 
-        var adjustmentTypeEntity = new Entities.AdjustmentType
+        var adjustmentTypeEntity = new AdjustmentType
         {
             Name = req.Name,
             Description = req.Description
