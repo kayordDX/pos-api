@@ -35,7 +35,7 @@ public class Endpoint : Endpoint<Request, OrderItem>
         {
             if (tableBooking.CloseDate != null)
             {
-                throw new Exception("Table is closed");
+                ValidationContext.Instance.ThrowError("Table is closed");
             }
         }
 
