@@ -1,0 +1,14 @@
+[
+  {
+    "label": "Run",
+    "command": "dotnet",
+    "hide": "on_success",
+    "args": ["run", "--project", "./src/Kayord.Pos"],
+  },
+  {
+    "label": "build",
+    "command": "dotnet",
+    "hide": "on_success",
+    "args": ["build", "./src/Kayord.Pos/Kayord.Pos.csproj"],
+  },
+]

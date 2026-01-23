@@ -1,19 +1,14 @@
+using Kayord.Pos.Common.Extensions;
+using Kayord.Pos.Common.Models;
 using Kayord.Pos.Data;
 using Kayord.Pos.Services;
-using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.TableBooking.History;
 
-public class Endpoint : Endpoint<Request, List<Response>>
+public class Endpoint(AppDbContext dbContext, CurrentUserService user) : Endpoint<Request, PaginatedList<Response>>
 {
-    private readonly AppDbContext _dbContext;
-    private readonly CurrentUserService _user;
-
-    public Endpoint(AppDbContext dbContext, CurrentUserService user)
-    {
-        _dbContext = dbContext;
-        _user = user;
-    }
+    private readonly AppDbContext _dbContext = dbContext;
+    private readonly CurrentUserService _user = user;
 
     public override void Configure()
     {
@@ -34,8 +29,8 @@ public class Endpoint : Endpoint<Request, List<Response>>
         var result = await bookings
             .OrderByDescending(x => x.CloseDate)
             .ProjectToDto()
-            .ToListAsync();
+            .GetPagedAsync(r, ct);
 
-        await Send.OkAsync(result);
+        await Send.OkAsync(result, ct);
     }
 }

@@ -37,13 +37,13 @@
     <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
     <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
     <PackageReference Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" />
-    <PackageReference Include="OpenTelemetry.Instrumentation.Http" />    
+    <PackageReference Include="OpenTelemetry.Instrumentation.Http" />
     <PackageReference Include="QueryKit" />
     <PackageReference Include="Microsoft.SemanticKernel" />
     <PackageReference Include="Microsoft.SemanticKernel.Connectors.Google" />
     <PackageReference Include="TickerQ" />
     <PackageReference Include="TickerQ.Dashboard" />
-    <PackageReference Include="TickerQ.EntityFrameworkCore" />  
+    <PackageReference Include="TickerQ.EntityFrameworkCore" />
   </ItemGroup>
 
 </Project>

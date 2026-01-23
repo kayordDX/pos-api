@@ -6,5 +6,7 @@ indent_size = 4
 dotnet_diagnostic.RMG012.severity = none
 dotnet_diagnostic.RMG020.severity = none
 
+dotnet_diagnostic.IDE0130.severity = warning
+
 csharp_style_namespace_declarations = file_scoped:warning
 # dotnet_diagnostic.IDE0161.severity = error

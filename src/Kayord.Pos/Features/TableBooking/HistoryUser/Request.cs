@@ -1,6 +1,8 @@
+using Kayord.Pos.Common.Models;
+
 namespace Kayord.Pos.Features.TableBooking.HistoryUser;
 
-public class Request
+public class Request : QueryModel
 {
     public string UserId { get; set; } = string.Empty;
     public int CashUpUserId { get; set; }

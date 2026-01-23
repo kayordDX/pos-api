@@ -16,20 +16,18 @@ public class App : AppFixture<Program>
 
     protected override async ValueTask PreSetupAsync()
     {
-        postgreSqlContainer = new PostgreSqlBuilder()
-            .WithImage("postgres:18")
+        postgreSqlContainer = new PostgreSqlBuilder("postgres:18")
             .WithDatabase("db")
             .WithUsername("db")
             .WithPassword("db")
             .WithPortBinding(15432, 5432)
             .Build();
 
-        var redis = new ContainerBuilder()
-        .WithImage("docker.io/bitnami/redis:latest")
-        .WithPortBinding(16379, 6379)
-        .WithEnvironment("REDIS_PASSWORD", "4qWF6jAcW6e9PCeW")
-        .WithWaitStrategy(Wait.ForUnixContainer().UntilInternalTcpPortIsAvailable(6379))
-        .Build();
+        var redis = new ContainerBuilder("docker.io/bitnami/redis:latest")
+            .WithPortBinding(16379, 6379)
+            .WithEnvironment("REDIS_PASSWORD", "4qWF6jAcW6e9PCeW")
+            .WithWaitStrategy(Wait.ForUnixContainer().UntilInternalTcpPortIsAvailable(6379))
+            .Build();
 
         await postgreSqlContainer.StartAsync();
         await redis.StartAsync();
