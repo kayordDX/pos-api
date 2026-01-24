@@ -8,7 +8,7 @@
     <PackageVersion Include="AspNetCore.HealthChecks.Redis" Version="9.0.0" />
     <PackageVersion Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
     <PackageVersion Include="Bogus" Version="35.6.5" />
-    <PackageVersion Include="EFCore.NamingConventions" Version="10.0.0" />
+    <PackageVersion Include="EFCore.NamingConventions" Version="10.0.1" />
     <PackageVersion Include="FastEndpoints" Version="7.2.0" />
     <PackageVersion Include="FastEndpoints.Swagger" Version="7.2.0" />
     <PackageVersion Include="FirebaseAdmin" Version="3.4.0" />
@@ -22,22 +22,22 @@
     <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="10.0.2" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.2" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.14.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.15.0" />
     <PackageVersion Include="QuestPDF" Version="2025.12.3" />
     <PackageVersion Include="Riok.Mapperly" Version="4.3.1" />
-    <PackageVersion Include="Scalar.AspNetCore" Version="2.12.11" />
+    <PackageVersion Include="Scalar.AspNetCore" Version="2.12.17" />
     <PackageVersion Include="QueryKit" Version="1.12.1" />
-    <PackageVersion Include="Microsoft.SemanticKernel" Version="1.69.0" />
-    <PackageVersion Include="Microsoft.SemanticKernel.Connectors.Google" Version="1.69.0-alpha" />
+    <PackageVersion Include="Microsoft.SemanticKernel" Version="1.70.0" />
+    <PackageVersion Include="Microsoft.SemanticKernel.Connectors.Google" Version="1.70.0-alpha" />
     <PackageVersion Include="TickerQ" Version="10.0.2" />
     <PackageVersion Include="TickerQ.Dashboard" Version="10.0.2" />
     <PackageVersion Include="TickerQ.EntityFrameworkCore" Version="10.0.2" />
-    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.14.0" />
-    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.14.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.14.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" Version="1.14.0-beta.2" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.Process" Version="1.14.0-beta.2" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.14.0" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.15.0" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.15.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.15.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" Version="1.15.0-beta.1" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Process" Version="1.15.0-beta.1" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.15.0" />
   </ItemGroup>
   <ItemGroup>
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
