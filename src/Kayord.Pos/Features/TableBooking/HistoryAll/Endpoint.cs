@@ -27,9 +27,10 @@ public class Endpoint(AppDbContext dbContext, UserService user) : Endpoint<Reque
         {
             booking = booking.Where(x => x.CloseDate >= req.StartDate.Value);
         }
+        req.EndDate ??= req.StartDate;
         if (req.EndDate.HasValue)
         {
-            booking = booking.Where(x => x.CloseDate <= req.EndDate.Value);
+            booking = booking.Where(x => x.CloseDate <= req.EndDate.Value.AddDays(1).AddSeconds(-1));
         }
 
         if (req.TableBookingId > 0)
