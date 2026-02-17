@@ -20,16 +20,14 @@ public class Endpoint : Endpoint<Request, Response>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        decimal amount = await _dbContext.StockItem
+        decimal amount = _dbContext.StockItem
             .Where(x => x.StockId == req.StockId)
-            .GroupBy(x => x.Actual)
-            .Select(x => x.Sum(t => t.Actual))
-            .FirstOrDefaultAsync(ct);
+            .Sum(x => x.Actual);
 
         decimal result = 0;
         var entity = await _dbContext.StockOrderItem
             .AsNoTracking()
-            .Where(x => x.StockOrderId < req.StockOrderId && x.StockId == req.StockId)
+            .Where(x => x.StockOrderId < req.StockOrderId && x.StockId == req.StockId && x.StockOrderItemStatusId == 2)
             .OrderByDescending(x => x.Created)
             .FirstOrDefaultAsync(ct);
 
