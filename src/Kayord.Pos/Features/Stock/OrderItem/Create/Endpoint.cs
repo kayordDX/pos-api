@@ -1,4 +1,5 @@
 using Kayord.Pos.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.Stock.OrderItem.Create;
 
@@ -27,6 +28,14 @@ public class Endpoint : Endpoint<Request, Entities.StockOrder>
             StockOrderItemStatusId = 1,
             Price = req.Price,
         };
+
+        var exists = await _dbContext.StockOrderItem
+            .FirstOrDefaultAsync(x => x.StockOrderId == entity.StockOrderId && x.StockId == entity.StockId, ct);
+
+        if (exists != null)
+        {
+            ValidationContext.Instance.ThrowError("Item already added to order");
+        }
 
         await _dbContext.StockOrderItem.AddAsync(entity);
         await _dbContext.SaveChangesAsync();
