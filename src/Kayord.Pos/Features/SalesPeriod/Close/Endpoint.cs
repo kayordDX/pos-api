@@ -1,4 +1,6 @@
 using Kayord.Pos.Data;
+using Kayord.Pos.Events;
+using Kayord.Pos.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.SalesPeriod.Close;
@@ -6,10 +8,12 @@ namespace Kayord.Pos.Features.SalesPeriod.Close;
 public class Endpoint : Endpoint<Request, Entities.SalesPeriod>
 {
     private readonly AppDbContext _dbContext;
+    private readonly CurrentUserService _cu;
 
-    public Endpoint(AppDbContext dbContext)
+    public Endpoint(AppDbContext dbContext, CurrentUserService cu)
     {
         _dbContext = dbContext;
+        _cu = cu;
     }
 
     public override void Configure()
@@ -33,8 +37,8 @@ public class Endpoint : Endpoint<Request, Entities.SalesPeriod>
 
         // Check if any in progress orders
         OrderResult? inProgressOrderCount = await _dbContext.Database.SqlQuery<OrderResult>($"""
-            SELECT 
-                count(order_item_id) count  
+            SELECT
+                count(order_item_id) count
             FROM order_item oi
             JOIN order_item_status ois
                 ON oi.order_item_status_id = ois.order_item_status_id
@@ -59,7 +63,15 @@ public class Endpoint : Endpoint<Request, Entities.SalesPeriod>
             .ToList()
             .ForEach(x => x.EndDate = DateTime.Now);
 
-        await _dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync(ct);
+
+        await new StockPeriodSnapshotEvent
+        {
+            SalesPeriodId = entity.Id,
+            OutletId = entity.OutletId,
+            CreatedBy = _cu.UserId ?? ""
+        }.PublishAsync(Mode.WaitForNone, ct);
+
         await Send.OkAsync(entity);
     }
 }

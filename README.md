@@ -3,7 +3,11 @@
 Backend for kayord pos
 
 ```bash
-dotnet ef migrations add Menu and MenuSections --project src/Kayord.Pos --startup-project src/Kayord.Pos --output-dir Data/Migrations
+dotnet ef migrations add StockPeriodSnapshot --context AppDbContext --project src/Kayord.Pos --startup-project src/Kayord.Pos --output-dir Data/Migrations
+
+dotnet ef migrations remove --context AppDbContext --project src/Kayord.Pos --startup-project src/Kayord.Pos
+
+dotnet ef database update StockPeriodSnapshot --context AppDbContext --project src/Kayord.Pos --startup-project src/Kayord.Pos
 
 dotnet ef database update --project src/Kayord.Pos --startup-project src/Kayord.Pos
 

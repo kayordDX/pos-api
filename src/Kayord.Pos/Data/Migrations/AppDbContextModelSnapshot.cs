@@ -18,7 +18,7 @@ namespace Kayord.Pos.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.0")
+                .HasAnnotation("ProductVersion", "10.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -2736,6 +2736,60 @@ namespace Kayord.Pos.Data.Migrations
                     b.ToTable("stock_order_status", (string)null);
                 });
 
+            modelBuilder.Entity("Kayord.Pos.Entities.StockPeriodSnapshot", b =>
+                {
+                    b.Property<int>("StockItemId")
+                        .HasColumnType("integer")
+                        .HasColumnName("stock_item_id");
+
+                    b.Property<decimal>("Actual")
+                        .HasColumnType("numeric")
+                        .HasColumnName("actual");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text")
+                        .HasColumnName("created_by");
+
+                    b.Property<int>("DivisionId")
+                        .HasColumnType("integer")
+                        .HasColumnName("division_id");
+
+                    b.Property<int>("OutletId")
+                        .HasColumnType("integer")
+                        .HasColumnName("outlet_id");
+
+                    b.Property<int>("SalesPeriodId")
+                        .HasColumnType("integer")
+                        .HasColumnName("sales_period_id");
+
+                    b.Property<int>("StockId")
+                        .HasColumnType("integer")
+                        .HasColumnName("stock_id");
+
+                    b.Property<decimal>("Threshold")
+                        .HasColumnType("numeric")
+                        .HasColumnName("threshold");
+
+                    b.Property<DateTime>("Updated")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated");
+
+                    b.HasKey("StockItemId")
+                        .HasName("pk_stock_period_snapshot");
+
+                    b.HasIndex("DivisionId")
+                        .HasDatabaseName("ix_stock_period_snapshot_division_id");
+
+                    b.HasIndex("StockId")
+                        .HasDatabaseName("ix_stock_period_snapshot_stock_id");
+
+                    b.ToTable("stock_period_snapshot", (string)null);
+                });
+
             modelBuilder.Entity("Kayord.Pos.Entities.Supplier", b =>
                 {
                     b.Property<int>("Id")
@@ -4016,6 +4070,27 @@ namespace Kayord.Pos.Data.Migrations
                     b.Navigation("StockOrder");
 
                     b.Navigation("StockOrderItemStatus");
+                });
+
+            modelBuilder.Entity("Kayord.Pos.Entities.StockPeriodSnapshot", b =>
+                {
+                    b.HasOne("Kayord.Pos.Entities.Division", "Division")
+                        .WithMany()
+                        .HasForeignKey("DivisionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_stock_period_snapshot_division_division_id");
+
+                    b.HasOne("Kayord.Pos.Entities.Stock", "Stock")
+                        .WithMany()
+                        .HasForeignKey("StockId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_stock_period_snapshot_stock_stock_id");
+
+                    b.Navigation("Division");
+
+                    b.Navigation("Stock");
                 });
 
             modelBuilder.Entity("Kayord.Pos.Entities.Table", b =>

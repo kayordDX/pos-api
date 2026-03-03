@@ -80,6 +80,7 @@ public class AppDbContext : DbContext
     public DbSet<StockAllocateStatus> StockAllocateStatus => Set<StockAllocateStatus>();
     public DbSet<StockCategory> StockCategory => Set<StockCategory>();
     public DbSet<StockItem> StockItem => Set<StockItem>();
+    public DbSet<StockPeriodSnapshot> StockPeriodSnapshot => Set<StockPeriodSnapshot>();
     public DbSet<StockItemAudit> StockItemAudit => Set<StockItemAudit>();
     public DbSet<StockItemAuditType> StockItemAuditType => Set<StockItemAuditType>();
     public DbSet<StockOrder> StockOrder => Set<StockOrder>();
