@@ -5,14 +5,9 @@ using TickerQ.Utilities.Base;
 
 namespace Kayord.Pos.Jobs;
 
-public class FunctionJob
+public class FunctionJob(AppDbContext dbContext)
 {
-    private readonly AppDbContext _dbContext;
-
-    public FunctionJob(AppDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
+    private readonly AppDbContext _dbContext = dbContext;
 
     [TickerFunction("Stock Threshold")]
     public async Task StockThreshold(CancellationToken ct)
@@ -33,5 +28,14 @@ public class FunctionJob
     {
         _dbContext.Database.SetCommandTimeout(TimeSpan.FromMinutes(1));
         await StockManager.StockAvailableAllCheck(_dbContext, ct);
+    }
+
+    [TickerFunction("Sql")]
+    public async Task RawSql(TickerFunctionContext<string> tickerContext, CancellationToken ct)
+    {
+        _dbContext.Database.SetCommandTimeout(TimeSpan.FromMinutes(2));
+        var sql = tickerContext.Request;
+        if (sql == null) return;
+        await _dbContext.Database.ExecuteSqlRawAsync(sql, ct);
     }
 }
