@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Kayord.Pos.Data.Migrations
+namespace Kayord.Pos.Data.TickerQMigrations
 {
     /// <inheritdoc />
     public partial class TickerQSelf : Migration

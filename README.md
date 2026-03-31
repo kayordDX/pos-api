@@ -12,6 +12,9 @@ dotnet ef database update StockPeriodSnapshot --context AppDbContext --project s
 dotnet ef database update --project src/Kayord.Pos --startup-project src/Kayord.Pos
 
 dotnet run --project src/Kayord.Pos
+
+# TickerQ Migration
+dotnet ef migrations add TickerQUpdate --context TickerQDbContext --project src/Kayord.Pos --startup-project src/Kayord.Pos --output-dir Data/TickerQMigrations
 ```
 
 ## Postgres

@@ -10,7 +10,7 @@ using NpgsqlTypes;
 
 #nullable disable
 
-namespace Kayord.Pos.Data.Migrations
+namespace Kayord.Pos.Data.TickerQMigrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20251209180827_TickerQModern")]

@@ -9,18 +9,18 @@ using TickerQ.EntityFrameworkCore.DbContextFactory;
 
 #nullable disable
 
-namespace Kayord.Pos.Data.Migrations
+namespace Kayord.Pos.Data.TickerQMigrations
 {
     [DbContext(typeof(TickerQDbContext))]
-    [Migration("20251209180924_TickerQSelf")]
-    partial class TickerQSelf
+    [Migration("20260331205414_TickerQUpdate")]
+    partial class TickerQUpdate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.0")
+                .HasAnnotation("ProductVersion", "10.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -50,6 +50,10 @@ namespace Kayord.Pos.Data.Migrations
                     b.Property<string>("InitIdentifier")
                         .HasColumnType("text")
                         .HasColumnName("init_identifier");
+
+                    b.Property<bool>("IsEnabled")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_enabled");
 
                     b.Property<byte[]>("Request")
                         .HasColumnType("bytea")
