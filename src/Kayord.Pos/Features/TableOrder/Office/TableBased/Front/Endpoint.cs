@@ -6,16 +6,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.TableOrder.FrontOffice;
 
-public class Endpoint : Endpoint<Request, Response>
+public class Endpoint(AppDbContext dbContext, CurrentUserService cu) : Endpoint<Request, Response>
 {
-    private readonly AppDbContext _dbContext;
-    private readonly CurrentUserService _cu;
-
-    public Endpoint(AppDbContext dbContext, CurrentUserService cu)
-    {
-        _dbContext = dbContext;
-        _cu = cu;
-    }
+    private readonly AppDbContext _dbContext = dbContext;
+    private readonly CurrentUserService _cu = cu;
 
     public override void Configure()
     {
@@ -24,34 +18,45 @@ public class Endpoint : Endpoint<Request, Response>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        UserOutlet? userOutlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.IsCurrent == true);
+        UserOutlet? userOutlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.IsCurrent == true, ct);
         if (userOutlet == null)
         {
-            await Send.NotFoundAsync();
+            await Send.NotFoundAsync(ct);
             return;
         }
 
         List<int> divisionIds = await RoleHelper.GetDivisionsForRoles(req.RoleIds, _dbContext, userOutlet.OutletId, _cu.UserId);
 
-        var statusIds = _dbContext.OrderItemStatus.Where(x => x.IsFrontLine && x.IsComplete != true && x.IsCancelled != true).Select(rd => rd.OrderItemStatusId).ToList();
+        List<int> statusIds = await _dbContext.OrderItemStatus
+            .AsNoTracking()
+            .Where(x => x.IsFrontLine && x.IsComplete != true && x.IsCancelled != true)
+            .Select(x => x.OrderItemStatusId)
+            .ToListAsync(ct);
 
         var result = await _dbContext.TableBooking
-            .Where(x => x.SalesPeriod.OutletId == userOutlet.OutletId && x.CloseDate == null)
+            .AsNoTracking()
+            .Where(x =>
+                x.SalesPeriod.OutletId == userOutlet.OutletId &&
+                x.CloseDate == null &&
+                x.UserId == _cu.UserId &&
+                x.OrderItems.Any(oi =>
+                    statusIds.Contains(oi.OrderItemStatusId) &&
+                    divisionIds.Contains(oi.MenuItem.DivisionId) &&
+                    oi.OrderItemStatusId != 1 &&
+                    oi.OrderItemStatusId != 6))
             .ProjectToDto()
-            .ToListAsync();
+            .ToListAsync(ct);
 
         result.ForEach(dto =>
         {
             dto.OrderItems = dto.OrderItems!
-            .Where(oi => statusIds.Contains(oi.OrderItemStatusId) &&
-                divisionIds.Contains(oi.MenuItem.DivisionId))
-            .ToList();
+                .Where(oi =>
+                    statusIds.Contains(oi.OrderItemStatusId) &&
+                    divisionIds.Contains(oi.MenuItem.DivisionId) &&
+                    oi.OrderItemStatusId != 1 &&
+                    oi.OrderItemStatusId != 6)
+                .ToList();
         });
-
-        result = result.Where(x => x.OrderItems!.Any())
-            .Where(y => y.User.UserId == _cu.UserId && y.CloseDate == null &&
-                y.OrderItems!.Where(x => x.OrderItemStatusId != 1 && x.OrderItemStatusId != 6).Count() > 0)
-            .ToList();
 
         Response response = new()
         {
@@ -60,6 +65,6 @@ public class Endpoint : Endpoint<Request, Response>
             PendingTables = result.Count,
             Tables = result
         };
-        await Send.OkAsync(response);
+        await Send.OkAsync(response, ct);
     }
 }

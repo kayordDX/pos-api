@@ -74,12 +74,12 @@ public static class StockManager
                 {
                     stockItem = new StockItem()
                     {
-                        DivisionId = orderInfo.DivisionId ?? 0,
+                        DivisionId = orderInfo.DivisionId,
                         StockId = m.StockId,
                         Actual = 0,
                         Threshold = 0
                     };
-                    await _dbContext.AddAsync(stockItem);
+                    await _dbContext.AddAsync(stockItem, ct);
                     await _dbContext.SaveChangesAsync(ct);
                 }
 
@@ -135,7 +135,7 @@ public static class StockManager
             update menu_item m
             set is_available = a.is_available
             from (
-                select 
+                select
                     mi.menu_item_id,
                     min(((si.actual - mmm.quantity) >= 0)::int)::bool is_available
                 from menu_item mi
@@ -160,7 +160,7 @@ public static class StockManager
         update menu_item m
             set is_available = a.is_available
         from (
-            select 
+            select
                 mi.menu_item_id,
                 min(((si.actual - mmm.quantity) >= 0)::int)::bool is_available
             from menu_item mi

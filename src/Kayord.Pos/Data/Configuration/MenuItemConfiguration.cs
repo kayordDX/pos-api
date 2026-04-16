@@ -15,5 +15,7 @@ public class MenuItemConfiguration : IEntityTypeConfiguration<MenuItem>
 
         builder.Property(t => t.IsEnabled).HasDefaultValue(true);
         builder.Property(t => t.MenuItemId).UseIdentityColumn();
+
+        builder.HasIndex(i => new { i.DivisionId });
     }
 }

@@ -72,7 +72,7 @@ public class Endpoint : Endpoint<Request, Response>
                 orderItem.OrderItemStatusId = 2;
                 orderItem.OrderUpdated = DateTime.UtcNow;
                 orderItem.OrderGroup = order;
-                var divisionId = orderItem.MenuItem.DivisionId ?? 0;
+                var divisionId = orderItem.MenuItem.DivisionId;
                 if (!divisions.Contains(divisionId))
                 {
                     divisions.Add(divisionId);

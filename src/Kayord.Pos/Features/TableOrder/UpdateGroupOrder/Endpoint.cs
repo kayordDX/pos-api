@@ -34,7 +34,7 @@ public class Endpoint : Endpoint<Request, Response>
             .Include(x => x.MenuItem)
                 .ThenInclude(x => x.Division)
             .Where(x => x.OrderGroupId == req.OrderGroupId)
-            .Where(x => divisionIds.Contains(x.MenuItem.DivisionId ?? 0))
+            .Where(x => divisionIds.Contains(x.MenuItem.DivisionId))
             .ToListAsync(ct);
 
         // Stock

@@ -3,6 +3,7 @@ using System;
 using Kayord.Pos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using NpgsqlTypes;
@@ -12,9 +13,11 @@ using NpgsqlTypes;
 namespace Kayord.Pos.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260416181035_MenuItemDivision")]
+    partial class MenuItemDivision
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1470,8 +1473,8 @@ namespace Kayord.Pos.Data.Migrations
                     b.HasIndex("OrderItemStatusId")
                         .HasDatabaseName("ix_order_item_order_item_status_id");
 
-                    b.HasIndex("TableBookingId", "OrderItemStatusId")
-                        .HasDatabaseName("ix_order_item_table_booking_id_order_item_status_id");
+                    b.HasIndex("TableBookingId")
+                        .HasDatabaseName("ix_order_item_table_booking_id");
 
                     b.ToTable("order_item", (string)null);
                 });
@@ -2947,8 +2950,8 @@ namespace Kayord.Pos.Data.Migrations
                     b.HasIndex("TableId")
                         .HasDatabaseName("ix_table_booking_table_id");
 
-                    b.HasIndex("UserId", "CloseDate")
-                        .HasDatabaseName("ix_table_booking_user_id_close_date");
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_table_booking_user_id");
 
                     b.ToTable("table_booking", (string)null);
                 });
@@ -3112,9 +3115,6 @@ namespace Kayord.Pos.Data.Migrations
 
                     b.HasIndex("OutletId")
                         .HasDatabaseName("ix_user_outlet_outlet_id");
-
-                    b.HasIndex("UserId", "IsCurrent")
-                        .HasDatabaseName("ix_user_outlet_user_id_is_current");
 
                     b.ToTable("user_outlet", (string)null);
                 });

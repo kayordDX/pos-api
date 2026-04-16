@@ -152,7 +152,7 @@ public class Endpoint : Endpoint<Request, Response>
                 }
 
                 outletId = entity.TableBooking.SalesPeriod.OutletId;
-                var divisionId = entity.MenuItem.DivisionId ?? 0;
+                var divisionId = entity.MenuItem.DivisionId;
                 if (!divisions.Contains(divisionId))
                 {
                     divisions.Add(divisionId);

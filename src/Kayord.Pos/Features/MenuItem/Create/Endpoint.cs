@@ -25,7 +25,7 @@ public class Endpoint : Endpoint<Request, Pos.Entities.MenuItem>
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
 
-        Entities.MenuSection? menuSection = await _dbContext.MenuSection.FirstOrDefaultAsync(x => x.MenuSectionId == req.MenuSectionId);
+        Entities.MenuSection? menuSection = await _dbContext.MenuSection.FirstOrDefaultAsync(x => x.MenuSectionId == req.MenuSectionId, ct);
 
         if (menuSection != null)
         {

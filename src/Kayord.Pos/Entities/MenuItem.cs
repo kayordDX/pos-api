@@ -15,8 +15,8 @@ public class MenuItem : AuditableEntity
     public NpgsqlTsVector SearchVector { get; set; } = default!;
     public int Position { get; set; }
     public ICollection<Tag>? Tags { get; set; }
-    public int? DivisionId { get; set; }
-    public Division? Division { get; set; }
+    public int DivisionId { get; set; }
+    public Division Division { get; set; } = default!;
     public ICollection<MenuItemOptionGroup>? MenuItemOptionGroups { get; set; }
     public ICollection<MenuItemExtraGroup>? MenuItemExtraGroups { get; set; }
     public bool IsAvailable { get; set; }

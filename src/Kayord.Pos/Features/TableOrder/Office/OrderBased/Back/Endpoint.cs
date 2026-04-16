@@ -26,13 +26,13 @@ public class Endpoint : Endpoint<Request, Response>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        UserOutlet? userOutlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.IsCurrent == true);
+        UserOutlet? userOutlet = await _dbContext.UserOutlet.FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.IsCurrent == true, ct);
         if (userOutlet == null)
         {
-            await Send.NotFoundAsync();
+            await Send.NotFoundAsync(ct);
             return;
         }
-        List<int> divisionIds = req.DivisionIds != null ? req.DivisionIds.Split(",").Select(int.Parse).ToList() : [];
+        List<int> divisionIds = req.DivisionIds != null ? [.. req.DivisionIds.Split(",").Select(int.Parse)] : [];
 
         var orderItems = _dbContext.OrderItem
             .Where(x => x.TableBooking.Table.Section.OutletId == userOutlet.OutletId)
@@ -40,18 +40,18 @@ public class Endpoint : Endpoint<Request, Response>
             .Where(x => x.OrderItemStatus.IsBackOffice == !req.Complete)
             .Where(x => x.OrderItemStatus.IsCancelled != true)
             .Where(x => x.OrderItemStatus.IsHistory == req.Complete)
-            .Where(x => divisionIds.Contains(x.MenuItem.DivisionId ?? 0));
+            .Where(x => divisionIds.Contains(x.MenuItem.DivisionId));
         if (req.Complete)
         {
             orderItems = orderItems.Where(x => x.TableBooking.CloseDate == null);
         }
         if (orderItems == null)
         {
-            await Send.NotFoundAsync();
+            await Send.NotFoundAsync(ct);
             return;
         }
 
-        var orderItemDTOs = await orderItems.ProjectToDto().ToListAsync();
+        var orderItemDTOs = await orderItems.ProjectToDto().ToListAsync(ct);
         var orderGroupQuery = orderItemDTOs
             .GroupBy(x => new { x.OrderGroupId, x.TableBookingId })
             .Select(s => new OrderGroupDTO()
@@ -83,9 +83,9 @@ public class Endpoint : Endpoint<Request, Response>
             LastRefresh = DateTime.UtcNow,
             OrderGroups = orderGroups,
             PendingItems = orderGroups.Sum(x => x.OrderItems?.Count ?? 0),
-            PendingOrders = orderGroups.Count()
+            PendingOrders = orderGroups.Count
         };
 
-        await Send.OkAsync(r);
+        await Send.OkAsync(r, ct);
     }
 }
