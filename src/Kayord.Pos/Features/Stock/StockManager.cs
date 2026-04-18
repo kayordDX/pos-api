@@ -18,7 +18,7 @@ public static class StockManager
 
             if (orderInfo == null) continue;
 
-            List<StockPatch> stockToUpdate = new();
+            List<StockPatch> stockToUpdate = [];
 
             // Menu Items
             var menuItemStock = await _dbContext.MenuItemStock
@@ -107,17 +107,15 @@ public static class StockManager
                         StockItemId = stockItem.Id,
                         UserId = userId,
                         Updated = DateTime.Now,
-                    });
-                    if (toActual == 0)
+                    }, ct);
+
+                    // Update Menu Item to be unavailable if stock runs out (Only for menu item)
+                    if (toActual == 0 && m.Type == StockItemAuditType.MenuItem)
                     {
-                        Entities.MenuItem? menuItemUnavailable = await _dbContext.MenuItem.FirstOrDefaultAsync(x => x.MenuItemId == orderInfo.MenuItemId);
-                        if (menuItemUnavailable != null)
-                        {
-                            menuItemUnavailable.IsAvailable = false;
-                        }
+                        Entities.MenuItem? menuItemUnavailable = await _dbContext.MenuItem.FirstOrDefaultAsync(x => x.MenuItemId == orderInfo.MenuItemId, ct);
+                        menuItemUnavailable?.IsAvailable = false;
                     }
                 }
-
                 stockItem.Actual = toActual;
             }
         }
@@ -151,7 +149,7 @@ public static class StockManager
             ) a
             WHERE m.menu_item_id = a.menu_item_id
             AND m.is_available <> a.is_available
-        """);
+        """, ct);
     }
 
     public static async Task StockAvailableAllCheck(AppDbContext dbContext, CancellationToken ct)
@@ -175,7 +173,7 @@ public static class StockManager
         ) a
         WHERE m.menu_item_id = a.menu_item_id
         AND m.is_available <> a.is_available
-        """);
+        """, ct);
     }
 
     public static async Task<bool> IsMenuItemAvailable(int menuItemId, AppDbContext dbContext, CancellationToken ct)
