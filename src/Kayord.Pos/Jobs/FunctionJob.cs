@@ -33,7 +33,7 @@ public class FunctionJob(AppDbContext dbContext)
     [TickerFunction("Sql")]
     public async Task RawSql(TickerFunctionContext<string> tickerContext, CancellationToken ct)
     {
-        _dbContext.Database.SetCommandTimeout(TimeSpan.FromMinutes(2));
+        _dbContext.Database.SetCommandTimeout(TimeSpan.FromMinutes(5));
         var sql = tickerContext.Request;
         if (sql == null) return;
         await _dbContext.Database.ExecuteSqlRawAsync(sql, ct);
