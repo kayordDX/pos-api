@@ -19,7 +19,7 @@ public class Endpoint : Endpoint<Request, List<Entities.Division>>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var results = await _dbContext.Division.Where(x => x.OutletId == req.OutletId).ToListAsync(ct);
+        var results = await _dbContext.Division.Where(x => x.OutletId == req.OutletId && x.IsDeleted == false).ToListAsync(ct);
         await Send.OkAsync(results);
     }
 }

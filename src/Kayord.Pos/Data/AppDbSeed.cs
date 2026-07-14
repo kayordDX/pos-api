@@ -30,7 +30,7 @@ public static class AppDbSeed
 
         if (!context.Division.Any())
         {
-            await context.Division.AddAsync(new Division { DivisionId = 1, DivisionName = "Kitchen" });
+            await context.Division.AddAsync(new Division { DivisionName = "Kitchen" });
             await context.SaveChangesAsync(cancellationToken);
         }
 

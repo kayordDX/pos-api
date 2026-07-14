@@ -9,5 +9,8 @@ public class DivisionConfiguration : IEntityTypeConfiguration<Division>
     public void Configure(EntityTypeBuilder<Division> builder)
     {
         builder.Property(t => t.DivisionId).UseIdentityColumn();
+        builder.HasIndex(e => new { e.DivisionName, e.OutletId })
+            .IsUnique()
+            .HasFilter("\"is_deleted\" = false");
     }
 }
