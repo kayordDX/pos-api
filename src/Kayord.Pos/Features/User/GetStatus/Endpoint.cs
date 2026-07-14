@@ -4,16 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kayord.Pos.Features.User.GetStatus;
 
-public class Endpoint : EndpointWithoutRequest<Response>
+public class Endpoint(AppDbContext dbContext, CurrentUserService cu) : EndpointWithoutRequest<Response>
 {
-    private readonly AppDbContext _dbContext;
-    private readonly CurrentUserService _cu;
-
-    public Endpoint(AppDbContext dbContext, CurrentUserService cu)
-    {
-        _dbContext = dbContext;
-        _cu = cu;
-    }
+    private readonly AppDbContext _dbContext = dbContext;
+    private readonly CurrentUserService _cu = cu;
 
     public override void Configure()
     {
@@ -32,7 +26,7 @@ public class Endpoint : EndpointWithoutRequest<Response>
 
         var userOutlet = await _dbContext.UserOutlet
             .Select(x => new { x.Id, x.IsCurrent, x.UserId, OutletId = x.Outlet.Id, OutletName = x.Outlet.Name })
-            .FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.IsCurrent);
+            .FirstOrDefaultAsync(x => x.UserId == _cu.UserId && x.IsCurrent, ct);
 
         if (userOutlet == null)
         {
@@ -42,7 +36,7 @@ public class Endpoint : EndpointWithoutRequest<Response>
                 var userRole = await _dbContext.UserRoleOutlet.AnyAsync(x => x.UserId == _cu.UserId, ct);
                 resp.StatusId = (userRole == true) ? 2 : 1;
             }
-            await Send.OkAsync(resp);
+            await Send.OkAsync(resp, ct);
             return;
         }
 
@@ -56,7 +50,7 @@ public class Endpoint : EndpointWithoutRequest<Response>
                 RoleName = ur.Role!.Name,
                 RoleType = ur.Role.RoleType.Name
             })
-            .ToListAsync();
+            .ToListAsync(ct);
 
         resp.Roles = userRoles;
 
@@ -65,13 +59,13 @@ public class Endpoint : EndpointWithoutRequest<Response>
 
         var divisions = await _dbContext.Database.SqlQuery<DivisionDTO>(
         $"""
-            select 
+            select
                 d.division_id id, d.division_name name
             from user_role_outlet uro
             join role_division rd
                 on rd.role_id = uro.role_id
             join role r
-                on r.role_id = uro.role_id  
+                on r.role_id = uro.role_id
             join role_type rt
                 on r.role_type_id = rt.id
             join division d
@@ -80,6 +74,7 @@ public class Endpoint : EndpointWithoutRequest<Response>
             and uro.user_id = {_cu.UserId}
             and rt.is_back_office = true and rt.is_front_line = false
             and d.is_deleted = false
+            group by d.division_id, d.division_name;
         """).ToListAsync(ct);
         resp.Divisions = divisions;
 
@@ -96,7 +91,7 @@ public class Endpoint : EndpointWithoutRequest<Response>
 
         if (salesPeriod == null)
         {
-            await Send.OkAsync(resp);
+            await Send.OkAsync(resp, ct);
             return;
         }
         else
@@ -106,7 +101,7 @@ public class Endpoint : EndpointWithoutRequest<Response>
         }
 
         var clockInStatus = await _dbContext.Clock
-            .AnyAsync(x => x.UserId == _cu.UserId && x.OutletId == userOutlet.OutletId && x.EndDate == null);
+            .AnyAsync(x => x.UserId == _cu.UserId && x.OutletId == userOutlet.OutletId && x.EndDate == null, ct);
         resp.ClockedIn = clockInStatus;
 
         // Check if user has notification. TODO: Make this more generic
@@ -114,6 +109,6 @@ public class Endpoint : EndpointWithoutRequest<Response>
         bool hasNotification = await _dbContext.StockAllocateItem.AnyAsync(x => x.StockAllocateItemStatusId == 2 && x.AssignedUserId == _cu.UserId, ct);
         resp.hasNotification = hasNotification;
 
-        await Send.OkAsync(resp);
+        await Send.OkAsync(resp,ct);
     }
 }
